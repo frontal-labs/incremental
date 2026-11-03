@@ -287,3 +287,9 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - Fix made to get there: `test-adapters` was in `all-tests`, but it depends on adapter directories that exist only as untracked files on this machine. It was removed from `all-tests` (the target stays defined).
 - `make setup` now fetches the toolchain (`scripts/fetch-goose.sh`) into the directory the Makefile expects (`goose-v2026.3-<uname -s>-<uname -m>`).
 - Still open: the Linux container gate (`make linux-gate`). Docker's daemon has not answered since this session's earlier runs. Restarting Docker Desktop would interrupt containers belonging to other projects, so it needs your go-ahead.
+
+## Linux container gate (2026-11-03): PASS
+- `make linux-gate` passes end to end on a linux/amd64 container, including the full target (all-tests, Python, git, fuzz) and the Vitest adapter, 21 of 21.
+- Two intermittent problems in the runs before this one, neither reproduced in the passing runs:
+  1. The first container build failed on apt's DNS resolution (`deb.debian.org`), a transient network error. A rerun succeeded.
+  2. One run of `test-vitest` had 20 of 21 passing. The failing test was not identified (the container's node test log was not printed). A second container run of only `test-vitest` had no failures, and a full rerun of the gate passed all 21. The cause is unknown. A recurrence needs the failing test's name and error from `core/dist/test-vitest.log` in the container, which the recipe's failure output does not show (the container image has no `tail`).
