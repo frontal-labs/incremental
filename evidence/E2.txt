@@ -1,0 +1,9 @@
+# E2: core engine
+Command: make test-core test-policy test-protocol
+Date: 2026-11-03T08:37:32Z
+Commit: d49f192feb1bc606e9ebc9c5779d05ad8b5dfe6b
+--- output ---
+PASS
+PASS test-core
+PASS test-policy
+PASS test-protocol
