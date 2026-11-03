@@ -1,15 +1,40 @@
+// The protocol (spec/PROTOCOL.md): every method is one function, dispatch().
+// The serve loop (handle) and the CLI (main.goose) both call it, so the two
+// give the same answers byte for byte.
 import std;
 import os;
 import json;
-// The protocol loop (spec/PROTOCOL.md): one JSON request per line in,
-// one response per line out. Every method is a function in this file, and
-// the CLI (main.goose) reaches them through the same handle().
 import store;
 import policy;
 import native;
 
-// Paths and identity of one store, plus the worktree root for verify.
-struct Session { log_path: const u8[:], lock_path: const u8[:], root: const u8[:] }
+// Paths of one store, and the worktree root for verify.
+struct Session {
+    log_path: const u8[:],
+    lock_path: const u8[:],
+    idx_path: const u8[:],
+    cache_path: const u8[:],
+    root: const u8[:],
+}
+
+// Error codes returned by dispatch. Each maps to a protocol name (spec 9.7)
+// and to a CLI exit code.
+let E_INVALID: i64 = 2;
+let E_STORE: i64 = 3;
+let E_INTERNAL: i64 = 4;
+let E_LOCK: i64 = 5;
+let E_BASELINE: i64 = 6;
+let E_UNKNOWN: i64 = 7;
+let E_SHUTDOWN: i64 = 9;
+
+fn error_name(code: i64) -> const u8[:] {
+    if code == E_STORE { return "store_missing"; }
+    if code == E_INTERNAL { return "internal"; }
+    if code == E_LOCK { return "lock_busy"; }
+    if code == E_BASELINE { return "baseline_conflict"; }
+    if code == E_UNKNOWN { return "unknown_method"; }
+    return "invalid_params";
+}
 
 let default_globals = ["pnpm-lock.yaml", "package-lock.json", "yarn.lock", "package.json",
     "tsconfig*.json", "vitest.config.*", "vite.config.*"];
@@ -48,13 +73,19 @@ recursive fn write_value(n: json::Node&, out: u8[>..]&) {
     }
 }
 
-// Parses an integer field, reporting whether it was present and an integer.
-fn int_field(n: json::Node?, key: const u8[:]) -> i64, bool {
-    return json::as_i64(json::member(n, key));
+// Sets body to an error object and returns its code.
+fn fail(code: i64, msg: const u8[:], body: u8[>..]&) -> i64 {
+    body.clear();
+    body.append("{\"code\":");
+    json::format_string(body, error_name(code));
+    body.append(",\"message\":");
+    json::format_string(body, msg);
+    body.append("}");
+    return code;
 }
 
-// Acquires the store lock. A stale lock (holder gone, or its PID reused)
-// is taken over. Retries for about 5 s, then fails (spec 6.6).
+// Acquires the store lock. A stale lock (holder gone, or its PID reused) is
+// taken over. Retries for about 5 s, then gives up (spec 6.6).
 fn lock_acquire(sess: Session&) -> bool {
     let me = native_getpid();
     let start = native_pid_start(me);
@@ -67,17 +98,15 @@ fn lock_acquire(sess: Session&) -> bool {
             var doc: json::Node[>..] = [];
             var decoded: u8[>..] = [];
             let root, err = json::parse(body, doc, decoded);
+            var stale = true;
             if root {
-                let pid, pok = int_field(root, "pid");
-                let st0, sok = int_field(root, "start");
-                let alive = pok && native_pid_alive(pid) == 1;
-                let same_start = pok && sok && native_pid_start(pid) == st0;
-                if !pok || !alive || !same_start {
-                    delete_file(sess.lock_path);
+                let pid, pok = json::as_i64(json::member(root, "pid"));
+                let st0, sok = json::as_i64(json::member(root, "start"));
+                if pok && sok && native_pid_alive(pid) == 1 && native_pid_start(pid) == st0 {
+                    stale = false;
                 }
-            } else {
-                delete_file(sess.lock_path);
             }
+            if stale { delete_file(sess.lock_path); }
         }
         sleep_ms(100);
     }
@@ -88,15 +117,18 @@ fn lock_release(sess: Session&) {
     delete_file(sess.lock_path);
 }
 
-// Appends one observation record under the lock, then applies it.
-fn write_locked(sess: Session&, st: Store&, rec: const u8[:]) -> bool {
-    if !lock_acquire(sess) { return false; }
-    let ok = append_record(st, sess.log_path, rec);
+// Appends complete records under the lock, after re-reading the log so the
+// records follow everything other writers have appended (spec 6.6).
+fn write_records(sess: Session&, st: Store&, recs: const u8[:], body: u8[>..]&) -> i64 {
+    if !lock_acquire(sess) { return fail(E_LOCK, "another writer holds the store lock", body); }
+    var ok = refresh_log(st, sess.log_path);
+    if ok { ok = append_lines(st, sess.log_path, recs); }
     lock_release(sess);
-    return ok;
+    if !ok { return fail(E_STORE, "could not append to the log", body); }
+    return 0;
 }
 
-// Builds the "obs" record: the observation's members, plus "r":"obs".
+// The "obs" record: the observation's members, with "r":"obs" first.
 fn observation_record(obs: json::Node&, rec: u8[>..]&) {
     rec.append("{\"r\":\"obs\"");
     json::each(obs) { c =>
@@ -105,15 +137,14 @@ fn observation_record(obs: json::Node&, rec: u8[>..]&) {
         rec.push(':');
         write_value(c, rec);
     };
-    rec.push('}');
+    rec.append("}\n");
 }
 
-// Checks the required fields of an observation (spec 9.5). Nothing is
-// written unless this passes.
+// Required fields of an observation (spec 9.5).
 fn observation_valid(obs: json::Node?) -> bool {
+    if !obs { return false; }
     let t, tok = json::as_string(json::member(obs, "task"));
     let b, bok = json::as_string(json::member(obs, "baseline"));
-    let c, cok = json::as_string(json::member(obs, "outcome"));
     return tok && bok && json::member(obs, "context") != null;
 }
 
@@ -182,135 +213,128 @@ fn read_query(st: Store&, params: json::Node?, q: Query&) {
     }
 }
 
-// Writes a result or an error into out, as one response line body.
-// kind: 0 result, 1 error. body is the result or the error code.
-fn reply(id: i64, has_id: bool, out: u8[>..]&, body: const u8[:], kind: i64) {
-    out.append("{\"id\":");
-    if has_id { json::format_int(out, id); } else { out.append("null"); }
-    if kind == 0 {
-        out.append(",\"result\":");
-        out.append(body);
-    } else {
-        out.append(",\"error\":");
-        out.append(body);
-    }
-    out.append("}\n");
-}
-
-// An error object: {"code":..,"message":..}.
-fn error_body(code: const u8[:], msg: const u8[:], out: u8[>..]&) {
-    out.append("{\"code\":");
-    json::format_string(out, code);
-    out.append(",\"message\":");
-    json::format_string(out, msg);
-    out.append("}");
-}
-
-// Handles one request line, writing the response to out. Returns 0 to
-// continue, 1 after shutdown, 2 when the stream must close (protocol
-// mismatch).
-fn handle(sess: Session&, st: Store&, line: const u8[:], out: u8[>..]&) -> i64 {
-    var doc: json::Node[>..] = [];
-    var decoded: u8[>..] = [];
-    let root, err = json::parse(line, doc, decoded);
-    if !root {
-        var eb: u8[>..] = [];
-        error_body("invalid_params", err, eb);
-        reply(0, false, out, eb, 1);
-        return 0;
-    }
-    let id, has_id = json::as_i64(json::member(root, "id"));
-    let method, mok = json::as_string(json::member(root, "method"));
-    let params = json::member(root, "params");
-    var body: u8[>..] = [];
-    var failed: i64 = 0;
-    if !mok {
-        error_body("invalid_params", "missing method", body);
-        reply(id, has_id, out, body, 1);
-        return 0;
-    }
-
-    if method == "hello" {
-        let proto, pok = json::as_i64(json::member(params, "protocol"));
-        if !pok || proto != 1 {
-            error_body("protocol_mismatch", "supported protocol versions: [1]", body);
-            reply(id, has_id, out, body, 1);
-            return 2;
-        }
-        body.append("{\"protocol\":1,\"engine\":{\"name\":\"backplane-core-goose\",\"version\":\"0.1.0\"},");
-        body.append("\"capabilities\":[\"probes\",\"dirs\",\"env\",\"verify\"],\"store\":\".backplane\"}");
-    } else if method == "ping" {
+// Runs one method. params is the request's params object. On success body
+// holds the result and 0 is returned. On failure body holds an error object
+// and the error code is returned. E_SHUTDOWN after shutdown.
+fn dispatch(sess: Session&, st: Store&, method: const u8[:], params: json::Node?, body: u8[>..]&) -> i64 {
+    body.clear();
+    if method == "ping" {
         body.append("{\"pong\":true}");
-    } else if method == "shutdown" {
+        return 0;
+    }
+    if method == "shutdown" {
         body.append("{\"bye\":true}");
-        reply(id, has_id, out, body, 0);
-        return 1;
-    } else if method == "baseline" {
+        return E_SHUTDOWN;
+    }
+    if method == "baseline" {
         body.append("{\"baseline\":");
         if st.has_baseline { json::format_string(body, text(st, st.baseline)); } else { body.append("null"); }
         body.push('}');
-    } else if method == "observe" {
+        return 0;
+    }
+    if method == "observe" {
         let obs = json::member(params, "observation");
-        if !observation_valid(obs) || !obs {
-            error_body("invalid_params", "observation needs task, baseline, outcome and context", body);
-            failed = 1;
-        } else {
-            var rec: u8[>..] = [];
-            observation_record(obs, rec);
-            if !write_locked(sess, st, rec) {
-                error_body("lock_busy", "another writer holds the store lock", body);
-                failed = 1;
-            } else {
-                body.append("{\"accepted\":true}");
-            }
+        if !observation_valid(obs) {
+            return fail(E_INVALID, "observation needs task, baseline and context", body);
         }
-    } else if method == "advance" {
+        guard obs else { return fail(E_INVALID, "observation needs task, baseline and context", body); }
+        var rec: u8[>..] = [];
+        observation_record(obs, rec);
+        let code = write_records(sess, st, rec, body);
+        if code != 0 { return code; }
+        body.append("{\"accepted\":true}");
+        return 0;
+    }
+    if method == "observe_many" {
+        let list = json::member(params, "observations");
+        if !list { return fail(E_INVALID, "observe_many needs an observations array", body); }
+        var valid = true;
+        json::each(list) { o =>
+            if !observation_valid(o) { valid = false; }
+        };
+        if !valid { return fail(E_INVALID, "an observation needs task, baseline and context", body); }
+        var rec: u8[>..] = [];
+        var n: i64 = 0;
+        json::each(list) { o =>
+            observation_record(o, rec);
+            n += 1;
+        };
+        let code = write_records(sess, st, rec, body);
+        if code != 0 { return code; }
+        body.append("{\"accepted\":");
+        json::format_int(body, n);
+        body.push('}');
+        return 0;
+    }
+    if method == "advance" {
         let to, tok = json::as_string(json::member(params, "to"));
+        if !tok { return fail(E_INVALID, "advance needs a target baseline", body); }
         let exp, eok = json::as_string(json::member(params, "expected"));
         var matches = !eok;
         if st.has_baseline { matches = eok && text(st, st.baseline) == exp; }
-        if !tok || !matches {
-            error_body("baseline_conflict", "expected baseline does not match the store", body);
-            failed = 1;
-        } else {
-            var rec: u8[>..] = [];
-            rec.append("{\"r\":\"baseline\",\"value\":");
-            json::format_string(rec, to);
-            rec.push('}');
-            if !write_locked(sess, st, rec) {
-                error_body("lock_busy", "another writer holds the store lock", body);
-                failed = 1;
-            } else {
-                body.append("{\"baseline\":");
-                json::format_string(body, to);
-                body.push('}');
-            }
-        }
-    } else if method == "forget" {
+        if !matches { return fail(E_BASELINE, "expected baseline does not match the store", body); }
+        var rec: u8[>..] = [];
+        rec.append("{\"r\":\"baseline\",\"value\":");
+        json::format_string(rec, to);
+        rec.append("}\n");
+        let code = write_records(sess, st, rec, body);
+        if code != 0 { return code; }
+        body.append("{\"baseline\":");
+        json::format_string(body, to);
+        body.push('}');
+        return 0;
+    }
+    if method == "forget" {
         let tid, tok = json::as_string(json::member(params, "task"));
-        if !tok {
-            error_body("invalid_params", "forget needs a task id", body);
-            failed = 1;
-        } else {
-            var rec: u8[>..] = [];
-            rec.append("{\"r\":\"forget\",\"task\":");
-            json::format_string(rec, tid);
-            rec.push('}');
-            if !write_locked(sess, st, rec) {
-                error_body("lock_busy", "another writer holds the store lock", body);
-                failed = 1;
-            } else {
-                let ti = find_task(st, tid);
-                if ti >= 0 { g_tasks[ti].forgotten = true; }
-                body.append("{\"forgotten\":true}");
-            }
-        }
-    } else if method == "affected" {
+        if !tok { return fail(E_INVALID, "forget needs a task id", body); }
+        var rec: u8[>..] = [];
+        rec.append("{\"r\":\"forget\",\"task\":");
+        json::format_string(rec, tid);
+        rec.append("}\n");
+        let code = write_records(sess, st, rec, body);
+        if code != 0 { return code; }
+        body.append("{\"forgotten\":true}");
+        return 0;
+    }
+    if method == "affected" {
         query_reset();
         var q = Query { baseline: Span { off: 0, len: 0 }, has_ctx: false, verify: false, conservative: false };
         read_query(st, params, q);
+        if q.verify { load_stat_cache(st, sess.cache_path); }
         plan(st, q, sess.root, body);
-    } else if method == "stats" {
+        if q.verify { save_stat_cache(st, sess.cache_path); }
+        return 0;
+    }
+    if method == "explain" {
+        let tid, tok = json::as_string(json::member(params, "task"));
+        if !tok { return fail(E_INVALID, "explain needs a task id", body); }
+        let ti = find_task(st, tid);
+        body.append("{\"task\":");
+        json::format_string(body, tid);
+        if ti < 0 || g_tasks[ti].forgotten || g_tasks[ti].latest < 0 {
+            body.append(",\"observed\":false,\"certificate\":false}");
+            return 0;
+        }
+        let o = g_obs[g_tasks[ti].latest];
+        body.append(",\"observed\":true,\"outcome\":");
+        if o.outcome == 0 { json::format_string(body, "pass"); }
+        else if o.outcome == 1 { json::format_string(body, "fail"); }
+        else if o.outcome == 2 { json::format_string(body, "error"); }
+        else { json::format_string(body, "none"); }
+        body.append(",\"dirty\":");
+        json::format_bool(body, o.dirty);
+        body.append(",\"baseline\":");
+        json::format_string(body, text(st, o.baseline));
+        body.append(",\"inputs\":");
+        json::format_int(body, o.inp_n);
+        // A certificate needs a clean pass at the store's baseline (PLAN 3.3).
+        let cert = !o.dirty && o.outcome == 0 && st.has_baseline && same(st, o.baseline, text(st, st.baseline));
+        body.append(",\"certificate\":");
+        json::format_bool(body, cert);
+        body.push('}');
+        return 0;
+    }
+    if method == "stats" {
         var live: i64 = 0;
         for i in g_tasks.len {
             if !g_tasks[i].forgotten && g_tasks[i].latest >= 0 { live += 1; }
@@ -318,14 +342,110 @@ fn handle(sess: Session&, st: Store&, line: const u8[:], out: u8[>..]&) -> i64 {
         body.append("{\"tasks\":");
         json::format_int(body, live);
         body.append(",\"observations\":");
-        json::format_int(body, g_obs.len);
+        json::format_int(body, live);
         body.append(",\"baseline\":");
         if st.has_baseline { json::format_string(body, text(st, st.baseline)); } else { body.append("null"); }
-        body.append("}");
-    } else {
-        error_body("unknown_method", "method is not in protocol v1", body);
-        failed = 1;
+        body.append(",\"graph_version\":\"");
+        graph_version(body);
+        body.append("\"}");
+        return 0;
     }
-    reply(id, has_id, out, body, failed);
+    if method == "compact" {
+        return compact_log(sess, st, body);
+    }
+    return fail(E_UNKNOWN, "method is not in protocol v1", body);
+}
+
+// Rewrites the log with only what the state needs: the header, the latest
+// observation of each live task, the last observation (for the store
+// context) with its forget if any, and the baseline (spec 7.4).
+fn compact_log(sess: Session&, st: Store&, body: u8[>..]&) -> i64 {
+    if !lock_acquire(sess) { return fail(E_LOCK, "another writer holds the store lock", body); }
+    if !refresh_log(st, sess.log_path) {
+        lock_release(sess);
+        return fail(E_STORE, "could not read the log", body);
+    }
+    let before = g_logbuf.len;
+    var out: u8[>..] = [];
+    var nl: i64 = -1;
+    for i in g_logbuf.len {
+        if nl < 0 && g_logbuf[i] == '\n' { nl = i; }
+    }
+    if nl >= 0 {
+        out.append(g_logbuf[..nl + 1]);
+    } else {
+        out.append("{\"r\":\"hdr\",\"v\":1,\"hash\":\"sha256\"}\n");
+    }
+    state_records(st, out);
+    var ok = write_file_atomic(sess.log_path, out);
+    if ok {
+        store_reset(st);
+        ok = load_log(st, out);
+    }
+    if ok { ok = write_index(st, sess.idx_path); }
+    lock_release(sess);
+    if !ok { return fail(E_STORE, "compaction failed", body); }
+    body.append("{\"before_bytes\":");
+    json::format_int(body, before);
+    body.append(",\"after_bytes\":");
+    json::format_int(body, out.len);
+    body.push('}');
+    return 0;
+}
+
+// Writes {"id":..,"result":..} or {"id":..,"error":..} as one line.
+fn reply(id: i64, has_id: bool, out: u8[>..]&, body: const u8[:], failed: bool) {
+    out.append("{\"id\":");
+    if has_id { json::format_int(out, id); } else { out.append("null"); }
+    if failed { out.append(",\"error\":"); } else { out.append(",\"result\":"); }
+    out.append(body);
+    out.append("}\n");
+}
+
+// Handles one request line, writing the response to out. Returns 0 to
+// continue, E_SHUTDOWN after shutdown, 2 when the stream must close after a
+// protocol mismatch, and E_STORE when the store cannot be read.
+fn handle(sess: Session&, st: Store&, line: const u8[:], out: u8[>..]&) -> i64 {
+    // Every request sees the log as it is now, including other writers' records.
+    if !refresh_log(st, sess.log_path) {
+        var sbody: u8[>..] = [];
+        fail(E_STORE, "store is missing or corrupt", sbody);
+        reply(0, false, out, sbody, true);
+        return E_STORE;
+    }
+    var doc: json::Node[>..] = [];
+    var decoded: u8[>..] = [];
+    let root, err = json::parse(line, doc, decoded);
+    var body: u8[>..] = [];
+    if !root {
+        fail(E_INVALID, err, body);
+        reply(0, false, out, body, true);
+        return 0;
+    }
+    let id, has_id = json::as_i64(json::member(root, "id"));
+    let method, mok = json::as_string(json::member(root, "method"));
+    let params = json::member(root, "params");
+    if !mok {
+        fail(E_INVALID, "missing method", body);
+        reply(id, has_id, out, body, true);
+        return 0;
+    }
+    if method == "hello" {
+        let proto, pok = json::as_i64(json::member(params, "protocol"));
+        if !pok || proto != 1 {
+            body.append("{\"code\":\"protocol_mismatch\",\"message\":\"supported protocol versions: [1]\"}");
+            reply(id, has_id, out, body, true);
+            return 2;
+        }
+        body.append("{\"protocol\":1,\"engine\":{\"name\":\"backplane-core-goose\",\"version\":\"0.1.0\"},");
+        body.append("\"capabilities\":[\"probes\",\"dirs\",\"env\",\"verify\"],\"store\":\".backplane\"}");
+        reply(id, has_id, out, body, false);
+        return 0;
+    }
+    var mname: u8[>..] = [];
+    mname.append(method);
+    let code = dispatch(sess, st, mname, params, body);
+    reply(id, has_id, out, body, code != 0 && code != E_SHUTDOWN);
+    if code == E_SHUTDOWN { return E_SHUTDOWN; }
     return 0;
 }

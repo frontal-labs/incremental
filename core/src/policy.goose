@@ -381,20 +381,37 @@ fn env_all_differs(st: Store&, q: Query&, inp: Inp) -> bool {
     return false;
 }
 
-// P10: the worktree file at root/path hashes to hash. Missing is a mismatch.
+// P10: the worktree file at root/path hashes to hash. A missing file is a
+// mismatch. The stat cache (spec 7.6) answers when size and mtime_ns are
+// unchanged; otherwise the file is hashed and the cache entry replaced.
 fn file_matches(st: Store&, root: const u8[:], path: const u8[:], hash: const u8[:]) -> bool {
     var full: u8[>..] = [];
     full.append(root);
     if root.len > 0 && root[root.len - 1] != '/' { full.push('/'); }
     full.append(path);
+    var size: i64 = 0;
+    var mtime: i64 = 0;
+    if native_stat_file(full, size, mtime) != 1 { return false; }
+    var slot: i64 = -1;
+    for i in g_cache.len {
+        if same(st, g_cache[i].path, path) { slot = i; }
+    }
+    if slot >= 0 && g_cache[slot].size == size && g_cache[slot].mtime == mtime {
+        return text(st, g_cache[slot].hash) == hash;
+    }
     var body: u8[>..] = [];
     if !read_file(full, body) { return false; }
-    var hex: u8[>..] = [];
-    native_sha256_hex(body, hex);
-    var want: u8[>..] = [];
-    want.append("sha256:");
-    want.append(hex);
-    return want == hash;
+    var sha: u8[>..] = [];
+    sha_text(body, sha);
+    let hs = put(st, sha);
+    if slot >= 0 {
+        g_cache[slot].size = size;
+        g_cache[slot].mtime = mtime;
+        g_cache[slot].hash = hs;
+    } else {
+        g_cache.push(CEnt { path: put(st, path), size: size, mtime: mtime, hash: hs });
+    }
+    return sha == hash;
 }
 
 // graph_version (FORMAT.md): "g_" + the first 8 hex digits of SHA-256 over

@@ -1,10 +1,12 @@
+// The store: an append-only JSON Lines log (spec/FORMAT.md) read into flat
+// records, plus the index image (tg.idx) and the stat cache (stat.cache).
+// Strings live in one arena and are referred to by Span, so no record holds
+// a slice of another buffer.
 import std;
 import os;
 import json;
-// The store: an append-only JSON Lines log (spec/FORMAT.md) read into flat
-// records. Strings live in one arena and are referred to by Span, so no
-// record holds a slice of another buffer.
 import native;
+import dictionary;
 
 struct Span { off: i64, len: i64 }
 
@@ -12,7 +14,7 @@ struct Span { off: i64, len: i64 }
 struct Kv { k: Span, v: Span }
 
 // One input of an observation. kind: 0 file, 1 dir, 2 probe, 3 env,
-// 4 env_all, 5 declared. Env entries of an env_all snapshot live in kvs
+// 4 env_all, 5 declared. Env entries of an env_all snapshot live in g_kvs
 // at [env_from, env_from + env_n).
 struct Inp {
     kind: i64,
@@ -25,7 +27,7 @@ struct Inp {
     has_snap: bool,
 }
 
-// outcome: 0 pass, 1 fail, 2 error, 3 none.
+// outcome: 0 pass, 1 fail, 2 error, 3 none. line: the record as logged.
 struct Ob {
     task: i64,
     ctx_from: i64,
@@ -35,9 +37,14 @@ struct Ob {
     outcome: i64,
     inp_from: i64,
     inp_n: i64,
+    line: Span,
 }
 
-struct Task { id: Span, forgotten: bool, latest: i64 }
+// chain: the next task index with the same hash of its id, or -1.
+struct Task { id: Span, forgotten: bool, latest: i64, chain: i64 }
+
+// One stat cache entry (spec 6.3, 7.6).
+struct CEnt { path: Span, size: i64, mtime: i64, hash: Span }
 
 // The resizable collections are globals: a struct may hold at most one
 // resizable value, and it must be its last field (spec 3.4).
@@ -46,7 +53,16 @@ var g_kvs: Kv[>..] = [];
 var g_inps: Inp[>..] = [];
 var g_obs: Ob[>..] = [];
 var g_tasks: Task[>..] = [];
+// Hash of a task id -> the newest task index with that hash.
+var g_task_head: dictionary<u64, i64> = dictionary<u64, i64> {};
+// The whole log as read, including any truncated tail.
 var g_logbuf: u8[>..] = [];
+// Bytes of g_logbuf whose complete lines are applied to the state.
+var g_applied: i64 = 0;
+var g_cache: CEnt[>..] = [];
+// Size and mtime of the log as last read, see refresh_log.
+var g_log_mtime: i64 = 0;
+var g_stat_known: bool = false;
 
 struct Store {
     baseline: Span,
@@ -54,6 +70,22 @@ struct Store {
     ctx_from: i64,
     ctx_n: i64,
     has_ctx: bool,
+}
+
+fn store_reset(st: Store&) {
+    g_arena.clear();
+    g_kvs.clear();
+    g_inps.clear();
+    g_obs.clear();
+    g_tasks.clear();
+    g_task_head.clear();
+    g_logbuf.clear();
+    g_applied = 0;
+    st.baseline = Span { off: 0, len: 0 };
+    st.has_baseline = false;
+    st.ctx_from = 0;
+    st.ctx_n = 0;
+    st.has_ctx = false;
 }
 
 fn put(st: Store&, s: const u8[:]) -> Span {
@@ -70,9 +102,17 @@ fn same(st: Store&, s: Span, t: const u8[:]) -> bool {
     return s.len == t.len && text(st, s) == t;
 }
 
+// Task lookup by id: a hash of the id gives the head of a chain of tasks
+// that share the hash, and the chain is compared by bytes (so a hash
+// collision cannot give a wrong task).
 fn find_task(st: Store&, id: const u8[:]) -> i64 {
-    for i in g_tasks.len {
+    let h = hash(id);
+    let head = g_task_head.get(h);
+    if !head { return -1; }
+    var i = head;
+    while i >= 0 {
         if same(st, g_tasks[i].id, id) { return i; }
+        i = g_tasks[i].chain;
     }
     return -1;
 }
@@ -80,7 +120,12 @@ fn find_task(st: Store&, id: const u8[:]) -> i64 {
 fn task_index(st: Store&, id: const u8[:]) -> i64 {
     let i = find_task(st, id);
     if i >= 0 { return i; }
-    g_tasks.push(Task { id: put(st, id), forgotten: false, latest: -1 });
+    let h = hash(id);
+    let head = g_task_head.get(h);
+    var next: i64 = -1;
+    if head { next = head; }
+    g_tasks.push(Task { id: put(st, id), forgotten: false, latest: -1, chain: next });
+    g_task_head.insert(h, g_tasks.len - 1);
     return g_tasks.len - 1;
 }
 
@@ -119,9 +164,9 @@ fn scalar_text(n: json::Node?, out: u8[>..]&) {
     out.push('}');
 }
 
-// Each member of an object becomes a Kv. raw: a string value is kept as
-// its bare text (env values, which inputs store bare); otherwise the value
-// is canonical JSON text (contexts and caps). Returns the first index and count.
+// Each member of an object becomes a Kv. raw: a string value is kept as its
+// bare text (env values, which inputs store bare); otherwise the value is
+// canonical JSON text (contexts and caps). Returns first index and count.
 fn read_pairs(st: Store&, obj: json::Node?, raw: bool) -> i64, i64 {
     let from = g_kvs.len;
     if !obj { return from, 0; }
@@ -134,9 +179,9 @@ fn read_pairs(st: Store&, obj: json::Node?, raw: bool) -> i64, i64 {
     return from, g_kvs.len - from;
 }
 
-// Reads one observation object (the body of an obs record or observe
-// params) into st. Returns false on a malformed observation.
-fn add_obs(st: Store&, o: json::Node?) -> bool {
+// Reads one observation object into the state. line is the record as it is
+// logged, kept so that compaction and the index can write it again.
+fn add_obs(st: Store&, o: json::Node?, line: const u8[:]) -> bool {
     let tid, ok = json::as_string(json::member(o, "task"));
     if !ok { return false; }
     let bl, bok = json::as_string(json::member(o, "baseline"));
@@ -148,7 +193,6 @@ fn add_obs(st: Store&, o: json::Node?) -> bool {
         if oc == "pass" { outcome = 0; }
         else if oc == "fail" { outcome = 1; }
         else if oc == "error" { outcome = 2; }
-        else { outcome = 3; }
     }
     let cfrom, cn = read_pairs(st, json::member(o, "context"), false);
     let ti = task_index(st, tid);
@@ -177,29 +221,19 @@ fn add_obs(st: Store&, o: json::Node?) -> bool {
                 snap = json::member(inp, "snapshot") != null;
                 efrom, en = read_pairs(st, json::member(inp, "snapshot"), true);
             }
-            g_inps.push(Inp {
-                kind: kind,
-                path: if pok { put(st, p) } else { Span { off: 0, len: 0 } },
-                hash: if hok { put(st, h) } else { Span { off: 0, len: 0 } },
-                name: if nok { put(st, nm) } else { Span { off: 0, len: 0 } },
-                vh: if vok { put(st, vh) } else { Span { off: 0, len: 0 } },
-                env_from: efrom,
-                env_n: en,
-                has_snap: snap,
-            });
+            let ps = if pok { put(st, p) } else { Span { off: 0, len: 0 } };
+            let hs = if hok { put(st, h) } else { Span { off: 0, len: 0 } };
+            let ns = if nok { put(st, nm) } else { Span { off: 0, len: 0 } };
+            let vs = if vok { put(st, vh) } else { Span { off: 0, len: 0 } };
+            g_inps.push(Inp { kind: kind, path: ps, hash: hs, name: ns, vh: vs,
+                env_from: efrom, env_n: en, has_snap: snap });
         };
     }
     let ni = g_inps.len - ifrom;
-    g_obs.push(Ob {
-        task: ti,
-        ctx_from: cfrom,
-        ctx_n: cn,
-        baseline: put(st, bl),
-        dirty: dok && dirty,
-        outcome: outcome,
-        inp_from: ifrom,
-        inp_n: ni,
-    });
+    let bs = put(st, bl);
+    let ls = put(st, line);
+    g_obs.push(Ob { task: ti, ctx_from: cfrom, ctx_n: cn, baseline: bs, dirty: dok && dirty,
+        outcome: outcome, inp_from: ifrom, inp_n: ni, line: ls });
     g_tasks[ti].latest = g_obs.len - 1;
     g_tasks[ti].forgotten = false;
     st.ctx_from = cfrom;
@@ -208,12 +242,12 @@ fn add_obs(st: Store&, o: json::Node?) -> bool {
     return true;
 }
 
-// Applies one parsed log record. Unknown record types are skipped (spec
-// G-e). Returns false only for a record that is known and invalid.
-fn apply_record(st: Store&, rec: json::Node?) -> bool {
+// Applies one parsed record. Unknown record types are skipped (spec G-e).
+// Returns false only for a known record that is invalid.
+fn apply_record(st: Store&, rec: json::Node?, line: const u8[:]) -> bool {
     let r, rok = json::as_string(json::member(rec, "r"));
     if !rok { return true; }
-    if r == "obs" { return add_obs(st, rec); }
+    if r == "obs" { return add_obs(st, rec, line); }
     if r == "forget" {
         let tid, ok = json::as_string(json::member(rec, "task"));
         if !ok { return false; }
@@ -231,37 +265,232 @@ fn apply_record(st: Store&, rec: json::Node?) -> bool {
     return true;
 }
 
-// Parses one log line. A line that fails to parse is an error unless
-// the caller says it is a truncated tail, which is ignored (G-e).
-fn parse_line(st: Store&, line: const u8[:], tail: bool) -> bool {
+// Applies one complete line. False if it does not parse or is invalid.
+fn apply_line(st: Store&, line: const u8[:]) -> bool {
     var doc: json::Node[>..] = [];
     var decoded: u8[>..] = [];
     let root, err = json::parse(line, doc, decoded);
-    if !root {
-        return tail;
-    }
-    return apply_record(st, root);
+    if !root { return false; }
+    return apply_record(st, root, line);
 }
 
-// Loads the log text. Returns false on a corrupt (non-tail) record.
+// Applies every complete line of log from offset from. The piece after the
+// final newline is a line still being written, or a truncated tail, and is
+// not applied (G-e). Returns the offset applied through, and false if a
+// complete line is corrupt.
+fn apply_from(st: Store&, log: const u8[:], from: i64) -> i64, bool {
+    let rest = log[from..];
+    let parts = split(rest, '\n');
+    var off = from;
+    if parts.len == 0 { return from, true; }
+    for i in parts.len - 1 {
+        let p = parts[i];
+        if p.len > 0 {
+            if !apply_line(st, p) { return off, false; }
+        }
+        off += p.len + 1;
+    }
+    return off, true;
+}
+
+// Loads the whole log from scratch. False when the store is corrupt (exit 3).
 fn load_log(st: Store&, log: const u8[:]) -> bool {
+    store_reset(st);
     g_logbuf.append(log);
-    let parts = split(log, '\n');
-    for i in parts.len {
-        if parts[i].len == 0 { continue; }
-        let tail = i == parts.len - 1;
-        if !parse_line(st, parts[i], tail) { return false; }
-    }
-    return true;
+    let applied, ok = apply_from(st, g_logbuf, 0);
+    g_applied = applied;
+    return ok;
 }
 
-// Appends one record (a complete JSON object without a newline) to the
-// log file, and to the in-memory state. The caller holds the lock.
-fn append_record(st: Store&, path: const u8[:], rec: const u8[:]) -> bool {
-    var line: u8[>..] = [];
-    line.append(rec);
-    line.push('\n');
-    if !append_file(path, line) { return false; }
-    g_logbuf.append(line);
-    return parse_line(st, line, false);
+// Re-reads the log and applies what other writers appended since the last
+// read (spec 6.6). A log rewritten under us (compaction, or a changed
+// prefix) is reloaded from scratch.
+fn refresh_log(st: Store&, log_path: const u8[:]) -> bool {
+    // The file only changes by appends or a rewrite, and both change its size
+    // or mtime. When neither changed since we last looked, nothing to read.
+    var size: i64 = 0;
+    var mtime: i64 = 0;
+    if native_stat_file(log_path, size, mtime) != 1 { return false; }
+    if g_stat_known && size == g_logbuf.len && mtime == g_log_mtime { return true; }
+    var log: u8[>..] = [];
+    if !read_file(log_path, log) { return false; }
+    g_stat_known = false;
+    var same_prefix = log.len >= g_logbuf.len;
+    if same_prefix && g_logbuf.len > 0 {
+        same_prefix = log[..g_logbuf.len] == g_logbuf;
+    }
+    if !same_prefix {
+        let loaded = load_log(st, log);
+        if loaded { mark_log(log_path); }
+        return loaded;
+    }
+    if log.len == g_logbuf.len {
+        mark_log(log_path);
+        return true;
+    }
+    g_logbuf.clear();
+    g_logbuf.append(log);
+    let applied, ok = apply_from(st, g_logbuf, g_applied);
+    g_applied = applied;
+    if ok { mark_log(log_path); }
+    return ok;
+}
+
+// Remembers the log's size and mtime as read, so the next refresh can skip.
+fn mark_log(log_path: const u8[:]) {
+    var size: i64 = 0;
+    var mtime: i64 = 0;
+    if native_stat_file(log_path, size, mtime) == 1 && size == g_logbuf.len {
+        g_log_mtime = mtime;
+        g_stat_known = true;
+    }
+}
+
+// Appends complete records (each ending in a newline). The caller holds the
+// lock and has refreshed. A truncated tail is dropped first, so a crash
+// never leaves a bad line in the middle of the log.
+fn append_lines(st: Store&, log_path: const u8[:], recs: const u8[:]) -> bool {
+    if g_applied < g_logbuf.len {
+        if !write_file_atomic(log_path, g_logbuf[..g_applied]) { return false; }
+        g_logbuf.resize(g_applied);
+    }
+    if !append_file(log_path, recs) { return false; }
+    g_logbuf.append(recs);
+    let applied, ok = apply_from(st, g_logbuf, g_applied);
+    g_applied = applied;
+    mark_log(log_path);
+    return ok;
+}
+
+// ---- index image (spec 6.4) ------------------------------------------------
+// tg.idx: a header with the length and tail hash of the log prefix it
+// describes, then the state as records. Loading replays only the log bytes
+// after that length (the delta layer). Any mismatch means a full replay,
+// which is always correct.
+
+// SHA-256 of data as "sha256:<hex>".
+fn sha_text(data: const u8[:], out: u8[>..]&) {
+    out.append("sha256:");
+    native_sha256_hex(data, out);
+}
+
+// The state as records: the latest observation of every live task, the
+// last observation of the log (so the store context survives) with its
+// forget if its task is gone, and the baseline.
+fn state_records(st: Store&, out: u8[>..]&) {
+    // The last observation of the log is written last, so replaying the
+    // records leaves the store context the same as the full log's.
+    var lo: i64 = -1;
+    if g_obs.len > 0 { lo = g_obs.len - 1; }
+    for i in g_tasks.len {
+        let t = g_tasks[i];
+        if t.forgotten || t.latest < 0 { continue; }
+        if t.latest == lo { continue; }
+        out.append(text(st, g_obs[t.latest].line));
+        out.push('\n');
+    }
+    if lo >= 0 {
+        let t = g_tasks[g_obs[lo].task];
+        out.append(text(st, g_obs[lo].line));
+        out.push('\n');
+        if t.forgotten {
+            out.append("{\"r\":\"forget\",\"task\":");
+            json::format_string(out, text(st, t.id));
+            out.append("}\n");
+        }
+    }
+    if st.has_baseline {
+        out.append("{\"r\":\"baseline\",\"value\":");
+        json::format_string(out, text(st, st.baseline));
+        out.append("}\n");
+    }
+}
+
+// Writes tg.idx for the applied prefix of the log.
+fn write_index(st: Store&, idx_path: const u8[:]) -> bool {
+    let base = g_applied;
+    let tail = if base > 1024 { base - 1024 } else { 0 };
+    var img: u8[>..] = [];
+    img.append("{\"r\":\"index\",\"fmt\":1,\"base_log_len\":");
+    json::format_int(img, base);
+    img.append(",\"base_tail_sha\":\"");
+    sha_text(g_logbuf[tail..base], img);
+    img.append("\"}\n");
+    state_records(st, img);
+    return write_file_atomic(idx_path, img);
+}
+
+// Loads tg.idx when it describes a prefix of the log. False (with the state
+// cleared) when it does not, and the caller replays the log instead.
+fn load_index(st: Store&, idx_path: const u8[:], log: const u8[:]) -> bool {
+    var img: u8[>..] = [];
+    if !read_file(idx_path, img) { return false; }
+    let parts = split(img, '\n');
+    if parts.len < 2 { return false; }
+    var doc: json::Node[>..] = [];
+    var decoded: u8[>..] = [];
+    let head, herr = json::parse(parts[0], doc, decoded);
+    if !head { return false; }
+    let fmt, fok = json::as_i64(json::member(head, "fmt"));
+    let base, bok = json::as_i64(json::member(head, "base_log_len"));
+    let sha, sok = json::as_string(json::member(head, "base_tail_sha"));
+    if !fok || fmt != 1 || !bok || !sok || base < 0 || base > log.len { return false; }
+    let tail = if base > 1024 { base - 1024 } else { 0 };
+    var want: u8[>..] = [];
+    sha_text(log[tail..base], want);
+    if want != sha { return false; }
+    store_reset(st);
+    g_logbuf.append(log);
+    for i in parts.len - 1 {
+        let p = parts[i + 1];
+        if p.len == 0 { continue; }
+        if !apply_line(st, p) {
+            store_reset(st);
+            return false;
+        }
+    }
+    g_applied = base;
+    let applied, ok = apply_from(st, g_logbuf, base);
+    g_applied = applied;
+    return ok;
+}
+
+// ---- stat cache (spec 6.3, 7.6) ---------------------------------------------
+
+// Loads stat.cache into g_cache. A missing or unreadable cache is empty;
+// deleting it never changes an answer.
+fn load_stat_cache(st: Store&, cache_path: const u8[:]) {
+    g_cache.clear();
+    var body: u8[>..] = [];
+    if !read_file(cache_path, body) { return; }
+    var doc: json::Node[>..] = [];
+    var decoded: u8[>..] = [];
+    let root, err = json::parse(body, doc, decoded);
+    if !root { return; }
+    json::each(root) { c =>
+        let size, sok = json::as_i64(json::member(c, "size"));
+        let mtime, mok = json::as_i64(json::member(c, "mtime_ns"));
+        let h, hok = json::as_string(json::member(c, "hash"));
+        if sok && mok && hok {
+            g_cache.push(CEnt { path: put(st, c.key), size: size, mtime: mtime, hash: put(st, h) });
+        }
+    };
+}
+
+fn save_stat_cache(st: Store&, cache_path: const u8[:]) -> bool {
+    var body: u8[>..] = [];
+    body.push('{');
+    for i in g_cache.len {
+        if i > 0 { body.push(','); }
+        json::format_string(body, text(st, g_cache[i].path));
+        body.append(":{\"size\":");
+        json::format_int(body, g_cache[i].size);
+        body.append(",\"mtime_ns\":");
+        json::format_int(body, g_cache[i].mtime);
+        body.append(",\"hash\":");
+        json::format_string(body, text(st, g_cache[i].hash));
+        body.push('}');
+    }
+    body.push('}');
+    return write_file_atomic(cache_path, body);
 }
