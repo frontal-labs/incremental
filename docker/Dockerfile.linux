@@ -8,8 +8,10 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends git python3 make curl ca-certificates tar build-essential \
  && rm -rf /var/lib/apt/lists/*
 
+# Pinned to the release's published SHA-256 (same digest as scripts/fetch-goose.sh).
 RUN mkdir -p /opt/goose \
  && curl -fsSL -o /tmp/goose.tar.gz https://github.com/aardappel/goose/releases/download/v2026.3/goose-v2026.3-linux-x64.tar.gz \
+ && echo "06ac30284338269d3996d457412bf4f2b47c1f9a5601de65b6317187fe78d5c9  /tmp/goose.tar.gz" | sha256sum -c - \
  && tar -xzf /tmp/goose.tar.gz -C /opt/goose \
  && rm /tmp/goose.tar.gz
 
