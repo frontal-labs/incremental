@@ -135,3 +135,67 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - Cosmetic: `hello` reports engine name `backplane-core-goose` and store `.backplane` (literal). PROTOCOL.md's example says `backplane-core-ts`.
 - `compact` is forwarded unchanged and is not tested: the engine's behaviour for it is not specified in the milestone.
 - Parity bytes use `json.dumps` with default `ensure_ascii`. Non-ASCII plans are not in the corpus.
+
+## E3 Node client decisions (Bindings, 2026-11-03)
+- `@backplane/client` in bindings/node: 86 tests in `npm test`, 84 pass and 2 are intentional skips (C04 and C27, which the CLI cannot express). Byte-identical plans against `backplane affected` for 34 of 34 expressible query cases. 38 of 40 conformance cases run through the client; C34 and C35 run the engine process directly, because the client always sends protocol 1 and cannot send raw bytes.
+- Requests are serialized through one promise queue. A timeout kills the server with SIGKILL so the next call starts fresh. A late answer is dropped by id.
+- The handshake has its own 10 s budget (`STARTUP_TIMEOUT_MS`), separate from `timeoutMs`, so a 1 ms request timeout does not kill `connect`.
+- Server death: read-only methods (hello, baseline, affected, explain, stats, ping) are retried once on a restarted server. Writes (observe, advance, forget, compact, shutdown) reject with `internal` and `data.reason = "exited"`, because the write may or may not have happened. PLAN 9.7 has no "server exited" code.
+- A store error with no id (`{"ok":false,...}`, e.g. `store_missing` before hello) rejects the handshake with the engine's code.
+- `affected` fills `verify=false` and `policy="balanced"` when absent, as the CLI does. A plan missing a required field is rejected as `internal` with `data.reason = "partial_plan"`.
+- Default root: `process.cwd()`, matching the CLI's `.`. PLAN does not specify it. The repo root is found by walking up to `tsconfig.base.json`.
+- Extra exports beyond PLAN 10.1: `pid` on the client, and the `root` option on `connect`.
+- `context` is required in the TypeScript type (PLAN 10.1). That prevents the client from exercising P0b without a cast. Acceptable for now.
+- The CLI has no `--declared-tasks` flag, so `declared_tasks` cannot be checked byte-for-byte against the CLI (C04). A CLI flag would close that gap.
+- PROTOCOL.md `explain` row corrected to the engine's shape, which matches spec/schemas/explanation.json: `{task, observed, outcome, dirty, baseline, inputs, certificate}`.
+- `make test-bindings` runs `npm test` in bindings/node.
+
+## Reverse indexes (PLAN 6.5) in the Goose core (Core, 2026-11-03)
+- Implemented: a path table with three posting lists per path (file readers, dir listers, probers), keyed by path hash. Postings are linked lists in a pool. Queries walk only the postings of the paths that changed, plus the standing observations (dirty, failed, or with env inputs). Verify (P10) still walks every live task because it hashes every recorded file.
+- Deviation 1 (PLAN 6.4/6.5 suggest the postings are in tg.idx): postings are rebuilt in memory from the replayed records on load. The index image format is unchanged, so load stays linear in the log.
+- Deviation 2: stale postings (observation no longer the task's latest, or task forgotten) are unlinked lazily, the first time a query visits that list. Safe, because a dead observation never becomes live again.
+- Deviation 3: reason output is grouped by task name and sorted. The per-query mark array from 6.5 was not built.
+- Deviation 4 (memory fix, not in the spec): the query-time arena is truncated back to its start after each non-verify `affected`, so long `serve` runs do not grow without bound.
+- Fallback still lists and sorts every known task, because its output is every task.
+- Checks on this build: test-policy 40/40, test-core, test-protocol, test-python, test-bindings pass. Fuzz seeds 20261103, 1 and 2: 0 differences. A separate differential against the previous build over about 80k random operations (seeds 7, 8, 9) gave 0 differences after normalising graph_version, except for queries on logs under 1 KB where the header timestamp changes the hash.
+- Measured with bench/m1.mjs: 10k tasks per query 0.04 ms (run-to-run noise about 0.3 ms). 100k tasks, process load 540 ms, per query under 1 ms. Round-trip harness (scratch, not in repo), 100k tasks, one changed file: p50 0.28 ms, p99 6.3 ms. Previous build at 100k: p50 593 ms, p99 1.2 s.
+- M1 (p50 under 5 ms, p99 under 20 ms at 100k): met by the round-trip harness. Caveats: the store has about 200k postings, not the 10M in M1, and the round trip includes Node pipe overhead.
+- M2 (cold CLI plan under 300 ms at 100k): NOT met. 0.96 to 1.41 s. The dominant cost is parsing the 53 MB tg.idx, which is essentially a copy of the log, not the index work. A real fix is a binary index image with postings stored in it, which is the deviation above.
+- Remaining cost at 100k with many changed files: output building (reason strings, sort, JSON) and per-request overhead (JSON parse, refresh stat, graph_version hash). Not profiled.
+
+## E4 Vitest adapter decisions (Adapters, 2026-11-03). Two expectations are OPEN, see CR-002 and CR-003.
+- `make test-vitest` passes (adapters/vitest, 21 tests, V01 to V16 end to end on scratch copies of the fixture). `make test-e2e` runs the same tests.
+- CR-001 fixture: adapters/vitest/fixtures/repo, with a workspace symlink app/node_modules/@fixture/core -> core, pool forks, and its own .gitignore so the symlink is visible to git. Case files fixtures/cases/V01..V16.json are authored by the adapter team from PLAN 12.3, not produced by running the adapter. Spec owner sign-off is still needed.
+- NODE_OPTIONS probe: passed. The forked worker sees BACKPLANE_RECORDER=1, which only the preload sets (D-12 holds with `pool: forks`).
+- Capabilities proven true on the fixture: probes (V08), dirs (V09), env (V10, V11). Context caps are true.
+- The vitest main process is recorded as well as the forked workers. Vitest transforms modules in its main process and sends code over IPC, so imports are only visible there. Discovery globs and whole-environment enumeration by Vite (loadEnv) are not recorded; named env reads are.
+- Env baseline: the planner's env map is the environment the runner gave the vitest CLI, before vitest writes MODE, DEV, PROD, TEST, BASE_URL and FORCE_TTY. Reads of names vitest injected count as unset.
+- Exit codes: 0 advanced and all pass; 1 advanced but a test failed; 7 not advanced (an error outcome, a dirty worktree at the end, or HEAD moved); 2 usage or engine error, including --base not equal to the store baseline and a first run without a git commit. A failing test (fail) does not block advance; only error does (PLAN 11.6). JSON output has notAdvanced reasons.
+- Shadow mode: runs every test under the recorder, writes no observations, forgets nothing, does not advance. Reports wouldSkip.
+- Known gaps: subprocess spawns and CJS require() from repo files mark a task incomplete (dirty). A test that lists the repo root is not recorded. Config discovery probes (.env*, postcss.config.*, vitest.config.*, public) are recorded, so adding one of them invalidates every test. Vite's temporary config copies are dropped once they no longer exist.
+- Observations are checked structurally (required fields, input kinds) only. There is no JSON Schema validator in the dependencies, so spec/schemas/observation.json is not fully validated.
+- The git change source (E4 step 4) renames and untracked-file cases are not covered by the V cases yet. The adapter uses backplane-git.
+- Not done: the engine CLI does not dispatch `vitest`. The entry point is `backplane-vitest run`.
+- A recurrence of an exit code 7 on the first run was seen once and not reproduced in four later runs. Cause unknown. The JSON notAdvanced reason makes a recurrence diagnosable.
+- OPEN, not accepted: V13 expects the engine's P5 behaviour, which conflicts with PLAN 8.7 (CR-002). V16 expects targeted behaviour, which conflicts with PLAN 11.2 and 12.3 (CR-003). Until one is chosen, E4 is not signed off.
+
+## E8 MCP server decisions (Adapters, 2026-11-03)
+- D-E8-01: SDK pinned at 1.32.0 (2.x not used). zod 4.6.7 is a direct dependency, because the SDK's zod is only a peer dependency and legacy-peer-deps is set.
+- D-E8-02: The server sends env as a sha256 hash map of its own process environment, values hashed as `sha256:<hex>`. The tool input does not carry env.
+- D-E8-03: Context. `lockfile` is the first of pnpm-lock.yaml, package-lock.json, yarn.lock found at the root, hashed. `tsconfig` is tsconfig.json, `pkgjson` is package.json. A missing file gives the sentinel `absent`. `runner` is vitest@4.1.12, `node` is process.version, `fmt` is 1, all caps true.
+- D-E8-04: The root is found by walking up from the working directory to tsconfig.base.json. The store is BACKPLANE_STORE, else <root>/.backplane. The git binary is BACKPLANE_GIT, else the client's repoRoot/adapters/git/dist/backplane-git. The engine starts on the first tool call. A missing store appears as a tool error.
+- D-E8-05: A store with no baseline gives a tool error ("no baseline is stored"), not a plan. The server does not fabricate a baseline_mismatch fallback.
+- D-E8-06: The ChangeSet baseline is the stored baseline string. Git's `head` field is not forwarded, as it is informational.
+- D-E8-07: The server exits and shuts the engine down when stdin ends.
+- Known gap: the scratch repositories in os.tmpdir are not cleaned up after the tests.
+- Scenarios S1 to S5 (leaf edit, shared utility, lockfile fallback, env change, context fallback) have expectations derived by hand from POLICY.md before the run, and all match.
+
+## Open items closed by the lead (2026-11-03). Each is reversible; flagged for human sign-off.
+- CR-001 (Vitest fixture): accepted. Implemented in adapters/vitest/fixtures/repo, cases V01 to V16.
+- CR-002 (deleted task definition, PLAN 8.7 vs POLICY P5): decided for P5. PLAN 0.1 makes spec/ win over PLAN.md, and spec/POLICY.md says invalidate every reader of a deleted path. A deleted task that reads its own file is re-run once and then forgotten. V13 expects this.
+- CR-003 (worker threads, PLAN 11.2 and V16): decided for the targeted behaviour. The per-task capability cannot be expressed through P2 without making the whole store context caps-false, which would fall back on every query. The worker observation is recorded dirty (11.1 rule 4), so it reruns. V16 expects this.
+- `baseline_conflict` now carries `data: {expected, actual}` (PLAN 9.1). The Python test that asserted no data was updated to match. C26 checks only the code, so it still passes.
+- CI (.github/workflows): every external action pinned to a full commit SHA, with the version in a comment. `trivy-action@master` is replaced by v0.36.0 (the latest release). `release.yml` permissions are read-only at the top; `contents: write` only in the release-check job, and `packages: write` is dropped because nothing publishes packages. Note: the workflows still use `bun` and `bun-version: '2.2'`, which is not a published Bun version, and `docker/Dockerfile.linux` is a placeholder. These are not fixed here.
+- `make release-check` runs `all-tests` and checks that LICENSE exists. `LICENSE` is restored as a copy of `LICENSE.md` (Apache-2.0, identical bytes). Which file to keep is still for the human.
+- `status/BENCHMARKS.json` now matches `status/BENCH.json` (GATE0 blocked). The earlier `done` was contradicted by the evidence.
+- Still open for the human: Gate 0 (needs BACKPLANE_BENCH_REPO), the commit grouping (nothing is committed), and whether the stale TypeScript stubs in core/src/ should be deleted.
