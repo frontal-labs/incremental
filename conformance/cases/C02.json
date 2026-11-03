@@ -1,1 +1,55 @@
-{"id":"C02","desc":"C02","mode":"balanced","store":{"from":"conformance/stores/base.jsonl"},"query":{"baseline":"b1","changes":[],"verify":false},"expect":{"tasks":[],"unobserved":[],"ignored":[],"deleted_tasks":[],"fallback":null,"confidence":"medium"}}
+{
+  "id": "C02",
+  "desc": "Changed file read by several tasks; all listed",
+  "mode": "balanced",
+  "store": {
+    "from": "conformance/stores/base.jsonl"
+  },
+  "query": {
+    "baseline": "b1",
+    "context": {
+      "lockfile": "sha256:l1",
+      "tsconfig": "sha256:t1",
+      "pkgjson": "sha256:p1",
+      "runner": "vitest@4.1.12",
+      "node": "22.11.0",
+      "fmt": 1,
+      "caps": {
+        "probes": true,
+        "dirs": true,
+        "env": true
+      }
+    },
+    "env": {
+      "TG_FIXTURE_MODE": "sha256:env1"
+    },
+    "changes": [
+      {
+        "path": "packages/core/src/math.ts",
+        "status": "modified"
+      }
+    ],
+    "verify": false
+  },
+  "expect": {
+    "tasks": [
+      {
+        "id": "packages/app/src/app.test.ts",
+        "reasons": [
+          "reads:packages/core/src/math.ts"
+        ]
+      },
+      {
+        "id": "packages/core/src/math.test.ts",
+        "reasons": [
+          "reads:packages/core/src/math.ts"
+        ]
+      }
+    ],
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium"
+  }
+}

@@ -2,8 +2,6 @@
 
 Spec v4 · 2026-11-03 · engine name: **backplane** (working name, see 1.4) · core: TypeScript (default, see D-14) · protocol: backplane Protocol v1 · first adapter: Vitest · platforms: Linux (gate, arm64 container), macOS and Linux (development)
 
-> **This file is the single source of truth.** Canonical path: `plans/PLAN.md`. The previous test-only spec is archived at `plans/archive/PLAN-tg-v3.1.md` and is not a source for new work. `MUST` and `MUST NOT` have no discretion. `SHOULD` may be overridden only with a `DECISIONS.md` entry giving the reason.
-
 ---
 
 ## 0. Document control and start protocol
@@ -70,7 +68,7 @@ The engine has no opinion about tests, builds or CI. Those are **adapters**. The
 
 ### 1.4 Name
 
-**backplane** is the working name. As of 2026-11-03, npm has no package named `affectra`, and the scope `@affectra` was not checked. Trademark, GitHub organization and domain availability were **not** checked; that is milestone E0 step 1. All package names and CLI names are defined in one place (section 10.5), so a rename changes one file.
+**backplane** is the working name. As of 2026-11-03, npm has no package named `backplane`, and the scope `@backplane` was not checked. Trademark, GitHub organization and domain availability were **not** checked; that is milestone E0 step 1. All package names and CLI names are defined in one place (section 10.5), so a rename changes one file.
 
 ---
 
@@ -84,7 +82,7 @@ The engine has no opinion about tests, builds or CI. Those are **adapters**. The
 6. Log surprises. `friction/FRICTION.md` for tool or language obstacles, `DECISIONS.md` for choices this spec does not make, `VERSIONS.md` for exact versions. These three are append-only (section 16.2).
 7. Edit only the paths your role owns (section 16.1). Cross-role needs go through change requests.
 8. The core engine MUST stay under 8,000 lines excluding tests and generated code. Check with `make loc`. Passing that is a stop condition.
-9. Dependencies. Core: only what D-14 allows. Bindings: the language's standard library plus the protocol. Adapters: `vitest`, `typescript`, the official MCP SDK, `ajv` for schema checks, `hyperfine` (bench tool only). Anything else needs a `DECISIONS.md` entry.
+9. Dependencies. Core: only what D-14 allows. Bindings: the language's standard library plus the protocol. Adapters: `vitest`, `typescript`, the official MCP SDK, `ajv` for schema checks, `hyperfine` (benchmarks tool only). Anything else needs a `DECISIONS.md` entry.
 10. Do not run anything that needs credentials or paid services. Do not install software outside the repo, except the toolchain listed in E0. Anything else is a stop condition.
 11. Pin every version in `VERSIONS.md` with the exact version. **A pin must be at least 14 days old on the day it is pinned**, unless a `DECISIONS.md` entry explains the exception.
 12. Every `make` target prints a final line `PASS <target>` or `FAIL <target>`, and exits 0 or nonzero accordingly. Definitions are in section 17.1.
@@ -148,7 +146,7 @@ Consequences the design enforces:
   ─────────                    ────────                       ────────
   CI scripts                   vitest  (recorder + planner)   Node client  (typed)
   MCP agents  ─────────┐       strace  (native recorder)      Python      (later)
-  humans (CLI)         │       git     (change source)        CLI  affectra
+  humans (CLI)         │       git     (change source)        CLI  backplane
                        ▼           │                              │
                ┌──────────────────────────────────────────────────────┐
                │   backplane Protocol v1  (JSON Lines over stdio)      │
@@ -180,7 +178,7 @@ Changing one needs a `DECISIONS.md` entry and Spec/Conformance approval.
 - **D-8 Negative dependencies are first-class.** Probes and directory listings are recorded, so additions can be handled without re-running everything.
 - **D-9 Baseline invariant** (section 3.4) is the soundness basis for every skip.
 - **D-10 Dirty state.** Observations recorded from a worktree with uncommitted changes are `dirty` and are never trusted for skips (rule P8).
-- **D-11 Stores are per worktree by default** (`<repo>/.affectra`). Sharing one store across worktrees is supported; baseline mismatches then fall back, so sharing is safe but often falls back. Documented in the README.
+- **D-11 Stores are per worktree by default** (`<repo>/.backplane`). Sharing one store across worktrees is supported; baseline mismatches then fall back, so sharing is safe but often falls back. Documented in the README.
 - **D-12 Vitest pool.** Recording requires the Vitest `forks` pool so test code runs in child processes that inherit `NODE_OPTIONS`. Confirmed in Vitest's docs (2026-11-03) as `vitest --pool=forks` and `test: { pool: 'forks' }`. The forks worker starts each file with `child_process.fork()` and passes an explicit `env`, so E4 MUST prove that `NODE_OPTIONS` reaches it.
 - **D-13 Protocol versioning.** Protocol v1 is the first. Any breaking change bumps the major version. The client and server negotiate in the `hello` handshake (section 9.2).
 - **D-14 Core language (default: TypeScript).** The v1 core is TypeScript on Node LTS, because it runs next to the recorders, ships through npm, and has no compiler risk on the critical path. A Goose core is an optional track (Appendix D). It is accepted only if it passes the same conformance suite and the parity gate (G6). Choosing a different default needs a `DECISIONS.md` entry and a human decision.
@@ -298,12 +296,12 @@ Query cost is the sum of the posting-list lengths touched by the changes, plus t
 
 ### 6.7 Configuration
 
-`affectra.config.json` at the repo root. Shape:
+`backplane.config.json` at the repo root. Shape:
 
 ```json
 {
   "roots": ["."],
-  "exclude": ["**/node_modules/**", ".git/**", ".affectra/**"],
+  "exclude": ["**/node_modules/**", ".git/**", ".backplane/**"],
   "ignore": [],
   "globalInputs": ["pnpm-lock.yaml", "package-lock.json", "yarn.lock", "package.json",
                    "tsconfig*.json", "vitest.config.*", "vite.config.*"],
@@ -323,7 +321,7 @@ Query cost is the sum of the posting-list lengths touched by the changes, plus t
 
 ### 7.1 First use
 
-`affectra init` creates `<store>/tg.log` with a header and no baseline. The first run of an adapter has no baseline and runs every task (fallback `baseline_mismatch`, because `B` is null). It then advances the baseline.
+`backplane init` creates `<store>/tg.log` with a header and no baseline. The first run of an adapter has no baseline and runs every task (fallback `baseline_mismatch`, because `B` is null). It then advances the baseline.
 
 ### 7.2 Steady state
 
@@ -335,7 +333,7 @@ Tasks whose definition disappeared are forgotten by the adapter after a query re
 
 ### 7.4 Compaction
 
-`affectra compact` rewrites the log keeping live observations, the latest baseline, and the context records still referenced. It writes to a temp file and renames it. Any index built from the old log is invalidated by the tail hash (section 6.4).
+`backplane compact` rewrites the log keeping live observations, the latest baseline, and the context records still referenced. It writes to a temp file and renames it. Any index built from the old log is invalidated by the tail hash (section 6.4).
 
 ### 7.5 Corruption
 
@@ -452,8 +450,8 @@ Default queries run without verify, so default output is `medium` unless the ada
 One JSON object per line in each direction, flushed per line. Requests carry an integer `id` that the response echoes.
 
 ```
--> {"id":1,"method":"hello","params":{"protocol":1,"client":{"name":"affectra-node","version":"0.1.0"}}}
-<- {"id":1,"result":{"protocol":1,"engine":{"name":"affectra-core-ts","version":"0.1.0"},"capabilities":["probes","dirs","env","verify"],"store":".affectra"}}
+-> {"id":1,"method":"hello","params":{"protocol":1,"client":{"name":"backplane-node","version":"0.1.0"}}}
+<- {"id":1,"result":{"protocol":1,"engine":{"name":"backplane-core-ts","version":"0.1.0"},"capabilities":["probes","dirs","env","verify"],"store":".backplane"}}
 -> {"id":2,"method":"affected","params":{...}}
 <- {"id":2,"result":{...Plan...}}
 <- {"id":3,"error":{"code":"baseline_conflict","message":"expected baseline 9f2c, store has 3e8d","data":{"expected":"9f2c","actual":"3e8d"}}}
@@ -585,7 +583,7 @@ Each request has a 10-second server-side budget. Exceeding it returns `timeout` 
 
 ### 10.1 Node/TypeScript (first-class binding)
 
-Package `@affectra/client` (name per section 1.4). It spawns `affectra serve`, or connects to a given command, and exposes:
+Package `@backplane/client` (name per section 1.4). It spawns `backplane serve`, or connects to a given command, and exposes:
 
 ```ts
 export interface backplane {
@@ -606,8 +604,8 @@ export interface backplane {
 export function connect(opts?: ConnectOptions): Promise<backplane>;
 
 export interface ConnectOptions {
-  store?: string;                 // default: $AFFECTRA_STORE, then <repo>/.affectra
-  command?: string[];             // default: ["affectra", "serve"]
+  store?: string;                 // default: $BACKPLANE_STORE, then <repo>/.backplane
+  command?: string[];             // default: ["backplane", "serve"]
   timeoutMs?: number;             // per request, default 10000
   restart?: boolean;              // restart the server if it dies, default true
 }
@@ -628,40 +626,40 @@ Behavior the client MUST implement:
 
 ### 10.2 CLI
 
-Binary `affectra`:
+Binary `backplane`:
 
 ```
-affectra init     [--store PATH]
-affectra observe  --file FILE|-                        # one observation as JSON
-affectra affected --changes FILE|- --baseline SHA --context FILE
+backplane init     [--store PATH]
+backplane observe  --file FILE|-                        # one observation as JSON
+backplane affected --changes FILE|- --baseline SHA --context FILE
                   [--verify] [--policy balanced|conservative]
-affectra advance  --to SHA --expected SHA|null
-affectra explain  --task ID
-affectra forget   --task ID
-affectra stats    [--json]
-affectra compact
-affectra serve    [--store PATH]                       # protocol over stdio
-affectra version
+backplane advance  --to SHA --expected SHA|null
+backplane explain  --task ID
+backplane forget   --task ID
+backplane stats    [--json]
+backplane compact
+backplane serve    [--store PATH]                       # protocol over stdio
+backplane version
 ```
 
-The CLI is a thin binding: every command maps to one protocol method. `--store` defaults to `$AFFECTRA_STORE`, then `<repo>/.affectra`. Exit codes follow section 9.7. Errors print `{"ok": false, "error": {"code": "...", "message": "..."}}` on stdout and a one-line message on stderr.
+The CLI is a thin binding: every command maps to one protocol method. `--store` defaults to `$BACKPLANE_STORE`, then `<repo>/.backplane`. Exit codes follow section 9.7. Errors print `{"ok": false, "error": {"code": "...", "message": "..."}}` on stdout and a one-line message on stderr.
 
 ### 10.3 Python binding (later, E9)
 
-Package `affectra` on PyPI, same protocol and method names in snake_case (`observe_many`, `advance`, `affected`). Uses the same conformance cases. Its API is specified in `spec/bindings-python.md` when E9 starts, not before.
+Package `backplane` on PyPI, same protocol and method names in snake_case (`observe_many`, `advance`, `affected`). Uses the same conformance cases. Its API is specified in `spec/bindings-python.md` when E9 starts, not before.
 
 ### 10.4 Adapter loop contract
 
 Any adapter that runs tasks MUST follow this loop, and the conformance suite checks it with the Vitest adapter (E4):
 
 ```
-B   = affectra baseline
+B   = backplane baseline
 ch  = changes from B to the worktree (git change source, 11.7)
-plan = affectra affected --baseline B --changes ch --context ctx
-for each task in plan.deleted_tasks:  affectra forget
+plan = backplane affected --baseline B --changes ch --context ctx
+for each task in plan.deleted_tasks:  backplane forget
 run each task in plan.tasks while recording an observation
 if every task in plan.tasks ran and the worktree is clean and HEAD is unchanged:
-    affectra advance --to HEAD --expected B
+    backplane advance --to HEAD --expected B
 else:
     do not advance; report why; exit with code 7
 ```
@@ -674,14 +672,14 @@ Exit code 7 means "ran, but the baseline was not advanced". It is distinct from 
 |---|---|
 | Engine | backplane |
 | Protocol | backplane Protocol v1 |
-| CLI | `affectra` |
-| Node package | `@affectra/client` |
-| Python package | `affectra` |
-| Vitest adapter | `@affectra/vitest` (CLI subcommand `affectra vitest run`) |
-| MCP server | `@affectra/mcp` |
-| Store directory | `.affectra/` |
-| Config file | `affectra.config.json` |
-| Environment | `AFFECTRA_STORE`, `AFFECTRA_TRACE_OUT` |
+| CLI | `backplane` |
+| Node package | `@backplane/client` |
+| Python package | `backplane` |
+| Vitest adapter | `@backplane/vitest` (CLI subcommand `backplane vitest run`) |
+| MCP server | `@backplane/mcp` |
+| Store directory | `.backplane/` |
+| Config file | `backplane.config.json` |
+| Environment | `BACKPLANE_STORE`, `BACKPLANE_TRACE_OUT` |
 | Engine core folder | `core/` |
 
 Rename rule: a rename changes this table, the README, and nothing else. Spec sections refer to the table, not the literal names.
@@ -711,7 +709,7 @@ Any recorder, whatever the tool, produces observations that pass the schema in 9
 
 ### 11.2 Vitest recorder (`adapters/vitest`)
 
-Mechanism, in short. A preload loaded through `NODE_OPTIONS` (`--import` for ESM, `--require` for CJS) wraps the `fs` API in its sync, callback, promise and stream forms: read, open, stat, lstat, access, exists, readdir, realpath, readFile and createReadStream. It also wraps module loading. For environment access it replaces `process.env` with a Proxy recording `get`, `has` and `ownKeys`. Each test file runs in its own forked process (D-12), so the preload's observations belong to exactly one task. The preload writes its observations to `AFFECTRA_TRACE_OUT` at exit.
+Mechanism, in short. A preload loaded through `NODE_OPTIONS` (`--import` for ESM, `--require` for CJS) wraps the `fs` API in its sync, callback, promise and stream forms: read, open, stat, lstat, access, exists, readdir, realpath, readFile and createReadStream. It also wraps module loading. For environment access it replaces `process.env` with a Proxy recording `get`, `has` and `ownKeys`. Each test file runs in its own forked process (D-12), so the preload's observations belong to exactly one task. The preload writes its observations to `BACKPLANE_TRACE_OUT` at exit.
 
 Specific rules:
 
@@ -726,7 +724,7 @@ Maps a plan to Vitest work:
 
 - Task ids are repo-relative test file paths.
 - A plan with a fallback runs every known test file.
-- `affectra vitest run [--base REF] [--json] [--all] [--jobs N]` computes the plan, runs the invalid test files with the recorder (in parallel, `N` = CPU count by default), writes JSON results when asked, and then follows the loop in 10.4.
+- `backplane vitest run [--base REF] [--json] [--all] [--jobs N]` computes the plan, runs the invalid test files with the recorder (in parallel, `N` = CPU count by default), writes JSON results when asked, and then follows the loop in 10.4.
 - `--shadow` runs everything, reports what the plan would have skipped, and never advances the baseline on its own. It is for measuring before trusting.
 
 ### 11.4 Canonical paths and symlinks
@@ -919,7 +917,7 @@ Hypotheses, fixed before measurement (rule 2.3).
 
 ### 12.7 Method
 
-Record CPU, RAM, OS, kernel, Node version, engine version, the container image digest and `arch` for every run. Numbers from different architectures are never compared. Results go to `bench/results/*.json` (schema-validated) and a generated `RESULTS.md`.
+Record CPU, RAM, OS, kernel, Node version, engine version, the container image digest and `arch` for every run. Numbers from different architectures are never compared. Results go to `benchmarks/results/*.json` (schema-validated) and a generated `RESULTS.md`.
 
 ---
 
@@ -1122,16 +1120,16 @@ Each milestone has **Owner**, **Depends**, **Outputs** (exact paths), **Steps**,
 
 **Owner:** Adapters. **Depends:** E3.
 
-**Outputs:** `adapters/vitest/src/preload.ts`, `adapters/vitest/src/record.ts`, `adapters/vitest/src/planner.ts`, `adapters/vitest/src/run.ts` (the `affectra vitest run` command), `adapters/git/src/changeset.ts`, `adapters/vitest/fixtures/` (section 14.1), `adapters/vitest/test/`.
+**Outputs:** `adapters/vitest/src/preload.ts`, `adapters/vitest/src/record.ts`, `adapters/vitest/src/planner.ts`, `adapters/vitest/src/run.ts` (the `backplane vitest run` command), `adapters/git/src/changeset.ts`, `adapters/vitest/fixtures/` (section 14.1), `adapters/vitest/test/`.
 
 **Steps**
 
 0. Pin Vitest 4.1.12. Confirm the pool flag (D-12) against the pinned docs, and prove with a probe test that `NODE_OPTIONS` reaches the forked worker. Record the result in `DECISIONS.md`.
 1. Preload: `fs` wrappers, the env Proxy, module loading, realpath canonicalization (11.2).
-2. Recording: one forked process per test file, observation written to `AFFECTRA_TRACE_OUT`, then sent with `observe`.
+2. Recording: one forked process per test file, observation written to `BACKPLANE_TRACE_OUT`, then sent with `observe`.
 3. Capability proof on the fixture: `probes`, `dirs`, `env`. A capability that cannot be captured is set false and logged.
 4. Git source (11.7): committed and staged changes, untracked files, renames. Tests run in a scratch repository built under `adapters/git/testdata/`.
-5. Planner and `affectra vitest run` (11.3) and the adapter loop (10.4), including exit code 7.
+5. Planner and `backplane vitest run` (11.3) and the adapter loop (10.4), including exit code 7.
 6. Adapter cases V01 to V16 (12.3) pass through the whole loop.
 
 **Verify:** `make test-vitest`
@@ -1146,7 +1144,7 @@ Each milestone has **Owner**, **Depends**, **Outputs** (exact paths), **Steps**,
 
 **Steps**
 
-1. The human provides or confirms one real, slow Vitest monorepo (`$AFFECTRA_BENCH_REPO`).
+1. The human provides or confirms one real, slow Vitest monorepo (`$BACKPLANE_BENCH_REPO`).
 2. Run the replay (12.5) on at least 50 evaluated commits, or as many as exist. If fewer than 50 exist, stop (14.1).
 3. Compute K1 to K4 (13.1). Write `GATE.md` with the Gate 0 table.
 4. Report the decision. CONTINUE or STOP.
@@ -1179,7 +1177,7 @@ Each milestone has **Owner**, **Depends**, **Outputs** (exact paths), **Steps**,
 
 **Owner:** Adapters with Bench. **Depends:** E5.
 
-**Outputs:** `adapters/vitest/fixtures/cases/*` run in CI, `bench/replay/*.ts`, `examples/agent_loop/`.
+**Outputs:** `adapters/vitest/fixtures/cases/*` run in CI, `benchmarks/replay/*.ts`, `examples/agent_loop/`.
 
 **Steps**
 
@@ -1199,14 +1197,14 @@ Each milestone has **Owner**, **Depends**, **Outputs** (exact paths), **Steps**,
 
 **Steps**
 
-1. Synthetic corpora (`bench/corpus/gen.ts`, 10k, 50k, 100k tasks) and the fixture.
+1. Synthetic corpora (`benchmarks/corpus/gen.ts`, 10k, 50k, 100k tasks) and the fixture.
 2. Metrics M1 to M11 (12.4), statistics per 12.6, method per 12.7.
 3. Replay on the chosen corpus (G1, G2).
 4. Differential fuzz (G5) against `spec/reference/policy.mjs`.
 5. Binding parity (G6).
 6. `make gate` writes `GATE.md`.
 
-**Verify:** `make bench && make gate` (inside `make linux-gate` for G3 and G4)
+**Verify:** `make benchmarks && make gate` (inside `make linux-gate` for G3 and G4)
 
 **Done when:** `make gate` prints pass or fail for every criterion; `GATE.md` is committed with raw results. On any fail, stop (14.1).
 
@@ -1251,7 +1249,7 @@ Each milestone has **Owner**, **Depends**, **Outputs** (exact paths), **Steps**,
 1. `README.md`: quickstart executed in CI; the non-file-input limit (9.6); the sharing behavior (D-11); the name and its status.
 2. `LICENSE` (Apache-2.0 unless the human says otherwise).
 3. `.github/workflows/ci.yml`: builds the core, runs `make all-tests`, runs the Vitest adapter on the fixture.
-4. Packages: `affectra` (CLI), `@affectra/client`, `@affectra/vitest`, `@affectra/mcp`, with versions and a changelog.
+4. Packages: `backplane` (CLI), `@backplane/client`, `@backplane/vitest`, `@backplane/mcp`, with versions and a changelog.
 5. Stretch: C ABI (10.6). Only if G6 passes for 20 queries. Otherwise record the skip in `DECISIONS.md`.
 6. `GOOSE_REPORT.md` only if the optional Goose track ran (Appendix D).
 
@@ -1271,7 +1269,7 @@ Each milestone has **Owner**, **Depends**, **Outputs** (exact paths), **Steps**,
 | Core | `core/`, `cli/`, `status/CORE.json` |
 | Bindings | `bindings/`, `status/BINDINGS.json` |
 | Adapters | `adapters/`, `mcp/`, `examples/`, `status/ADAPTERS.json` |
-| Bench | `bench/`, `RESULTS.md` (generated), `GATE.md` (written by Bench, signed by Spec/Conformance), `status/BENCH.json` |
+| Bench | `benchmarks/`, `RESULTS.md` (generated), `GATE.md` (written by Bench, signed by Spec/Conformance), `status/BENCHMARKS.json` |
 | Release (E10, Core) | `README.md`, `LICENSE`, `.github/workflows/`, `CHANGELOG.md` |
 
 ### 16.2 Shared append-only files
@@ -1321,8 +1319,8 @@ Every target prints `PASS <target>` or `FAIL <target>` as its last line.
 | `gate0` | Replay on the kill-test repo, Gate 0 table in `GATE.md` | GATE 0 |
 | `test-oracle` | strace oracle vs recorder (Linux only) | E5 |
 | `test-e2e` | V cases end to end, example loop | E6 |
-| `bench-smoke` | Fixture plus 10k-task synthetic, schema-valid output | E7 |
-| `bench` | Full benchmark | E7 |
+| `benchmarks-smoke` | Fixture plus 10k-task synthetic, schema-valid output | E7 |
+| `benchmarks` | Full benchmarks | E7 |
 | `gate` | Gate 1, writes `GATE.md` | E7 |
 | `test-mcp` | Scripted MCP client over stdio | E8 |
 | `test-python` | Python binding conformance (optional) | E9 |
@@ -1350,7 +1348,7 @@ Every target prints `PASS <target>` or `FAIL <target>` as its last line.
 ```
 | Criterion | Measured | Threshold | Result | Raw data |
 |-----------|----------|-----------|--------|----------|
-| K1 | ... | >= 30% | pass | bench/results/... |
+| K1 | ... | >= 30% | pass | benchmarks/results/... |
 | K2 | 0 observed over N commits; 95% upper bound 3/N | zero observed | pass | ... |
 Decision: CONTINUE | STOP
 Recommendation: ...
@@ -1446,10 +1444,10 @@ recording anything. The recorder MUST contain every path the strace oracle sees;
 waived.
 ```
 
-**Bench agent:**
+**Benchmarks agent:**
 
 ```
-You are the Bench agent for backplane (plans/PLAN.md v4). You own bench/. Do the Gate 0 replay first
+You are the Benchmarks agent for backplane (plans/PLAN.md v4). You own benchmarks/. Do the Gate 0 replay first
 (E4 must be done): the replay driver (12.5), the rule-of-three bound, and the Gate 0 table in GATE.md.
 Then E7 after the human approves continuing. Targets are hypotheses and must not be edited after you see
 results. Publish losses.
@@ -1477,7 +1475,7 @@ results. Publish losses.
 | MCP SDK pin | **1.32.0**, published 2026-10-02, eligible. The `latest` tag is 1.32.2 (published 2026-10-23), eligible on 2026-11-06. The 2.x line is not the `latest` tag | `npm view @modelcontextprotocol/sdk dist-tags` and `time` |
 | Container runtime | Docker Desktop 28.1.1 running, server `linux` / `aarch64`. The Linux gate runs in a linux/arm64 container | `docker info` |
 | Goose release platforms (optional track) | v2026.3 (published 2026-10-21): `linux-x64`, `macos-arm64`, `macos-x64`, `windows-x64`. No linux-arm64 | GitHub releases API for `aardappel/goose` |
-| npm name availability | `affectra` free. Scope `@affectra` not checked. Trademark, GitHub and domain not checked | `npm view`; E0 step 1 for the rest |
+| npm name availability | `backplane` free. Scope `@backplane` not checked. Trademark, GitHub and domain not checked | `npm view`; E0 step 1 for the rest |
 | Competitor search results | Captured in the conversation (Turborepo `--affected` and `--filter`, Nx `affected`, Vitest `--changed` and `--since-last-run`, Jest `--onlyChanged`, Playwright `--only-changed` (v1.46+), pytest-testmon, Ekstazi, STARTS, bazel-diff, Develocity PTS, Launchable, Datadog TIA, DiffCI) | Verify each row in E0 step 3 from the tool's own docs |
 
 ---
@@ -1506,7 +1504,7 @@ results. Publish losses.
 |---|---|---|---|
 | 1 | Name check (trademark, GitHub, domain) | Spec/Conformance (E0 step 1) | Publishing packages |
 | 2 | Core language confirmation (D-14 default is TypeScript) | Human | E2 |
-| 3 | Kill-test repository (`AFFECTRA_BENCH_REPO`) | Human | GATE 0 |
+| 3 | Kill-test repository (`BACKPLANE_BENCH_REPO`) | Human | GATE 0 |
 | 4 | Python binding: whether to build it at all | Human | E9 |
 | 5 | Competitor rows are unverified until E0 step 3 | Spec/Conformance | GATE 0 interpretation (K4) |
 | 6 | Vitest 5.x and MCP 1.32.2 eligibility dates (2026-11-16 and 2026-11-06) | Adapters | None now |
@@ -1521,5 +1519,5 @@ If the human chooses to build the core in Goose as well, it is a parallel track,
 
 - Goose facts (documentation level, 2026-11-03): the `os` standard library has file read and write, atomic write and rename, list, env, args, stdin and stdout. It lacks `stat`, exclusive create, realpath, subprocesses and SHA-256; each needs an `extern fn` workaround with a sidecar C file (`foo.build` with `c_sources`). `to_bytes` and `from_bytes` work on arrays only, with the v1 limits listed in the Goose docs. The release v2026.3 has no linux-arm64 build, so the container builds Goose from source.
 - The Goose core MUST pass the same conformance suite and G6 parity before it is considered equal to the TypeScript core.
-- Milestone DG0: install and identity check (`goose --version`, `goose toolchain`). DG1: spikes for each capability the core needs (file I/O, stat, lock, hashing, JSON, stdin and stdout). DG2: the core against the conformance suite. DG3: bench comparison against the TypeScript core on M1 to M3.
+- Milestone DG0: install and identity check (`goose --version`, `goose toolchain`). DG1: spikes for each capability the core needs (file I/O, stat, lock, hashing, JSON, stdin and stdout). DG2: the core against the conformance suite. DG3: benchmarks comparison against the TypeScript core on M1 to M3.
 - It is accepted only if it wins on something measured, or if the human wants it for learning. Either reason is recorded in `DECISIONS.md`. Friction goes in `friction/FRICTION.md`.

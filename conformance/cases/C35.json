@@ -1,1 +1,26 @@
-{"id":"C35","desc":"C35","mode":"balanced","store":{"from":"conformance/stores/base.jsonl"},"query":{"baseline":"b1","changes":[],"verify":false},"expect":{"tasks":[],"unobserved":[],"ignored":[],"deleted_tasks":[],"fallback":null,"confidence":"medium"}}
+{
+  "id": "C35",
+  "desc": "Malformed line, loop continues",
+  "mode": "balanced",
+  "store": {
+    "from": "conformance/stores/base.jsonl"
+  },
+  "raw_lines": [
+    "{not json",
+    "{\"id\":7,\"method\":\"ping\"}"
+  ],
+  "expect": {
+    "responses": [
+      {
+        "id": null,
+        "error_code": "invalid_params"
+      },
+      {
+        "id": 7,
+        "result": {
+          "pong": true
+        }
+      }
+    ]
+  }
+}

@@ -1,1 +1,6 @@
-{"id":"E3","state":"done","evidence":"evidence/E3.txt","notes":""}
+{
+  "id": "E3",
+  "state": "todo",
+  "evidence": "",
+  "notes": "Not started. bindings/node/src/client.ts is a placeholder that returns fixed values; it must not be treated as done. Depends on E2."
+}

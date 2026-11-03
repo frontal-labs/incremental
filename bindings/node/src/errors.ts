@@ -1,1 +1,5 @@
-export class backplaneError extends Error { code:any; data:any; constructor(c:any,m:string,d:any){super(m);this.code=c;this.data=d;} }
+export class BackplaneError extends Error {
+  code: string;
+  data?: unknown;
+  constructor(code: string, message: string, data?: unknown){ super(message); this.code=code; this.data=data; }
+}

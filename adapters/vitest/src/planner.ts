@@ -1,1 +1,1 @@
-export function plan(){ return {tasks:[]}; }
+export function plan() { return {}; }

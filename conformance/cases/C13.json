@@ -1,1 +1,83 @@
-{"id":"C13","desc":"C13","mode":"balanced","store":{"from":"conformance/stores/base.jsonl"},"query":{"baseline":"b1","changes":[],"verify":false},"expect":{"tasks":[],"unobserved":[],"ignored":[],"deleted_tasks":[],"fallback":null,"confidence":"medium"}}
+{
+  "id": "C13",
+  "desc": "Reserved context key changed: fallback",
+  "mode": "balanced",
+  "store": {
+    "from": "conformance/stores/base.jsonl"
+  },
+  "query": {
+    "baseline": "b1",
+    "context": {
+      "lockfile": "sha256:l2",
+      "tsconfig": "sha256:t1",
+      "pkgjson": "sha256:p1",
+      "runner": "vitest@4.1.12",
+      "node": "22.11.0",
+      "fmt": 1,
+      "caps": {
+        "probes": true,
+        "dirs": true,
+        "env": true
+      }
+    },
+    "env": {
+      "TG_FIXTURE_MODE": "sha256:env1"
+    },
+    "changes": [],
+    "verify": false
+  },
+  "expect": {
+    "tasks": [
+      {
+        "id": "packages/app/src/app.test.ts",
+        "reasons": [
+          "fallback"
+        ]
+      },
+      {
+        "id": "packages/app/src/list.test.ts",
+        "reasons": [
+          "fallback"
+        ]
+      },
+      {
+        "id": "packages/core/src/env.test.ts",
+        "reasons": [
+          "fallback"
+        ]
+      },
+      {
+        "id": "packages/core/src/envall.test.ts",
+        "reasons": [
+          "fallback"
+        ]
+      },
+      {
+        "id": "packages/core/src/math.test.ts",
+        "reasons": [
+          "fallback"
+        ]
+      },
+      {
+        "id": "packages/core/src/old.test.ts",
+        "reasons": [
+          "fallback"
+        ]
+      },
+      {
+        "id": "packages/core/src/probe.test.ts",
+        "reasons": [
+          "fallback"
+        ]
+      }
+    ],
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": {
+      "action": "run_all",
+      "reason": "context_changed"
+    },
+    "confidence": "n/a"
+  }
+}

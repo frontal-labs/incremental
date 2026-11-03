@@ -1,1 +1,22 @@
-{"id":"C34","desc":"C34","mode":"balanced","store":{"from":"conformance/stores/base.jsonl"},"query":{"baseline":"b1","changes":[],"verify":false},"expect":{"tasks":[],"unobserved":[],"ignored":[],"deleted_tasks":[],"fallback":null,"confidence":"medium"}}
+{
+  "id": "C34",
+  "desc": "Unknown protocol version",
+  "mode": "balanced",
+  "store": {
+    "from": "conformance/stores/base.jsonl"
+  },
+  "action": {
+    "method": "hello",
+    "params": {
+      "protocol": 2,
+      "client": {
+        "name": "conformance",
+        "version": "0.0.0"
+      }
+    }
+  },
+  "expect": {
+    "error": "protocol_mismatch",
+    "closed": true
+  }
+}

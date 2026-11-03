@@ -1,0 +1,19 @@
+{
+  "name": "@backplane/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "backplane": "./bin/backplane"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@backplane/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  }
+}

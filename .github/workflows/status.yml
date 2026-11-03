@@ -1,0 +1,39 @@
+name: Status
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'status/**'
+      - 'evidence/**'
+      - 'GATE.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  status:
+    name: Status report
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '2.2'
+      - name: Generate status
+        run: make status
+      - name: Verify status files
+        run: |
+          for f in status/*.json; do
+            echo "Checking $f..."
+            ID=$(cat "$f" | jq -r '.id')
+            STATE=$(cat "$f" | jq -r '.state')
+            echo "  $ID: $STATE"
+            if [ "$STATE" != "done" ] && [ "$STATE" != "in_progress" ] && [ "$STATE" != "blocked" ]; then
+              echo "  WARN: unknown state '$STATE' for $ID"
+            fi
+          done
+          echo "PASS status check"

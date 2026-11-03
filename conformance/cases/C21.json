@@ -1,1 +1,79 @@
-{"id":"C21","desc":"C21","mode":"balanced","store":{"from":"conformance/stores/base.jsonl"},"query":{"baseline":"b1","changes":[],"verify":false},"expect":{"tasks":[],"unobserved":[],"ignored":[],"deleted_tasks":[],"fallback":null,"confidence":"medium"}}
+{
+  "id": "C21",
+  "desc": "Latest observation dirty",
+  "mode": "balanced",
+  "store": {
+    "from": "conformance/stores/base.jsonl",
+    "append": [
+      {
+        "method": "observe",
+        "params": {
+          "observation": {
+            "baseline": "b1",
+            "dirty": true,
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "outputs": [],
+            "duration_ms": 10,
+            "task": "packages/app/src/app.test.ts",
+            "inputs": [
+              {
+                "kind": "file",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:8d344bcb231aaa7f94df684340b260c5edc259441a6e56f600f23f736b3f2f5e"
+              }
+            ],
+            "outcome": "pass"
+          }
+        }
+      }
+    ]
+  },
+  "query": {
+    "baseline": "b1",
+    "context": {
+      "lockfile": "sha256:l1",
+      "tsconfig": "sha256:t1",
+      "pkgjson": "sha256:p1",
+      "runner": "vitest@4.1.12",
+      "node": "22.11.0",
+      "fmt": 1,
+      "caps": {
+        "probes": true,
+        "dirs": true,
+        "env": true
+      }
+    },
+    "env": {
+      "TG_FIXTURE_MODE": "sha256:env1"
+    },
+    "changes": [],
+    "verify": false
+  },
+  "expect": {
+    "tasks": [
+      {
+        "id": "packages/app/src/app.test.ts",
+        "reasons": [
+          "dirty_observation"
+        ]
+      }
+    ],
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium"
+  }
+}

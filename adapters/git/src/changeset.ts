@@ -1,1 +1,1 @@
-export function getChanges(){ return {changes:[]}; }
+export function getChangeSet() { return {baseline:'', head:'', changes:[]}; }

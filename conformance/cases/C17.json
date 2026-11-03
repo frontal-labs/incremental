@@ -2,17 +2,42 @@
   "id": "C17",
   "desc": "Deleted task definition",
   "mode": "balanced",
-  "store": {"from": "conformance/stores/base.jsonl"},
+  "store": {
+    "from": "conformance/stores/base.jsonl"
+  },
   "query": {
     "baseline": "b1",
-    "changes": [{"path": "packages/core/src/old.test.ts", "status": "deleted"}],
+    "context": {
+      "lockfile": "sha256:l1",
+      "tsconfig": "sha256:t1",
+      "pkgjson": "sha256:p1",
+      "runner": "vitest@4.1.12",
+      "node": "22.11.0",
+      "fmt": 1,
+      "caps": {
+        "probes": true,
+        "dirs": true,
+        "env": true
+      }
+    },
+    "env": {
+      "TG_FIXTURE_MODE": "sha256:env1"
+    },
+    "changes": [
+      {
+        "path": "packages/core/src/old.test.ts",
+        "status": "deleted"
+      }
+    ],
     "verify": false
   },
   "expect": {
     "tasks": [],
     "unobserved": [],
     "ignored": [],
-    "deleted_tasks": ["packages/core/src/old.test.ts"],
+    "deleted_tasks": [
+      "packages/core/src/old.test.ts"
+    ],
     "fallback": null,
     "confidence": "medium"
   }

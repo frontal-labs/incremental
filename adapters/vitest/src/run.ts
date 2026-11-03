@@ -1,1 +1,2 @@
-export function run(){ }
+#!/usr/bin/env node
+console.log('backplane vitest run');

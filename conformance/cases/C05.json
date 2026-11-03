@@ -2,14 +2,44 @@
   "id": "C05",
   "desc": "Added file in a listed directory invalidates the lister",
   "mode": "balanced",
-  "store": {"from": "conformance/stores/base.jsonl"},
+  "store": {
+    "from": "conformance/stores/base.jsonl"
+  },
   "query": {
     "baseline": "b1",
-    "changes": [{"path": "packages/app/plugins/p3.ts", "status": "added"}],
+    "context": {
+      "lockfile": "sha256:l1",
+      "tsconfig": "sha256:t1",
+      "pkgjson": "sha256:p1",
+      "runner": "vitest@4.1.12",
+      "node": "22.11.0",
+      "fmt": 1,
+      "caps": {
+        "probes": true,
+        "dirs": true,
+        "env": true
+      }
+    },
+    "env": {
+      "TG_FIXTURE_MODE": "sha256:env1"
+    },
+    "changes": [
+      {
+        "path": "packages/app/plugins/p3.ts",
+        "status": "added"
+      }
+    ],
     "verify": true
   },
   "expect": {
-    "tasks": [{"id": "packages/app/src/list.test.ts", "reasons": ["dir:packages/app/plugins"]}],
+    "tasks": [
+      {
+        "id": "packages/app/src/list.test.ts",
+        "reasons": [
+          "dir:packages/app/plugins"
+        ]
+      }
+    ],
     "unobserved": [],
     "ignored": [],
     "deleted_tasks": [],

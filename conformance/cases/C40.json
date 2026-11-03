@@ -1,1 +1,15 @@
-{"id":"C40","desc":"C40","mode":"balanced","store":{"from":"conformance/stores/base.jsonl"},"query":{"baseline":"b1","changes":[],"verify":false},"expect":{"tasks":[],"unobserved":[],"ignored":[],"deleted_tasks":[],"fallback":null,"confidence":"medium"}}
+{
+  "id": "C40",
+  "desc": "Two writers serialize; both observations present",
+  "mode": "balanced",
+  "store": {
+    "from": "conformance/stores/base.jsonl"
+  },
+  "kind": "concurrency",
+  "writers": 2,
+  "per_writer": 25,
+  "expect": {
+    "tasks": 57,
+    "observations": 57
+  }
+}

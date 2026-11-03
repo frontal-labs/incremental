@@ -1,0 +1,67 @@
+name: Conformance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'conformance/**'
+      - 'spec/**'
+      - 'core/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'conformance/**'
+      - 'spec/**'
+      - 'core/**'
+
+permissions:
+  contents: read
+
+jobs:
+  conformance:
+    name: Policy conformance
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '2.2'
+      - name: Run conformance suite
+        run: make test-policy
+      - name: Validate case count
+        run: |
+          COUNT=$(ls conformance/cases/*.json 2>/dev/null | wc -l)
+          echo "Conformance cases: $COUNT"
+          if [ "$COUNT" -lt 40 ]; then
+            echo "FAIL: fewer than 40 conformance cases"
+            exit 1
+          fi
+          echo "PASS: case count >= 40"
+
+  spec-format:
+    name: Spec format check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '2.2'
+      - name: Check spec format
+        run: node spec/validate.mjs
+
+  protocol-check:
+    name: Protocol check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '2.2'
+      - name: Run protocol check
+        run: make test-protocol

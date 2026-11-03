@@ -1,1 +1,6 @@
-{"id":"E2","state":"done","evidence":"evidence/E2.txt","notes":""}
+{
+  "id": "E2",
+  "state": "doing",
+  "evidence": "",
+  "notes": "Goose core (human decision). 39/40 cases pass; C38 SKIP needs index image (D-E2-01). Missing: index image, stat cache (D-E2-04), CLI commands other than init/serve/version (D-E2-06), compaction, observe_many, explain."
+}

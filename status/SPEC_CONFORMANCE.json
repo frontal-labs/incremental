@@ -1,6 +1,6 @@
 {
   "id": "E1",
-  "state": "done",
-  "evidence": "",
-  "notes": ""
+  "state": "verify",
+  "evidence": "evidence/E1.txt",
+  "notes": "Spec docs written from PLAN.md; 40 cases rewritten (D-E1-06); reference is general and runs 33 query cases. Not done: schemas in spec/schemas/ not validated, coverage matrix (12.2) not checked, validate.mjs does not check every rule cell. Needs Spec sign-off."
 }

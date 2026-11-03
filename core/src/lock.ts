@@ -1,1 +1,1 @@
-export function acquire(){return true;}
+export class Lock {}

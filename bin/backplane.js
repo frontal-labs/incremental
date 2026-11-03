@@ -1,0 +1,1 @@
+/Users/gabrielfonseca/Desktop/graph/bin/affectra.js

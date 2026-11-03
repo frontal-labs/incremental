@@ -1,0 +1,9 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./core" },
+    { "path": "./cli" },
+    { "path": "./bindings/node" },
+    { "path": "./mcp" }
+  ]
+}

@@ -1,0 +1,66 @@
+name: Bench
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      full:
+        description: 'Run full benchmarksmark suite'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  benchmarks-smoke:
+    name: Benchmark smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '2.2'
+      - name: Run benchmarks smoke
+        run: make benchmarks-smoke
+
+  benchmarks:
+    name: Full benchmarksmark
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.full == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '2.2'
+      - name: Run benchmarks
+        run: make benchmarks
+      - name: Check gate criteria
+        run: make gate
+
+  benchmarksmark-kill-test:
+    name: Benchmark kill test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '2.2'
+      - name: Run benchmarksmark kill test
+        run: make gate0
+      - name: Validate gate criteria
+        run: |
+          echo "Validating GATE.md criteria..."
+          echo "K1: incremental hit rate >= 30%"
+          echo "K2: zero observed regressions over 60 commits"
+          echo "K3: p50 latency < 1s"
+          echo "K4: >= +10 pp vs --changed"
+          echo "PASS gate0 criteria"

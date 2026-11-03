@@ -1,0 +1,3 @@
+// Sidecar for the core: the operations Goose's os module does not provide.
+// SHA-256, exclusive create, stat, realpath, and process liveness.
+c_sources = ["native.c"];

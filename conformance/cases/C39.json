@@ -1,1 +1,84 @@
-{"id":"C39","desc":"C39","mode":"balanced","store":{"from":"conformance/stores/base.jsonl"},"query":{"baseline":"b1","changes":[],"verify":false},"expect":{"tasks":[],"unobserved":[],"ignored":[],"deleted_tasks":[],"fallback":null,"confidence":"medium"}}
+{
+  "id": "C39",
+  "desc": "Declared input changed",
+  "mode": "balanced",
+  "store": {
+    "from": "conformance/stores/base.jsonl",
+    "append": [
+      {
+        "method": "observe",
+        "params": {
+          "observation": {
+            "baseline": "b1",
+            "dirty": false,
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "outputs": [],
+            "duration_ms": 10,
+            "task": "packages/core/src/cfg.test.ts",
+            "inputs": [
+              {
+                "kind": "declared",
+                "path": "packages/core/config/app.json",
+                "hash": "sha256:cfg1"
+              }
+            ],
+            "outcome": "pass"
+          }
+        }
+      }
+    ]
+  },
+  "query": {
+    "baseline": "b1",
+    "context": {
+      "lockfile": "sha256:l1",
+      "tsconfig": "sha256:t1",
+      "pkgjson": "sha256:p1",
+      "runner": "vitest@4.1.12",
+      "node": "22.11.0",
+      "fmt": 1,
+      "caps": {
+        "probes": true,
+        "dirs": true,
+        "env": true
+      }
+    },
+    "env": {
+      "TG_FIXTURE_MODE": "sha256:env1"
+    },
+    "changes": [
+      {
+        "path": "packages/core/config/app.json",
+        "status": "modified"
+      }
+    ],
+    "verify": false
+  },
+  "expect": {
+    "tasks": [
+      {
+        "id": "packages/core/src/cfg.test.ts",
+        "reasons": [
+          "declared:packages/core/config/app.json"
+        ]
+      }
+    ],
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium"
+  }
+}

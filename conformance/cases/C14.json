@@ -1,1 +1,50 @@
-{"id":"C14","desc":"C14","mode":"balanced","store":{"from":"conformance/stores/base.jsonl"},"query":{"baseline":"b1","changes":[],"verify":false},"expect":{"tasks":[],"unobserved":[],"ignored":[],"deleted_tasks":[],"fallback":null,"confidence":"medium"}}
+{
+  "id": "C14",
+  "desc": "Recorded env name changed",
+  "mode": "balanced",
+  "store": {
+    "from": "conformance/stores/base.jsonl"
+  },
+  "query": {
+    "baseline": "b1",
+    "context": {
+      "lockfile": "sha256:l1",
+      "tsconfig": "sha256:t1",
+      "pkgjson": "sha256:p1",
+      "runner": "vitest@4.1.12",
+      "node": "22.11.0",
+      "fmt": 1,
+      "caps": {
+        "probes": true,
+        "dirs": true,
+        "env": true
+      }
+    },
+    "env": {
+      "TG_FIXTURE_MODE": "sha256:env2"
+    },
+    "changes": [],
+    "verify": false
+  },
+  "expect": {
+    "tasks": [
+      {
+        "id": "packages/core/src/env.test.ts",
+        "reasons": [
+          "env_changed:TG_FIXTURE_MODE"
+        ]
+      },
+      {
+        "id": "packages/core/src/envall.test.ts",
+        "reasons": [
+          "env_all_changed"
+        ]
+      }
+    ],
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium"
+  }
+}

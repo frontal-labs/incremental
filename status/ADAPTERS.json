@@ -1,1 +1,6 @@
-{"id":"E4","state":"done","evidence":"evidence/E4.txt","notes":""}
+{
+  "id": "E4",
+  "state": "todo",
+  "evidence": "",
+  "notes": "Not started. adapters/vitest and adapters/git are one-line placeholders. The earlier 'E8 done' was not backed by code (mcp/ is a placeholder). Depends on E3."
+}

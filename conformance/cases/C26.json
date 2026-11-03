@@ -1,1 +1,19 @@
-{"id":"C26","desc":"C26","mode":"balanced","store":{"from":"conformance/stores/base.jsonl"},"query":{"baseline":"b1","changes":[],"verify":false},"expect":{"tasks":[],"unobserved":[],"ignored":[],"deleted_tasks":[],"fallback":null,"confidence":"medium"}}
+{
+  "id": "C26",
+  "desc": "advance with stale expected value",
+  "mode": "balanced",
+  "store": {
+    "from": "conformance/stores/base.jsonl"
+  },
+  "action": {
+    "method": "advance",
+    "params": {
+      "to": "b2",
+      "expected": "b0"
+    }
+  },
+  "expect": {
+    "error": "baseline_conflict",
+    "baseline_after": "b1"
+  }
+}

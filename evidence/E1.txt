@@ -1,8 +1,8 @@
 # E1: protocol and conformance suite
 Command: make check-spec
-Date: 2026-11-03T08:32:50Z
-Commit: 77d23356919267fa048da0137a03b37157dd5fbc
---- output ---
+Date: 2026-11-03T12:35:57Z
+Commit: uncommitted (see git status; base 7e87140)
+--- output (last 10 lines) ---
+reference ran 33 query cases; 7 protocol-level cases are run by conformance/run.mjs
 PASS validate.mjs
-PASS check-spec
 PASS check-spec

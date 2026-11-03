@@ -1,1 +1,1 @@
-export function install(){ }
+console.log('preload');
