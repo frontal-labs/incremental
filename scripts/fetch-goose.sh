@@ -5,14 +5,15 @@
 set -eu
 VERSION=v2026.3
 case "$(uname -s)-$(uname -m)" in
-  Darwin-arm64) PLATFORM=macos-arm64; SHA256=2ffaaf46b3edde27aed03fcd9ebe73e9b6639cac30d8a6915f7dc00795b7aedf ;;
-  Linux-x86_64) PLATFORM=linux-x64; SHA256=06ac30284338269d3996d457412bf4f2b47c1f9a5601de65b6317187fe78d5c9 ;;
+  Darwin-arm64) PLATFORM=macos-arm64; DIR=darwin-arm64; SHA256=2ffaaf46b3edde27aed03fcd9ebe73e9b6639cac30d8a6915f7dc00795b7aedf ;;
+  Linux-x86_64) PLATFORM=linux-x64; DIR=linux-x86_64; SHA256=06ac30284338269d3996d457412bf4f2b47c1f9a5601de65b6317187fe78d5c9 ;;
   *) echo "fetch-goose: no pinned Goose $VERSION for $(uname -s)-$(uname -m)" >&2; exit 1 ;;
 esac
 DEST="$(cd "$(dirname "$0")/.." && pwd)/.toolchain/goose"
 TARBALL="goose-$VERSION-$PLATFORM.tar.gz"
 mkdir -p "$DEST"
-if [ -x "$DEST/goose-$VERSION-$PLATFORM/goose" ]; then
+# The Makefile finds the toolchain at goose-$VERSION-$(uname -s | lower)-$(uname -m).
+if [ -x "$DEST/goose-$VERSION-$DIR/goose" ]; then
   echo "goose $VERSION already present"; exit 0
 fi
 TMP="$DEST/$TARBALL.part"
@@ -23,4 +24,5 @@ if [ "$GOT" != "$SHA256" ]; then
 fi
 tar -xzf "$TMP" -C "$DEST"
 rm -f "$TMP"
-echo "goose $VERSION installed at $DEST/goose-$VERSION-$PLATFORM"
+mv "$DEST/goose-$VERSION-$PLATFORM" "$DEST/goose-$VERSION-$DIR"
+echo "goose $VERSION installed at $DEST/goose-$VERSION-$DIR"
