@@ -1,1 +1,50 @@
-{"id":"V13","desc":"V13"}
+{
+  "id": "V13",
+  "desc": "Delete a test file",
+  "mode": "balanced",
+  "edit": [
+    {
+      "op": "delete",
+      "path": "packages/app/test/disposable.test.ts"
+    }
+  ],
+  "query": {
+    "changes": [
+      {
+        "path": "packages/app/test/disposable.test.ts",
+        "status": "deleted"
+      }
+    ],
+    "verify": false,
+    "policy": "balanced"
+  },
+  "expect": {
+    "tasks": [
+      {
+        "id": "packages/app/test/disposable.test.ts",
+        "reasons": [
+          "removed_read:packages/app/test/disposable.test.ts"
+        ]
+      },
+      {
+        "id": "packages/core/test/worker.test.ts",
+        "reasons": [
+          "dirty_observation"
+        ]
+      }
+    ],
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [
+      "packages/app/test/disposable.test.ts"
+    ],
+    "fallback": null,
+    "confidence": "medium",
+    "ran": [
+      "packages/core/test/worker.test.ts"
+    ],
+    "exit": 0,
+    "advanced": true
+  },
+  "spec_note": "PLAN 8.2 and 8.7 say a deleted task definition is not invalidated; POLICY.md section 2 (P5) and the engine invalidate every reader, including the deleted task itself. This expectation follows POLICY.md. Report item for the lead."
+}

@@ -1,1 +1,27 @@
-{"id":"V14","desc":"V14"}
+{
+  "id": "V14", "desc": "Lockfile changed (global input, fallback)", "mode":"balanced",
+  "edit": [{"op":"write","path":"package-lock.json","content":"{\n  \"name\": \"fixture-root\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": { \"name\": \"fixture-root\", \"version\": \"0.0.1\" }\n  }\n}\n"}],
+  "query": {"changes":[{"path":"package-lock.json","status":"modified"}],"verify":false,"policy":"balanced"},
+  "expect": {
+    "tasks": [
+      {"id":"packages/app/test/config.test.ts","reasons":["fallback"]},
+      {"id":"packages/app/test/disposable.test.ts","reasons":["fallback"]},
+      {"id":"packages/app/test/envall.test.ts","reasons":["fallback"]},
+      {"id":"packages/app/test/linked.test.ts","reasons":["fallback"]},
+      {"id":"packages/app/test/only-app.test.ts","reasons":["fallback"]},
+      {"id":"packages/app/test/plugins.test.ts","reasons":["fallback"]},
+      {"id":"packages/app/test/shared.test.ts","reasons":["fallback"]},
+      {"id":"packages/core/test/crash.test.ts","reasons":["fallback"]},
+      {"id":"packages/core/test/env.test.ts","reasons":["fallback"]},
+      {"id":"packages/core/test/leaf-a.test.ts","reasons":["fallback"]},
+      {"id":"packages/core/test/leaf-b.test.ts","reasons":["fallback"]},
+      {"id":"packages/core/test/probe.test.ts","reasons":["fallback"]},
+      {"id":"packages/core/test/util.test.ts","reasons":["fallback"]},
+      {"id":"packages/core/test/worker.test.ts","reasons":["fallback"]}
+    ],
+    "unobserved": [], "ignored": [], "deleted_tasks": [],
+    "fallback": {"action":"run_all","reason":"global_input"}, "confidence": "n/a",
+    "ran": ["packages/app/test/config.test.ts","packages/app/test/disposable.test.ts","packages/app/test/envall.test.ts","packages/app/test/linked.test.ts","packages/app/test/only-app.test.ts","packages/app/test/plugins.test.ts","packages/app/test/shared.test.ts","packages/core/test/crash.test.ts","packages/core/test/env.test.ts","packages/core/test/leaf-a.test.ts","packages/core/test/leaf-b.test.ts","packages/core/test/probe.test.ts","packages/core/test/util.test.ts","packages/core/test/worker.test.ts"],
+    "exit": 0, "advanced": true
+  }
+}

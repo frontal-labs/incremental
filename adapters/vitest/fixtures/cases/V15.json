@@ -1,1 +1,98 @@
-{"id":"V15","desc":"V15"}
+{
+  "id": "V15",
+  "desc": "Test crashes; baseline not advanced; next run re-selects it",
+  "mode": "balanced",
+  "edit": [
+    {
+      "op": "write",
+      "path": "packages/core/test/crash.flag",
+      "content": "crash\n"
+    }
+  ],
+  "query": {
+    "changes": [
+      {
+        "path": "packages/core/test/crash.flag",
+        "status": "modified"
+      }
+    ],
+    "verify": false,
+    "policy": "balanced"
+  },
+  "expect": {
+    "tasks": [
+      {
+        "id": "packages/core/test/crash.test.ts",
+        "reasons": [
+          "reads:packages/core/test/crash.flag"
+        ]
+      },
+      {
+        "id": "packages/core/test/worker.test.ts",
+        "reasons": [
+          "dirty_observation"
+        ]
+      }
+    ],
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium",
+    "ran": [
+      "packages/core/test/crash.test.ts",
+      "packages/core/test/worker.test.ts"
+    ],
+    "exit": 7,
+    "advanced": false,
+    "outcomes": {
+      "packages/core/test/crash.test.ts": "error"
+    }
+  },
+  "then": [
+    {
+      "edit": [],
+      "query": {
+        "changes": [
+          {
+            "path": "packages/core/test/crash.flag",
+            "status": "modified"
+          }
+        ],
+        "verify": false,
+        "policy": "balanced"
+      },
+      "expect": {
+        "tasks": [
+          {
+            "id": "packages/core/test/crash.test.ts",
+            "reasons": [
+              "failed_outcome",
+              "reads:packages/core/test/crash.flag"
+            ]
+          },
+          {
+            "id": "packages/core/test/worker.test.ts",
+            "reasons": [
+              "dirty_observation"
+            ]
+          }
+        ],
+        "unobserved": [],
+        "ignored": [],
+        "deleted_tasks": [],
+        "fallback": null,
+        "confidence": "medium",
+        "ran": [
+          "packages/core/test/crash.test.ts",
+          "packages/core/test/worker.test.ts"
+        ],
+        "exit": 7,
+        "advanced": false,
+        "outcomes": {
+          "packages/core/test/crash.test.ts": "error"
+        }
+      }
+    }
+  ]
+}

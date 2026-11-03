@@ -1,1 +1,11 @@
-{"id":"V12","desc":"V12"}
+{
+  "id": "V12", "desc": "Edit README (nothing reads it)", "mode":"balanced",
+  "edit": [{"op":"write","path":"README.md","content":"# Fixture\n\nEdited. Still read by nothing.\n"}],
+  "query": {"changes":[{"path":"README.md","status":"modified"}],"verify":false,"policy":"balanced"},
+  "expect": {
+    "tasks": [ {"id":"packages/core/test/worker.test.ts","reasons":["dirty_observation"]} ],
+    "unobserved": ["README.md"], "ignored": [], "deleted_tasks": [], "fallback": null, "confidence": "medium",
+    "ran": ["packages/core/test/worker.test.ts"],
+    "exit": 0, "advanced": true
+  }
+}

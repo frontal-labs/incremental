@@ -1,1 +1,15 @@
-{"id":"V03","desc":"V03"}
+{
+  "id": "V03", "desc": "Edit a shared utility read by a core test and an app test (through the symlink)", "mode":"balanced",
+  "edit": [{"op":"write","path":"packages/core/src/util.ts","content":"export function double(n: number): number {\n  return n + n;\n}\n"}],
+  "query": {"changes":[{"path":"packages/core/src/util.ts","status":"modified"}],"verify":false,"policy":"balanced"},
+  "expect": {
+    "tasks": [
+      {"id":"packages/app/test/shared.test.ts","reasons":["reads:packages/core/src/util.ts"]},
+      {"id":"packages/core/test/util.test.ts","reasons":["reads:packages/core/src/util.ts"]},
+      {"id":"packages/core/test/worker.test.ts","reasons":["dirty_observation"]}
+    ],
+    "unobserved": [], "ignored": [], "deleted_tasks": [], "fallback": null, "confidence": "medium",
+    "ran": ["packages/app/test/shared.test.ts","packages/core/test/util.test.ts","packages/core/test/worker.test.ts"],
+    "exit": 0, "advanced": true
+  }
+}

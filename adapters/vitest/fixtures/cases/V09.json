@@ -1,1 +1,14 @@
-{"id":"V09","desc":"V09"}
+{
+  "id": "V09", "desc": "Add a file in a directory a test lists", "mode":"balanced",
+  "edit": [{"op":"write","path":"packages/app/plugins/p2.ts","content":"export default function other(): string {\n  return 'p2';\n}\n"}],
+  "query": {"changes":[{"path":"packages/app/plugins/p2.ts","status":"added"}],"verify":false,"policy":"balanced"},
+  "expect": {
+    "tasks": [
+      {"id":"packages/app/test/plugins.test.ts","reasons":["dir:packages/app/plugins"]},
+      {"id":"packages/core/test/worker.test.ts","reasons":["dirty_observation"]}
+    ],
+    "unobserved": [], "ignored": [], "deleted_tasks": [], "fallback": null, "confidence": "medium",
+    "ran": ["packages/app/test/plugins.test.ts","packages/core/test/worker.test.ts"],
+    "exit": 0, "advanced": true
+  }
+}

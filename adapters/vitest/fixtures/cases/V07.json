@@ -1,1 +1,14 @@
-{"id":"V07","desc":"V07"}
+{
+  "id": "V07", "desc": "Edit a file reached through a workspace symlink; the reader is recorded under the real path", "mode":"balanced",
+  "edit": [{"op":"write","path":"packages/core/src/linked.ts","content":"export const LINKED: string = 'linked-2';\n"}],
+  "query": {"changes":[{"path":"packages/core/src/linked.ts","status":"modified"}],"verify":false,"policy":"balanced"},
+  "expect": {
+    "tasks": [
+      {"id":"packages/app/test/linked.test.ts","reasons":["reads:packages/core/src/linked.ts"]},
+      {"id":"packages/core/test/worker.test.ts","reasons":["dirty_observation"]}
+    ],
+    "unobserved": [], "ignored": [], "deleted_tasks": [], "fallback": null, "confidence": "medium",
+    "ran": ["packages/app/test/linked.test.ts","packages/core/test/worker.test.ts"],
+    "exit": 0, "advanced": true
+  }
+}

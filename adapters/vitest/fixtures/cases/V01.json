@@ -1,1 +1,15 @@
-{"id":"V01","desc":"V01"}
+{
+  "id": "V01", "desc": "Edit a leaf file read by two tests", "mode":"balanced",
+  "edit": [{"op":"write","path":"packages/core/src/leaf.ts","content":"export const LEAF: number = 2;\n"}],
+  "query": {"changes":[{"path":"packages/core/src/leaf.ts","status":"modified"}],"verify":false,"policy":"balanced"},
+  "expect": {
+    "tasks": [
+      {"id":"packages/core/test/leaf-a.test.ts","reasons":["reads:packages/core/src/leaf.ts"]},
+      {"id":"packages/core/test/leaf-b.test.ts","reasons":["reads:packages/core/src/leaf.ts"]},
+      {"id":"packages/core/test/worker.test.ts","reasons":["dirty_observation"]}
+    ],
+    "unobserved": [], "ignored": [], "deleted_tasks": [], "fallback": null, "confidence": "medium",
+    "ran": ["packages/core/test/leaf-a.test.ts","packages/core/test/leaf-b.test.ts","packages/core/test/worker.test.ts"],
+    "exit": 0, "advanced": true
+  }
+}

@@ -1,1 +1,15 @@
-{"id":"V10","desc":"V10"}
+{
+  "id": "V10", "desc": "Env-dependent test, env changed (the env-enumerating test also sees a changed environment)", "mode":"balanced",
+  "edit": [{"op":"env","name":"FIXTURE_MODE","value":"b"}],
+  "query": {"changes":[],"verify":false,"policy":"balanced"},
+  "expect": {
+    "tasks": [
+      {"id":"packages/app/test/envall.test.ts","reasons":["env_all_changed"]},
+      {"id":"packages/core/test/env.test.ts","reasons":["env_changed:FIXTURE_MODE"]},
+      {"id":"packages/core/test/worker.test.ts","reasons":["dirty_observation"]}
+    ],
+    "unobserved": [], "ignored": [], "deleted_tasks": [], "fallback": null, "confidence": "medium",
+    "ran": ["packages/app/test/envall.test.ts","packages/core/test/env.test.ts","packages/core/test/worker.test.ts"],
+    "exit": 0, "advanced": true
+  }
+}
