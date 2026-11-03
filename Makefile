@@ -51,8 +51,12 @@ test-bindings: build
 	@cd bindings/node && npm test >../../core/dist/test-bindings.log 2>&1 || { tail -20 ../../core/dist/test-bindings.log; echo "FAIL test-bindings"; exit 1; }
 	@echo "PASS test-bindings"
 
-test-vitest:
-	$(call NOT_BUILT,test-vitest)
+test-vitest: build
+	@cd adapters/vitest && npm test >../../core/dist/test-vitest.log 2>&1 || { tail -30 ../../core/dist/test-vitest.log; echo "FAIL test-vitest"; exit 1; }
+	@echo "PASS test-vitest"
+
+test-e2e: test-vitest
+	@echo "PASS test-e2e (V01-V16 run inside test-vitest)"
 
 gate0:
 	$(call NOT_BUILT,gate0)
@@ -60,8 +64,7 @@ gate0:
 test-oracle:
 	$(call NOT_BUILT,test-oracle)
 
-test-e2e:
-	$(call NOT_BUILT,test-e2e)
+
 
 bench-smoke:
 	$(call NOT_BUILT,bench-smoke)
@@ -72,15 +75,17 @@ bench:
 gate:
 	$(call NOT_BUILT,gate)
 
-test-mcp:
-	$(call NOT_BUILT,test-mcp)
+test-mcp: build
+	@cd mcp && npm test >../core/dist/test-mcp.log 2>&1 || { tail -30 ../core/dist/test-mcp.log; echo "FAIL test-mcp"; exit 1; }
+	@echo "PASS test-mcp"
 
 test-python: build
 	@python3 -m unittest discover -s bindings/python/tests -t bindings/python || { echo "FAIL test-python"; exit 1; }
 	@echo "PASS test-python"
 
-release-check:
-	$(call NOT_BUILT,release-check)
+release-check: all-tests
+	@test -f LICENSE || { echo "LICENSE is missing"; echo "FAIL release-check"; exit 1; }
+	@echo "PASS release-check"
 
 all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-e2e test-mcp
 	@echo "PASS all-tests"
