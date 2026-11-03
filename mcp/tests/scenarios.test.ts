@@ -1,5 +1,5 @@
 // Five scenarios through the MCP server over stdio (PLAN 15.4 E8, step 2).
-// Each expected plan is derived by hand from spec/POLICY.md; none of them was
+// Each expected plan is derived by hand from docs/spec/POLICY.md; none of them was
 // produced by running the server. Procedure per scenario (POLICY 2):
 // a baseline is stored, observations are recorded, the worktree is edited,
 // and affected_tasks is called through MCP.

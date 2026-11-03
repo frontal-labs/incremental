@@ -70,7 +70,7 @@ export interface AffectedOptions {
   context: Context;
   verify?: boolean; // default false
   policy?: "balanced" | "conservative"; // default "balanced"
-  // Additive fields (spec/POLICY.md section 1, DECISIONS.md D-E1-01).
+  // Additive fields (docs/spec/POLICY.md section 1, DECISIONS.md D-E1-01).
   env?: Record<string, string>;
   config?: Config;
   declared_tasks?: string[];

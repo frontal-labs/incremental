@@ -1,4 +1,4 @@
-// The store: an append-only JSON Lines log (spec/FORMAT.md) read into flat
+// The store: an append-only JSON Lines log (docs/spec/FORMAT.md) read into flat
 // records, plus the index image (tg.idx) and the stat cache (stat.cache).
 // Strings live in one arena and are referred to by Span, so no record holds
 // a slice of another buffer.

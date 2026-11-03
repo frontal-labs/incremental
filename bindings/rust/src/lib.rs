@@ -1,4 +1,4 @@
-//! Rust client for backplane Protocol v1 (spec/PROTOCOL.md, spec/adapters/rust.md).
+//! Rust client for backplane Protocol v1 (docs/spec/PROTOCOL.md, spec/adapters/rust.md).
 //!
 //! The client spawns `backplane serve`, sends one JSON object per line and
 //! matches each answer by id. It never plans: every answer comes from the engine.

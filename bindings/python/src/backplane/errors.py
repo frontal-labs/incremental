@@ -6,7 +6,7 @@ from typing import Any
 class BackplaneError(Exception):
     """A protocol error from the engine, or a client-side failure.
 
-    code: a protocol error code (spec/PROTOCOL.md) or one of the client codes
+    code: a protocol error code (docs/spec/PROTOCOL.md) or one of the client codes
           timeout, engine_exited, closed, bad_response.
     message: human-readable text from the engine or the client.
     data: the engine's error.data, a dict, or None.

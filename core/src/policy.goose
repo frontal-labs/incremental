@@ -1,7 +1,7 @@
 import std;
 import os;
 import json;
-// plan(state, query): the rules of spec/POLICY.md, P0 to P11.
+// plan(state, query): the rules of docs/spec/POLICY.md, P0 to P11.
 import store;
 import native;
 

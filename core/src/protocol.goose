@@ -1,4 +1,4 @@
-// The protocol (spec/PROTOCOL.md): every method is one function, dispatch().
+// The protocol (docs/spec/PROTOCOL.md): every method is one function, dispatch().
 // The serve loop (handle) and the CLI (main.goose) both call it, so the two
 // give the same answers byte for byte.
 import std;

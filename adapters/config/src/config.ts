@@ -37,7 +37,7 @@ export function loadConfig(root: string): Config {
   return raw as Config;
 }
 
-// The three fields the engine reads from the query (spec/POLICY.md section 1).
+// The three fields the engine reads from the query (docs/spec/POLICY.md section 1).
 export function affectedConfig(config: Config): Config {
   const out: Config = {};
   if (config.ignore !== undefined) out.ignore = config.ignore;
