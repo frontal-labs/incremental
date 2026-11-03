@@ -7,7 +7,7 @@ The backplane engine core, written in **Goose** (a Go-like systems language, see
 | Path | Description |
 |---|---|
 | `core/src/main.goose` | CLI entry point: a thin binding over protocol v1 (`init`, `stats`, `serve`, ...). Shares `dispatch()` with the serve loop, so CLI and protocol answers are identical. |
-| `core/src/policy.goose` | Policy engine: `plan(state, query)` per `spec/POLICY.md` (rules P0–P11, fallbacks, confidence). |
+| `core/src/policy.goose` | Policy engine: `plan(state, query)` per `docs/spec/POLICY.md` (rules P0–P11, fallbacks, confidence). |
 | `core/src/protocol.goose` | Protocol v1 server: JSON Lines over stdio, handshake, methods, errors, 10 s request budget. |
 | `core/src/store.goose` | Store: append-only log (`tg.log`), index, lock (`tg.lock`), stat cache (`stat.cache`), verification. |
 | `core/src/native.c` / `core/src/native.goose` | Native bindings for the engine. |
@@ -40,11 +40,11 @@ make loc         # lines of code in core/src (Goose + C)
 
 ## Protocol
 
-Clients speak backplane Protocol v1 (`hello`, `observe`, `observe_many`, `baseline`, `advance`, `affected`, `explain`, `forget`, `stats`, `compact`, `ping`, `shutdown`) over JSON Lines on stdio. See `spec/PROTOCOL.md` and `docs/PROTOCOL_SPEC.md`.
+Clients speak backplane Protocol v1 (`hello`, `observe`, `observe_many`, `baseline`, `advance`, `affected`, `explain`, `forget`, `stats`, `compact`, `ping`, `shutdown`) over JSON Lines on stdio. See `docs/spec/PROTOCOL.md` and `docs/spec/PROTOCOL.md`.
 
 ## Store
 
-Default store: `<repo>/.backplane/` (configurable via `BACKPLANE_STORE` or `--store`). Files: `tg.log` (source of truth), `tg.lock` (exclusive lock), `stat.cache` (verify-mode cache), `tg.idx` (index image, not implemented in this milestone). See `spec/FORMAT.md` and `docs/STORE_FORMAT.md`.
+Default store: `<repo>/.backplane/` (configurable via `BACKPLANE_STORE` or `--store`). Files: `tg.log` (source of truth), `tg.lock` (exclusive lock), `stat.cache` (verify-mode cache), `tg.idx` (index image, not implemented in this milestone). See `docs/spec/FORMAT.md` and `docs/spec/FORMAT.md`.
 
 ## Status
 
@@ -57,4 +57,4 @@ Evidence: `evidence/E2.txt`.
 - `adapters/` — protocol clients that drive the engine
 - `bindings/` — Node/Python/Rust clients
 - `spec/` — protocol, policy and format specification
-- `docs/DATA_MODEL.md`, `docs/STORE_FORMAT.md`, `docs/POLICY_RULES.md`
+- `docs/spec/DATA_MODEL.md`, `docs/spec/FORMAT.md`, `docs/spec/POLICY.md`

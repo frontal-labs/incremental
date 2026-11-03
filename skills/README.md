@@ -24,5 +24,5 @@ Each skill should document what it automates, which backplane commands or bindin
 
 - `mcp/` — the MCP server itself is an agent-facing skill surface over Protocol v1
 - `bindings/` — Node/Python/Rust clients skills can delegate to
-- `spec/PROTOCOL.md` — the protocol skills speak
-- `docs/DEVELOPMENT_GUIDE.md` — contribution ground rules
+- `docs/spec/PROTOCOL.md` — the protocol skills speak
+- `docs/development/DEVELOPMENT_GUIDE.md` — contribution ground rules

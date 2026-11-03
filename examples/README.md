@@ -2,16 +2,21 @@
 
 Examples of using backplane: CLI workflows, adapter integrations, protocol clients, and CI recipes.
 
-## Contents
+Per PLAN.md §12.4 M8 and §1180, the `examples/` directory is owned by the Adapters role and includes an `agent_loop` example. Per `docs/adapters/ADAPTERS.md`, examples demonstrate the adapter loop contract (section 10.4).
 
-This directory is a placeholder for example projects and recipes. Example ideas:
+## Example Projects
 
-- A minimal repo demonstrating `backplane init` → `backplane serve` → `affected` over a small change set.
-- A Vitest adapter integration (`adapters/vitest`) showing record → plan → skip unchanged tests.
-- An MCP client driving `backplane-mcp` from an AI agent.
-- A Python or Rust client script using the bindings in `bindings/python` and `bindings/rust`.
+| Example | Description |
+|---------|-------------|
+| [cli_workflow/](cli_workflow/) | Minimal repo demonstrating `backplane init` → `backplane serve` → `affected` over a small change set. |
+| [agent_loop/](agent_loop/) | M8 benchmark: agent loop (edit → plan → run → time) with 1, 5 and 20 agents sharing one store. Target: >= 2x faster than full suite. |
+| [vitest_adapter/](vitest_adapter/) | Vitest adapter integration: record → plan → skip unchanged tests. |
+| [mcp_client/](mcp_client/) | MCP client driving `backplane-mcp` from an AI agent (Python + TypeScript). |
+| [python_client/](python_client/) | Python client (`backplane` package) speaking Protocol v1 over stdio. |
+| [rust_client/](rust_client/) | Rust client (`backplane-rust` crate) speaking Protocol v1 over stdio. |
+| [ci_recipe/](ci_recipe/) | CI recipes: GitHub Actions workflow, local CI script, Dockerfile for Linux gate. |
 
-## Running examples
+## Running Examples
 
 Most examples need the built engine:
 
@@ -23,4 +28,11 @@ core/dist/backplane serve --store .backplane   # then speak Protocol v1 on stdio
 
 ## Contributing
 
-Add example projects here, one subdirectory per example, each with its own README explaining what it demonstrates and how to run it. See `docs/DEVELOPMENT_GUIDE.md` for contribution ground rules and `docs/CONFORMANCE_AND_TESTING.md` for testing conventions.
+Add example projects here, one subdirectory per example, each with its own README explaining what it demonstrates and how to run it. See `docs/development/DEVELOPMENT_GUIDE.md` for contribution ground rules and `docs/conformance/CONFORMANCE_AND_TESTING.md` for testing conventions.
+
+## Reference
+
+- `docs/adapters/ADAPTERS.md` — adapter types, recorder contract, adapter loop contract.
+- `docs/spec/PROTOCOL.md` — backplane Protocol v1.
+- `docs/spec/POLICY.md` — policy rules P0–P11.
+- `plans/PLAN.md` — full specification v4.1 (sections 10–11 for adapters, 12.4 for benchmarks).

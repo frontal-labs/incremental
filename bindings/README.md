@@ -42,6 +42,6 @@ Binding verification status is tracked in `status/BINDINGS.json` (E3 verify for 
 
 ## Related
 
-- `spec/PROTOCOL.md` — Protocol v1 transport, methods, errors
-- `spec/POLICY.md` — plan semantics bindings rely on
+- `docs/spec/PROTOCOL.md` — Protocol v1 transport, methods, errors
+- `docs/spec/POLICY.md` — plan semantics bindings rely on
 - `mcp/` — MCP server built on `@backplane/client`

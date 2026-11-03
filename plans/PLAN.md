@@ -249,7 +249,7 @@ Rules:
 - Ids are assigned by the writer and unique within a log.
 - Readers MUST ignore a truncated final line and MUST skip unknown `r` values. Both are conformance cases (C36, C37).
 - The latest `obs` per task wins. A later `forget` removes the task until its next `obs`.
-- `graph_version` is `g_` plus the first 8 hex characters of SHA-256 over the log length in bytes (decimal ASCII), then the last 1,024 bytes of the log. Spec/Conformance defines it exactly in `spec/FORMAT.md`.
+- `graph_version` is `g_` plus the first 8 hex characters of SHA-256 over the log length in bytes (decimal ASCII), then the last 1,024 bytes of the log. Spec/Conformance defines it exactly in `docs/spec/FORMAT.md`.
 
 ### 6.2 Context
 
@@ -436,7 +436,7 @@ Default queries run without verify, so default output is `medium` unless the ada
 
 ### 8.7 Edge cases
 
-- **Deleted task definition still in the graph (CR-002).** P5 invalidates every reader of the deleted path, including the deleted task itself when it reads its own file (spec/POLICY.md P5 governs, PLAN 0.1). The deleted task is also listed in `deleted_tasks`. The adapter forgets it after the query.
+- **Deleted task definition still in the graph (CR-002).** P5 invalidates every reader of the deleted path, including the deleted task itself when it reads its own file (docs/spec/POLICY.md P5 governs, PLAN 0.1). The deleted task is also listed in `deleted_tasks`. The adapter forgets it after the query.
 - **Renamed task definition.** The old id follows P5. The new id has no observation, so P8 invalidates it.
 - **Empty ChangeSet.** Only P8, P9 and P2b can invalidate. The plan may be empty.
 - **Dirty observations** (P8) are invalidated on every query until a clean run replaces them. This over-invalidates on purpose.
@@ -1051,9 +1051,9 @@ Each milestone has **Owner**, **Depends**, **Outputs** (exact paths), **Steps**,
 
 **Outputs**
 
-- `spec/PROTOCOL.md`: sections 9.1 to 9.9, complete.
-- `spec/POLICY.md`: sections 3 to 8, with rule IDs and the reason grammar.
-- `spec/FORMAT.md`: section 6, with `graph_version`, the index section layout, and the stat cache format.
+- `docs/spec/PROTOCOL.md`: sections 9.1 to 9.9, complete.
+- `docs/spec/POLICY.md`: sections 3 to 8, with rule IDs and the reason grammar.
+- `docs/spec/FORMAT.md`: section 6, with `graph_version`, the index section layout, and the stat cache format.
 - `spec/schemas/*.json`: `observation`, `changeset`, `plan`, `context`, `request`, `response`, `error`, `explanation`, `stats`.
 - `conformance/cases/C01.json` to `C40.json` (section 12.1 format).
 - `conformance/stores/*.jsonl`: setup stores for the cases.

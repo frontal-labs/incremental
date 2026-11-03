@@ -31,7 +31,7 @@ make test-mcp   # MCP server tests
 
 ## Protocol
 
-`@backplane/mcp` is a thin layer over `@backplane/client`, which speaks backplane Protocol v1 (`hello`, `observe`, `affected`, `explain`, `stats`, ...). See `spec/PROTOCOL.md` and `bindings/README.md`.
+`@backplane/mcp` is a thin layer over `@backplane/client`, which speaks backplane Protocol v1 (`hello`, `observe`, `affected`, `explain`, `stats`, ...). See `docs/spec/PROTOCOL.md` and `bindings/README.md`.
 
 ## Status
 
@@ -40,5 +40,5 @@ MCP verification status is tracked in `status/ADAPTERS.json` (E4 verify: test-vi
 ## Related
 
 - `bindings/node/` — `@backplane/client`, the TypeScript protocol client this server builds on
-- `spec/PROTOCOL.md` — Protocol v1 methods and errors
-- `docs/ADAPTERS.md` — MCP mentioned as an adapter surface
+- `docs/spec/PROTOCOL.md` — Protocol v1 methods and errors
+- `docs/adapters/ADAPTERS.md` — MCP mentioned as an adapter surface

@@ -28,7 +28,7 @@ Each adapter is a standalone package with its own `package.json` (or `Cargo.toml
 
 ## Contract
 
-Adapters emit observations (`observe`/`observe_many`) and provide changesets (`affected`) over backplane Protocol v1. See `spec/PROTOCOL.md` and `spec/POLICY.md`. Adapter types, the recorder contract and the Vitest/git adapters are described in `docs/ADAPTERS.md`.
+Adapters emit observations (`observe`/`observe_many`) and provide changesets (`affected`) over backplane Protocol v1. See `docs/spec/PROTOCOL.md` and `docs/spec/POLICY.md`. Adapter types, the recorder contract and the Vitest/git adapters are described in `docs/adapters/ADAPTERS.md`.
 
 ## Testing
 
@@ -46,6 +46,6 @@ Adapter verification status is tracked in `status/ADAPTERS.json` (E4 verify).
 
 ## Related
 
-- `docs/ADAPTERS.md` — adapter types, recorder contract, Vitest adapter, git source, strace oracle, MCP
+- `docs/adapters/ADAPTERS.md` — adapter types, recorder contract, Vitest adapter, git source, strace oracle, MCP
 - `spec/adapters/` — per-adapter spec fragments
 - `bindings/` — client bindings used by adapters

@@ -29,7 +29,7 @@ make check-spec    # schemas, reference policy, coverage matrix
 ## Guarantees
 
 - Soundness first: a task is skipped only with a certificate (observation at the baseline whose inputs are all unchanged). No silent skips.
-- Determinism: changes are processed in ascending `(path, status, old_path)` order; all plan lists are sorted; input order never changes output (`spec/POLICY.md` section 5).
+- Determinism: changes are processed in ascending `(path, status, old_path)` order; all plan lists are sorted; input order never changes output (`docs/spec/POLICY.md` section 5).
 - A fallback is never an error: exit 0 with `fallback` set is the normal outcome of an unsafe-to-skip query.
 
 ## Status
@@ -42,6 +42,6 @@ Spec conformance verification is tracked in `status/SPEC_CONFORMANCE.json` (E1 v
 
 ## Related
 
-- `spec/PROTOCOL.md`, `spec/POLICY.md`, `spec/FORMAT.md` — the specification under test
+- `docs/spec/PROTOCOL.md`, `docs/spec/POLICY.md`, `docs/spec/FORMAT.md` — the specification under test
 - `spec/reference/` — general reference implementation
-- `docs/CONFORMANCE_AND_TESTING.md` — guarantees, testing commands
+- `docs/conformance/CONFORMANCE_AND_TESTING.md` — guarantees, testing commands
