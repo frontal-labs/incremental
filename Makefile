@@ -1,5 +1,7 @@
 SHELL := /bin/bash
-GOOSE_DIR ?= $(CURDIR)/.toolchain/goose/goose-v2026.3-macos-arm64
+UNAME_S := $(shell uname -s | tr '[:upper:]' '[:lower:]')
+UNAME_M := $(shell uname -m)
+GOOSE_DIR ?= $(CURDIR)/.toolchain/goose/goose-v2026.3-$(UNAME_S)-$(UNAME_M)
 GOOSE := $(GOOSE_DIR)/goose
 export GOOSE_HOME := $(CURDIR)/.toolchain/goose-home
 ENGINE := core/dist/backplane
