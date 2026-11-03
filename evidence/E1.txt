@@ -1,0 +1,8 @@
+# E1: protocol and conformance suite
+Command: make check-spec
+Date: 2026-11-03T08:32:50Z
+Commit: 77d23356919267fa048da0137a03b37157dd5fbc
+--- output ---
+PASS validate.mjs
+PASS check-spec
+PASS check-spec
