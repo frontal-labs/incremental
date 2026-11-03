@@ -1,9 +1,8 @@
 {
   "files": [],
   "references": [
-    { "path": "./core" },
-    { "path": "./cli" },
     { "path": "./bindings/node" },
+    { "path": "./adapters/vitest" },
     { "path": "./mcp" }
   ]
 }
