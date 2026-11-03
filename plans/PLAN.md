@@ -1,6 +1,6 @@
-# backplane: Incremental Dependency Engine. Agent Build Spec v4
+# backplane: Incremental Dependency Engine. Agent Build Spec v4.1
 
-Spec v4 · 2026-11-03 · engine name: **backplane** (working name, see 1.4) · core: TypeScript (default, see D-14) · protocol: backplane Protocol v1 · first adapter: Vitest · platforms: Linux (gate, arm64 container), macOS and Linux (development)
+Spec v4.1 · 2026-11-03 (CR-001 to CR-003 applied) · engine name: **backplane** (working name, see 1.4) · core: TypeScript (default, see D-14) · protocol: backplane Protocol v1 · first adapter: Vitest · platforms: Linux (gate, arm64 container), macOS and Linux (development)
 
 ---
 
@@ -436,7 +436,7 @@ Default queries run without verify, so default output is `medium` unless the ada
 
 ### 8.7 Edge cases
 
-- **Deleted task definition still in the graph.** P5 lists it in `deleted_tasks`, and it is not invalidated. The adapter forgets it after the query.
+- **Deleted task definition still in the graph (CR-002).** P5 invalidates every reader of the deleted path, including the deleted task itself when it reads its own file (spec/POLICY.md P5 governs, PLAN 0.1). The deleted task is also listed in `deleted_tasks`. The adapter forgets it after the query.
 - **Renamed task definition.** The old id follows P5. The new id has no observation, so P8 invalidates it.
 - **Empty ChangeSet.** Only P8, P9 and P2b can invalidate. The plan may be empty.
 - **Dirty observations** (P8) are invalidated on every query until a clean run replaces them. This over-invalidates on purpose.
@@ -714,7 +714,7 @@ Mechanism, in short. A preload loaded through `NODE_OPTIONS` (`--import` for ESM
 Specific rules:
 
 - Canonicalize every path with `realpath` before exclude matching and before interning (section 11.4).
-- Worker threads: if a test file starts `worker_threads`, its observation is recorded with `caps.probes` and `caps.dirs` false for that task. The recorder never guesses.
+- Worker threads (CR-003): if a test file starts `worker_threads`, its observation is recorded `dirty: true` (rule 4 above), so the task reruns on every query. Capabilities stay true for the store, because a per-task capability cannot be expressed through P2 without making every query a context change. Adds stay targeted; no store-wide fallback. The recorder never guesses.
 - Dynamic imports and `require` with computed paths are observed by the file wrapper; they are not guessed from source.
 - Capability flags `probes`, `dirs` and `env` are set true only if E4 proves each on the fixture.
 
@@ -876,7 +876,7 @@ Coverage matrix: every rule in 8.2 has at least one case in each mode the rule a
 | V13 | Delete a test file |
 | V14 | Lockfile changed (fallback) |
 | V15 | Test crashes; baseline not advanced; next run re-selects it |
-| V16 | Worker thread in a test: capabilities false for that task, fallback on adds |
+| V16 | Worker thread in a test: the worker task is recorded dirty and reruns; adds stay targeted (CR-003) |
 
 ### 12.4 Benchmark targets
 
