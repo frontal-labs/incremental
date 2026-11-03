@@ -1,1 +1,6 @@
-{"id":"GATE0","state":"done","evidence":"evidence/GATE0.txt","notes":""}
+{
+  "id": "GATE0",
+  "state": "blocked",
+  "evidence": "evidence/invalid/GATE0.txt",
+  "notes": "Matches BENCH.json. Needs a real Vitest monorepo (BACKPLANE_BENCH_REPO) and a human decision."
+}

@@ -1,6 +1,6 @@
 {
   "id": "E3",
-  "state": "todo",
+  "state": "verify",
   "evidence": "",
-  "notes": "Node client is a placeholder. It must be JavaScript (DECISIONS.md, components that cannot be Goose). Needs a decision."
+  "notes": "TypeScript client @backplane/client: 84 pass, 2 intentional skips; 34/34 expressible plans byte-identical to the CLI. Also E9 Python binding: 55 tests pass, 36/36 query cases byte-equal to serve. Needs sign-off."
 }

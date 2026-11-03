@@ -1,6 +1,6 @@
 {
   "id": "E4",
-  "state": "doing",
+  "state": "verify",
   "evidence": "",
-  "notes": "Git change source done in Goose (adapters/git/src/changes.goose, make test-git). Vitest recorder/planner not started: needs Node and Vitest (see DECISIONS.md)."
+  "notes": "Vitest adapter test-vitest passes (21), V01-V16 end to end. OPEN: CR-002 (V13 vs PLAN 8.7) and CR-003 (V16 vs PLAN 11.2) must be decided before sign-off. E8 MCP server: test-mcp passes (9 incl. 5 scenarios)."
 }

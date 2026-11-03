@@ -2,5 +2,5 @@
   "id": "GATE0",
   "state": "blocked",
   "evidence": "evidence/invalid/GATE0.txt",
-  "notes": "GATE.md says CONTINUE with raw data at bench/results/gate0.json, which does not exist (bench/ is absent). make gate0 was an echo stub. No Vitest monorepo replay was run. Gate 0 needs a real run and a human decision (PLAN 13.1, 14.1). E5 and later stay blocked."
+  "notes": "GATE.md says CONTINUE with raw data at bench/results/gate0.json, which does not exist. No Vitest monorepo replay has run. E5 and later stay blocked until a human decides. E7 synthetic measurement exists (bench/m1.mjs, DECISIONS.md): M1 missed about 50x at 100k tasks."
 }

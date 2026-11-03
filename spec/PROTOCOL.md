@@ -25,7 +25,7 @@ If `params.protocol` is not 1, reply with `protocol_mismatch` and `data: {"suppo
 | `baseline` | none | `{baseline: string or null}` |
 | `advance` | `{to, expected}` | `{baseline}`. `expected` must equal the current baseline, else `baseline_conflict` |
 | `affected` | `{changes, options}` | Plan (section 4 below) |
-| `explain` | `{task}` | `{task, observation, certificate}` |
+| `explain` | `{task}` | `{task, observed, outcome, dirty, baseline, inputs, certificate}`; `inputs` is a count. Matches spec/schemas/explanation.json |
 | `forget` | `{task}` | `{forgotten: true}` |
 | `stats` | none | `{tasks, observations, baseline, graph_version}` |
 | `compact` | none | `{before_bytes, after_bytes}` (not implemented in this milestone) |
