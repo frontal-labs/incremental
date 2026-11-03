@@ -14,6 +14,7 @@ define NOT_BUILT
 endef
 
 setup:
+	@test -x $(GOOSE) || scripts/fetch-goose.sh || { echo "FAIL setup"; exit 1; }
 	@test -x $(GOOSE) || { echo "missing Goose toolchain at $(GOOSE_DIR)"; echo "FAIL setup"; exit 1; }
 	@$(GOOSE) toolchain >/dev/null 2>&1 || { echo "goose toolchain check failed"; echo "FAIL setup"; exit 1; }
 	@node --version >/dev/null || { echo "node missing"; echo "FAIL setup"; exit 1; }
