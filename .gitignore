@@ -3,3 +3,6 @@ dist/
 .toolchain/
 store/
 .backplane/
+*.tsbuildinfo
+__pycache__/
+.DS_Store
