@@ -84,3 +84,54 @@ Append-only (PLAN.md 16.2). Each entry starts with the role and milestone.
 - Built: log, policy P0 to P11, protocol methods above, lock with stale takeover, verify (P10), CLI init, serve, version.
 - Passing: conformance C01 to C37, C39, C40 (39 cases, through `serve`). C38 is SKIP: it needs the index image (D-E2-01).
 - Not yet: index image, stat cache, compaction, the CLI commands listed in D-E2-06, the index tests for G-f.
+
+## Superseded by the Goose build-out (2026-11-03, second pass)
+- D-E2-01 (index image deferred): **superseded.** `tg.idx` is implemented in core/src/store.goose (write_index, load_index). It records the log prefix length and the SHA-256 of its last 1024 bytes, then the live state as records. Loading replays only the log bytes after that prefix (the delta layer). Any mismatch means a full replay. C38 runs all three paths (index, rebuild, stale index plus delta) and they agree.
+- D-E2-04 (no stat cache): **superseded.** `stat.cache` is implemented (load_stat_cache, save_stat_cache, file_matches). C24 deletes the cache and checks the answer does not change.
+- D-E2-05 (writers reload nothing): **superseded.** Every request calls refresh_log first. A write takes the lock, refreshes, then appends, so records follow other writers. A truncated tail is dropped before the next append. A rewritten log (compaction, changed prefix) is reloaded.
+- D-E2-06 (CLI commands missing): **superseded.** The CLI (core/src/main.goose) runs observe, affected, advance, explain, forget, stats, compact, init, serve and version. Each command builds the params of one method and calls dispatch(), the same function the serve loop uses. Exit codes follow spec 9.7.
+- `explain`, `observe_many` and `compact` are implemented. A certificate is a clean pass at the store's baseline (PLAN 3.3). This is our definition: the engine has no input-change record to check the other half of the certificate against.
+- `stats.observations` counts live tasks, not log records, so the index and the log give the same number.
+
+## D-E1-07 C38 made runnable (E1, Spec/Conformance)
+- The `requires: index-image` marker was removed from C38 and `determinism: index` added. The expectation is unchanged. The runner now exercises the index path. This was done after the index was built, so it is a change made in response to a SKIP, and it is recorded here for review.
+- C24 now checks the cache with and without `stat.cache`. Its expectation is unchanged.
+- validate.mjs gained a coverage matrix (rule-to-case map from PLAN 12.2) and schema checks against real engine responses. All eight schemas in spec/schemas/ were stubs or incomplete and were written from PROTOCOL.md.
+
+## D-E4-01 Git change source is a separate Goose binary (E4, Adapters)
+- adapters/git/src/changes.goose builds a ChangeSet with `git diff --name-status -M` from a verified baseline, plus untracked files and a dirty flag. It is a separate binary, so the core never runs git (PLAN D-7).
+- The baseline must resolve to a commit. Otherwise it fails with invalid_params and no partial ChangeSet (PLAN 11.7). The baseline and the directory are checked before the shell sees them.
+- Still not done: the Vitest recorder and planner (E4 steps 1–3, 5–6). They need Vitest and a Node preload, which cannot be written in Goose.
+
+## Components that cannot be written in Goose (need a decision)
+- E3 Node client (`@backplane/client`, PLAN 10.1): a Node library that spawns the engine. It is JavaScript by definition.
+- E4 Vitest recorder/planner and E6 end-to-end runs: they hook Vitest's `fs` and `process.env` inside Node processes.
+- E8 MCP server: the plan pins the official MCP TypeScript SDK (1.32.0). A Goose server would not be that SDK.
+- E9 Python binding: optional in the plan (Appendix C item 4); it is not Goose.
+- E5 strace oracle: Linux-only, and blocked by GATE 0 anyway.
+- GATE 0 and every milestone after it: blocked on a human-chosen Vitest monorepo and a human decision (PLAN 13.1, 14.1).
+
+## Verification added in the third pass (2026-11-03)
+- **G5 differential fuzz** (conformance/fuzz.mjs, `make test-fuzz`): random stores and queries (task-definition changes, declared tasks, env, verify, policy, config), engine versus reference policy. Seeds 20261103, 1 and 2, 100 stores × 100 queries each: 30,000 queries, 0 differences. Every reason code appears at least 100 times across the runs (coverage printed by the script). Two harness bugs were found and fixed in the fuzzer itself, not the engine: declared tasks were not passed to the reference.
+- **G6 parity** (core/test/cli.test.mjs): the CLI `affected` body and the serve `result` body are byte-identical. The Node binding (E3) is not built, so this is parity between the two Goose entry points only.
+- **Refresh gated on size and mtime** (store.goose refresh_log): each request used to read and compare the whole log. Now it stats the file first. A corrupt load is never marked as seen.
+- **Task lookup by hash** (store.goose find_task): loading was O(n²) because every observation scanned all tasks. Found by the 100k measurement, which did not finish in 15 minutes before the fix.
+
+## Measured M1 (bench/m1.mjs), data only, not a gate
+| tasks | load | warm plan (verify off) | PLAN M1 target |
+|---|---|---|---|
+| 10,000 | 45 ms | ~5 ms | p50 < 5 ms at 100k |
+| 100,000 | 421 ms | ~230 ms | p50 < 5 ms, p99 < 20 ms |
+
+The per-query cost is linear in tasks: every query walks all tasks, and sorts them. PLAN 6.5 specifies three reverse indexes (file readers, dir listers, probers) keyed by path, so a query visits only the tasks it touches. That is not built, so E2's step 3 is not complete and M1 is missed by about 50×.
+
+## E9 Python binding decisions (Bindings, 2026-11-03)
+- Spec written first: spec/bindings-python.md. Stdlib only, Python 3.10 or later. Test command: `make test-python` (55 unittest tests, 40 of 40 conformance cases through the client or its transport, 36 of 36 query cases byte-equal to the serve result body, 35 of 36 to the CLI; the CLI has no env, config or declared_tasks flags, and C27 has no context).
+- Timeout is in seconds (float, default 10.0). The Node client uses milliseconds (`timeoutMs`). One convention must be picked across bindings; left as is for now.
+- Client-side error codes beyond PLAN 9.7: `engine_exited`, `closed`, `bad_response`. `timeout` reuses the protocol code.
+- Retry policy: read-only methods are retried once after the engine dies mid-call. Mutating methods are never retried (spec section 4.5).
+- `close()` waits for the engine to exit after `shutdown`, then kills it. Without the wait the index image is lost (found by C38).
+- OPEN, engine vs spec: PLAN 9.1 shows `baseline_conflict` with `data: {expected, actual}`. The engine sends no `data` for that code. The Python client passes through what it gets (None), and a test asserts that. Decide which side is authoritative; the engine is the one to change if the spec stands.
+- Cosmetic: `hello` reports engine name `backplane-core-goose` and store `.backplane` (literal). PROTOCOL.md's example says `backplane-core-ts`.
+- `compact` is forwarded unchanged and is not tested: the engine's behaviour for it is not specified in the milestone.
+- Parity bytes use `json.dumps` with default `ensure_ascii`. Non-ASCII plans are not in the corpus.
