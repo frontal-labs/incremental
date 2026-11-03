@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["baseline", "head", "changes"],
+  "additionalProperties": true,
+  "properties": {
+    "baseline": {"type": "string"},
+    "head": {"type": "string"},
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "status"],
+        "properties": {
+          "path": {"type": "string"},
+          "status": {"enum": ["modified", "added", "deleted", "renamed"]},
+          "old_path": {"type": "string"}
+        }
+      }
+    }
+  }
+}

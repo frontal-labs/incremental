@@ -1,0 +1,19 @@
+{
+  "id": "C01",
+  "desc": "Changed file read by one task",
+  "mode": "balanced",
+  "store": {"from": "conformance/stores/base.jsonl"},
+  "query": {
+    "baseline": "b1",
+    "changes": [{"path": "packages/core/src/math.ts", "status": "modified"}],
+    "verify": false
+  },
+  "expect": {
+    "tasks": [{"id": "packages/core/src/math.test.ts", "reasons": ["reads:packages/core/src/math.ts"]}, {"id": "packages/app/src/app.test.ts", "reasons": ["reads:packages/core/src/math.ts"]}],
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium"
+  }
+}

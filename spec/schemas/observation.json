@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["task", "baseline", "dirty", "context", "inputs", "outputs", "outcome"],
+  "additionalProperties": true,
+  "properties": {
+    "task": {"type": "string"},
+    "baseline": {"type": "string"},
+    "dirty": {"type": "boolean"},
+    "context": {"type": "object"},
+    "inputs": {"type": "array"},
+    "outputs": {"type": "array"},
+    "outcome": {"enum": ["pass", "fail", "error", "none"]},
+    "duration_ms": {"type": "number"}
+  }
+}

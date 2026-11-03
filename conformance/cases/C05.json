@@ -1,0 +1,19 @@
+{
+  "id": "C05",
+  "desc": "Added file in a listed directory invalidates the lister",
+  "mode": "balanced",
+  "store": {"from": "conformance/stores/base.jsonl"},
+  "query": {
+    "baseline": "b1",
+    "changes": [{"path": "packages/app/plugins/p3.ts", "status": "added"}],
+    "verify": true
+  },
+  "expect": {
+    "tasks": [{"id": "packages/app/src/list.test.ts", "reasons": ["dir:packages/app/plugins"]}],
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "high"
+  }
+}

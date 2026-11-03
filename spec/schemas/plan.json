@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["protocol", "baseline", "graph_version", "verify", "tasks", "unobserved", "ignored", "deleted_tasks", "total_tasks", "skipped", "fallback", "confidence"],
+  "additionalProperties": true
+}

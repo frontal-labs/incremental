@@ -1,0 +1,19 @@
+{
+  "id": "C17",
+  "desc": "Deleted task definition",
+  "mode": "balanced",
+  "store": {"from": "conformance/stores/base.jsonl"},
+  "query": {
+    "baseline": "b1",
+    "changes": [{"path": "packages/core/src/old.test.ts", "status": "deleted"}],
+    "verify": false
+  },
+  "expect": {
+    "tasks": [],
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": ["packages/core/src/old.test.ts"],
+    "fallback": null,
+    "confidence": "medium"
+  }
+}
