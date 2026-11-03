@@ -5,7 +5,6 @@
   "store": {
     "from": "conformance/stores/base.jsonl"
   },
-  "requires": "index-image",
   "query": {
     "baseline": "b1",
     "context": {
@@ -52,5 +51,6 @@
     "deleted_tasks": [],
     "fallback": null,
     "confidence": "medium"
-  }
+  },
+  "determinism": "index"
 }

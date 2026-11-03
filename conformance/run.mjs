@@ -79,6 +79,7 @@ function appendStoreRecords(store, c) {
 // Runs one case and returns { status: 'PASS'|'FAIL'|'SKIP', detail }.
 function runCase(c) {
   if (c.requires) return { status: 'SKIP', detail: `requires ${c.requires} (not implemented)` };
+  if (c.determinism === 'index') return runIndexCase(c);
   if (c.kind === 'concurrency') return runConcurrency(c);
 
   const store = freshStore(c.id);
@@ -158,10 +159,50 @@ function runCase(c) {
     if (a !== b) diffs.push('shuffle: bytes differ from reversed input order');
   }
   if (c.determinism === 'cache') {
-    // Verify twice: the second run is the one a stat cache would serve.
-    const again = serve(store, wt, [q1]);
-    if (!sameJSON(again.responses.find((r) => r.id === base)?.result, got.result)) diffs.push('cache: second run differs');
+    // Verify with the stat cache present (written by the first run), then
+    // with it deleted: the answer must not change (spec 7.6).
+    const cache = path.join(store, 'stat.cache');
+    const cached = fs.existsSync(cache);
+    const again = serve(store, wt, [q1]).responses.find((r) => r.id === base)?.result;
+    fs.rmSync(cache, { force: true });
+    const cold = serve(store, wt, [q1]).responses.find((r) => r.id === base)?.result;
+    if (!cached) diffs.push('cache: stat.cache was not written by verify');
+    if (!sameJSON(again, got.result) || !sameJSON(cold, got.result)) diffs.push('cache: answer changed with the cache');
   }
+  return diffs.length ? { status: 'FAIL', detail: diffs.join('; ') } : { status: 'PASS' };
+}
+
+// C38: the same query from (a) a valid index, (b) a rebuild with no index,
+// and (c) a stale index plus the log bytes after it (the delta layer) must
+// give the same plan bytes, and match the expectation.
+function runIndexCase(c) {
+  const store = freshStore(c.id);
+  const wt = worktreeOf(c);
+  const storeReqs = [...storeMessages(c.store.from, 100), ...appendStoreRecords(store, c)];
+  serve(store, wt, storeReqs); // writes tg.idx at exit
+  const idx = path.join(store, 'tg.idx');
+  const saved = fs.readFileSync(idx);
+  const q = affectedRequest(500, c);
+  const planOf = (r) => r.lines.find((l) => JSON.parse(l).id === 500);
+
+  const a = serve(store, wt, [q]); // from the index
+  fs.rmSync(idx);
+  const b = serve(store, wt, [q]); // rebuilt from the log
+  // Log grows past the saved index; then restore the stale index.
+  serve(store, wt, [{ id: 600, method: 'observe', params: { observation: {
+    task: 'packages/core/src/extra.test.ts', baseline: 'b1', dirty: false, outcome: 'pass',
+    context: { lockfile: 'sha256:l1', tsconfig: 'sha256:t1', pkgjson: 'sha256:p1', runner: 'vitest@4.1.12', node: '22.11.0', fmt: 1, caps: { probes: true, dirs: true, env: true } },
+    inputs: [] } } }]);
+  fs.writeFileSync(idx, saved);
+  const cdelta = serve(store, wt, [q]); // stale index + delta
+  fs.rmSync(idx);
+  const d = serve(store, wt, [q]); // rebuilt, after the same log growth
+
+  const diffs = [];
+  if (!planOf(a) || planOf(a) !== planOf(b)) diffs.push('index plan differs from rebuilt plan');
+  if (!planOf(cdelta) || planOf(cdelta) !== planOf(d)) diffs.push('delta plan differs from rebuilt plan');
+  const got = JSON.parse(planOf(a)).result;
+  diffs.push(...comparePlan(got, c.expect));
   return diffs.length ? { status: 'FAIL', detail: diffs.join('; ') } : { status: 'PASS' };
 }
 
