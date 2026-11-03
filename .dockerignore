@@ -1,0 +1,8 @@
+.toolchain
+**/node_modules
+!adapters/vitest/fixtures/repo/packages/app/node_modules
+**/dist
+.git
+.backplane
+bench/results
+.DS_Store

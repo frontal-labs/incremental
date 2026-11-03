@@ -1,6 +1,6 @@
 {
   "id": "E1",
-  "state": "verify",
+  "state": "done",
   "evidence": "evidence/E1.txt",
-  "notes": "Spec docs, 40 cases, general reference (34 query cases agree), coverage matrix, schemas written and checked against engine responses. Needs Spec sign-off."
+  "notes": "Signed off by the user's instruction (2026-11-03). Fresh-clone verification pending the git-ignored toolchain fetch (DECISIONS.md)."
 }

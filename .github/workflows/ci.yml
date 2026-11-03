@@ -34,9 +34,14 @@ jobs:
           curl -fsSL -o goose.tar.gz https://github.com/aardappel/goose/releases/download/v2026.3/goose-v2026.3-linux-x64.tar.gz
           tar -xzf goose.tar.gz -C .toolchain/goose
           echo "GOOSE_DIR=$PWD/.toolchain/goose/goose-v2026.3-linux-x64" >> "$GITHUB_ENV"
+      - name: Install adapter tools (ruff, protoc, buf, pnpm, bazelisk)
+        run: |
+          pip install ruff==0.14.13
+          sudo apt-get update && sudo apt-get install -y protobuf-compiler
+          npm install -g pnpm@9.0.0 @bufbuild/buf@1.70.0 @bazel/bazelisk@1.28.1
       - name: Install TypeScript package dependencies
         run: |
-          for d in bindings/node adapters/vitest adapters/typescript mcp; do
+          for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/biome adapters/clippy adapters/bazel adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbopack adapters/watcher mcp; do
             (cd "$d" && npm install --no-audit --no-fund)
           done
       - name: All tests

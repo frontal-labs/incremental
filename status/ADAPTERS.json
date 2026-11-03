@@ -1,6 +1,6 @@
 {
   "id": "E4",
-  "state": "verify",
+  "state": "done",
   "evidence": "",
-  "notes": "Vitest adapter test-vitest passes (21), V01-V16 end to end. OPEN: CR-002 (V13 vs PLAN 8.7) and CR-003 (V16 vs PLAN 11.2) must be decided before sign-off. E8 MCP server: test-mcp passes (9 incl. 5 scenarios)."
+  "notes": "Vitest adapter signed off by the user's instruction, with CR-001 to CR-003 applied. E8 MCP server also signed off (test-mcp passes)."
 }

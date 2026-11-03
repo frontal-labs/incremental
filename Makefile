@@ -62,6 +62,20 @@ test-typescript: build
 	@cd adapters/typescript && npm test >../../core/dist/test-typescript.log 2>&1 || { tail -30 ../../core/dist/test-typescript.log; echo "FAIL test-typescript"; exit 1; }
 	@echo "PASS test-typescript"
 
+# Adapters built from spec/adapters/*.md (one target each, same pattern).
+ADAPTER_TESTS := bazel biome clippy config env fs playwright pnpm process protobuf ruff turbopack watcher
+
+$(addprefix test-,$(ADAPTER_TESTS)): test-%: build
+	@cd adapters/$* && npm test >../../core/dist/test-$*.log 2>&1 || { tail -30 ../../core/dist/test-$*.log; echo "FAIL test-$*"; exit 1; }
+	@echo "PASS test-$*"
+
+test-rust: build
+	@cd bindings/rust && cargo test >../../core/dist/test-rust.log 2>&1 || { tail -30 ../../core/dist/test-rust.log; echo "FAIL test-rust"; exit 1; }
+	@echo "PASS test-rust"
+
+test-adapters: test-typescript $(addprefix test-,$(ADAPTER_TESTS)) test-rust
+	@echo "PASS test-adapters"
+
 gate0:
 	$(call NOT_BUILT,gate0)
 
@@ -88,10 +102,10 @@ test-python: build
 	@echo "PASS test-python"
 
 release-check: all-tests
-	@test -f LICENSE || { echo "LICENSE is missing"; echo "FAIL release-check"; exit 1; }
+	@test -f LICENSE.md || { echo "LICENSE.md is missing"; echo "FAIL release-check"; exit 1; }
 	@echo "PASS release-check"
 
-all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-e2e test-typescript test-mcp
+all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-e2e test-adapters test-mcp
 	@echo "PASS all-tests"
 
 status:

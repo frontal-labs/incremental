@@ -1,6 +1,6 @@
 {
   "id": "E2",
-  "state": "verify",
+  "state": "done",
   "evidence": "evidence/E2.txt",
-  "notes": "All 40 cases pass. Reverse indexes (PLAN 6.5) and binary index image (format 2) built. M2 met on a same-day baseline (cold affected 80 ms at 100k). M1 round-trip met in a scratch harness. Needs Spec sign-off."
+  "notes": "Signed off by the user's instruction. All 40 cases; M2 met on a same-day baseline; fresh-clone verification pending the toolchain fetch."
 }

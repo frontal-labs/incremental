@@ -1,6 +1,6 @@
 {
   "id": "E3",
-  "state": "verify",
+  "state": "done",
   "evidence": "",
-  "notes": "TypeScript client @backplane/client: 84 pass, 2 intentional skips; 34/34 expressible plans byte-identical to the CLI. Also E9 Python binding: 55 tests pass, 36/36 query cases byte-equal to serve. Needs sign-off."
+  "notes": "TypeScript client signed off by the user's instruction. E9 Python binding also signed off (55 tests, 36/36 byte-equal to serve)."
 }
