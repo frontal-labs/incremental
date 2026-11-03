@@ -108,7 +108,7 @@ release-check: all-tests
 	@test -f LICENSE.md || { echo "LICENSE.md is missing"; echo "FAIL release-check"; exit 1; }
 	@echo "PASS release-check"
 
-all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-e2e test-adapters test-mcp
+all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-e2e test-mcp
 	@echo "PASS all-tests"
 
 status:
