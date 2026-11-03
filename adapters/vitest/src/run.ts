@@ -36,6 +36,8 @@ import {
   GitSourceError,
   loadConfig,
   vitestBin,
+  vitestVersion,
+  selectTests,
   type GitChangeSet,
 } from "./planner.js";
 import { TEST_FILE } from "./shared.js";
@@ -48,6 +50,13 @@ export interface RunOptions {
   shadow: boolean;
   jobs: number;
   timeoutMs: number;
+  // Test file discovery filters (repo-relative globs). Empty include means all.
+  include: string[];
+  exclude: string[];
+  // Extra `vitest run` arguments, and the Vitest CLI entry to run (default: the
+  // adapter's pinned Vitest).
+  vitestArgs: string[];
+  vitest?: string;
 }
 
 export interface TaskRun {
@@ -70,6 +79,8 @@ export interface RunReport {
   fallback: Fallback | null;
   gitError: string | null;
   selected: string[];
+  // Every test file discovered for this run (after the include and exclude filters).
+  discovered: string[];
   wouldSkip: string[];
   results: TaskRun[];
   observed: number;
@@ -119,8 +130,9 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
   if (!env.NODE_ENV) env.NODE_ENV = "test";
   const hashes = envHashes(env);
   const config = loadConfig(root);
-  const context = contextFor(root);
-  const discovered = discoverTests(root);
+  const vitest = opts.vitest !== undefined ? path.resolve(opts.vitest) : vitestBin();
+  const context = contextFor(root, vitestVersion(vitest));
+  const discovered = selectTests(discoverTests(root), opts.include, opts.exclude);
 
   let head0: GitChangeSet;
   try {
@@ -171,7 +183,6 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     const wouldSkip = plan === null ? [] : discovered.filter((t) => !planned.has(t));
 
     const workDir = mkdtempSync(path.join(os.tmpdir(), "backplane-vitest-"));
-    const vitest = vitestBin();
     const preloadPath = fileURLToPath(new URL("./preload.js", import.meta.url));
     const files: FileResult[] = await mapPool(selected, opts.jobs, (task, i) =>
       runFile({
@@ -183,6 +194,7 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
         timeoutMs: opts.timeoutMs,
         vitestBin: vitest,
         preloadPath,
+        vitestArgs: opts.vitestArgs,
       }),
     );
 
@@ -236,6 +248,7 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       fallback: plan?.fallback ?? (runAll && plan === null ? { action: "run_all", reason: "git_source" } : null),
       gitError,
       selected,
+      discovered,
       wouldSkip,
       results: files.map((f) => ({ task: f.task, outcome: f.outcome, durationMs: f.durationMs, problem: f.problem })),
       observed: opts.shadow ? 0 : observations.length,
@@ -255,7 +268,7 @@ interface ParsedArgs {
 
 export function parseArgs(argv: string[]): ParsedArgs {
   const [cmd, ...rest] = argv;
-  if (cmd !== "run") throw new UsageError("usage: backplane-vitest run [--base REF] [--json] [--all] [--jobs N] [--shadow] [--store DIR] [--root DIR]");
+  if (cmd !== "run") throw new UsageError("usage: backplane-vitest run [--base REF] [--json] [--all] [--jobs N] [--shadow] [--store DIR] [--root DIR] [--include GLOB]... [--exclude GLOB]... [--vitest-arg ARG]... [--vitest FILE]");
   const opts: RunOptions = {
     root: process.cwd(),
     store: "",
@@ -263,6 +276,9 @@ export function parseArgs(argv: string[]): ParsedArgs {
     shadow: false,
     jobs: os.availableParallelism(),
     timeoutMs: 600_000,
+    include: [],
+    exclude: [],
+    vitestArgs: [],
   };
   let json = false;
   let storeGiven = false;
@@ -286,6 +302,10 @@ export function parseArgs(argv: string[]): ParsedArgs {
       }
       case "--store": opts.store = value(); storeGiven = true; break;
       case "--root": opts.root = value(); break;
+      case "--include": opts.include.push(value()); break;
+      case "--exclude": opts.exclude.push(value()); break;
+      case "--vitest-arg": opts.vitestArgs.push(value()); break;
+      case "--vitest": opts.vitest = value(); break;
       default: throw new UsageError(`unknown option ${a}`);
     }
   }

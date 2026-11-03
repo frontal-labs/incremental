@@ -5,11 +5,14 @@
 #include <fcntl.h>
 #include <limits.h>
 #include <signal.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <sys/stat.h>
+#ifdef __APPLE__
 #include <sys/sysctl.h>
+#endif
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
@@ -100,7 +103,11 @@ int64_t native_stat_file(bytes_t path, int64_t *size, int64_t *mtime_ns) {
     struct stat st;
     if (!to_cpath(path, buf, sizeof buf) || stat(buf, &st) != 0 || !S_ISREG(st.st_mode)) return 0;
     *size = (int64_t)st.st_size;
+#ifdef __APPLE__
     *mtime_ns = (int64_t)st.st_mtimespec.tv_sec * 1000000000LL + (int64_t)st.st_mtimespec.tv_nsec;
+#else
+    *mtime_ns = (int64_t)st.st_mtim.tv_sec * 1000000000LL + (int64_t)st.st_mtim.tv_nsec;
+#endif
     return 1;
 }
 
@@ -141,10 +148,32 @@ int64_t native_pid_alive(int64_t pid) {
 
 /* Start time of a process as microseconds since epoch, 0 if unknown. */
 int64_t native_pid_start(int64_t pid) {
+#ifdef __APPLE__
     struct kinfo_proc kp; size_t len = sizeof kp;
     int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PID, (int)pid};
     if (sysctl(mib, 4, &kp, &len, NULL, 0) != 0 || len == 0) return 0;
     return (int64_t)kp.kp_proc.p_starttime.tv_sec * 1000000LL + (int64_t)kp.kp_proc.p_starttime.tv_usec;
+#else
+    /* /proc/<pid>/stat field 22 is the start time in clock ticks since boot. */
+    char path[64], buf[1024];
+    snprintf(path, sizeof path, "/proc/%lld/stat", (long long)pid);
+    FILE *f = fopen(path, "r");
+    if (!f) return 0;
+    size_t n = fread(buf, 1, sizeof buf - 1, f);
+    fclose(f);
+    buf[n] = 0;
+    char *p = strrchr(buf, ')');
+    if (!p) return 0;
+    long long ticks = 0;
+    /* After ")": state (field 3), then fields 4..22; starttime is the 20th token after ")". */
+    char *tok = strtok(p + 2, " ");
+    for (int i = 3; tok && i < 22; i++) tok = strtok(NULL, " ");
+    if (!tok) return 0;
+    ticks = strtoll(tok, NULL, 10);
+    long hz = sysconf(_SC_CLK_TCK);
+    if (hz <= 0) return 0;
+    return (int64_t)(ticks * (1000000LL / hz));
+#endif
 }
 
 /* Current UTC time as RFC 3339, appended to out. */

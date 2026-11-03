@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-GOOSE_DIR := $(CURDIR)/.toolchain/goose/goose-v2026.3-macos-arm64
+GOOSE_DIR ?= $(CURDIR)/.toolchain/goose/goose-v2026.3-macos-arm64
 GOOSE := $(GOOSE_DIR)/goose
 export GOOSE_HOME := $(CURDIR)/.toolchain/goose-home
 ENGINE := core/dist/backplane
@@ -99,4 +99,6 @@ loc:
 	@echo "PASS loc"
 
 linux-gate:
-	$(call NOT_BUILT,linux-gate)
+	@docker build --platform linux/amd64 -f docker/Dockerfile.linux -t backplane:linux . >core/dist/linux-gate.log 2>&1 || { tail -20 core/dist/linux-gate.log; echo "FAIL linux-gate"; exit 1; }
+	@docker run --rm --platform linux/amd64 backplane:linux >>core/dist/linux-gate.log 2>&1 || { tail -30 core/dist/linux-gate.log; echo "FAIL linux-gate"; exit 1; }
+	@echo "PASS linux-gate"

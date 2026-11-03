@@ -3,22 +3,8 @@ name: CI
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - 'plans/**'
-      - 'evidence/**'
-      - 'status/**'
-      - 'banner.jpg'
   pull_request:
     branches: [main]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - 'plans/**'
-      - 'evidence/**'
-      - 'status/**'
-      - 'banner.jpg'
 
 permissions:
   contents: read
@@ -28,121 +14,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-        with:
-          bun-version: '2.2'
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-      - name: Lint
-        run: bun run lint 2>/dev/null || bun run check 2>/dev/null || make check || echo "lint: no-op"
-
-  spec-validate:
-    name: Spec validation
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-        with:
-          bun-version: '2.2'
-      - name: Validate spec
-        run: make check-spec
-
-  test-core:
-    name: Core engine
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-        with:
-          bun-version: '2.2'
-      - name: Test core
-        run: make test-core test-policy test-protocol
-
-  test-bindings:
-    name: Node bindings
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-        with:
-          bun-version: '2.2'
-      - name: Test bindings
-        run: make test-bindings
-
-  test-vitest:
-    name: Vitest adapter
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-        with:
-          bun-version: '2.2'
-      - name: Test vitest
-        run: make test-vitest
-
-  test-mcp:
-    name: MCP server
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-        with:
-          bun-version: '2.2'
-      - name: Test MCP
-        run: make test-mcp
-
-  test-e2e:
-    name: End-to-end
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-        with:
-          bun-version: '2.2'
-      - name: Test e2e
-        run: make test-e2e
-
-  benchmark-kill-test:
-    name: Benchmark kill test
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-        with:
-          bun-version: '2.2'
-      - name: Run benchmark kill test
-        run: make gate0
-      - name: Check gate criteria
-        run: |
-          echo "K1-K4 gate criteria verified by make gate0"
-
   all-tests:
-    name: All tests
+    name: All tests (Linux)
     runs-on: ubuntu-latest
-    needs: [lint, spec-validate, test-core, test-bindings, test-vitest, test-mcp, test-e2e, benchmark-kill-test]
-    if: always()
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
-      - name: Aggregate results
-        run: make all-tests
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Install Goose toolchain (Linux x64, v2026.3)
+        run: |
+          mkdir -p .toolchain/goose
+          curl -fsSL -o goose.tar.gz https://github.com/aardappel/goose/releases/download/v2026.3/goose-v2026.3-linux-x64.tar.gz
+          tar -xzf goose.tar.gz -C .toolchain/goose
+          echo "GOOSE_DIR=$PWD/.toolchain/goose/goose-v2026.3-linux-x64" >> "$GITHUB_ENV"
+      - name: Install TypeScript package dependencies
+        run: |
+          for d in bindings/node adapters/vitest mcp; do
+            (cd "$d" && npm install --no-audit --no-fund)
+          done
+      - name: All tests
+        run: make all-tests test-python test-git test-fuzz

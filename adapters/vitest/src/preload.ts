@@ -164,6 +164,13 @@ function install(out: string): void {
       }
       return (orig as (...a: unknown[]) => unknown).apply(this, args);
     };
+    // Keep the properties of the original (fs.realpathSync.native is read by
+    // Vite as a function, so a wrapper without it breaks module loading).
+    for (const key of Reflect.ownKeys(orig)) {
+      if (key === "length" || key === "name" || key === "prototype") continue;
+      const desc = Object.getOwnPropertyDescriptor(orig, key);
+      if (desc !== undefined) Object.defineProperty(target[name], key, desc);
+    }
   }
 
   const openKind = (args: unknown[]): Kind | null => (isReadFlags(args[1]) ? "read" : null);
@@ -173,6 +180,8 @@ function install(out: string): void {
     patch(fs, name, "stat");
   }
   for (const name of ["readdir", "readdirSync", "opendir", "opendirSync"]) patch(fs, name, "list");
+  // Vite calls fs.realpathSync.native directly; record those calls too.
+  patch(fs.realpathSync, "native", "stat");
   for (const name of ["readFile", "open"]) patch(fs.promises, name, name === "open" ? openKind : "read");
   for (const name of ["stat", "lstat", "access", "realpath"]) patch(fs.promises, name, "stat");
   patch(fs.promises, "readdir", "list");

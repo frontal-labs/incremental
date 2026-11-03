@@ -1,2 +1,26 @@
-FROM arm64v8/node:22
+# Linux check of the whole test target (PLAN 17.1 linux-gate).
+# Deviation (recorded in DECISIONS.md): the container runs the released Goose
+# linux-x64 binary under amd64 emulation. Goose has no linux-arm64 release and
+# building it from source is not documented in the release, so it is not done here.
+FROM --platform=linux/amd64 node:22-bookworm
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends git python3 make curl ca-certificates tar build-essential \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /opt/goose \
+ && curl -fsSL -o /tmp/goose.tar.gz https://github.com/aardappel/goose/releases/download/v2026.3/goose-v2026.3-linux-x64.tar.gz \
+ && tar -xzf /tmp/goose.tar.gz -C /opt/goose \
+ && rm /tmp/goose.tar.gz
+
+ENV GOOSE_DIR=/opt/goose/goose-v2026.3-linux-x64 \
+    GOOSE_HOME=/app/.toolchain/goose-home \
+    GOOSE_CC=/usr/bin/cc
+
 WORKDIR /app
+COPY . /app
+
+# Start from clean node_modules: a leftover pnpm symlink would survive npm install.
+RUN for d in bindings/node adapters/vitest mcp; do rm -rf "$d/node_modules" && (cd "$d" && npm install --no-audit --no-fund); done
+
+CMD ["make", "all-tests", "test-python", "test-git", "test-fuzz"]

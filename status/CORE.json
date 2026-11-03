@@ -1,6 +1,6 @@
 {
   "id": "E2",
-  "state": "doing",
+  "state": "verify",
   "evidence": "evidence/E2.txt",
-  "notes": "All 40 cases pass through serve; CLI, index image, stat cache, multi-writer refresh, compaction, observe_many, explain built. NOT done: PLAN 6.5 reverse indexes (per-query cost is linear in tasks; M1 missed ~50x at 100k, see DECISIONS.md). E2 step 3 is open."
+  "notes": "All 40 cases pass. Reverse indexes (PLAN 6.5) and binary index image (format 2) built. M2 met on a same-day baseline (cold affected 80 ms at 100k). M1 round-trip met in a scratch harness. Needs Spec sign-off."
 }

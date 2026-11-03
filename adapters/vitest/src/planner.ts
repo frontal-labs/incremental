@@ -33,6 +33,18 @@ export function discoverTests(root: string): string[] {
   return walkFiles(root, (rel) => TEST_FILE.test(rel));
 }
 
+// Keeps the discovered test files that match an include glob (when any are
+// given) and no exclude glob. Globs follow path.matchesGlob (minimatch syntax),
+// matched against repo-relative paths. Used to restrict discovery to one Vitest
+// project of a repo, so the planner and the runner see the same task set.
+export function selectTests(files: readonly string[], include: readonly string[], exclude: readonly string[]): string[] {
+  return files.filter(
+    (f) =>
+      (include.length === 0 || include.some((g) => path.matchesGlob(f, g))) &&
+      !exclude.some((g) => path.matchesGlob(f, g)),
+  );
+}
+
 // The git change source (PLAN 11.7): backplane-git changes --base REF --root DIR.
 export function gitSourcePath(): string {
   return process.env.BACKPLANE_GIT || path.join(repoRoot(), "adapters", "git", "dist", "backplane-git");
@@ -76,7 +88,7 @@ function hashOrAbsent(file: string): string {
 // runner, the Node version, the format, and the capabilities of this recorder.
 // Probes, directory listings and environment reads are all captured, so the
 // capabilities are true (PLAN 11.2, proven on the fixture in E4).
-export function contextFor(root: string): Context {
+export function contextFor(root: string, vitestVersion: string = VITEST_VERSION): Context {
   const lock = ["package-lock.json", "pnpm-lock.yaml", "yarn.lock"].find((f) => existsSync(path.join(root, f)));
   const pkgs = walkFiles(root, (rel) => rel === "package.json" || rel.endsWith("/package.json"));
   const pkgjson =
@@ -87,7 +99,7 @@ export function contextFor(root: string): Context {
     lockfile: lock === undefined ? "absent" : hashOrAbsent(path.join(root, lock)),
     tsconfig: hashOrAbsent(path.join(root, "tsconfig.json")),
     pkgjson,
-    runner: `vitest@${VITEST_VERSION}`,
+    runner: `vitest@${vitestVersion}`,
     node: process.version,
     fmt: 1,
     caps: { probes: true, dirs: true, env: true },
@@ -122,4 +134,12 @@ export function loadConfig(root: string): Config | undefined {
 export function vitestBin(): string {
   const req = createRequire(import.meta.url);
   return path.join(path.dirname(req.resolve("vitest/package.json")), "vitest.mjs");
+}
+
+// The version of the Vitest package that a vitest.mjs entry belongs to. The
+// runner is part of the context (PLAN 8.4), so it must name the Vitest that
+// actually runs the tests, which for a repo is its own installed Vitest.
+export function vitestVersion(bin: string): string {
+  const pkg = JSON.parse(readFileSync(path.join(path.dirname(bin), "package.json"), "utf8")) as { version?: string };
+  return pkg.version ?? VITEST_VERSION;
 }

@@ -37,6 +37,9 @@ export interface RunFileOptions {
   timeoutMs: number;
   vitestBin: string;
   preloadPath: string;
+  // Extra arguments for `vitest run`, such as --configLoader runner or
+  // --project unit, passed through unchanged (PLAN 11.3 adapter pass-through).
+  vitestArgs?: readonly string[];
 }
 
 interface JsonReport {
@@ -90,6 +93,7 @@ export function runFile(opts: RunFileOptions): Promise<FileResult> {
     "--pool=forks",
     "--reporter=json",
     `--outputFile=${reportFile}`,
+    ...(opts.vitestArgs ?? []),
   ];
   const preloadUrl = pathToFileURL(opts.preloadPath).href;
   const nodeOptions = [opts.env.NODE_OPTIONS, `--import ${preloadUrl}`].filter(Boolean).join(" ");
