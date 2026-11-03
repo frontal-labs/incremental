@@ -1,6 +1,6 @@
 {
   "id": "E4",
-  "state": "todo",
+  "state": "doing",
   "evidence": "",
-  "notes": "Not started. adapters/vitest and adapters/git are one-line placeholders. The earlier 'E8 done' was not backed by code (mcp/ is a placeholder). Depends on E3."
+  "notes": "Git change source done in Goose (adapters/git/src/changes.goose, make test-git). Vitest recorder/planner not started: needs Node and Vitest (see DECISIONS.md)."
 }

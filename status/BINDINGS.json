@@ -2,5 +2,5 @@
   "id": "E3",
   "state": "todo",
   "evidence": "",
-  "notes": "Not started. bindings/node/src/client.ts is a placeholder that returns fixed values; it must not be treated as done. Depends on E2."
+  "notes": "Node client is a placeholder. It must be JavaScript (DECISIONS.md, components that cannot be Goose). Needs a decision."
 }
