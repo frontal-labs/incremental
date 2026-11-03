@@ -36,7 +36,7 @@ jobs:
           echo "GOOSE_DIR=$PWD/.toolchain/goose/goose-v2026.3-linux-x64" >> "$GITHUB_ENV"
       - name: Install TypeScript package dependencies
         run: |
-          for d in bindings/node adapters/vitest mcp; do
+          for d in bindings/node adapters/vitest adapters/typescript mcp; do
             (cd "$d" && npm install --no-audit --no-fund)
           done
       - name: All tests

@@ -212,3 +212,25 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - Checks on this build: all-tests passes; test-fuzz (3 seeds, 0 differ); test-python; test-git.
 - Not re-measured: M1 warm-path latency (the query code is unchanged). Each CLI observe, advance or forget still rewrites the 59 MB image.
 - Commit note: commit 0ed9586 ("feat(core): persist reverse indexes in the index image and intern arena strings") contains this work and was not made by the lead. It is in history under the user's git identity. The lead did not revert or rewrite it.
+
+## Adapter drafts (spec, 2026-11-03). Not approved, not built.
+- Drafts for the adapters PLAN §4.3 marks "later" (bazel, biome, clippy, config, env, fs, playwright, pnpm, process, protobuf, ruff, turbopack, typescript, watcher), plus the Rust binding draft (PLAN §10.6 decision). Written in `spec/adapters/`, one file each, with an index in `spec/adapters/README.md`.
+- Basis: none of the 49 markdown files in the repo specify these adapters. Their content is my proposal and needs review.
+- Status: every draft is "draft". Approving one means a new entry here (PLAN §2.9 for dependencies), then building it. Nothing in `adapters/` or `bindings/` was created for them.
+
+## TypeScript adapter (built, 2026-11-03). Chosen from the drafts.
+- Why this one: PLAN §4.3 already names `tsc, bundler inputs` as a later adapter, so it needs no new scope decision. The other drafts were not built: ruff is a non-JavaScript ecosystem (separate decision, PLAN §4.3), watcher and bazel have open design questions, and the rest had no clear recorder.
+- Built in `adapters/typescript` (`@backplane/typescript`, CLI `backplane-typescript run`). Spec as built: `spec/adapters/typescript.md`.
+- Capabilities `probes`, `dirs` and `env` are false. A modified file that no project reads therefore runs every project (P7 fallback `unobserved_input`). This is sound, and it is the main cost. Recording tsc's module-resolution probes is the way to lower it, and is not done.
+- Not built: shadow mode, a worker pool, and checking CLI overrides against the config.
+- Wiring: `make test-typescript` is in `all-tests`. `adapters/typescript` is added to the install loop in `.github/workflows/ci.yml` and `docker/Dockerfile.linux`.
+- Test count: 6 integration tests (`adapters/typescript/test/adapter.test.ts`), each against the real engine and a scratch git repo.
+- Not decided: the other 14 drafts (bazel, biome, clippy, config, env, fs, playwright, pnpm, process, protobuf, ruff, rust, turbopack, watcher) remain drafts, not approved and not built.
+
+## Gate 0 result: STOP (recorded 2026-11-03, valid outcome per PLAN 13.1 and 14.1)
+- Repository: ~/Desktop/os (pnpm monorepo, 269 commits on HEAD). Replay window: 127 first-parent commits (not 173 or 200; see GATE.md). Evaluated: 0. K1, K2, K4 not measured. K3 (cold `affected`, 122-task store, 5 runs): median 40 ms, but not per commit and not at the 100k target.
+- Why: the repository's own unit suite is red at the replayed commits. Two of 122 test files fail (a package with no dist build, and an unresolved `@/lib` alias). Plain ground-truth runs on 8 sampled commits were all red (0 of 8 green). The plan counts only green ground-truth commits (12.5 step 3d), so no commit was evaluable, which is the stop condition in 14.1.
+- Not retuned. The replay was not run on a repository whose own tests pass. A rerun requires the repository's two failing tests to pass at the window commits (or a window where they do), and that is for the repository owner to decide.
+- Raw data: bench/results/gate0.json. GATE.md now carries this STOP. The earlier unsupported CONTINUE is kept as GATE.invalid.md.
+- Adapter changes made during the replay (adapters/vitest/src): pass-through for Vitest arguments (--vitest-arg, --include, --exclude, --vitest), the real Vitest version for the runner, and realpathSync.native recorded in the preload.
+- Consequence per PLAN 14.1: the project stops here. E5 (strace), E7 (full gate) and E10 (release) do not run. Nothing is claimed beyond E9, and the E10 release done-when stays unmet.

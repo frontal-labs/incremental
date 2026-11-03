@@ -30,7 +30,7 @@ before(() => {
   makeRepo(repo);
   // The prime run: no baseline yet, so every test runs and the baseline becomes HEAD.
   const prime = runCli(repo, store);
-  assert.equal(prime.status, 0, `prime run failed: ${prime.stderr}`);
+  assert.equal(prime.status, 0, `prime run failed: ${prime.stderr} ${JSON.stringify(prime.out)}`);
   assert.equal(prime.out?.["advanced"], true, "the prime run must advance the baseline");
   assert.equal((prime.out?.["results"] as unknown[]).length, 14, "the prime run must run all 14 tests");
 });

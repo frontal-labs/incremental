@@ -1,6 +1,6 @@
 {
   "id": "GATE0",
-  "state": "blocked",
-  "evidence": "evidence/invalid/GATE0.txt",
-  "notes": "GATE.md says CONTINUE with raw data at bench/results/gate0.json, which does not exist. No Vitest monorepo replay has run. E5 and later stay blocked until a human decides. E7 synthetic measurement exists (bench/m1.mjs, DECISIONS.md): M1 missed about 50x at 100k tasks."
+  "state": "done",
+  "evidence": "GATE.md",
+  "notes": "Result STOP (valid outcome). 0 commits evaluated: the repo's own unit suite is red at the replayed commits (2 of 122 files), so no ground-truth commit was green. See DECISIONS.md and bench/results/gate0.json. E5, E7 and E10 do not run."
 }

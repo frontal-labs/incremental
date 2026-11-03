@@ -58,6 +58,10 @@ test-vitest: build
 test-e2e: test-vitest
 	@echo "PASS test-e2e (V01-V16 run inside test-vitest)"
 
+test-typescript: build
+	@cd adapters/typescript && npm test >../../core/dist/test-typescript.log 2>&1 || { tail -30 ../../core/dist/test-typescript.log; echo "FAIL test-typescript"; exit 1; }
+	@echo "PASS test-typescript"
+
 gate0:
 	$(call NOT_BUILT,gate0)
 
@@ -87,7 +91,7 @@ release-check: all-tests
 	@test -f LICENSE || { echo "LICENSE is missing"; echo "FAIL release-check"; exit 1; }
 	@echo "PASS release-check"
 
-all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-e2e test-mcp
+all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-e2e test-typescript test-mcp
 	@echo "PASS all-tests"
 
 status:
@@ -99,6 +103,6 @@ loc:
 	@echo "PASS loc"
 
 linux-gate:
-	@docker build --platform linux/amd64 -f docker/Dockerfile.linux -t backplane:linux . >core/dist/linux-gate.log 2>&1 || { tail -20 core/dist/linux-gate.log; echo "FAIL linux-gate"; exit 1; }
+	@docker build --no-cache --platform linux/amd64 -f docker/Dockerfile.linux -t backplane:linux . >core/dist/linux-gate.log 2>&1 || { tail -20 core/dist/linux-gate.log; echo "FAIL linux-gate"; exit 1; }
 	@docker run --rm --platform linux/amd64 backplane:linux >>core/dist/linux-gate.log 2>&1 || { tail -30 core/dist/linux-gate.log; echo "FAIL linux-gate"; exit 1; }
 	@echo "PASS linux-gate"
