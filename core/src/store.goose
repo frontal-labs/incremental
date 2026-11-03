@@ -58,6 +58,8 @@ struct PathE { p: Span, chain: i64, rd: i64, ls: i64, pr: i64 }
 // The resizable collections are globals: a struct may hold at most one
 // resizable value, and it must be its last field (spec 3.4).
 var g_arena: u8[>..] = [];
+// Text -> the arena span holding it, so each distinct string is stored once.
+var g_intern: dictionary<u64, Span> = dictionary<u64, Span> {};
 var g_kvs: Kv[>..] = [];
 var g_inps: Inp[>..] = [];
 var g_obs: Ob[>..] = [];
@@ -92,7 +94,9 @@ struct Store {
 }
 
 fn store_reset(st: Store&) {
+    g_idx_current = false;
     g_arena.clear();
+    g_intern.clear();
     g_kvs.clear();
     g_inps.clear();
     g_obs.clear();
@@ -120,6 +124,24 @@ fn put(st: Store&, s: const u8[:]) -> Span {
 
 fn text(st: Store&, s: Span) -> const u8[:] {
     return g_arena[s.off .. s.off + s.len];
+}
+
+// The span of text s, shared with an equal string already in the arena.
+fn intern(st: Store&, s: const u8[:]) -> Span {
+    let h = hash(s);
+    let hit = g_intern.get(h);
+    if hit {
+        if same(st, hit, s) { return hit; }
+    }
+    let sp = put(st, s);
+    g_intern.insert(h, sp);
+    return sp;
+}
+
+// The log bytes of an observation's record. Lines are spans of g_logbuf, the
+// log as read: appends never move them, and a rewritten log is reloaded.
+fn line_text(s: Span) -> const u8[:] {
+    return g_logbuf[s.off .. s.off + s.len];
 }
 
 fn same(st: Store&, s: Span, t: const u8[:]) -> bool {
@@ -203,14 +225,14 @@ fn read_pairs(st: Store&, obj: json::Node?, raw: bool) -> i64, i64 {
         var v: u8[>..] = [];
         let s, sok = json::as_string(child);
         if raw && sok { v.append(s); } else { scalar_text(child, v); }
-        g_kvs.push(Kv { k: put(st, child.key), v: put(st, v) });
+        g_kvs.push(Kv { k: intern(st, child.key), v: intern(st, v) });
     };
     return from, g_kvs.len - from;
 }
 
 // Reads one observation object into the state. line is the record as it is
 // logged, kept so that compaction and the index can write it again.
-fn add_obs(st: Store&, o: json::Node?, line: const u8[:]) -> bool {
+fn add_obs(st: Store&, o: json::Node?, line: Span) -> bool {
     let tid, ok = json::as_string(json::member(o, "task"));
     if !ok { return false; }
     let bl, bok = json::as_string(json::member(o, "baseline"));
@@ -251,20 +273,19 @@ fn add_obs(st: Store&, o: json::Node?, line: const u8[:]) -> bool {
                 snap = json::member(inp, "snapshot") != null;
                 efrom, en = read_pairs(st, json::member(inp, "snapshot"), true);
             }
-            let ps = if pok { put(st, p) } else { Span { off: 0, len: 0 } };
-            let hs = if hok { put(st, h) } else { Span { off: 0, len: 0 } };
-            let ns = if nok { put(st, nm) } else { Span { off: 0, len: 0 } };
-            let vs = if vok { put(st, vh) } else { Span { off: 0, len: 0 } };
+            let ps = if pok { intern(st, p) } else { Span { off: 0, len: 0 } };
+            let hs = if hok { intern(st, h) } else { Span { off: 0, len: 0 } };
+            let ns = if nok { intern(st, nm) } else { Span { off: 0, len: 0 } };
+            let vs = if vok { intern(st, vh) } else { Span { off: 0, len: 0 } };
             if kind == 3 || kind == 4 { env_any = true; }
             g_inps.push(Inp { kind: kind, path: ps, hash: hs, name: ns, vh: vs,
                 env_from: efrom, env_n: en, has_snap: snap });
         };
     }
     let ni = g_inps.len - ifrom;
-    let bs = put(st, bl);
-    let ls = put(st, line);
+    let bs = intern(st, bl);
     g_obs.push(Ob { task: ti, ctx_from: cfrom, ctx_n: cn, baseline: bs, dirty: dok && dirty,
-        outcome: outcome, inp_from: ifrom, inp_n: ni, line: ls });
+        outcome: outcome, inp_from: ifrom, inp_n: ni, line: line });
     let oi = g_obs.len - 1;
     for k in ni { index_input(st, oi, ifrom + k); }
     if dok && dirty || outcome == 1 || outcome == 2 || env_any { g_standing.push(oi); }
@@ -366,7 +387,7 @@ fn gather(pi: i64, which: i64, out: Post[>..]&) {
 
 // Applies one parsed record. Unknown record types are skipped (spec G-e).
 // Returns false only for a known record that is invalid.
-fn apply_record(st: Store&, rec: json::Node?, line: const u8[:]) -> bool {
+fn apply_record(st: Store&, rec: json::Node?, line: Span) -> bool {
     let r, rok = json::as_string(json::member(rec, "r"));
     if !rok { return true; }
     if r == "obs" { return add_obs(st, rec, line); }
@@ -391,12 +412,13 @@ fn apply_record(st: Store&, rec: json::Node?, line: const u8[:]) -> bool {
 }
 
 // Applies one complete line. False if it does not parse or is invalid.
-fn apply_line(st: Store&, line: const u8[:]) -> bool {
+fn apply_line(st: Store&, line: const u8[:], at: i64) -> bool {
+    g_idx_current = false;
     var doc: json::Node[>..] = [];
     var decoded: u8[>..] = [];
     let root, err = json::parse(line, doc, decoded);
     if !root { return false; }
-    return apply_record(st, root, line);
+    return apply_record(st, root, Span { off: at, len: line.len });
 }
 
 // Applies every complete line of log from offset from. The piece after the
@@ -411,7 +433,7 @@ fn apply_from(st: Store&, log: const u8[:], from: i64) -> i64, bool {
     for i in parts.len - 1 {
         let p = parts[i];
         if p.len > 0 {
-            if !apply_line(st, p) { return off, false; }
+            if !apply_line(st, p, off) { return off, false; }
         }
         off += p.len + 1;
     }
@@ -488,10 +510,31 @@ fn append_lines(st: Store&, log_path: const u8[:], recs: const u8[:]) -> bool {
 }
 
 // ---- index image (spec 6.4) ------------------------------------------------
-// tg.idx: a header with the length and tail hash of the log prefix it
-// describes, then the state as records. Loading replays only the log bytes
-// after that length (the delta layer). Any mismatch means a full replay,
-// which is always correct.
+// tg.idx, format 2: a binary image of the state's arrays, written with Goose's
+// serialization (to_bytes / from_bytes, reference section 23). Layout:
+//   "BPIX"                         magic
+//   uleb fmt (2)
+//   uleb base_log_len
+//   uleb n, n bytes                base_tail_sha: "sha256:<hex>" of the 1,024
+//                                  log bytes ending at base_log_len
+//   uleb has_baseline, uleb baseline.off, uleb baseline.len
+//   uleb has_ctx, uleb ctx_from, uleb ctx_n
+//   uleb 8                         number of sections
+//   uleb len[k] for k in 0..8      byte length of each section
+//   8 bytes, little endian         hash() of the body (damage check)
+//   body: to_bytes of, in order, the arena (u8), the kvs, the inputs, the
+//         observations, the tasks, the path table and the postings, then the
+//         standing list (i64). Each section is a framed image of one array.
+// The observation lines are not stored: each is a span of the log, which the
+// load reads anyway, and the tail hash ties the image to that log.
+// Not stored: the dictionaries (rebuilt from the tasks and paths in one pass),
+// the intern table, the live count (recounted), and the stat cache.
+// The body hash catches damage that the framing cannot see (a flipped value
+// in range); from_bytes checks the framing and every index is checked against
+// its array (index_ok). Loading is a verified copy of each section; no text is
+// parsed. Any failure is a full replay from the log. hash() is not a
+// cryptographic hash: it is a damage check, and the log's own tail hash is the
+// identity check.
 
 // SHA-256 of data as "sha256:<hex>".
 fn sha_text(data: const u8[:], out: u8[>..]&) {
@@ -511,12 +554,12 @@ fn state_records(st: Store&, out: u8[>..]&) {
         let t = g_tasks[i];
         if t.forgotten || t.latest < 0 { continue; }
         if t.latest == lo { continue; }
-        out.append(text(st, g_obs[t.latest].line));
+        out.append(line_text(g_obs[t.latest].line));
         out.push('\n');
     }
     if lo >= 0 {
         let t = g_tasks[g_obs[lo].task];
-        out.append(text(st, g_obs[lo].line));
+        out.append(line_text(g_obs[lo].line));
         out.push('\n');
         if t.forgotten {
             out.append("{\"r\":\"forget\",\"task\":");
@@ -531,18 +574,140 @@ fn state_records(st: Store&, out: u8[>..]&) {
     }
 }
 
-// Writes tg.idx for the applied prefix of the log.
+// Set while the index on disk describes the state exactly, so a write is not needed.
+var g_idx_current: bool = false;
+
+fn flag_of(b: bool) -> i64 {
+    if b { return 1; }
+    return 0;
+}
+
+// Reads one ULEB128 at pos of s and advances pos. False when malformed.
+fn take_uleb(s: const u8[:], pos: i64&) -> i64, bool {
+    let v, n = parse_uleb(s[pos..]);
+    if n == 0 { return 0, false; }
+    pos += n;
+    return v, true;
+}
+
+fn span_in(s: Span, n: i64) -> bool {
+    return s.off >= 0 && s.len >= 0 && s.off <= n && s.len <= n - s.off;
+}
+
+fn range_in(from: i64, n: i64, total: i64) -> bool {
+    return from >= 0 && n >= 0 && from <= total && n <= total - from;
+}
+
+// Checks every index and span of the state against the array it names, so a
+// damaged image cannot make a query read out of range. The lists are chains
+// that point to older entries (smaller indexes), which rules out cycles.
+fn index_ok(st: Store&) -> bool {
+    let an = g_arena.len;
+    let nk = g_kvs.len;
+    let ni = g_inps.len;
+    let no = g_obs.len;
+    let nt = g_tasks.len;
+    let np = g_paths.len;
+    let nq = g_post.len;
+    for i in nk {
+        if !span_in(g_kvs[i].k, an) || !span_in(g_kvs[i].v, an) { return false; }
+    }
+    for i in ni {
+        let x = g_inps[i];
+        if x.kind < 0 || x.kind > 5 { return false; }
+        if !span_in(x.path, an) || !span_in(x.hash, an) || !span_in(x.name, an) || !span_in(x.vh, an) { return false; }
+        if !range_in(x.env_from, x.env_n, nk) { return false; }
+    }
+    for i in no {
+        let o = g_obs[i];
+        if o.task < 0 || o.task >= nt { return false; }
+        if o.outcome < 0 || o.outcome > 3 { return false; }
+        if !span_in(o.baseline, an) || !span_in(o.line, g_logbuf.len) { return false; }
+        if !range_in(o.ctx_from, o.ctx_n, nk) || !range_in(o.inp_from, o.inp_n, ni) { return false; }
+    }
+    for i in nt {
+        let t = g_tasks[i];
+        if !span_in(t.id, an) { return false; }
+        if t.latest < -1 || t.latest >= no { return false; }
+        if t.latest >= 0 && g_obs[t.latest].task != i { return false; }
+        if t.chain < -1 || t.chain >= i { return false; }
+    }
+    for i in np {
+        let p = g_paths[i];
+        if !span_in(p.p, an) { return false; }
+        if p.chain < -1 || p.chain >= i { return false; }
+        if p.rd < -1 || p.rd >= nq || p.ls < -1 || p.ls >= nq || p.pr < -1 || p.pr >= nq { return false; }
+    }
+    for i in nq {
+        let e = g_post[i];
+        if e.obs < 0 || e.obs >= no || e.inp < 0 || e.inp >= ni { return false; }
+        if e.next < -1 || e.next >= i { return false; }
+    }
+    for i in g_standing.len {
+        if g_standing[i] < 0 || g_standing[i] >= no { return false; }
+    }
+    if st.has_baseline && !span_in(st.baseline, an) { return false; }
+    if st.has_ctx && !range_in(st.ctx_from, st.ctx_n, nk) { return false; }
+    return true;
+}
+
+// Rebuilds the two dictionaries (task id hash, path hash) from the arrays.
+// Each chain is already stored in the entries, so the head of a hash is the
+// newest entry with that hash, as it was when the state was built.
+fn rebuild_dicts(st: Store&) {
+    g_task_head.clear();
+    g_path_head.clear();
+    for i in g_tasks.len { g_task_head.insert(hash(text(st, g_tasks[i].id)), i); }
+    for i in g_paths.len { g_path_head.insert(hash(text(st, g_paths[i].p)), i); }
+}
+
+// Writes tg.idx for the applied prefix of the log. A no-op when the file on
+// disk already describes the state.
 fn write_index(st: Store&, idx_path: const u8[:]) -> bool {
+    if g_idx_current { return true; }
     let base = g_applied;
     let tail = if base > 1024 { base - 1024 } else { 0 };
+    var sha: u8[>..] = [];
+    sha_text(g_logbuf[tail..base], sha);
+    var body: u8[>..] = [];
+    var lens: i64[>..] = [];
+    var mark: i64 = 0;
+    to_bytes(g_arena, body);
+    lens.push(body.len - mark); mark = body.len;
+    to_bytes(g_kvs, body);
+    lens.push(body.len - mark); mark = body.len;
+    to_bytes(g_inps, body);
+    lens.push(body.len - mark); mark = body.len;
+    to_bytes(g_obs, body);
+    lens.push(body.len - mark); mark = body.len;
+    to_bytes(g_tasks, body);
+    lens.push(body.len - mark); mark = body.len;
+    to_bytes(g_paths, body);
+    lens.push(body.len - mark); mark = body.len;
+    to_bytes(g_post, body);
+    lens.push(body.len - mark); mark = body.len;
+    to_bytes(g_standing, body);
+    lens.push(body.len - mark);
     var img: u8[>..] = [];
-    img.append("{\"r\":\"index\",\"fmt\":1,\"base_log_len\":");
-    json::format_int(img, base);
-    img.append(",\"base_tail_sha\":\"");
-    sha_text(g_logbuf[tail..base], img);
-    img.append("\"}\n");
-    state_records(st, img);
-    return write_file_atomic(idx_path, img);
+    img.append("BPIX");
+    format_uleb(img, 2);
+    format_uleb(img, base);
+    format_uleb(img, sha.len);
+    img.append(sha);
+    format_uleb(img, flag_of(st.has_baseline));
+    format_uleb(img, st.baseline.off);
+    format_uleb(img, st.baseline.len);
+    format_uleb(img, flag_of(st.has_ctx));
+    format_uleb(img, st.ctx_from);
+    format_uleb(img, st.ctx_n);
+    format_uleb(img, lens.len);
+    for k in lens.len { format_uleb(img, lens[k]); }
+    let h = hash(body);
+    for k in 8 { img.push(((h >> (8 * k)) & 255) as u8); }
+    img.append(body);
+    let ok = write_file_atomic(idx_path, img);
+    if ok { g_idx_current = true; }
+    return ok;
 }
 
 // Loads tg.idx when it describes a prefix of the log. False (with the state
@@ -550,31 +715,79 @@ fn write_index(st: Store&, idx_path: const u8[:]) -> bool {
 fn load_index(st: Store&, idx_path: const u8[:], log: const u8[:]) -> bool {
     var img: u8[>..] = [];
     if !read_file(idx_path, img) { return false; }
-    let parts = split(img, '\n');
-    if parts.len < 2 { return false; }
-    var doc: json::Node[>..] = [];
-    var decoded: u8[>..] = [];
-    let head, herr = json::parse(parts[0], doc, decoded);
-    if !head { return false; }
-    let fmt, fok = json::as_i64(json::member(head, "fmt"));
-    let base, bok = json::as_i64(json::member(head, "base_log_len"));
-    let sha, sok = json::as_string(json::member(head, "base_tail_sha"));
-    if !fok || fmt != 1 || !bok || !sok || base < 0 || base > log.len { return false; }
+    if img.len < 4 || img[..4] != "BPIX" { return false; }
+    var pos: i64 = 4;
+    let fmt, f_ok = take_uleb(img, pos);
+    if !f_ok || fmt != 2 { return false; }
+    let base, b_ok = take_uleb(img, pos);
+    if !b_ok || base < 0 || base > log.len { return false; }
+    let sl, s_ok = take_uleb(img, pos);
+    if !s_ok || sl < 0 || sl > img.len - pos { return false; }
+    let sha = img[pos .. pos + sl];
+    pos += sl;
     let tail = if base > 1024 { base - 1024 } else { 0 };
     var want: u8[>..] = [];
     sha_text(log[tail..base], want);
     if want != sha { return false; }
-    store_reset(st);
-    g_logbuf.append(log);
-    for i in parts.len - 1 {
-        let p = parts[i + 1];
-        if p.len == 0 { continue; }
-        if !apply_line(st, p) {
-            store_reset(st);
-            return false;
-        }
+    let has_b, hb_ok = take_uleb(img, pos);
+    let bo, bo_ok = take_uleb(img, pos);
+    let bl, bl_ok = take_uleb(img, pos);
+    let has_c, hc_ok = take_uleb(img, pos);
+    let cf, cf_ok = take_uleb(img, pos);
+    let cn, cn_ok = take_uleb(img, pos);
+    let nsec, n_ok = take_uleb(img, pos);
+    if !(hb_ok && bo_ok && bl_ok && hc_ok && cf_ok && cn_ok && n_ok) { return false; }
+    if has_b > 1 || has_c > 1 || nsec != 8 { return false; }
+    var lens: i64[>..] = [];
+    var total: i64 = 0;
+    for k in 8 {
+        let len, ok = take_uleb(img, pos);
+        if !ok || len < 0 || len > img.len { return false; }
+        lens.push(len);
+        total += len;
     }
+    if pos + 8 > img.len { return false; }
+    var stored: u64 = 0;
+    for k in 8 { stored = stored | ((img[pos + k] as u64) << (8 * k as u64)); }
+    pos += 8;
+    if total != img.len - pos { return false; }
+    let body = img[pos ..];
+    if hash(body) != stored { return false; }
+    var at: i64 = 0;
+    let arena, a_ok = from_bytes<u8[>..]>(body[at .. at + lens[0]]); at += lens[0];
+    let kvs, k_ok = from_bytes<Kv[>..]>(body[at .. at + lens[1]]); at += lens[1];
+    let inps, i_ok = from_bytes<Inp[>..]>(body[at .. at + lens[2]]); at += lens[2];
+    let obs, o_ok = from_bytes<Ob[>..]>(body[at .. at + lens[3]]); at += lens[3];
+    let tasks, t_ok = from_bytes<Task[>..]>(body[at .. at + lens[4]]); at += lens[4];
+    let paths, p_ok = from_bytes<PathE[>..]>(body[at .. at + lens[5]]); at += lens[5];
+    let posts, q_ok = from_bytes<Post[>..]>(body[at .. at + lens[6]]); at += lens[6];
+    let standing, s2_ok = from_bytes<i64[>..]>(body[at .. at + lens[7]]);
+    if !(a_ok && k_ok && i_ok && o_ok && t_ok && p_ok && q_ok && s2_ok) { return false; }
+    store_reset(st);
+    g_arena = copy(arena);
+    g_kvs = copy(kvs);
+    g_inps = copy(inps);
+    g_obs = copy(obs);
+    g_tasks = copy(tasks);
+    g_paths = copy(paths);
+    g_post = copy(posts);
+    g_standing = copy(standing);
+    st.baseline = Span { off: bo, len: bl };
+    st.has_baseline = has_b == 1;
+    st.ctx_from = cf;
+    st.ctx_n = cn;
+    st.has_ctx = has_c == 1;
+    g_logbuf.append(log);
+    if !index_ok(st) {
+        store_reset(st);
+        return false;
+    }
+    var live: i64 = 0;
+    for i in g_tasks.len { if task_live(i) { live += 1; } }
+    g_live = live;
+    rebuild_dicts(st);
     g_applied = base;
+    g_idx_current = true;
     let applied, ok = apply_from(st, g_logbuf, base);
     g_applied = applied;
     return ok;

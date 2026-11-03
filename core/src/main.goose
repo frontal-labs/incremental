@@ -59,8 +59,11 @@ fn read_input(path: const u8[:], out: u8[>..]&) -> bool {
 fn open_store(st: Store&, sess: Session&) -> i64 {
     var log: u8[>..] = [];
     if !read_file(sess.log_path, log) { return E_STORE; }
-    if load_index(st, sess.idx_path, log) { return 0; }
-    if !load_log(st, log) { return E_STORE; }
+    if !load_index(st, sess.idx_path, log) {
+        if !load_log(st, log) { return E_STORE; }
+    }
+    // The state now holds exactly the log as read: the first request need not read it again.
+    mark_log(sess.log_path);
     return 0;
 }
 
