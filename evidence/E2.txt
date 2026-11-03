@@ -1,0 +1,16 @@
+# E2: core engine (Goose)
+Command: make test-core test-policy test-protocol loc
+Date: 2026-11-03T12:54:40Z
+Commit: uncommitted (base 7e87140)
+--- output (last 10 lines) ---
+# todo 0
+# duration_ms 1069.577708
+PASS test-core
+cases: 40 pass, 0 fail, 0 skip
+PASS test-policy
+PASS test-policy
+cases: 4 pass, 0 fail, 0 skip
+PASS test-policy
+PASS test-protocol
+    1892
+PASS loc

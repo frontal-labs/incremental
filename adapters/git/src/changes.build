@@ -1,0 +1,2 @@
+// Sidecar for the git change source: runs git and captures its output.
+c_sources = ["git.c"];
