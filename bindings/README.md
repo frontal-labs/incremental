@@ -1,1 +1,47 @@
-# Dataplane Bindings
+# Backplane Bindings
+
+Client bindings for backplane Protocol v1. Bindings are thin clients over the protocol — all engine logic lives in `core/`. Every binding speaks JSON Lines on stdio to a `backplane serve` instance.
+
+## Bindings
+
+| Binding | Package | Language | Entry point |
+|---|---|---|---|
+| Node | `@backplane/client` | TypeScript | `bindings/node/src/` |
+| Python | `backplane` | Python | `bindings/python/src/` |
+| Rust | `backplane` | Rust | `bindings/rust/src/` |
+
+## Running the tests
+
+From the repo root (requires `make build` for the engine):
+
+```sh
+make test-bindings  # TypeScript client: 84 pass, 2 intentional skips; 34/34 expressible plans byte-identical to the CLI
+make test-python    # Python client: 55 tests pass, 36/36 query cases byte-equal to serve
+make test-rust      # Rust client: cargo test
+```
+
+Or run each binding directly:
+
+```sh
+cd bindings/node  && npm test          # tsc -b && node --test dist/tests/*.test.js
+cd bindings/python && python3 -m unittest discover -s tests -t .
+cd bindings/rust && cargo test
+```
+
+## Binding notes
+
+- **Node client (`@backplane/client`)**: typed Protocol v1 client with process supervision (`hello`, `observe`, `observe_many`, `affected`, `explain`, `stats`, `ping`, `shutdown`). Build with `npm run build` (tsc). Used by `mcp/` and the adapters.
+- **Python client**: `pyproject.toml`-based package under `bindings/python/src`, tests under `bindings/python/tests`. Requires Python 3.10+.
+- **Rust client**: spawns the `backplane` binary and speaks Protocol v1 over stdio. Uses `serde_json` with `preserve_order`. Edition 2021. See `bindings/rust/Cargo.toml`.
+
+Python binding details are also in `spec/bindings-python.md`.
+
+## Status
+
+Binding verification status is tracked in `status/BINDINGS.json` (E3 verify for TypeScript, E9 verify for Python).
+
+## Related
+
+- `spec/PROTOCOL.md` — Protocol v1 transport, methods, errors
+- `spec/POLICY.md` — plan semantics bindings rely on
+- `mcp/` — MCP server built on `@backplane/client`
