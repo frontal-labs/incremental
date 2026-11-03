@@ -46,6 +46,15 @@ struct Task { id: Span, forgotten: bool, latest: i64, chain: i64 }
 // One stat cache entry (spec 6.3, 7.6).
 struct CEnt { path: Span, size: i64, mtime: i64, hash: Span }
 
+// Reverse indexes (spec 6.5). A posting says that input inp of observation obs
+// sits on the path of its list. Postings of one list form a linked list
+// through next (an index into g_post, -1 at the end).
+struct Post { obs: i64, inp: i64, next: i64 }
+
+// A path with the heads of its three lists: rd readers (file and declared
+// inputs), ls dir listers, pr probers. chain links paths with the same hash.
+struct PathE { p: Span, chain: i64, rd: i64, ls: i64, pr: i64 }
+
 // The resizable collections are globals: a struct may hold at most one
 // resizable value, and it must be its last field (spec 3.4).
 var g_arena: u8[>..] = [];
@@ -60,6 +69,16 @@ var g_logbuf: u8[>..] = [];
 // Bytes of g_logbuf whose complete lines are applied to the state.
 var g_applied: i64 = 0;
 var g_cache: CEnt[>..] = [];
+// Path table and the postings of every observation's path inputs.
+var g_paths: PathE[>..] = [];
+var g_post: Post[>..] = [];
+// Hash of a path -> the newest path index with that hash.
+var g_path_head: dictionary<u64, i64> = dictionary<u64, i64> {};
+// Observations that can give a reason without a change: dirty, failed, or
+// with env inputs. Entries that are no longer live are dropped at query time.
+var g_standing: i64[>..] = [];
+// Number of tasks that are live (latest observation, not forgotten).
+var g_live: i64 = 0;
 // Size and mtime of the log as last read, see refresh_log.
 var g_log_mtime: i64 = 0;
 var g_stat_known: bool = false;
@@ -79,6 +98,11 @@ fn store_reset(st: Store&) {
     g_obs.clear();
     g_tasks.clear();
     g_task_head.clear();
+    g_paths.clear();
+    g_post.clear();
+    g_path_head.clear();
+    g_standing.clear();
+    g_live = 0;
     g_logbuf.clear();
     g_applied = 0;
     st.baseline = Span { off: 0, len: 0 };
@@ -100,6 +124,11 @@ fn text(st: Store&, s: Span) -> const u8[:] {
 
 fn same(st: Store&, s: Span, t: const u8[:]) -> bool {
     return s.len == t.len && text(st, s) == t;
+}
+
+// A task is live when its latest observation stands and it is not forgotten.
+fn task_live(ti: i64) -> bool {
+    return g_tasks[ti].latest >= 0 && !g_tasks[ti].forgotten;
 }
 
 // Task lookup by id: a hash of the id gives the head of a chain of tasks
@@ -197,6 +226,7 @@ fn add_obs(st: Store&, o: json::Node?, line: const u8[:]) -> bool {
     let cfrom, cn = read_pairs(st, json::member(o, "context"), false);
     let ti = task_index(st, tid);
     let ifrom = g_inps.len;
+    var env_any = false;
     let inputs = json::member(o, "inputs");
     if inputs {
         json::each(inputs) { inp =>
@@ -225,6 +255,7 @@ fn add_obs(st: Store&, o: json::Node?, line: const u8[:]) -> bool {
             let hs = if hok { put(st, h) } else { Span { off: 0, len: 0 } };
             let ns = if nok { put(st, nm) } else { Span { off: 0, len: 0 } };
             let vs = if vok { put(st, vh) } else { Span { off: 0, len: 0 } };
+            if kind == 3 || kind == 4 { env_any = true; }
             g_inps.push(Inp { kind: kind, path: ps, hash: hs, name: ns, vh: vs,
                 env_from: efrom, env_n: en, has_snap: snap });
         };
@@ -234,12 +265,103 @@ fn add_obs(st: Store&, o: json::Node?, line: const u8[:]) -> bool {
     let ls = put(st, line);
     g_obs.push(Ob { task: ti, ctx_from: cfrom, ctx_n: cn, baseline: bs, dirty: dok && dirty,
         outcome: outcome, inp_from: ifrom, inp_n: ni, line: ls });
-    g_tasks[ti].latest = g_obs.len - 1;
+    let oi = g_obs.len - 1;
+    for k in ni { index_input(st, oi, ifrom + k); }
+    if dok && dirty || outcome == 1 || outcome == 2 || env_any { g_standing.push(oi); }
+    if !task_live(ti) { g_live += 1; }
+    g_tasks[ti].latest = oi;
     g_tasks[ti].forgotten = false;
     st.ctx_from = cfrom;
     st.ctx_n = cn;
     st.has_ctx = true;
     return true;
+}
+
+// ---- reverse indexes (spec 6.5) --------------------------------------------
+
+// The path entry for the bytes of s, or -1 when no observation names it.
+fn find_path(st: Store&, p: const u8[:]) -> i64 {
+    let h = hash(p);
+    let head = g_path_head.get(h);
+    if !head { return -1; }
+    var i = head;
+    while i >= 0 {
+        if same(st, g_paths[i].p, p) { return i; }
+        i = g_paths[i].chain;
+    }
+    return -1;
+}
+
+// The path entry for s, created when missing. s must stay valid (arena span).
+fn path_index(st: Store&, s: Span) -> i64 {
+    let b = text(st, s);
+    let i = find_path(st, b);
+    if i >= 0 { return i; }
+    let h = hash(b);
+    let head = g_path_head.get(h);
+    var next: i64 = -1;
+    if head { next = head; }
+    g_paths.push(PathE { p: s, chain: next, rd: -1, ls: -1, pr: -1 });
+    g_path_head.insert(h, g_paths.len - 1);
+    return g_paths.len - 1;
+}
+
+// Adds posting for input ii of observation oi to the list its kind names.
+fn index_input(st: Store&, oi: i64, ii: i64) {
+    let kind = g_inps[ii].kind;
+    if kind == 0 || kind == 5 {
+        let pi = path_index(st, g_inps[ii].path);
+        g_post.push(Post { obs: oi, inp: ii, next: g_paths[pi].rd });
+        g_paths[pi].rd = g_post.len - 1;
+    } else if kind == 1 {
+        let pi = path_index(st, g_inps[ii].path);
+        g_post.push(Post { obs: oi, inp: ii, next: g_paths[pi].ls });
+        g_paths[pi].ls = g_post.len - 1;
+    } else if kind == 2 {
+        let pi = path_index(st, g_inps[ii].path);
+        g_post.push(Post { obs: oi, inp: ii, next: g_paths[pi].pr });
+        g_paths[pi].pr = g_post.len - 1;
+    }
+}
+
+// True when observation oi is the latest of a task that is not forgotten.
+// Once false it stays false: a task's older observations never come back.
+fn obs_live(oi: i64) -> bool {
+    let t = g_obs[oi].task;
+    return !g_tasks[t].forgotten && g_tasks[t].latest == oi;
+}
+
+fn list_head(pi: i64, which: i64) -> i64 {
+    if which == 0 { return g_paths[pi].rd; }
+    if which == 1 { return g_paths[pi].ls; }
+    return g_paths[pi].pr;
+}
+
+fn set_list_head(pi: i64, which: i64, v: i64) {
+    if which == 0 { g_paths[pi].rd = v; }
+    else if which == 1 { g_paths[pi].ls = v; }
+    else { g_paths[pi].pr = v; }
+}
+
+// Appends the live postings of list which (0 readers, 1 listers, 2 probers)
+// of path entry pi to out. Dead postings are unlinked as they are met.
+fn gather(pi: i64, which: i64, out: Post[>..]&) {
+    out.clear();
+    if pi < 0 { return; }
+    var prev: i64 = -1;
+    var cur = list_head(pi, which);
+    while cur >= 0 {
+        let e = g_post[cur];
+        if obs_live(e.obs) {
+            out.push(e);
+            prev = cur;
+        } else if prev < 0 {
+            set_list_head(pi, which, e.next);
+        } else {
+            g_post[prev].next = e.next;
+        }
+        cur = e.next;
+    }
 }
 
 // Applies one parsed record. Unknown record types are skipped (spec G-e).
@@ -252,7 +374,10 @@ fn apply_record(st: Store&, rec: json::Node?, line: const u8[:]) -> bool {
         let tid, ok = json::as_string(json::member(rec, "task"));
         if !ok { return false; }
         let ti = find_task(st, tid);
-        if ti >= 0 { g_tasks[ti].forgotten = true; }
+        if ti >= 0 {
+            if task_live(ti) { g_live -= 1; }
+            g_tasks[ti].forgotten = true;
+        }
         return true;
     }
     if r == "baseline" {

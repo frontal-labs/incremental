@@ -272,7 +272,16 @@ fn dispatch(sess: Session&, st: Store&, method: const u8[:], params: json::Node?
         let exp, eok = json::as_string(json::member(params, "expected"));
         var matches = !eok;
         if st.has_baseline { matches = eok && text(st, st.baseline) == exp; }
-        if !matches { return fail(E_BASELINE, "expected baseline does not match the store", body); }
+        if !matches {
+            // PLAN 9.1: the error carries what was expected and what the store has.
+            body.clear();
+            body.append("{\"code\":\"baseline_conflict\",\"message\":\"expected baseline does not match the store\",\"data\":{\"expected\":");
+            if eok { json::format_string(body, exp); } else { body.append("null"); }
+            body.append(",\"actual\":");
+            if st.has_baseline { json::format_string(body, text(st, st.baseline)); } else { body.append("null"); }
+            body.append("}}");
+            return E_BASELINE;
+        }
         var rec: u8[>..] = [];
         rec.append("{\"r\":\"baseline\",\"value\":");
         json::format_string(rec, to);
@@ -298,11 +307,14 @@ fn dispatch(sess: Session&, st: Store&, method: const u8[:], params: json::Node?
     }
     if method == "affected" {
         query_reset();
+        // Spans made by this query are dropped after it, so a long serve does
+        // not grow the arena per query. verify keeps its stat cache spans.
+        let mark = g_arena.len;
         var q = Query { baseline: Span { off: 0, len: 0 }, has_ctx: false, verify: false, conservative: false };
         read_query(st, params, q);
         if q.verify { load_stat_cache(st, sess.cache_path); }
         plan(st, q, sess.root, body);
-        if q.verify { save_stat_cache(st, sess.cache_path); }
+        if q.verify { save_stat_cache(st, sess.cache_path); } else { g_arena.resize(mark); }
         return 0;
     }
     if method == "explain" {
@@ -335,14 +347,10 @@ fn dispatch(sess: Session&, st: Store&, method: const u8[:], params: json::Node?
         return 0;
     }
     if method == "stats" {
-        var live: i64 = 0;
-        for i in g_tasks.len {
-            if !g_tasks[i].forgotten && g_tasks[i].latest >= 0 { live += 1; }
-        }
         body.append("{\"tasks\":");
-        json::format_int(body, live);
+        json::format_int(body, g_live);
         body.append(",\"observations\":");
-        json::format_int(body, live);
+        json::format_int(body, g_live);
         body.append(",\"baseline\":");
         if st.has_baseline { json::format_string(body, text(st, st.baseline)); } else { body.append("null"); }
         body.append(",\"graph_version\":\"");
