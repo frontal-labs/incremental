@@ -1,0 +1,9 @@
+[package]
+name = "backplane"
+version = "0.1.0"
+edition = "2021"
+description = "Rust client for backplane Protocol v1 (spawns `backplane serve`)"
+publish = false
+
+[dependencies]
+serde_json = { version = "1", features = ["preserve_order"] }

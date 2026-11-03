@@ -11,7 +11,7 @@ The backplane Model Context Protocol (MCP) server (`@backplane/mcp`). It exposes
 | `mcp/src/tools.ts` | MCP tools wrapping backplane methods (`observe`, `observe_many`, `affected`, `explain`, `stats`, `baseline`, `advance`, `forget`, `ping`, `shutdown`). |
 | `mcp/src/context.ts` | Context handling for MCP tool calls. |
 | `mcp/src/git.ts` | Git integration for change-set computation. |
-| `mcp/test/` | MCP server tests (`node --test dist/test/*.test.js`). |
+| `mcp/tests/` | MCP server tests (`node --test dist/tests/*.test.js`). |
 
 ## Running
 
@@ -20,7 +20,7 @@ The MCP server depends on `@backplane/client` (`file:../bindings/node`), so buil
 ```sh
 cd bindings/node && npm run build
 cd mcp && npm run build   # tsc -b
-cd mcp && npm test         # tsc -b && node --test dist/test/*.test.js
+cd mcp && npm test         # tsc -b && node --test dist/tests/*.test.js
 ```
 
 From the repo root:

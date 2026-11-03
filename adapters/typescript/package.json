@@ -1,0 +1,26 @@
+{
+  "name": "@backplane/typescript",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "bin": {
+    "backplane-typescript": "dist/src/run.js"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "test": "npm --prefix ../../bindings/node run build && tsc -b && node --test dist/tests/*.test.js"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@backplane/client": "file:../../bindings/node"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/node": "22.20.5"
+  }
+}

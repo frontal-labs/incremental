@@ -31,7 +31,7 @@ test-fuzz: build
 	@echo "PASS test-fuzz"
 
 test-git: build
-	@node --test adapters/git/test/*.test.mjs || { echo "FAIL test-git"; exit 1; }
+	@node --test adapters/git/tests/*.test.mjs || { echo "FAIL test-git"; exit 1; }
 	@echo "PASS test-git"
 
 check-spec: build
@@ -39,7 +39,7 @@ check-spec: build
 	@echo "PASS check-spec"
 
 test-core: build
-	@node --test core/test/*.test.mjs || { echo "FAIL test-core"; exit 1; }
+	@node --test core/tests/*.test.mjs || { echo "FAIL test-core"; exit 1; }
 	@echo "PASS test-core"
 
 test-policy: build

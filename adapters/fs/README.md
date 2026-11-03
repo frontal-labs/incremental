@@ -1,0 +1,21 @@
+# @backplane/fs
+
+Generic file-read recorder (spec/adapters/fs.md, PLAN 11.1, 11.5). It records a task's declared inputs and observes a check the caller runs. It is the base of `@backplane/process`.
+
+## What is observed
+
+- Declared paths, hashed before and after the check. They are recorded as `declared` inputs (PLAN 9.5). A missing path is recorded as `absent`, so creating it later invalidates the task.
+- A declared input that changes while the check runs makes the observation `dirty`.
+
+## What is not observed (gaps)
+
+- **Undeclared reads.** On macOS there is no supported syscall tracer, so a read that is not in `declared` is not an input and is never reported. Such a task is protected only for its declared paths.
+- **Dirty by default.** Without `complete: true` every observation is `dirty`, so the task is never skipped. Setting `complete: true` is the caller's assertion that the list is complete. It is not checked.
+- **Probes, directory listings and environment reads.** Not recorded. The context sets `caps.probes`, `caps.dirs` and `caps.env` to false, so the engine falls back on added or modified files that no task declares (P6, P7).
+- **Linux strace oracle (PLAN 11.5).** Not implemented. On this machine `strace` is not available, so no Linux path is built or tested. Without it, Linux has the same gaps as macOS.
+- **Memory-mapped reads, paths outside the root.** Not observed.
+- **Globs.** Not supported. Declared entries are literal repo-relative paths.
+
+## Tests
+
+`npm test` in this directory. Each test runs against the real engine in a scratch repository.

@@ -12,7 +12,7 @@ The backplane engine core, written in **Goose** (a Go-like systems language, see
 | `core/src/store.goose` | Store: append-only log (`tg.log`), index, lock (`tg.lock`), stat cache (`stat.cache`), verification. |
 | `core/src/native.c` / `core/src/native.goose` | Native bindings for the engine. |
 | `core/src/main.build` | Goose build descriptor. |
-| `core/test/` | Smoke and CLI tests (`node --test core/test/*.test.mjs`). |
+| `core/tests/` | Smoke and CLI tests (`node --test core/tests/*.test.mjs`). |
 | `core/dist/` | Build output: `backplane` engine binary and build logs. |
 
 ## Building

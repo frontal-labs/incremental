@@ -1,4 +1,4 @@
-// Shared helpers for the binding tests. Compiled to dist/test/helpers.js.
+// Shared helpers for the binding tests. Compiled to dist/tests/helpers.js.
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";

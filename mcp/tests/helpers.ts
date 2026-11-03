@@ -1,5 +1,5 @@
 // Scratch repositories, store seeding and a scripted MCP client over stdio.
-// Compiled to dist/test/helpers.js (not a test file: no .test suffix).
+// Compiled to dist/tests/helpers.js (not a test file: no .test suffix).
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";

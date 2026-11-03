@@ -1,0 +1,140 @@
+// @backplane/process: runs named commands as tasks and records their outcome
+// (spec/adapters/process.md, PLAN 10.4). Declared inputs are recorded by
+// @backplane/fs. The outcome is pass (exit 0), fail (non-zero exit) or error
+// (the command could not run, was killed, or timed out).
+import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { connect, defaultEngine, type backplane, type Outcome } from "@backplane/client";
+import { recordFiles, type CheckResult, type FileTask } from "@backplane/fs";
+
+export interface TaskConfig {
+  // argv, not a shell line. The first entry is the program.
+  command: string[];
+  // Working directory, relative to the repository root. Default: the root.
+  cwd?: string;
+  // Repo-relative input paths the command is known to read.
+  declared?: string[];
+  // The caller asserts that `declared` is complete (see @backplane/fs).
+  complete?: boolean;
+}
+
+export interface ProcessConfig {
+  tasks: Record<string, TaskConfig>;
+}
+
+export interface TaskRun {
+  task: string;
+  outcome: Outcome;
+  durationMs: number;
+  problem: string | null;
+  dirty: boolean;
+}
+
+export const CONFIG_FILE = "backplane-process.json";
+
+// Reads `<root>/backplane-process.json`. Throws with a message on bad shape.
+export function loadConfig(root: string): ProcessConfig {
+  const file = path.join(root, CONFIG_FILE);
+  let raw: unknown;
+  try {
+    raw = JSON.parse(readFileSync(file, "utf8"));
+  } catch (e) {
+    throw new Error(`cannot read ${file}: ${e instanceof Error ? e.message : String(e)}`);
+  }
+  const tasks = (raw as { tasks?: unknown }).tasks;
+  if (typeof tasks !== "object" || tasks === null || Array.isArray(tasks)) {
+    throw new Error(`${file} needs a "tasks" object`);
+  }
+  for (const [name, t] of Object.entries(tasks)) {
+    const c = (t as { command?: unknown }).command;
+    if (!Array.isArray(c) || c.length === 0 || !c.every((x) => typeof x === "string")) {
+      throw new Error(`task ${name} needs a non-empty "command" array of strings`);
+    }
+  }
+  return raw as ProcessConfig;
+}
+
+// Runs argv with no shell. Output goes to the caller's terminal.
+export function runCommand(command: readonly string[], cwd: string, timeoutMs: number): CheckResult {
+  const started = Date.now();
+  const [program, ...args] = command;
+  if (program === undefined) return { outcome: "error", durationMs: 0, problem: "empty command" };
+  const r = spawnSync(program, args, {
+    cwd,
+    stdio: ["ignore", "inherit", "inherit"],
+    timeout: timeoutMs,
+  });
+  const durationMs = Date.now() - started;
+  if (r.error !== undefined) {
+    const timedOut = (r.error as NodeJS.ErrnoException).code === "ETIMEDOUT";
+    return { outcome: "error", durationMs, problem: timedOut ? `timed out after ${timeoutMs} ms` : r.error.message };
+  }
+  if (r.signal !== null) return { outcome: "error", durationMs, problem: `killed by ${r.signal}` };
+  if (r.status === 0) return { outcome: "pass", durationMs, problem: null };
+  return { outcome: "fail", durationMs, problem: `exit ${r.status}` };
+}
+
+// Runs one task and observes it. Throws when a declared path cannot be hashed
+// or lies outside the root. No observation is recorded in that case.
+export async function runTask(
+  client: backplane,
+  root: string,
+  name: string,
+  cfg: TaskConfig,
+  opts: { baseline: string; timeoutMs: number },
+): Promise<TaskRun> {
+  const spec: FileTask = {
+    task: name,
+    root,
+    declared: cfg.declared ?? [],
+    complete: cfg.complete === true,
+  };
+  const cwd = path.resolve(root, cfg.cwd ?? ".");
+  const rec = await recordFiles(client, spec, opts.baseline, () => runCommand(cfg.command, cwd, opts.timeoutMs));
+  return { task: name, outcome: rec.result.outcome, durationMs: rec.result.durationMs, problem: rec.result.problem, dirty: rec.dirty };
+}
+
+export interface RunOptions {
+  root: string;
+  store: string;
+  // Task names to run. Default: every task in the config.
+  names?: string[];
+  timeoutMs: number;
+}
+
+// Connects to the engine, runs the selected tasks in config order, and closes.
+// A task that cannot be prepared is reported as an error, not observed.
+export async function runTasks(opts: RunOptions): Promise<TaskRun[]> {
+  const root = path.resolve(opts.root);
+  const store = path.resolve(opts.store);
+  const config = loadConfig(root);
+  const names = opts.names ?? Object.keys(config.tasks);
+  for (const n of names) {
+    if (config.tasks[n] === undefined) throw new Error(`no task named ${n} in ${CONFIG_FILE}`);
+  }
+  const client = await connect({ store, root, command: [defaultEngine(), "serve"], timeoutMs: 60_000 });
+  try {
+    const baseline = (await client.baseline()).baseline ?? headOf(root);
+    const results: TaskRun[] = [];
+    for (const name of names) {
+      const cfg = config.tasks[name];
+      if (cfg === undefined) continue;
+      try {
+        results.push(await runTask(client, root, name, cfg, { baseline, timeoutMs: opts.timeoutMs }));
+      } catch (e) {
+        results.push({ task: name, outcome: "error", durationMs: 0, problem: e instanceof Error ? e.message : String(e), dirty: true });
+      }
+    }
+    return results;
+  } finally {
+    await client.close();
+  }
+}
+
+// HEAD of the repository, used as the baseline before the store has one.
+function headOf(root: string): string {
+  const r = spawnSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" });
+  if (r.status !== 0) throw new Error("the store has no baseline and the repository has no HEAD");
+  return r.stdout.trim();
+}

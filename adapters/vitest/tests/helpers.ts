@@ -1,4 +1,4 @@
-// Shared helpers for the adapter tests. Compiled to dist/test/helpers.js.
+// Shared helpers for the adapter tests. Compiled to dist/tests/helpers.js.
 import { spawnSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
