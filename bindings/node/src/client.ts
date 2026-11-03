@@ -1,2 +1,2 @@
-export class AffectraClient {}
-export function connect(){ return new AffectraClient(); }
+export class backplaneClient {}
+export function connect(){ return new backplaneClient(); }

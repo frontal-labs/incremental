@@ -1,4 +1,4 @@
-# Affectra Protocol v1
+# backplane Protocol v1
 
 See PLAN.md §9 for normative behavior.
 

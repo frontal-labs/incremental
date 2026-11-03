@@ -1,6 +1,6 @@
-# Affectra: Incremental Dependency Engine. Agent Build Spec v4
+# backplane: Incremental Dependency Engine. Agent Build Spec v4
 
-Spec v4 · 2026-11-03 · engine name: **Affectra** (working name, see 1.4) · core: TypeScript (default, see D-14) · protocol: Affectra Protocol v1 · first adapter: Vitest · platforms: Linux (gate, arm64 container), macOS and Linux (development)
+Spec v4 · 2026-11-03 · engine name: **backplane** (working name, see 1.4) · core: TypeScript (default, see D-14) · protocol: backplane Protocol v1 · first adapter: Vitest · platforms: Linux (gate, arm64 container), macOS and Linux (development)
 
 > **This file is the single source of truth.** Canonical path: `plans/PLAN.md`. The previous test-only spec is archived at `plans/archive/PLAN-tg-v3.1.md` and is not a source for new work. `MUST` and `MUST NOT` have no discretion. `SHOULD` may be overridden only with a `DECISIONS.md` entry giving the reason.
 
@@ -38,9 +38,9 @@ In single-agent mode one agent plays them in order. The conformance cases are co
 
 ## 1. Mission, scope, name
 
-### 1.1 What Affectra is
+### 1.1 What backplane is
 
-Affectra is an **incremental dependency engine**. It records what each task reads, lists, probes and writes, stores those observations as content-hashed records, and answers one question: *given these changes since the last known-good baseline, which tasks are invalid, and why?*
+backplane is an **incremental dependency engine**. It records what each task reads, lists, probes and writes, stores those observations as content-hashed records, and answers one question: *given these changes since the last known-good baseline, which tasks are invalid, and why?*
 
 The engine has no opinion about tests, builds or CI. Those are **adapters**. The engine exposes a stable protocol, so any language, runner or agent can use it.
 
@@ -63,14 +63,14 @@ The engine has no opinion about tests, builds or CI. Those are **adapters**. The
 **Non-goals for v1:**
 
 - Running tasks as a product. Adapters run them, and the engine only decides what needs running.
-- Build caching and artifact storage. Turborepo and Nx own that. Affectra may later provide build-input observations to them (section 4.3), but not outputs.
+- Build caching and artifact storage. Turborepo and Nx own that. backplane may later provide build-input observations to them (section 4.3), but not outputs.
 - Production observability, distributed execution, Windows, a GUI.
 - Remote or shared stores beyond the per-worktree default (D-11).
 - Non-file inputs such as time, network and randomness, which are recorded as a stated limit (section 9.6).
 
 ### 1.4 Name
 
-**Affectra** is the working name. As of 2026-11-03, npm has no package named `affectra`, and the scope `@affectra` was not checked. Trademark, GitHub organization and domain availability were **not** checked; that is milestone E0 step 1. All package names and CLI names are defined in one place (section 10.5), so a rename changes one file.
+**backplane** is the working name. As of 2026-11-03, npm has no package named `affectra`, and the scope `@affectra` was not checked. Trademark, GitHub organization and domain availability were **not** checked; that is milestone E0 step 1. All package names and CLI names are defined in one place (section 10.5), so a rename changes one file.
 
 ---
 
@@ -151,7 +151,7 @@ Consequences the design enforces:
   humans (CLI)         │       git     (change source)        CLI  affectra
                        ▼           │                              │
                ┌──────────────────────────────────────────────────────┐
-               │   Affectra Protocol v1  (JSON Lines over stdio)      │
+               │   backplane Protocol v1  (JSON Lines over stdio)      │
                └──────────────────────────────────────────────────────┘
                                        │
                ┌──────────────────────────────────────────────────────┐
@@ -588,7 +588,7 @@ Each request has a 10-second server-side budget. Exceeding it returns `timeout` 
 Package `@affectra/client` (name per section 1.4). It spawns `affectra serve`, or connects to a given command, and exposes:
 
 ```ts
-export interface Affectra {
+export interface backplane {
   readonly protocol: 1;
   hello(): Promise<Hello>;
   observe(obs: Observation): Promise<{ accepted: true }>;
@@ -603,7 +603,7 @@ export interface Affectra {
   close(): Promise<void>;
 }
 
-export function connect(opts?: ConnectOptions): Promise<Affectra>;
+export function connect(opts?: ConnectOptions): Promise<backplane>;
 
 export interface ConnectOptions {
   store?: string;                 // default: $AFFECTRA_STORE, then <repo>/.affectra
@@ -623,7 +623,7 @@ export interface AffectedOptions {
 Behavior the client MUST implement:
 
 - Matches responses by `id`, enforces timeouts, and restarts the server if it dies (with `restart: true`). A restart re-runs `hello`.
-- Rejects with a typed `AffectraError` carrying `code` and `data`. It never resolves to a partial plan.
+- Rejects with a typed `backplaneError` carrying `code` and `data`. It never resolves to a partial plan.
 - Serializes writes to the server. Concurrent calls are queued in order.
 
 ### 10.2 CLI
@@ -672,8 +672,8 @@ Exit code 7 means "ran, but the baseline was not advanced". It is distinct from 
 
 | Thing | Name |
 |---|---|
-| Engine | Affectra |
-| Protocol | Affectra Protocol v1 |
+| Engine | backplane |
+| Protocol | backplane Protocol v1 |
 | CLI | `affectra` |
 | Node package | `@affectra/client` |
 | Python package | `affectra` |
@@ -1108,7 +1108,7 @@ Each milestone has **Owner**, **Depends**, **Outputs** (exact paths), **Steps**,
 
 **Steps**
 
-1. Implement section 10.1: `connect`, all methods, `AffectraError`.
+1. Implement section 10.1: `connect`, all methods, `backplaneError`.
 2. Process supervision: spawn, `hello`, restart on death (with `restart: true`), request timeouts, request queue.
 3. Run the conformance suite through the Node client as well as the CLI, with the results compared byte for byte.
 
@@ -1398,7 +1398,7 @@ Canonical file: `plans/PLAN.md`. Run section 0.2 first.
 **Single agent (plays all roles in order):**
 
 ```
-You are building Affectra, an incremental dependency engine, from plans/PLAN.md (spec v4).
+You are building backplane, an incremental dependency engine, from plans/PLAN.md (spec v4).
 Read sections 0, 1, 2, 3, 14 fully. Then run E0 (repo setup, name check, pins, competitor recon),
 then milestones E1 to E4 in order, then stop at GATE 0 and report its result before continuing.
 Rules: a milestone is done only when its verify command passes, output is saved to
@@ -1411,7 +1411,7 @@ format exactly. Do not start E5 without a Gate 0 CONTINUE from the human.
 **Spec/Conformance agent:**
 
 ```
-You are the Spec/Conformance agent for Affectra (plans/PLAN.md v4). You own spec/, conformance/,
+You are the Spec/Conformance agent for backplane (plans/PLAN.md v4). You own spec/, conformance/,
 Makefile, Dockerfile.linux and sign-offs. Do E0 steps 1 and 3 (name check, competitor recon), then
 E1 in the order given in section 15.4: protocol and schemas, conformance cases C01 to C40 written by
 hand, reference policy, runner, validate.mjs. Commit cases before any other role starts code. After
@@ -1422,7 +1422,7 @@ command, and write evidence/<id>.signoff.txt. Never accept a result you have not
 **Core agent:**
 
 ```
-You are the Core agent for Affectra (plans/PLAN.md v4). You own core/ and cli/. Do E2 against the
+You are the Core agent for backplane (plans/PLAN.md v4). You own core/ and cli/. Do E2 against the
 frozen protocol and conformance cases. Implement section 8 exactly, rules P0 to P11. Do not edit spec/
 or conformance/cases/; file change requests. Every skip decision must have a certificate (3.3).
 Stop per section 14 rather than changing the core language.
@@ -1431,15 +1431,15 @@ Stop per section 14 rather than changing the core language.
 **Bindings agent:**
 
 ```
-You are the Bindings agent for Affectra (plans/PLAN.md v4). You own bindings/. Do E3 (Node client)
+You are the Bindings agent for backplane (plans/PLAN.md v4). You own bindings/. Do E3 (Node client)
 against the protocol and the conformance suite. The client never resolves to a partial plan; it
-rejects with AffectraError. Byte-identical plans with the CLI are required. Python (E9) comes later.
+rejects with backplaneError. Byte-identical plans with the CLI are required. Python (E9) comes later.
 ```
 
 **Adapters agent:**
 
 ```
-You are the Adapters agent for Affectra (plans/PLAN.md v4). You own adapters/, mcp/, examples/. Do E4
+You are the Adapters agent for backplane (plans/PLAN.md v4). You own adapters/, mcp/, examples/. Do E4
 (Vitest recorder, planner, git source) and, after GATE 0 passes, E5 (strace oracle), E6 and E8. Read
 the pinned Vitest docs for the pool flag and prove NODE_OPTIONS reaches the forked worker before
 recording anything. The recorder MUST contain every path the strace oracle sees; oracle gaps cannot be
@@ -1449,7 +1449,7 @@ waived.
 **Bench agent:**
 
 ```
-You are the Bench agent for Affectra (plans/PLAN.md v4). You own bench/. Do the Gate 0 replay first
+You are the Bench agent for backplane (plans/PLAN.md v4). You own bench/. Do the Gate 0 replay first
 (E4 must be done): the replay driver (12.5), the rule-of-three bound, and the Gate 0 table in GATE.md.
 Then E7 after the human approves continuing. Targets are hypotheses and must not be edited after you see
 results. Publish losses.
@@ -1484,19 +1484,19 @@ results. Publish losses.
 
 ## Appendix B. Changes from the test-only spec (v3.1)
 
-| Area | v3.1 (tg) | v4 (Affectra) |
+| Area | v3.1 (tg) | v4 (backplane) |
 |---|---|---|
 | Scope | Test selection for Vitest | Generic engine; Vitest is the first adapter |
 | Unit | Test file | Task (adapter-defined id) |
 | Observed things | Files, dirs, probes, env | Same, as typed inputs (`file`, `dir`, `probe`, `env`, `env_all`, `declared`) plus outputs |
 | Soundness | Graph commit invariant | Certificate principle (3.3) and baseline invariant (3.4) |
-| Interface | `tg` CLI, `tg serve`, MCP tools | Affectra Protocol v1 with handshake, versioning and error codes; Node client; CLI; Python later |
+| Interface | `tg` CLI, `tg serve`, MCP tools | backplane Protocol v1 with handshake, versioning and error codes; Node client; CLI; Python later |
 | Core language | Goose (default) | TypeScript (default, D-14); Goose is an optional track gated by the same conformance suite |
 | Conformance | 37 scenarios for tg | 40 generic cases plus 16 Vitest adapter cases |
 | Gates | G1 to G5 | Gate 0 (kill test, before the strace oracle) and Gate 1 (G1 to G6, including binding parity) |
 | Reason codes | `reads`, `test_changed`, `no_trace`, `dirty_trace`, `recent_failure`, `stale_trace`, `env_changed`, `env_all_changed` | `reads`, `self_changed`, `no_observation`, `dirty_observation`, `failed_outcome`, `stale`, `env_changed`, `env_all_changed`, `declared`; fallback codes renamed (`unobserved_input`, `context_changed`, `baseline_mismatch`, `context_missing`) |
 | Platform | Linux gate, arm64 container | Same; now stated as a gate prerequisite with a stop rule |
-| Naming | `tg`, `.tg/`, `tg.config.json` | Affectra (working name), section 10.5 |
+| Naming | `tg`, `.tg/`, `tg.config.json` | backplane (working name), section 10.5 |
 
 ---
 
