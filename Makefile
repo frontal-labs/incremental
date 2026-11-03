@@ -55,7 +55,7 @@ test-bindings: build
 	@echo "PASS test-bindings"
 
 test-vitest: build
-	@cd adapters/vitest && npm test >../../core/dist/test-vitest.log 2>&1 || { tail -30 ../../core/dist/test-vitest.log; echo "FAIL test-vitest"; exit 1; }
+	@cd adapters/vitest && npm test >../../core/dist/test-vitest.log 2>&1 || { grep -n "^not ok" -A14 ../../core/dist/test-vitest.log | cut -c1-300 | head -120; echo "FAIL test-vitest"; exit 1; }
 	@echo "PASS test-vitest"
 
 test-e2e: test-vitest
