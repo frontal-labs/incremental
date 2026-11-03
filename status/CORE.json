@@ -2,5 +2,5 @@
   "id": "E2",
   "state": "done",
   "evidence": "evidence/E2.txt",
-  "notes": "Signed off by the user's instruction. All 40 cases; M2 met on a same-day baseline; fresh-clone verification pending the toolchain fetch."
+  "notes": "Signed off by the user's instruction. All 40 cases; M2 met on a same-day baseline. Fresh-clone verification passed (DECISIONS.md)."
 }
