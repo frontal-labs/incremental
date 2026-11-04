@@ -6,12 +6,17 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
+import { createRequire } from "node:module";
 import { connect, defaultEngine, type backplane } from "@backplane/client";
 import { contextFor } from "@backplane/fs";
 import { main } from "../src/cli.js";
 import { runTasks, type TaskConfig } from "../src/index.js";
 
 const NODE = process.execPath;
+const requireStrace = createRequire(import.meta.url);
+
+// Linux only: the strace oracle is exercised here; on macOS this test skips.
+const linux = process.platform === "linux" ? test : test.skip;
 
 interface Fixture {
   base: string;
@@ -160,5 +165,31 @@ test("the CLI exits 0 when every task passes and 1 when one fails", async () => 
   } finally {
     cleanup(pass);
     cleanup(fail);
+  }
+});
+
+linux("oracle: a strace-traced command records its file reads as inputs", async () => {
+  const { runOracle } = requireStrace("@backplane/strace") as {
+    runOracle: (command: string[], opts: unknown) => Promise<unknown>;
+  };
+  const f = await fixture({
+    reader: { command: [NODE, "-e", "require('fs').readFileSync('a.txt')"], oracle: true },
+  });
+  try {
+    const [r] = await runTasks({ root: f.root, store: f.store, timeoutMs: 60_000, runOracle: runOracle as any });
+    assert.equal(r?.outcome, "pass");
+    const ex = await withClient(f, (c) => c.explain("reader"));
+    assert.equal(ex.observed, true);
+    assert.equal(ex.inputs, 1, "the traced read of a.txt is an input");
+    const stored = (await withClient(f, (c) => c.baseline())).baseline ?? "";
+    const plan = await withClient(f, (c) =>
+      c.affected(
+        { baseline: stored, changes: [{ path: "a.txt", status: "modified" }] },
+        { baseline: stored, context: contextFor(), declared_tasks: ["reader"] },
+      ),
+    );
+    assert.deepEqual(plan.tasks, [{ id: "reader", reasons: ["reads:a.txt"] }]);
+  } finally {
+    cleanup(f);
   }
 });

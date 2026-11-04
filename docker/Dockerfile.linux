@@ -5,7 +5,7 @@
 FROM --platform=linux/amd64 node:22-bookworm
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends git python3 make curl ca-certificates tar build-essential \
+ && apt-get install -y --no-install-recommends git python3 make curl ca-certificates tar build-essential strace \
  && rm -rf /var/lib/apt/lists/*
 
 # Pinned to the release's published SHA-256 (same digest as scripts/fetch-goose.sh).
@@ -23,6 +23,6 @@ WORKDIR /app
 COPY . /app
 
 # Start from clean node_modules: a leftover pnpm symlink would survive npm install.
-RUN for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/biome adapters/clippy adapters/bazel adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbopack adapters/watcher mcp; do rm -rf "$d/node_modules" && (cd "$d" && npm install --no-audit --no-fund); done
+RUN for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/strace adapters/biome adapters/clippy adapters/bazel adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbopack adapters/watcher mcp; do rm -rf "$d/node_modules" && (cd "$d" && npm install --no-audit --no-fund); done
 
 CMD ["make", "all-tests", "test-python", "test-git", "test-fuzz"]

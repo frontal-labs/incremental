@@ -6,7 +6,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { connect, defaultEngine, type backplane, type Outcome } from "@backplane/client";
-import { recordFiles, type CheckResult, type FileTask } from "@backplane/fs";
+import { recordFiles, recordOracle, type CheckResult, type FileTask, type OracleFileTask, type OracleRun } from "@backplane/fs";
 
 export interface TaskConfig {
   // argv, not a shell line. The first entry is the program.
@@ -17,6 +17,10 @@ export interface TaskConfig {
   declared?: string[];
   // The caller asserts that `declared` is complete (see @backplane/fs).
   complete?: boolean;
+  // Run the command under the strace oracle and record its observed files,
+  // dirs and probes instead of relying on declared inputs. Linux only;
+  // ignored on other platforms (see @backplane/fs oracleContext).
+  oracle?: boolean;
 }
 
 export interface ProcessConfig {
@@ -83,7 +87,23 @@ export async function runTask(
   name: string,
   cfg: TaskConfig,
   opts: { baseline: string; timeoutMs: number },
+  runOracle?: OracleRun,
 ): Promise<TaskRun> {
+  if (cfg.oracle === true) {
+    if (process.platform !== "linux") throw new Error("the strace oracle is Linux-only");
+    if (runOracle === undefined) throw new Error("oracle: no strace runner wired to runTasks");
+    const spec: OracleFileTask = {
+      task: name,
+      root,
+      declared: [],
+      complete: true,
+      command: cfg.command,
+      cwd: cfg.cwd,
+      timeoutMs: opts.timeoutMs,
+    };
+    const rec = await recordOracle(client, spec, opts.baseline, runOracle);
+    return { task: name, outcome: rec.result.outcome, durationMs: rec.result.durationMs, problem: rec.result.problem, dirty: rec.dirty };
+  }
   const spec: FileTask = {
     task: name,
     root,
@@ -101,6 +121,9 @@ export interface RunOptions {
   // Task names to run. Default: every task in the config.
   names?: string[];
   timeoutMs: number;
+  // The strace oracle runner (PLAN §11.5). Required when a task sets
+  // `oracle: true`; only used on Linux.
+  runOracle?: OracleRun;
 }
 
 // Connects to the engine, runs the selected tasks in config order, and closes.
@@ -121,7 +144,7 @@ export async function runTasks(opts: RunOptions): Promise<TaskRun[]> {
       const cfg = config.tasks[name];
       if (cfg === undefined) continue;
       try {
-        results.push(await runTask(client, root, name, cfg, { baseline, timeoutMs: opts.timeoutMs }));
+        results.push(await runTask(client, root, name, cfg, { baseline, timeoutMs: opts.timeoutMs }, opts.runOracle));
       } catch (e) {
         results.push({ task: name, outcome: "error", durationMs: 0, problem: e instanceof Error ? e.message : String(e), dirty: true });
       }

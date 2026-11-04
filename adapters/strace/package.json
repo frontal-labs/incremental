@@ -1,0 +1,20 @@
+{
+  "name": "@backplane/strace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/src/oracle.js",
+  "types": "dist/src/oracle.d.ts",
+  "scripts": {
+    "build": "tsc-rs -b",
+    "test": "tsc-rs -b && node --test dist/tests/*.test.js"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "tsc-rs": "0.8.0"
+  }
+}

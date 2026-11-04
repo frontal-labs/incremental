@@ -4,11 +4,25 @@
 // Exit codes: 0 every task passed; 1 a task failed; 2 usage error;
 // 4 engine or setup error, or a task could not run (outcome error).
 import { spawnSync } from "node:child_process";
+import { createRequire } from "node:module";
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { defaultEngine } from "@backplane/client";
-import { runTasks, type TaskRun } from "./index.js";
+import type { OracleRun } from "@backplane/fs";
+import { loadConfig, runTasks, type TaskRun } from "./index.js";
+
+const requireStrace = createRequire(import.meta.url);
+
+// @backplane/strace is Linux-only and wired dynamically: it is loaded only
+// when a task opts into `oracle: true`, and only on Linux. `require` is used
+// instead of `import()` so typecheck does not depend on the strace package
+// being built (its types are structural via @backplane/fs's OracleRun).
+async function loadOracleRunner(): Promise<OracleRun> {
+  if (process.platform !== "linux") throw new Error("the strace oracle is Linux-only");
+  const mod = requireStrace("@backplane/strace") as { runOracle: unknown };
+  return mod.runOracle as OracleRun;
+}
 
 const USAGE = "usage: backplane-process run [NAME...] [--root DIR] [--store DIR] [--timeout MS]";
 
@@ -55,7 +69,12 @@ export async function main(argv: string[]): Promise<number> {
       const init = spawnSync(defaultEngine(), ["init", "--store", store], { encoding: "utf8" });
       if (init.status !== 0) throw new Error(`cannot create the store at ${store}: ${(init.stderr || "").trim()}`);
     }
-    const results = await runTasks({ root, store, names: names.length > 0 ? names : undefined, timeoutMs });
+    const config = loadConfig(root);
+    let runOracle: OracleRun | undefined;
+    if (Object.values(config.tasks).some((t) => t.oracle === true)) {
+      runOracle = await loadOracleRunner();
+    }
+    const results = await runTasks({ root, store, names: names.length > 0 ? names : undefined, timeoutMs, runOracle });
     printResults(results);
     if (results.some((r) => r.outcome === "error")) return 4;
     if (results.some((r) => r.outcome === "fail")) return 1;

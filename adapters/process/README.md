@@ -24,7 +24,7 @@ Generic task runner (spec/adapters/process.md, PLAN 10.4). It runs a named comma
 
 ## What is not observed (gaps)
 
-- **Child processes.** Not recorded. The Linux `execve` oracle (PLAN 11.5) is not implemented, and `strace` is not available on this machine.
+- **Child processes.** On Linux, a task with `oracle: true` is run under the strace oracle (PLAN 11.5), so executed programs (`execve`) and all file reads, dir listings and probes become observed inputs. On macOS there is no tracer, so child processes are not recorded.
 - **Undeclared reads, network calls, environment reads.** Not recorded. Every observation is `dirty` unless the task sets `complete: true`, which the engine takes on trust.
 - **Output files.** Not stored (PLAN 4.3). The command's writes are not outputs.
 - **Shell features.** No shell is used, so globs and pipes in `command` are not expanded.
@@ -36,4 +36,4 @@ Generic task runner (spec/adapters/process.md, PLAN 10.4). It runs a named comma
 
 ## Tests
 
-`npm test` in this directory. The tests run the real engine in scratch repositories. There are no Linux-only tests, because the child-process path is not built.
+`npm test` in this directory. The tests run the real engine in scratch repositories. One test exercises the strace oracle and skips on non-Linux platforms.

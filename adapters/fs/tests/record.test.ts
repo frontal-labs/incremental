@@ -8,7 +8,7 @@ import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { connect, defaultEngine, type backplane } from "@backplane/client";
-import { contextFor, declaredInputs, recordFiles, type CheckResult } from "../src/index.js";
+import { contextFor, declaredInputs, oracleContext, recordFiles, recordOracle, type CheckResult, type OracleFileTask, type OracleResult, type OracleRun } from "../src/index.js";
 
 const ok: CheckResult = { outcome: "pass", durationMs: 1, problem: null };
 
@@ -141,6 +141,54 @@ test("an ENOENT probe is not recorded, so creating the probed file falls back", 
       { baseline: f.baseline, context: contextFor(), declared_tasks: [task] },
     );
     assert.equal(plan.fallback?.reason, "unobserved_input");
+  } finally {
+    await done(f);
+  }
+});
+
+function oracleTask(root: string, command: string[]): OracleFileTask {
+  return { task: "oracle", root, declared: [], complete: true, command };
+}
+
+test("recordOracle records observed files, dirs and probes without strace", async () => {
+  const f = await fixture();
+  try {
+    writeFileSync(path.join(f.root, "a.txt"), "a\n");
+    mkdirSync(path.join(f.root, "sub"), { recursive: true });
+    const fake: OracleRun = async () => ({
+      files: ["a.txt"],
+      dirs: ["sub"],
+      probes: ["missing.txt"],
+      execs: [],
+    });
+    const rec = await recordOracle(f.client, oracleTask(f.root, ["true"]), f.baseline, fake);
+    assert.equal(rec.result.outcome, "pass");
+    assert.equal(rec.dirty, false);
+    const ex = await f.client.explain("oracle");
+    assert.equal(ex.observed, true);
+    assert.equal(ex.dirty, false);
+    assert.equal(ex.inputs, 3);
+    const plan = await f.client.affected(
+      { baseline: f.baseline, changes: [{ path: "a.txt", status: "modified" }] },
+      { baseline: f.baseline, context: oracleContext(), declared_tasks: ["oracle"] },
+    );
+    assert.deepEqual(plan.tasks, [{ id: "oracle", reasons: ["reads:a.txt"] }]);
+  } finally {
+    await done(f);
+  }
+});
+
+test("recordOracle: a failing oracle runner is an error observation", async () => {
+  const f = await fixture();
+  try {
+    const failing: OracleRun = async () => {
+      throw new Error("strace is not available");
+    };
+    const rec = await recordOracle(f.client, oracleTask(f.root, ["nope"]), f.baseline, failing);
+    assert.equal(rec.result.outcome, "error");
+    assert.equal(rec.result.problem, "strace is not available");
+    const ex = await f.client.explain("oracle");
+    assert.equal(ex.outcome, "error");
   } finally {
     await done(f);
   }

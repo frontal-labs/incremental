@@ -1,6 +1,6 @@
 {
-  "id": "E4",
-  "state": "done",
+  "id": "E5",
+  "state": "doing",
   "evidence": "",
-  "notes": "Vitest adapter signed off by the user's instruction, with CR-001 to CR-003 applied. E8 MCP server also signed off (test-mcp passes)."
+  "notes": "strace oracle implemented (adapters/strace: oracle.ts, parser unit tests, M10 fixture test, README), test-oracle wired into the Makefile and linux-gate Docker image, fs/process Linux oracle paths added. Awaits `make test-oracle` inside `make linux-gate` (GATE 0 is blocked per STATUS.md, so E5 verify runs on this branch's changes; M10 zero-gaps check runs on Linux only)."
 }

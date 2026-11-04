@@ -18,7 +18,8 @@
   },
   "dependencies": {
     "@backplane/client": "file:../../bindings/node",
-    "@backplane/fs": "file:../fs"
+    "@backplane/fs": "file:../fs",
+    "@backplane/strace": "file:../strace"
   },
   "devDependencies": {
     "@types/node": "22.20.5",

@@ -85,10 +85,9 @@ test-adapters: test-typescript $(addprefix test-,$(ADAPTER_TESTS)) test-rust
 gate0:
 	$(call NOT_BUILT,gate0)
 
-test-oracle:
-	$(call NOT_BUILT,test-oracle)
-
-
+test-oracle: test-vitest
+	@cd adapters/strace && npm test >../../logs/test-oracle.log 2>&1 || { tail -30 ../../logs/test-oracle.log; echo "FAIL test-oracle"; exit 1; }
+	@echo "PASS test-oracle"
 
 bench-smoke:
 	$(call NOT_BUILT,bench-smoke)
@@ -111,7 +110,7 @@ release-check: all-tests
 	@test -f LICENSE.md || { echo "LICENSE.md is missing"; echo "FAIL release-check"; exit 1; }
 	@echo "PASS release-check"
 
-all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-e2e test-mcp
+all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-oracle test-e2e test-adapters test-mcp
 	@echo "PASS all-tests"
 
 status:
