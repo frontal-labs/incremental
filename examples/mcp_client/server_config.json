@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "backplane": {
+      "command": "backplane-mcp",
+      "args": ["--store", ".backplane"],
+      "env": {
+        "BACKPLANE_STORE": ".backplane"
+      }
+    }
+  }
+}

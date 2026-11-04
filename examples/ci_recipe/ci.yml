@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22]
+        python-version: ["3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Goose toolchain
+        run: |
+          make setup
+
+      - name: Build
+        run: |
+          make build
+
+      - name: Check spec
+        run: |
+          make check-spec
+
+      - name: Run all tests
+        run: |
+          make all-tests test-python test-git test-fuzz
+
+      - name: Run bindings tests
+        run: |
+          make test-bindings test-python test-rust test-mcp
+
+      - name: Run adapter tests
+        run: |
+          make test-vitest test-typescript
+
+      - name: Linux container gate
+        run: |
+          make linux-gate
+        if: github.ref == 'refs/heads/main'

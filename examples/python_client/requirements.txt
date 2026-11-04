@@ -1,0 +1,2 @@
+# Standard library only — backplane uses no external dependencies
+# per PLAN.md §9 rule 2 (Bindings: stdlib + protocol).

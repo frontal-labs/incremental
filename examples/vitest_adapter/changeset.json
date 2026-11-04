@@ -1,0 +1,7 @@
+{
+  "baseline": "abc123",
+  "head": "abc123",
+  "changes": [
+    {"path": "src/lib.ts", "status": "modified"}
+  ]
+}
