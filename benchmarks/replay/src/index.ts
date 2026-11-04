@@ -160,6 +160,9 @@ interface RunReport {
   advanced: boolean;
   exit: number;
   total_tasks: number;
+  discovered: string[];
+  wouldSkip: string[];
+  selected: string[];
 }
 
 function runRecorded(repo: string, store: string): RunReport {
@@ -176,7 +179,17 @@ function runRecorded(repo: string, store: string): RunReport {
     advanced: Boolean(parsed.advanced),
     exit: r.status ?? -1,
     total_tasks: parsed.total_tasks ?? 0,
+    discovered: parsed.discovered ?? [],
+    wouldSkip: parsed.wouldSkip ?? [],
+    selected: parsed.selected ?? [],
   };
+}
+
+function median(xs: number[]): number | null {
+  const a = [...xs].sort((x, y) => x - y);
+  if (!a.length) return null;
+  const m = a.length >> 1;
+  return a.length % 2 ? a[m]! : (a[m - 1]! + a[m]!) / 2;
 }
 
 async function main(): Promise<void> {
@@ -210,6 +223,7 @@ async function main(): Promise<void> {
     const flaky: Array<{ commit: string; task: string }> = [];
     let total_tasks = 0;
     let prevAllPassed = true;
+    const skipShares: number[] = [];
 
     // c0: take ground truth, then prime the store (no baseline -> fallback
     // runs every task) and advance to c0.
@@ -232,6 +246,10 @@ async function main(): Promise<void> {
 
       const run = runRecorded(repo, store); // plan from c_{i-1}, run invalid tasks w/ recorder, advance to c_i
       const plan = run.plan;
+      if (evaluated && run.discovered) {
+        // Skip share for this evaluated commit: share of discovered tasks the plan would skip.
+        skipShares.push(run.discovered.length ? run.wouldSkip.length / run.discovered.length : 0);
+      }
       const invalid = new Set<string>((plan?.tasks ?? []).map((t) => t.id));
       const reasonsById = new Map<string, string[]>(
         (plan?.tasks ?? []).map((t) => [t.id, t.reasons ?? []]),
@@ -272,6 +290,8 @@ async function main(): Promise<void> {
       task_commit_pairs_examined: taskCommitPairs,
       false_skips: falseSkips,
       flaky,
+      skip_shares: skipShares,
+      median_skip_share: median(skipShares),
       rule_of_three_bound: commitsEvaluated > 0 ? `3/${commitsEvaluated}` : "n/a",
     };
     const out = args.out ?? path.join(ROOT, "benchmarks", "results", "replay.json");

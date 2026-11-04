@@ -5,6 +5,9 @@ GOOSE_DIR ?= $(CURDIR)/.toolchain/goose/goose-v2026.3-$(UNAME_S)-$(UNAME_M)
 GOOSE := $(GOOSE_DIR)/goose
 export GOOSE_HOME := $(CURDIR)/.toolchain/goose-home
 ENGINE := core/dist/backplane
+# Kill-test repository for Gate 0 (PLAN 13.1 / GATE 0). Override with the human's
+# chosen real Vitest monorepo.
+BACKPLANE_BENCH_REPO ?= /Users/gabrielfonseca/Desktop/os
 # Every run log goes to logs/ at the project root (git-ignored).
 LOGS := logs
 $(shell mkdir -p $(LOGS))
@@ -27,6 +30,7 @@ build: setup
 	@mkdir -p core/dist adapters/git/dist
 	@$(GOOSE) build core/src/main.goose -o $(ENGINE) >logs/build.log 2>&1 || { tail -20 logs/build.log; echo "FAIL build"; exit 1; }
 	@$(GOOSE) build adapters/git/src/changes.goose -o adapters/git/dist/backplane-git >logs/build-git.log 2>&1 || { tail -20 logs/build-git.log; echo "FAIL build"; exit 1; }
+	@cd benchmarks/replay && $(CURDIR)/node_modules/.bin/tsc-rs -b >../../logs/build-replay.log 2>&1 || { tail -20 ../../logs/build-replay.log; echo "FAIL build-replay"; exit 1; }
 	@echo "PASS build"
 
 test-fuzz: build
@@ -93,21 +97,31 @@ test-rust: build
 test-adapters: test-typescript $(addprefix test-,$(ADAPTER_TESTS)) test-rust
 	@echo "PASS test-adapters"
 
-gate0:
-	$(call NOT_BUILT,gate0)
+gate0: build
+	@mkdir -p /tmp/gate0-scratch $(LOGS)
+	@node bench/gate0/driver/replay.mjs /tmp/gate0-scratch all >$(LOGS)/gate0-replay.log 2>&1 || { tail -30 $(LOGS)/gate0-replay.log; echo "FAIL gate0"; exit 1; }
+	@node scripts/gate0-eval.mjs /tmp/gate0-scratch/out >GATE.md || { echo "FAIL gate0"; exit 1; }
+	@echo "PASS gate0"
 
 test-oracle: test-vitest
 	@cd adapters/strace && npm test >../../logs/test-oracle.log 2>&1 || { tail -30 ../../logs/test-oracle.log; echo "FAIL test-oracle"; exit 1; }
 	@echo "PASS test-oracle"
 
-bench-smoke:
-	$(call NOT_BUILT,bench-smoke)
+bench-smoke: build
+	@node benchmarks/replay/dist/src/index.js --commits 3 --out benchmarks/results/replay.json >$(LOGS)/bench-smoke-replay.log 2>&1 || { tail -30 $(LOGS)/bench-smoke-replay.log; echo "FAIL bench-smoke"; exit 1; }
+	@node bench/m1.mjs 10000 100 >benchmarks/results/m1.json || { echo "FAIL bench-smoke"; exit 1; }
+	@node -e 'const r=require("./benchmarks/results/replay.json");const ok=r&&Number.isInteger(r.commits_processed)&&Array.isArray(r.false_skips);if(!ok){console.error("replay output schema-invalid");process.exit(1)}' || { echo "FAIL bench-smoke"; exit 1; }
+	@echo "PASS bench-smoke"
 
-bench:
-	$(call NOT_BUILT,bench)
+bench: build
+	@node benchmarks/replay/dist/src/index.js --commits 6 --out benchmarks/results/replay.json >$(LOGS)/bench-replay.log 2>&1 || { tail -30 $(LOGS)/bench-replay.log; echo "FAIL bench"; exit 1; }
+	@node bench/m1.mjs 10000 100 >benchmarks/results/m1.json || { echo "FAIL bench"; exit 1; }
+	@node scripts/bench-summary.mjs >$(LOGS)/bench-summary.log 2>&1 || { tail -20 $(LOGS)/bench-summary.log; echo "FAIL bench"; exit 1; }
+	@echo "PASS bench"
 
-gate:
-	$(call NOT_BUILT,gate)
+gate: build
+	@node scripts/gate.mjs || { echo "FAIL gate"; exit 1; }
+	@echo "PASS gate"
 
 test-mcp: build
 	@cd mcp && npm test >../logs/test-mcp.log 2>&1 || { tail -30 ../logs/test-mcp.log; echo "FAIL test-mcp"; exit 1; }
