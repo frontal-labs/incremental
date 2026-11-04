@@ -1,4 +1,4 @@
-# Incremental
+# Incremental Engine
 
 ![Frontal Banner](./banner.jpg)
 
