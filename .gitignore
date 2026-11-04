@@ -6,3 +6,5 @@ store/
 *.tsbuildinfo
 __pycache__/
 .DS_Store
+# Run logs (Makefile targets)
+logs/
