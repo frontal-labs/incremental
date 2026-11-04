@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://backplane.dev/schemas/input_env.json",
+  "title": "Input Env",
+  "type": "object",
+  "required": ["kind", "name", "value_hash"],
+  "properties": {
+    "kind": {"const": "env"},
+    "name": {"type": "string", "description": "Environment variable name."},
+    "value_hash": {"type": "string", "description": "sha256:<hex> of the value, or the literal string \"unset\"."}
+  }
+}

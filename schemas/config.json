@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://backplane.dev/schemas/config.json",
+  "title": "backplane.config.json",
+  "description": "Repository configuration file for backplane, located at the repo root.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "roots": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Directories to consider (default [\".\"])."
+    },
+    "exclude": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Globs matched against canonical (realpath) paths only."
+    },
+    "ignore": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Paths to ignore (P11) - dropped from changes, listed in ignored."
+    },
+    "globalInputs": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Any change triggers fallback (global_input) - affects everything."
+    },
+    "policy": {
+      "type": "string",
+      "enum": ["balanced", "conservative"],
+      "description": "Policy mode (default \"balanced\")."
+    },
+    "fallbackContextKeys": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Context keys that trigger fallback if changed (plus reserved keys always checked)."
+    },
+    "adapters": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Adapter-specific configuration."
+    }
+  }
+}

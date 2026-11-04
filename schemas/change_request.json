@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://backplane.dev/schemas/change_request.json",
+  "title": "Change Request",
+  "description": "A change request appended to spec/CHANGE_REQUESTS.md. Format: ## CR-NNNN <title> followed by fields.",
+  "type": "object",
+  "required": ["id", "title", "requester", "milestone_affected", "what", "why", "impact", "status"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^CR-\\d+$"},
+    "title": {"type": "string"},
+    "requester": {"type": "string", "description": "Role that made the request (Spec/Conformance, Core, Bindings, Adapters, Bench)."},
+    "milestone_affected": {"type": "string"},
+    "what": {"type": "string", "description": "Exact change to section N."},
+    "why": {"type": "string", "description": "Evidence or output motivating the change."},
+    "impact": {"type": "string", "description": "Files, cases, schemas affected."},
+    "status": {"type": "string", "enum": ["open", "accepted", "rejected"]}
+  }
+}

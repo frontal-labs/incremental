@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://backplane.dev/schemas/store_layout.json",
+  "title": "Store Layout",
+  "description": "Files in the store directory (<store>/), default <repo>/.backplane/.",
+  "type": "object",
+  "properties": {
+    "tg.log": {
+      "type": "string",
+      "description": "Canonical, append-only JSON Lines, UTF-8. Source of truth."
+    },
+    "tg.lock": {
+      "type": "string",
+      "description": "Exclusive lock: {\"pid\": N, \"start\": \"<start time>\"}."
+    },
+    "stat.cache": {
+      "type": "string",
+      "description": "Verify-mode cache for file hashes; safe to delete."
+    },
+    "tg.idx": {
+      "type": "string",
+      "description": "Index image cache (disposable, rebuilt from log if corrupt)."
+    }
+  }
+}

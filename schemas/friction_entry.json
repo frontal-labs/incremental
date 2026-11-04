@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://backplane.dev/schemas/friction_entry.json",
+  "title": "Friction Entry",
+  "description": "A friction entry recorded in friction/FRICTION.md or friction/fNNN/. Append-only.",
+  "type": "object",
+  "required": ["id", "title", "role", "milestone", "what", "why", "impact", "status"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^F-\\d{3}$"},
+    "title": {"type": "string"},
+    "role": {"type": "string"},
+    "milestone": {"type": "string"},
+    "what": {"type": "string", "description": "Description of the friction encountered."},
+    "why": {"type": "string", "description": "Evidence or output motivating the entry."},
+    "impact": {"type": "string", "description": "Files, milestones, or workflows affected."},
+    "status": {"type": "string", "enum": ["open", "resolved", "waived"]},
+    "workaround": {"type": "string", "description": "Optional workaround."},
+    "upstream_worthy": {"type": "boolean", "description": "Whether this is worth reporting to an upstream project."}
+  }
+}

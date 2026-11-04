@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://backplane.dev/schemas/input_probe.json",
+  "title": "Input Probe",
+  "type": "object",
+  "required": ["kind", "path"],
+  "properties": {
+    "kind": {"const": "probe"},
+    "path": {"type": "string", "description": "Repo-relative path that was looked for and did not exist."}
+  }
+}

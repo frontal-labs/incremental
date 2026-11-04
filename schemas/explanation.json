@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://backplane.dev/schemas/explanation.json",
+  "title": "Explanation",
+  "description": "Latest observation summary and certificate status for a task.",
+  "type": "object",
+  "required": ["task", "observed", "certificate"],
+  "properties": {
+    "task": {"type": "string"},
+    "observed": {"type": "boolean"},
+    "outcome": {"type": "string", "enum": ["pass", "fail", "error", "none"]},
+    "dirty": {"type": "boolean"},
+    "baseline": {"type": "string"},
+    "inputs": {"type": "integer", "minimum": 0},
+    "certificate": {"type": "boolean"}
+  }
+}

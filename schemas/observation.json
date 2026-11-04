@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://backplane.dev/schemas/observation.json",
+  "title": "Observation",
+  "description": "One recorded run of a task: its inputs, outputs, outcome, baseline, dirty state, and context.",
+  "type": "object",
+  "required": ["task", "baseline", "dirty", "context", "inputs", "outputs", "outcome"],
+  "additionalProperties": true,
+  "properties": {
+    "task": {
+      "type": "string",
+      "description": "Repo-relative task identifier (adapter-defined, stable across runs)."
+    },
+    "baseline": {
+      "type": "string",
+      "description": "Opaque string naming the state the observation is valid for (usually a git commit SHA)."
+    },
+    "dirty": {
+      "type": "boolean",
+      "description": "True if the observation was taken from a worktree with uncommitted changes."
+    },
+    "context": {
+      "$ref": "context.json",
+      "description": "Environment of the observation: tool versions, lockfile hash, env snapshot, capabilities."
+    },
+    "inputs": {
+      "type": "array",
+      "description": "Inputs the task read during the run. Each input has a kind-specific shape.",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "input_file.json"
+          },
+          {
+            "$ref": "input_dir.json"
+          },
+          {
+            "$ref": "input_probe.json"
+          },
+          {
+            "$ref": "input_declared.json"
+          },
+          {
+            "$ref": "input_env.json"
+          },
+          {
+            "$ref": "input_env_all.json"
+          }
+        ]
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "description": "Files the task produced (recorded for explanation, not used for invalidation in v1).",
+      "items": {
+        "type": "object",
+        "required": ["path"],
+        "properties": {
+          "path": {"type": "string"},
+          "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "outcome": {
+      "type": "string",
+      "enum": ["pass", "fail", "error", "none"],
+      "description": "Run result: pass, fail, error, or none (planned but not run)."
+    },
+    "duration_ms": {
+      "type": "number",
+      "description": "Duration of the run in milliseconds."
+    }
+  }
+}

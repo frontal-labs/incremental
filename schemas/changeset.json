@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://backplane.dev/schemas/changeset.json",
+  "title": "ChangeSet",
+  "description": "Changes between a baseline and the current state of the worktree.",
+  "type": "object",
+  "required": ["baseline", "head", "changes"],
+  "additionalProperties": true,
+  "properties": {
+    "baseline": {
+      "type": "string",
+      "description": "Opaque baseline string the changes are measured from."
+    },
+    "head": {
+      "type": "string",
+      "description": "Informational head reference (e.g., commit SHA)."
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "status"],
+        "properties": {
+          "path": {"type": "string", "description": "Repo-relative path with / separators."},
+          "status": {
+            "type": "string",
+            "enum": ["modified", "added", "deleted", "renamed"],
+            "description": "Change status. For renamed, old_path is required."
+          },
+          "old_path": {
+            "type": "string",
+            "description": "Previous path, required when status is renamed."
+          }
+        },
+        "if": {"properties": {"status": {"const": "renamed"}}},
+        "then": {"required": ["old_path"]}
+      }
+    }
+  }
+}
