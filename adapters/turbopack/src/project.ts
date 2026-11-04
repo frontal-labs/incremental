@@ -9,8 +9,10 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 
-// Directories the walk never enters.
-const SKIP_DIRS = new Set(["node_modules", ".git", ".next", "dist", ".backplane", ".toolchain"]);
+// Directories the input walk never enters. node_modules is covered by the
+// lockfile in the context. dist is not skipped: a dependent app reads its
+// workspace dependency's build output. .next is the app's own build output.
+const SKIP_DIRS = new Set(["node_modules", ".git", ".next", ".backplane", ".toolchain"]);
 export const NEXT_CONFIGS = ["next.config.js", "next.config.mjs", "next.config.cjs", "next.config.ts", "next.config.mts", "next.config.cts"];
 // Env files `next build` reads in production mode (from the app directory).
 export const ENV_FILES = [".env", ".env.local", ".env.production", ".env.production.local"];
@@ -87,23 +89,42 @@ export function nextPackage(appAbs: string): { dir: string; version: string } {
   return { dir: path.dirname(file), version: (readJson(file).version as string) ?? "unknown" };
 }
 
-// The declared inputs of one app (spec: next.config.*, tsconfig.json,
-// package.json, the lockfile, build-time env files). Absent files are not
-// recorded. Paths are repo-relative. Each is hashed now.
-export function declaredInputs(root: string, appAbs: string): DeclaredInput[] {
-  const files: string[] = [];
-  for (const name of NEXT_CONFIGS) files.push(path.join(appAbs, name));
-  files.push(path.join(appAbs, "tsconfig.json"), path.join(appAbs, "package.json"));
-  for (const name of ENV_FILES) files.push(path.join(appAbs, name));
-  if (appAbs !== root) files.push(path.join(root, "package.json"));
-  for (const name of LOCKFILES) files.push(path.join(root, name));
-  const out = new Map<string, DeclaredInput>();
-  for (const abs of files) {
-    if (!existsSync(abs)) continue;
-    const rel = relPath(root, abs);
-    out.set(rel, { kind: "declared", path: rel, hash: sha256(readFileSync(abs)) });
+// Files `next build` writes itself. Their content is fixed by the Next version in
+// the context, so they are not inputs (recording them would make the first build dirty).
+export const GENERATED = new Set(["next-env.d.ts"]);
+
+// Every file under root that a build can read, hashed now (spec/adapters/turbopack.md).
+// `next build` reads source modules anywhere in the repository, and no module
+// graph is recorded, so the inputs are the whole repository minus SKIP_DIRS.
+// Paths are repo-relative and sorted. Symbolic links are not followed.
+export function repoInputs(root: string): DeclaredInput[] {
+  const out: DeclaredInput[] = [];
+  const visit = (dir: string): void => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isSymbolicLink()) continue;
+      const abs = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (!SKIP_DIRS.has(entry.name)) visit(abs);
+      } else if (entry.isFile() && !GENERATED.has(entry.name)) {
+        out.push({ kind: "declared", path: relPath(root, abs), hash: sha256(readFileSync(abs)) });
+      }
+    }
+  };
+  visit(root);
+  return out.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+}
+
+// The environment a build reads that the adapter records: NEXT_* variables and
+// NODE_ENV, as hashes. Other variables are not observed (stated in the README).
+export const TRACKED_ENV = (name: string): boolean => name.startsWith("NEXT_") || name === "NODE_ENV";
+
+export function envHashes(env: NodeJS.ProcessEnv): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const name of Object.keys(env).sort()) {
+    const value = env[name];
+    if (TRACKED_ENV(name) && value !== undefined) out[name] = sha256(value);
   }
-  return [...out.values()].sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+  return out;
 }
 
 export interface BuildResult {

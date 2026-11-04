@@ -1,6 +1,6 @@
 # @backplane/turbopack
 
-The Turbopack app adapter, drafted in `spec/adapters/turbopack.md`. It is the honest version: entries are tasks, their declared inputs are recorded, and no module graph is claimed. Every run is dirty, so the engine re-runs every app on each query.
+The Turbopack app adapter, drafted in `spec/adapters/turbopack.md`. It is the honest version: entries are tasks, their declared inputs are recorded, and no module graph is claimed. An app is skipped when nothing in the repository changed. The inputs are every file under the repository root, except `node_modules`, `.git`, `.next`, `.backplane` and `.toolchain`, plus the lockfile and the `next` version in the context.
 
 Run: `backplane-turbopack run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]`. Exit codes match the TypeScript adapter: 0 advanced and all pass, 1 advanced with a failed build, 2 usage, 4 engine or setup error, 7 ran but not advanced.
 
@@ -36,13 +36,15 @@ Context: lockfile, root `tsconfig.json`, hash of all `package.json` files, `runn
 
 - **Real:** the outcome (exit status of `next build --turbopack`), the duration, and the worktree and HEAD state checked by the git change source.
 - **Declared:** every input above. They are a list of files the build is known to depend on, not a list of files it read.
-- **Not observed:** source files read by the build, including every module in the app. A change to `app/page.tsx` also re-runs the app, but only because every run is dirty. The adapter does not know it is a dependency.
+- **Module graph:** not recorded. Every file in the repository is an input, so a change to `app/page.tsx` selects the app, and so does a change to any other file in the repository. That is a superset of the real dependencies, so it is sound but reruns more than necessary.
 
 ## Capabilities and dirty runs
 
 - `graph: false`. No module graph is recorded.
 - `caps.probes`, `caps.dirs` and `caps.env` are false. Environment reads at build time (for example `NEXT_PUBLIC_*`) are not observed. Use the env adapter's allowlist to make them declared.
-- Every observation is `dirty: true` (spec 11.1, rule 4). The engine treats dirty observations as invalid on every query (P8), so no app is ever skipped. This is sound but expensive. It is the cost of this capability set.
+- Inputs are every file under the repository root (minus the skipped directories), hashed before and after each build. The build may write files: `next-env.d.ts` is excluded because its content follows the `next` version, and any other file the build changes makes the observation dirty, because the build did not read the state it recorded.
+- Tracked environment: `NEXT_*` variables and `NODE_ENV`, recorded as env inputs. Other variables are not observed.
+- Not observed: variables outside the tracked set, files outside the repository root, and the `.next` build cache, which can change how a build behaves without changing any input. A build with an unobserved cache can therefore produce a different result for the same inputs.
 - Build outputs (`.next`) are not stored (PLAN 4.3). Remote build caches are not consulted. A `next build` that hits a cache is still recorded as a pass, and the cache is not trusted as proof.
 
 ## Gaps

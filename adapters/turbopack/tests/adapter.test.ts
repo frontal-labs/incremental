@@ -166,3 +166,18 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
     cleanup(root);
   }
 });
+
+// Skipping: the observation is clean (no rewrite by the build, every read input
+// hashed), so an unchanged app is not built again.
+test("an unchanged app is skipped on the next run, without a second build", async () => {
+  const { root, store } = makeRepo();
+  try {
+    await run(root, store);
+    const r = await run(root, store);
+    assert.deepEqual(r.selected, [], "no app is selected, so none is built");
+    assert.equal(r.advanced, true);
+    assert.equal(r.exit, 0);
+  } finally {
+    cleanup(root);
+  }
+});

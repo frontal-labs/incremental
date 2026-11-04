@@ -27,6 +27,7 @@ import {
   type Change,
   type Context,
   type Fallback,
+  type Input,
   type Observation,
   type Outcome,
   type Plan,
@@ -34,7 +35,8 @@ import {
 import {
   allPackageJsons,
   buildApp,
-  declaredInputs,
+  envHashes,
+  repoInputs,
   discoverApps,
   LOCKFILES,
   nextPackage,
@@ -111,6 +113,16 @@ function hashOrAbsent(file: string): string {
 // The context (PLAN 8.4). `runner` names the next version the apps build with.
 // Probes, directory listings and environment reads are not observed, and the
 // module graph is not recorded (`graph: false`).
+// Hashes of the tracked environment, as observation inputs (kind env), so a change
+// to a tracked variable invalidates the apps that recorded it.
+function envInputs(): Input[] {
+  return Object.entries(envHashes(process.env)).map(([name, value_hash]) => ({ kind: "env" as const, name, value_hash }));
+}
+
+function sameInputs(a: readonly DeclaredInput[], b: readonly DeclaredInput[]): boolean {
+  return a.length === b.length && a.every((x, i) => x.path === b[i]?.path && x.hash === b[i]?.hash);
+}
+
 export function contextFor(root: string, runner: string): Context {
   const lock = LOCKFILES.find((f) => existsSync(path.join(root, f)));
   const pkgs = allPackageJsons(root);
@@ -194,7 +206,7 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     if (cs !== null) {
       plan = await client.affected(
         { baseline: cs.baseline, head: cs.head, changes: cs.changes },
-        { baseline: cs.baseline, context, declared_tasks: discovered, verify: false, policy: "balanced" },
+        { baseline: cs.baseline, context, env: envHashes(process.env), declared_tasks: discovered, verify: false, policy: "balanced" },
       );
     }
 
@@ -214,11 +226,11 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     const obsBaseline = stored ?? head0.head;
     for (const task of selected) {
       const appAbs = path.join(root, task);
-      let inputs: DeclaredInput[];
       let nextDir: string;
+      let before: DeclaredInput[];
       try {
-        inputs = declaredInputs(root, appAbs);
         nextDir = nextPackage(appAbs).dir;
+        before = repoInputs(root);
       } catch (e) {
         const problem = e instanceof Error ? e.message : String(e);
         results.push({ task, outcome: "error", durationMs: 0, problem });
@@ -226,10 +238,16 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       }
       const build = buildApp(appAbs, nextDir, opts.timeoutMs);
       results.push({ task, outcome: build.outcome, durationMs: build.durationMs, problem: build.problem });
+      // The inputs are read after the build, because the build may write some of
+      // them (next-env.d.ts, a rewritten tsconfig.json). If it changed any file,
+      // this build did not read the state it records, so the observation is dirty.
+      const after = repoInputs(root);
+      const rewritten = !sameInputs(before, after);
+      const inputs = [...after, ...envInputs()];
       observations.push({
         task,
         baseline: obsBaseline,
-        dirty: true,
+        dirty: rewritten,
         context,
         inputs,
         outputs: [],
