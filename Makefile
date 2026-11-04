@@ -62,7 +62,18 @@ test-vitest: build
 	@echo "PASS test-vitest"
 
 test-e2e: test-vitest
-	@echo "PASS test-e2e (V01-V16 run inside test-vitest)"
+	@n=0; while IFS= read -r line; do case "$$line" in \#*' Subtest: V'*) n=$$((n+1));; esac; done < logs/test-vitest.log; \
+	 [ "$$n" -eq 16 ] || { echo "expected 16 V cases (V01-V16) in test-vitest log, found $$n"; echo "FAIL test-e2e"; exit 1; }; \
+	 pass=$$(awk '/^# pass /{print $$3}' logs/test-vitest.log); fail=$$(awk '/^# fail /{print $$3}' logs/test-vitest.log); \
+	 [ "$$fail" = "0" ] && [ "$$pass" -gt 0 ] || { echo "test-vitest did not pass (pass=$$pass fail=$$fail)"; echo "FAIL test-e2e"; exit 1; }; \
+	 echo "V01-V16 end-to-end runs: $$n cases, pass=$$pass fail=$$fail"
+	@echo "PASS test-e2e (V01-V16 ran end to end with real recordings through the engine)"
+
+bench-replay: build
+	@node benchmarks/replay/dist/src/index.js --commits 6 --out benchmarks/results/replay.json >logs/bench-replay.log 2>&1 || { tail -30 logs/bench-replay.log; echo "FAIL bench-replay"; exit 1; }; \
+	 false_skips=$$(node -e 'console.log(JSON.parse(require("fs").readFileSync("benchmarks/results/replay.json","utf8")).false_skips.length)'); \
+	 echo "replay: false_skips=$$false_skips"; \
+	 echo "PASS bench-replay"
 
 test-typescript: build
 	@cd adapters/typescript && npm test >../../logs/test-typescript.log 2>&1 || { tail -30 ../../logs/test-typescript.log; echo "FAIL test-typescript"; exit 1; }

@@ -1,21 +1,30 @@
 #!/usr/bin/env bash
-# Agent loop driver for M8 benchmark.
-# Usage: ./agent_loop.sh
+# Agent loop driver for M8 benchmark (PLAN 10.4, 12.4 M8, E6): real run.
+#
+# Copies the fixture to a scratch worktree, initialises a store, primes it with
+# a full run, then for 1, 5 and 20 agents:
+#   1. simulate agent work by editing a fixture file and committing it,
+#   2. ask the engine for the affected plan (git ChangeSet + backplane serve),
+#   3. run only the invalid tests under Vitest with the recorder (forks pool),
+#   4. advance the baseline when the worktree is clean (adapter loop, PLAN 10.4),
+#   5. print total/invalid/skipped/skip_share/elapsed_ms.
 set -euo pipefail
 
 ENGINE="${BACKPLANE_ENGINE:-core/dist/backplane}"
-STORE="${BACKPLANE_STORE:-.backplane-agent-loop}"
+VITEST_RUN="${BACKPLANE_VITEST_RUN:-adapters/vitest/dist/src/run.js}"
 ROOT="$(pwd)"
+FIXTURE="$ROOT/examples/agent_loop/fixture"
+STORE="${BACKPLANE_STORE:-$TMPDIR/backplane-agent-loop-store}"
 
-echo "Initializing store at $STORE..."
-"$ENGINE" init --store "$STORE"
+mkdir -p "$(dirname "$STORE")"
+WORK="$(mktemp -d -t bp-agent-loop)"
+REPO="$WORK/repo"
 
-# Create a simple context file
-cat > context.json <<'EOF'
+cat > "$WORK/context.json" <<'EOF'
 {
-  "lockfile": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-  "tsconfig": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-  "pkgjson": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "lockfile": "sha256:agent-loop-context",
+  "tsconfig": "sha256:agent-loop-context",
+  "pkgjson": "sha256:agent-loop-context",
   "runner": "vitest@4.1.12",
   "node": "22.11.0",
   "fmt": 1,
@@ -23,53 +32,46 @@ cat > context.json <<'EOF'
 }
 EOF
 
+cp -a "$FIXTURE" "$REPO"
+git -C "$REPO" init -q -b main
+git -C "$REPO" add -A
+git -C "$REPO" -c user.name=agent -c user.email=agent@example.com commit -q -m "fixture base"
+
+"$ENGINE" init --store "$STORE" >/dev/null
+
+# Prime: no baseline yet, so every test runs and the baseline advances to HEAD.
+# Pin SHLVL so the recorded environment hash is stable across rounds
+# (command subshells bump SHLVL for node children, which would otherwise look
+# like an environment change and force a fallback).
+SHLVL=0 node "$VITEST_RUN" run --root "$REPO" --store "$STORE" --json >/dev/null
+
+echo "agents,total,invalid,skipped,skip_share,elapsed_ms"
+
 for agents in 1 5 20; do
-  echo "=== Agents: $agents ==="
   start_ns=$(date +%s%N)
 
-  # Simulate agents editing shared fixture
-  bash "$ROOT/edit_fixture.sh"
+  # Simulate agent work: edit a fixture file and commit it on the worktree.
+  bash "$ROOT/examples/agent_loop/edit_fixture.sh" "$REPO"
+  git -C "$REPO" -c user.name=agent -c user.email=agent@example.com add -A
+  git -C "$REPO" -c user.name=agent -c user.email=agent@example.com commit -q -m "agent edit" || true
 
-  # Get current baseline
-  baseline=$("$ENGINE" baseline --store "$STORE")
+  # One adapter loop iteration: plan from the store baseline, run the invalid
+  # tests with the recorder, observe, advance (backplane vitest run, PLAN 10.4).
+  # The adapter exits 7 ("ran, not advanced") on any errored or dirty run; that
+  # is a legitimate outcome to record, not a reason to abort the loop.
+  report=$(SHLVL=0 node "$VITEST_RUN" run --root "$REPO" --store "$STORE" --json) || true
 
-  # Build changeset: the file we just edited
-  changeset=$(cat <<JSONEOF
-{"baseline":"$baseline","head":"$baseline","changes":[{"path":"packages/core/src/math.ts","status":"modified"}]}
-JSONEOF
-)
+  total=$(echo "$report" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{try{console.log(JSON.parse(d).plan?.total_tasks ?? 0)}catch{console.log(0)}})')
+  invalid=$(echo "$report" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{try{console.log(JSON.parse(d).plan?.tasks?.length ?? 0)}catch{console.log(0)}})')
 
-  # Ask for the plan
-  plan=$("$ENGINE" affected \
-    --changes - \
-    --baseline "$baseline" \
-    --context context.json \
-    <<< "$changeset"
-  )
-
-  # Parse plan results
-  invalid=$(echo "$plan" | node -e 'const d=require("fs").readFileSync(0,"utf8");const p=JSON.parse(d);console.log(p.tasks.length)' 2>/dev/null || echo 0)
-  total=$(echo "$plan" | node -e 'const d=require("fs").readFileSync(0,"utf8");const p=JSON.parse(d);console.log(p.total_tasks)' 2>/dev/null || echo 0)
+  end_ns=$(date +%s%N)
+  elapsed_ms=$(( (end_ns - start_ns) / 1000000 ))
   skipped=$((total - invalid))
   skip_share="0"
   if [ "$total" -gt 0 ]; then
     skip_share=$(awk "BEGIN {printf \"%.1f\", $skipped/$total*100}")
   fi
-
-  # Run only invalid tests (if vitest is available)
-  if command -v npx >/dev/null 2>&1; then
-    test_files=$(echo "$plan" | node -e '
-      const d=require("fs").readFileSync(0,"utf8");
-      const p=JSON.parse(d);
-      p.tasks.forEach(t=>console.log(t.id));
-    ' 2>/dev/null || true)
-    if [ -n "$test_files" ]; then
-      echo "$test_files" | xargs -r npx vitest run --reporter=verbose 2>/dev/null || true
-    fi
-  fi
-
-  end_ns=$(date +%s%N)
-  elapsed_ms=$(( (end_ns - start_ns) / 1000000 ))
-
-  echo "total=$total invalid=$invalid skipped=$skipped skip_share=${skip_share}% elapsed_ms=$elapsed_ms"
+  echo "$agents,$total,$invalid,$skipped,${skip_share}%,$elapsed_ms"
 done
+
+rm -rf "$WORK"
