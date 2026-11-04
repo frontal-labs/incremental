@@ -9,13 +9,7 @@ import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
-
-export class BazelError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "BazelError";
-  }
-}
+import { BazelError } from "./error.js";
 
 // Files Bazel reads as configuration. Declared global inputs (spec section "Declared inputs").
 export const DECLARED_FILES = ["MODULE.bazel", "MODULE.bazel.lock", ".bazelrc", ".bazelversion"];
