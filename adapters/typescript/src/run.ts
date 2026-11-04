@@ -34,7 +34,6 @@ import {
   configChain,
   discoverProjects,
   packageJsonsFor,
-  programFiles,
   relPath,
   sha256,
   TS_PACKAGE_DIR,
@@ -137,9 +136,8 @@ function ensureStore(store: string): void {
 // outside root cannot be named repo-relative, so the observation is dirty.
 type FileInput = Extract<Input, { kind: "file" }>;
 
-function inputsFor(root: string, configAbs: string): { inputs: FileInput[]; dirty: boolean } {
+function inputsFor(root: string, configAbs: string, listed: readonly string[]): { inputs: FileInput[]; dirty: boolean } {
   const chain = configChain(configAbs);
-  const listed = programFiles(configAbs);
   let dirty = chain.references || chain.unhashable.length > 0;
   const files = new Set<string>(chain.files);
   for (const f of listed) {
@@ -216,17 +214,18 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     const obsBaseline = stored ?? head0.head;
     for (const task of selected) {
       const configAbs = path.join(root, task);
+      const check = checkProject(configAbs, opts.timeoutMs);
+      results.push({ task, outcome: check.outcome, durationMs: check.durationMs, problem: check.problem });
+      if (check.outcome === "error") continue;
       let inputs: FileInput[];
       let dirtyInputs: boolean;
       try {
-        ({ inputs, dirty: dirtyInputs } = inputsFor(root, configAbs));
+        ({ inputs, dirty: dirtyInputs } = inputsFor(root, configAbs, check.files));
       } catch (e) {
         const problem = e instanceof Error ? e.message : String(e);
-        results.push({ task, outcome: "error", durationMs: 0, problem });
+        results[results.length - 1] = { task, outcome: "error", durationMs: check.durationMs, problem };
         continue;
       }
-      const check = checkProject(configAbs, opts.timeoutMs);
-      results.push({ task, outcome: check.outcome, durationMs: check.durationMs, problem: check.problem });
       observations.push({
         task,
         baseline: obsBaseline,

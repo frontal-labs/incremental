@@ -163,28 +163,47 @@ export function packageJsonsFor(root: string, files: readonly string[]): string[
   return [...found].sort();
 }
 
-// Runs `tsc --noEmit` for one project. Incremental and composite output are
-// turned off so the run writes nothing into the worktree.
+// Runs `tsc --noEmit --listFiles` for one project: one process gives both the
+// check and the list of files it read (the list is what the inputs are made
+// from). Incremental and composite output are turned off so the run writes
+// nothing into the worktree.
 export interface CheckResult {
   outcome: "pass" | "fail" | "error";
   durationMs: number;
   problem: string | null;
+  // Absolute paths of the program's files (empty when tsc printed no list).
+  files: string[];
+}
+
+// The file lines of `--listFiles` output. Diagnostics also start with a path,
+// but they carry "(line,col): error" and are skipped.
+export function parseListFiles(stdout: string): string[] {
+  const files: string[] = [];
+  for (const raw of stdout.split("\n")) {
+    const line = raw.trim();
+    if (line.length === 0 || !line.startsWith("/") || /\(\d+,\d+\): (error|warning)/.test(line)) continue;
+    files.push(path.normalize(line));
+  }
+  return files;
 }
 
 export function checkProject(configAbs: string, timeoutMs: number): CheckResult {
   const started = Date.now();
   const r = spawnSync(
     process.execPath,
-    [tscEntry(), "-p", configAbs, "--noEmit", "--incremental", "false", "--composite", "false"],
+    [tscEntry(), "-p", configAbs, "--noEmit", "--listFiles", "--incremental", "false", "--composite", "false"],
     { cwd: path.dirname(configAbs), encoding: "utf8", timeout: timeoutMs, maxBuffer: 256 * 1024 * 1024 },
   );
   const durationMs = Date.now() - started;
   if (r.error !== undefined || r.signal !== null) {
-    return { outcome: "error", durationMs, problem: r.error?.message ?? `killed by ${r.signal}` };
+    return { outcome: "error", durationMs, problem: r.error?.message ?? `killed by ${r.signal}`, files: [] };
   }
-  if (r.status === 0) return { outcome: "pass", durationMs, problem: null };
-  if (r.status === 1 || r.status === 2) {
-    return { outcome: "fail", durationMs, problem: `tsc reported errors (exit ${r.status})` };
+  const files = parseListFiles(r.stdout ?? "");
+  // A failed load (for example an unreadable config) prints no file list. That
+  // is an error, not a type error: the project was never checked.
+  if (r.status !== 0 && files.length === 0) {
+    return { outcome: "error", durationMs, problem: `tsc could not load the project (exit ${r.status})`, files };
   }
-  return { outcome: "error", durationMs, problem: `tsc exited ${r.status}` };
+  if (r.status === 0) return { outcome: "pass", durationMs, problem: null, files };
+  return { outcome: "fail", durationMs, problem: `tsc reported errors (exit ${r.status})`, files };
 }
