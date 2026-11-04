@@ -14,7 +14,7 @@ None. It is a change source for `affected` (protocol method `affected`, PROTOCOL
 ## What it cannot observe (the core problem)
 - The baseline. Events only say what changed since the watcher started. A watcher that restarts loses every change made while it was down. Without a baseline the adapter must fall back to running everything (fallback `baseline_mismatch`, PLAN §6.7).
 - Changes made before the watcher started. A watcher can never be the sole source of truth for skips. It can only be an input to a plan that has a git or file-hash baseline.
-- Events can be coalesced or dropped by the OS. The adapter must treat an overflow event as "unknown" and run everything (the "never skip silently" rule, docs/OVERVIEW.md).
+- Events can be coalesced or dropped by the OS. As built, events never decide what changed: the changes come from a stat walk compared with the window's snapshot (racy files by hash), so a dropped event cannot hide a change (see adapters/watcher/README.md).
 
 ## Declared inputs
 - The watched roots and the ignore patterns.

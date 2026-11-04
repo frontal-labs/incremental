@@ -18,7 +18,8 @@ The file-system change source (draft: `spec/adapters/watcher.md`). It turns even
 ## Gaps (documented, not hidden)
 
 - **Task definitions.** The draft says the watcher has no task. The loop needs tasks to observe, so they come from `tasks.json`. This is a deviation from the draft.
-- **Silent drops.** Node does not expose the kernel overflow flag. The watcher treats only an `error` event, an event without a file name, a removed or replaced directory, and a symbolic link as a loss. A silent FSEvents coalesce on macOS is not detected. Recursive `fs.watch` was verified on darwin only.
+- **Silent drops are safe.** macOS FSEvents can coalesce or lose events without telling Node. The watcher never reads its changes from events. Events only wake the caller. `state()` walks the tree and compares each file's stat with the snapshot taken when the window opened. A file whose mtime is within two seconds of the snapshot (the racy case) is hashed at snapshot time and compared by content. So a dropped event delays a run; it cannot hide a change. The test `an edit with no event delivered is still reported` checks this with no watch open. Recursive `fs.watch` was verified on darwin only.
+- **Cost.** Each `state()` call walks the whole tree. That is linear in the repository's file count, and it is the price of not trusting events.
 - **Baseline.** A window starts only on a tree equal to the stored baseline. Uncommitted edits or a commit made while no watcher ran leave the session without history, so cycles run everything until another adapter (typescript, vitest) advances the store to a clean HEAD.
 - **Git still runs.** The ChangeSet itself comes from events, but the baseline check and the advance use the git change source every cycle. The draft's "without running git" applies only to the ChangeSet.
 - **Ignored directories.** `node_modules`, `.git`, `dist`, `.backplane` and `.toolchain` are never watched. A task input under them is refused with a config error.

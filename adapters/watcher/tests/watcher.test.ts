@@ -8,6 +8,7 @@ import path from "node:path";
 import { test } from "node:test";
 import { connect, defaultEngine } from "@backplane/client";
 import { ConfigError, inputsOf, Session, type TaskDef } from "../src/index.js";
+import { Watcher } from "../src/watch.js";
 
 const GIT_ENV = {
   ...process.env,
@@ -221,5 +222,35 @@ test("a task input under an ignored directory is refused, not silently skipped",
     assert.throws(() => inputsOf(root, { id: "t", command: ["true"], inputs: ["node_modules/dep"] }), ConfigError);
   } finally {
     rmSync(root, { recursive: true, force: true });
+  }
+});
+
+// Silent drops (spec/adapters/watcher.md): the OS may deliver no event for an
+// edit. The state must still report it, because it is read from a stat walk
+// against the snapshot, never from the event stream.
+test("an edit with no event delivered is still reported, and a rebase clears it", async () => {
+  const dir = mkdtempSync(path.join(os.tmpdir(), "backplane-watch-silent-"));
+  try {
+    writeFileSync(path.join(dir, "a.ts"), "export const a = 1;\n");
+    writeFileSync(path.join(dir, "b.ts"), "export const b = 1;\n");
+    const w = new Watcher(dir);
+    w.rebase();
+    // Let the snapshot age past the racy window before a file can be compared by stat.
+    await new Promise((r) => setTimeout(r, 2_100));
+    const before = w.state();
+    assert.deepEqual(before.changes, [], "nothing changed, nothing reported");
+
+    writeFileSync(path.join(dir, "a.ts"), "export const a = 2;\n");
+    rmSync(path.join(dir, "b.ts"));
+    // No start(): no watch is open, so no event exists for either change.
+    const after = w.state();
+    assert.deepEqual(after.changes.map((c) => `${c.status} ${c.path}`), ["modified a.ts", "deleted b.ts"]);
+    assert.equal(after.lost, null);
+
+    w.rebase();
+    await new Promise((r) => setTimeout(r, 2_100));
+    assert.deepEqual(w.state().changes, []);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
   }
 });
