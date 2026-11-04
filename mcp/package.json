@@ -9,8 +9,8 @@
     "backplane-mcp": "dist/src/index.js"
   },
   "scripts": {
-    "build": "tsc -b",
-    "test": "tsc -b && node --test dist/tests/*.test.js"
+    "build": "tsc-rs -b",
+    "test": "tsc-rs -b && node --test dist/tests/*.test.js"
   },
   "license": "Apache-2.0",
   "engines": {
@@ -23,6 +23,6 @@
   },
   "devDependencies": {
     "@types/node": "22.20.5",
-    "typescript": "5.9.3"
+    "tsc-rs": "0.8.0"
   }
 }

@@ -9,8 +9,8 @@
     "backplane-turbopack": "dist/src/run.js"
   },
   "scripts": {
-    "build": "tsc -b",
-    "test": "npm --prefix ../../bindings/node run build && tsc -b && node --test dist/tests/*.test.js"
+    "build": "tsc-rs -b",
+    "test": "npm --prefix ../../bindings/node run build && tsc-rs -b && node --test dist/tests/*.test.js"
   },
   "license": "Apache-2.0",
   "engines": {
@@ -26,6 +26,6 @@
     "next": "16.4.2",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "typescript": "5.9.3"
+    "tsc-rs": "0.8.0"
   }
 }
