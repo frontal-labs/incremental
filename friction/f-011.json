@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-011",
+  "title": "`declared_tasks` cannot be checked byte-for-byte against CLI (no `--declared-tasks` flag)",
+  "role": "Bindings",
+  "milestone": "E3",
+  "what": "The CLI has no `--declared-tasks` flag, so `declared_tasks` cannot be checked byte-for-byte against the CLI (C04).",
+  "why": "DECISIONS.md E3 Node client decisions: the CLI lacks the flag.",
+  "impact": "C04 cannot be validated end-to-end through the CLI.",
+  "status": "open",
+  "workaround": "Add a `--declared-tasks` CLI flag to close the gap.",
+  "upstream_worthy": false
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-015",
+  "title": "M2 not met: cold CLI plan 0.96\u20131.41 s at 100k tasks (target < 300 ms)",
+  "role": "Core",
+  "milestone": "E2",
+  "what": "M2 (cold CLI plan under 300 ms at 100k tasks) is not met. Measured 0.96 to 1.41 s. The dominant cost is parsing the 53 MB `tg.idx`, which is essentially a copy of the log.",
+  "why": "DECISIONS.md D-E2-01 / Reverse indexes section: a real fix is a binary index image with postings stored in it (implemented as format 2, but M2 cold path still misses).",
+  "impact": "Cold CLI plan latency exceeds target at scale.",
+  "status": "open",
+  "workaround": "Binary index image format 2 built (improves to ~80 ms for `affected`, ~90 ms for `stats`), but M2 cold path still not measured as met.",
+  "upstream_worthy": false
+}

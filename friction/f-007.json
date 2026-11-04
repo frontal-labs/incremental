@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-007",
+  "title": "Scratch repositories in `os.tmpdir` not cleaned up after MCP tests",
+  "role": "Adapters",
+  "milestone": "E8",
+  "what": "The scratch repositories in `os.tmpdir` are not cleaned up after the MCP server tests.",
+  "why": "DECISIONS.md E8 MCP server decisions: known gap \u2014 scratch repositories not cleaned up.",
+  "impact": "Temporary disk usage accumulates after MCP test runs.",
+  "status": "open",
+  "workaround": "Manually clean `os.tmpdir` scratch repositories after MCP tests.",
+  "upstream_worthy": false
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-013",
+  "title": "Python binding timeout is in seconds (float); Node client uses milliseconds (`timeoutMs`)",
+  "role": "Bindings",
+  "milestone": "E9",
+  "what": "Python binding: timeout is in seconds (float, default 10.0). Node client uses milliseconds (`timeoutMs`). One convention must be picked across bindings.",
+  "why": "DECISIONS.md E9 Python binding decisions: left as is for now.",
+  "impact": "Inconsistent timeout units across bindings.",
+  "status": "open",
+  "workaround": "None \u2014 convention decision pending.",
+  "upstream_worthy": false
+}

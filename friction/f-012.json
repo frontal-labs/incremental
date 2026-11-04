@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-012",
+  "title": "`context` is required in TypeScript type, preventing P0b exercise without a cast",
+  "role": "Bindings",
+  "milestone": "E3",
+  "what": "The `context` field is required in the TypeScript type (`AffectedOptions.context`), which prevents the client from exercising P0b (context missing \u2192 fallback) without a cast.",
+  "why": "DECISIONS.md E3 Node client decisions: acceptable for now.",
+  "impact": "P0b (`context_missing` fallback) cannot be exercised through the typed client without a cast.",
+  "status": "open",
+  "workaround": "Use a type cast to omit `context` when testing P0b.",
+  "upstream_worthy": false
+}

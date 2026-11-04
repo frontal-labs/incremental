@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-010",
+  "title": "Node recorder does not validate observations against JSON Schema (no `ajv` in dependencies)",
+  "role": "Adapters",
+  "milestone": "E4",
+  "what": "Observations are checked structurally (required fields, input kinds) only. There is no JSON Schema validator in the dependencies, so `spec/schemas/observation.json` is not fully validated.",
+  "why": "DECISIONS.md E4 Vitest adapter decisions: known gap \u2014 no JSON Schema validator in dependencies.",
+  "impact": "Malformed observations may not be caught until they reach the engine.",
+  "status": "open",
+  "workaround": "Add `ajv` as a dependency (requires a DECISIONS.md entry per PLAN rule 9).",
+  "upstream_worthy": false
+}

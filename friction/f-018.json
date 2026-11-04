@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-018",
+  "title": "`bindings/node/package-lock.json` contained a link into a pnpm store path that no longer exists",
+  "role": "Bindings",
+  "milestone": "E3",
+  "what": "Regenerated `package-lock.json` in bindings/node, adapters/vitest and mcp from a clean install after the lockfile contained a stale pnpm store path.",
+  "why": "DECISIONS.md Linux container gate: `tsc` was missing in a clean install.",
+  "impact": "Clean installs fail without regenerated lockfiles.",
+  "status": "open",
+  "workaround": "Regenerate lockfiles from clean installs.",
+  "upstream_worthy": false
+}

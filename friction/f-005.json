@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-005",
+  "title": "Deletion of stale TypeScript stubs in `core/src/` denied by permission check",
+  "role": "Core",
+  "milestone": "E2",
+  "what": "The stale TypeScript stubs in `core/src/` (`index.ts`, `lock.ts`, `log.ts`, `plan.ts`, `policy.ts`, `protocol.ts`, `store.ts`, `verify.ts`) were not removed. Removal was denied by the permission check during the session.",
+  "why": "DECISIONS.md D-E2-07 records this: removing them was denied by the permission check, and they are not built. The Goose CLI in `core/src/main.goose` replaces `cli/`.",
+  "impact": "Stale stubs remain in the tree but are not built. Delete them when permission is granted.",
+  "status": "open",
+  "workaround": "None \u2014 they are not built and do not affect the Goose core.",
+  "upstream_worthy": false
+}

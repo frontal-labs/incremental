@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-008",
+  "title": "Working tree has many unrelated changes; no commit plan for grouping",
+  "role": "All",
+  "milestone": "all",
+  "what": "The working tree has many unrelated changes, including a Rust binding under `bindings/rust` and another session's additions. HEAD has commits from other sessions. Nothing was committed by the lead in the 2026-11-03 round.",
+  "why": "DECISIONS.md: commits need a plan for grouping, and the lead has not made one.",
+  "impact": "Cannot create a clean commit without a grouping plan.",
+  "status": "open",
+  "workaround": "None \u2014 needs a human commit-planning decision.",
+  "upstream_worthy": false
+}

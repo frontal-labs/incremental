@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-001",
+  "title": "Goose toolchain pin is 13 days old, one day short of rule 2.11's 14-day minimum",
+  "role": "Core",
+  "milestone": "E2",
+  "what": "Goose v2026.3 was pinned on 2026-11-03, but it was published 2026-10-21, making it 13 days old \u2014 one day short of the 14-day minimum required by rule 2.11.",
+  "why": "The human asked for this version directly in the session on 2026-11-03 (DECISIONS.md D-14-GOOSE). PLAN.md D-14 and 14.2 require a human decision for the switch, and that is what the DECISIONS.md entry records.",
+  "impact": "The pin is an exception recorded in DECISIONS.md. Re-check the pin after 2026-11-04.",
+  "status": "open",
+  "workaround": "None needed \u2014 human explicitly requested this version. Exception recorded in DECISIONS.md.",
+  "upstream_worthy": false
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-016",
+  "title": "Linux arm64 build not run: Goose has no linux-arm64 release",
+  "role": "Core",
+  "milestone": "E2",
+  "what": "Goose has no linux-arm64 release and building it from source is not documented in the release, so the Linux arm64 build (Appendix D) is not run.",
+  "why": "DECISIONS.md D-14-GOOSE: platform is macOS arm64 only so far.",
+  "impact": "No Linux arm64 verification of the Goose core.",
+  "status": "open",
+  "workaround": "Linux amd64 container gate runs under emulation.",
+  "upstream_worthy": false
+}

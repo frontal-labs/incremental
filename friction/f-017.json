@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-017",
+  "title": "Vitest fixture failure in container: workspace link excluded by `.dockerignore`",
+  "role": "Adapters",
+  "milestone": "E4",
+  "what": "The prime run exited 7 because the workspace link `packages/app/node_modules/@fixture/core` was excluded by the `**/node_modules` rule of `.dockerignore`.",
+  "why": "DECISIONS.md Linux container gate: container packaging bug, not an adapter bug. The rule now re-includes that one directory.",
+  "impact": "Vitest adapter tests fail in the container until `.dockerignore` is fixed.",
+  "status": "resolved",
+  "workaround": "Re-include `packages/app/node_modules/@fixture/core` in `.dockerignore`.",
+  "upstream_worthy": false
+}

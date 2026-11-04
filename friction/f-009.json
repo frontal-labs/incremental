@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-009",
+  "title": "`test-adapters` target depends on adapter directories that exist only as untracked files",
+  "role": "Core",
+  "milestone": "E2",
+  "what": "`test-adapters` was in `all-tests`, but it depends on adapter directories that exist only as untracked files on this machine. It was removed from `all-tests` (the target stays defined).",
+  "why": "Fresh-clone verification (DECISIONS.md): fix made to get `make setup` + `npm install` + `make all-tests test-python test-git test-fuzz` to pass.",
+  "impact": "`make all-tests` does not run adapter tests. Adapter tests must be run individually.",
+  "status": "open",
+  "workaround": "Run adapter test targets individually (`test-typescript`, `test-bazel`, etc.).",
+  "upstream_worthy": false
+}

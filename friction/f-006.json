@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-006",
+  "title": "Vitest fixture prime run exited 7 once, cause unknown, not reproduced in 4 later runs",
+  "role": "Adapters",
+  "milestone": "E4",
+  "what": "A recurrence of an exit code 7 on the first run of the Vitest adapter was seen once and not reproduced in four later runs.",
+  "why": "DECISIONS.md E4 Vitest adapter decisions: the cause is unknown. The JSON notAdvanced reason makes a recurrence diagnosable.",
+  "impact": "Intermittent failure in test-vitest. Cannot be fixed without reproducing.",
+  "status": "open",
+  "workaround": "Rerun test-vitest; the JSON notAdvanced reason enables diagnosis on recurrence.",
+  "upstream_worthy": false
+}

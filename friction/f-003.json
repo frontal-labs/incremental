@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-003",
+  "title": "`docker/Dockerfile.linux` is a placeholder, not a real Dockerfile",
+  "role": "Bench",
+  "milestone": "E10",
+  "what": "The Linux container gate references `docker/Dockerfile.linux`, which is a placeholder.",
+  "why": "Noted in DECISIONS.md during the 2026-11-03 round: `docker/Dockerfile.linux` is a placeholder and `docker/Dockerfile.linux` has no ruff, protoc, buf, bazelisk, pnpm or cargo.",
+  "impact": "Linux gate cannot run end-to-end until the Dockerfile includes all needed tools.",
+  "status": "open",
+  "workaround": "None.",
+  "upstream_worthy": false
+}

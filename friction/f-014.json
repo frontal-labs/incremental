@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-014",
+  "title": "`baseline_conflict` now carries `data: {expected, actual}`; Python test asserted no data",
+  "role": "Bindings",
+  "milestone": "E9",
+  "what": "PLAN 9.1 shows `baseline_conflict` with `data: {expected, actual}`. The engine now sends `data`. The Python test that asserted no data was updated to match.",
+  "why": "DECISIONS.md open items closed by the lead: `baseline_conflict` now carries `data`. C26 checks only the code, so it still passes.",
+  "impact": "Python client passes through whatever it gets (None for older behavior). Test updated.",
+  "status": "open",
+  "workaround": "Decide which side is authoritative; the engine is the one to change if the spec stands.",
+  "upstream_worthy": false
+}

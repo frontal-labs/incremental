@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-004",
+  "title": "Linux container gate: Docker daemon unresponsive during session, rerun pending",
+  "role": "Bench",
+  "milestone": "E2",
+  "what": "The Docker daemon stopped responding during the 2026-11-03 session. The Linux container gate rerun is pending until Docker is healthy.",
+  "why": "Docker images from this repo's own builds were being cleaned; the `backplane:linux` Docker image removal hung and was stopped. Restarting Docker Desktop would interrupt containers belonging to other projects.",
+  "impact": "`make linux-gate` cannot be verified until Docker is healthy.",
+  "status": "open",
+  "workaround": "Restart Docker Desktop when it will not interrupt other projects' containers.",
+  "upstream_worthy": false
+}

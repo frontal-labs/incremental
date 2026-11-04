@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/friction_entry.json",
+  "id": "F-002",
+  "title": "`bun-version: '2.2'` in CI is not a published Bun version",
+  "role": "Bench",
+  "milestone": "E0",
+  "what": "`.github/workflows/ci.yml` uses `bun-version: '2.2'`, which is not a published Bun version.",
+  "why": "CI workflows were rewritten on 2026-11-03. The bun version pin was not verified against published releases.",
+  "impact": "CI may fail when trying to install Bun 2.2. Needs a valid published version or removal of the Bun dependency.",
+  "status": "open",
+  "workaround": "None.",
+  "upstream_worthy": false
+}
