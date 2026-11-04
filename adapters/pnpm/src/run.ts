@@ -28,6 +28,7 @@ import {
 } from "@backplane/client";
 import {
   contextFor,
+  confinedTasks,
   declaredInputs,
   runScript,
   tasksOf,
@@ -112,6 +113,7 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
   ensureStore(store);
 
   const pkgs: Pkg[] = workspacePackages(root);
+  const confined = confinedTasks(root);
   const context = contextFor(root, pkgs);
   const tasks: TaskDef[] = tasksOf(pkgs);
   const discovered = tasks.map((t) => t.task);
@@ -167,12 +169,13 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       }
       const run = runScript(root, t, opts.timeoutMs);
       results.push({ task: t.task, outcome: run.outcome, durationMs: run.durationMs, problem: run.problem });
-      // No recorder is paired with this adapter, so the script's own reads are
-      // unknown and every observation is dirty (spec/adapters/pnpm.md).
+      // No recorder is paired with this adapter. A task is dirty unless the repo
+      // declares it confined (backplane-pnpm.json): then its inputs are the whole
+      // of what it reads, by the repo's own statement.
       observations.push({
         task: t.task,
         baseline: obsBaseline,
-        dirty: true,
+        dirty: !confined.has(t.task),
         context,
         inputs,
         outputs: [],

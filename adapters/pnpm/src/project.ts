@@ -138,13 +138,34 @@ function filesUnder(root: string, rel: string): string[] {
   return out;
 }
 
+// The files a package owns: everything under its directory, except the
+// directories of the other workspace packages (which matters for the root package).
+export function ownFiles(root: string, pkgs: Pkg[], rel: string): string[] {
+  const others = pkgs.map((p) => p.rel).filter((r) => r !== rel && r !== ".");
+  return filesUnder(root, rel).filter((f) => !others.some((o) => f === o || f.startsWith(`${o}/`)));
+}
+
+// The task ids that the repo declares confined in backplane-pnpm.json, a file
+// at the root of the form {"confined": ["packages/lib#build"]}. A confined
+// task's script is declared to read nothing outside its declared inputs (its
+// package and workspace dependencies), so the observation is not dirty. The
+// adapter cannot verify that claim; the file is the user's statement of it.
+export function confinedTasks(root: string): Set<string> {
+  const file = path.join(root, "backplane-pnpm.json");
+  if (!existsSync(file)) return new Set();
+  const raw = JSON.parse(readFileSync(file, "utf8")) as { confined?: unknown };
+  if (!Array.isArray(raw.confined) || raw.confined.some((t) => typeof t !== "string")) {
+    throw new Error("backplane-pnpm.json: confined must be an array of task ids");
+  }
+  return new Set(raw.confined as string[]);
+}
+
 // The declared inputs of one task (spec/adapters/pnpm.md): the root manifest and
-// workspace files, the task package's own package.json, and every file of each
-// workspace dependency (transitively), so a change in a dependency reaches its
-// dependents. The task's own source files are not declared: they are the
-// script's reads, which only a paired recorder can see.
+// workspace files, the task package's own files, and every file of each workspace
+// dependency (transitively), so a change in a dependency reaches its dependents.
 export function declaredInputs(root: string, pkgs: Pkg[], rel: string): DeclaredInput[] {
   const files = new Set<string>(["package.json", "pnpm-workspace.yaml", ".npmrc"]);
+  for (const f of ownFiles(root, pkgs, rel)) files.add(f);
   for (const dep of closure(pkgs, rel)) {
     if (dep === rel || dep === ".") {
       files.add(path.posix.join(dep, "package.json"));

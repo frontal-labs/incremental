@@ -17,11 +17,17 @@ A task is `<package path>#<script>`, repo-relative. The root package is `.`. Wor
 
 ## Recorder and dirty observations
 
-No recorder is paired with this adapter, so every observation is recorded `dirty: true` (spec 11.1, rule 4). The engine reruns a dirty task every time. In practice the adapter skips nothing until a recorder for the script's tools is paired. The declared inputs are recorded now so the graph is ready when that happens.
+A script's own reads cannot be observed, so by default every observation is `dirty: true` (spec 11.1, rule 4) and the engine reruns the task every time. A task can be made skippable only by the repository's own statement that its script reads nothing outside its declared inputs. That statement is `backplane-pnpm.json` at the root:
+
+```json
+{ "confined": ["packages/lib#build", "packages/app#test"] }
+```
+
+A confined task's inputs are its package's own files, its `package.json`, the root manifest and workspace files, and every file of each workspace dependency (transitively). Its observation is not dirty, so an unchanged task is skipped, and an edit to a file it depends on selects it. The adapter cannot check the claim. If a confined script reads something else, for example a file outside the workspace or a process environment variable, the adapter will skip it wrongly. Only declare a task confined when that is true.
 
 ## Gaps
 
-- The script's own reads are not observed. A script that reads an undeclared file is not protected, and the run is `dirty`.
+- The script's own reads are not observed. A task not listed in `backplane-pnpm.json` is dirty and reruns every time. A task listed there is skipped on the repository's word alone: if its script reads an undeclared file, that change is not seen.
 - Install-time side effects (postinstall scripts, `pnpm install` itself) are not observed. The adapter does not install. Install before running.
 - A dependency's `node_modules`, `.git`, `.backplane` and `.toolchain` are not declared. Build output such as `dist` is declared.
 - Dependency edges come from manifest names that match a workspace package name. This over-approximates pnpm's links, which is sound but may run more than needed.

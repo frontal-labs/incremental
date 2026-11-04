@@ -160,3 +160,53 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
     cleanup(root);
   }
 });
+
+const ALL_TASKS = ["packages/app#test", "packages/lib#build", "packages/lib#test"];
+
+// backplane-pnpm.json declares tasks whose scripts read only their declared inputs.
+function confine(root: string, tasks: string[]): void {
+  write(root, "backplane-pnpm.json", JSON.stringify({ confined: tasks }));
+  commit(root, "declare confined tasks");
+}
+
+test("confined scripts are skipped when nothing they read changed", async () => {
+  const { root, store } = makeRepo();
+  try {
+    confine(root, ALL_TASKS);
+    await run(root, store);
+    const r = await run(root, store);
+    assert.deepEqual(r.selected, [], "no task is selected, so none is run");
+    assert.equal(r.advanced, true);
+    assert.equal(r.exit, 0);
+  } finally {
+    cleanup(root);
+  }
+});
+
+test("a confined edit reaches its own task and its dependents, and nothing else", async () => {
+  const { root, store } = makeRepo();
+  try {
+    confine(root, ALL_TASKS);
+    await run(root, store);
+    write(root, "packages/lib/index.js", "module.exports = 3;\n");
+    commit(root, "edit lib");
+    const r = await run(root, store);
+    assert.deepEqual(r.selected, ["packages/app#test", "packages/lib#build", "packages/lib#test"]);
+    const app = r.plan?.tasks.find((t) => t.id === "packages/app#test");
+    assert.ok(app?.reasons.some((m) => m.includes("packages/lib/index.js")), app?.reasons.join("; "));
+    assert.equal(r.advanced, true);
+  } finally {
+    cleanup(root);
+  }
+});
+
+test("an unconfined script stays dirty, so it runs again even when nothing changed", async () => {
+  const { root, store } = makeRepo();
+  try {
+    await run(root, store);
+    const r = await run(root, store);
+    assert.deepEqual(r.selected, ALL_TASKS, "no recorder is paired, so the observation is dirty");
+  } finally {
+    cleanup(root);
+  }
+});
