@@ -1,6 +1,0 @@
-# GATE0: kill test
-Command: make gate0
-Date: 2026-11-03T08:44:47Z
-Commit: 5876a6dc96f2e4dc95924cd608b0df32cb14d609
---- output ---
-PASS gate0
