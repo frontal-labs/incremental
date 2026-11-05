@@ -28,10 +28,6 @@ skills:
 	@sh skills.sh >logs/skills.log 2>&1 || { tail -30 logs/skills.log; echo "FAIL skills"; exit 1; }
 	@echo "PASS skills"
 
-skills:
-	@sh skills.sh >logs/skills.log 2>&1 || { tail -30 logs/skills.log; echo "FAIL skills"; exit 1; }
-	@echo "PASS skills"
-
 build: setup
 	@mkdir -p core/dist adapters/git/dist
 	@$(GOOSE) build core/src/main.goose -o $(ENGINE) >logs/build.log 2>&1 || { tail -20 logs/build.log; echo "FAIL build"; exit 1; }
