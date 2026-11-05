@@ -23,6 +23,6 @@ make bench          # full replay + warm-plan timing + benchmarks/results/RESULT
 
 ## Status
 
-- Replay runs end to end against a real Vitest monorepo (`INCREMENTAL_BENCH_REPO`, defaults to the in-repo `demo-repo/` which is runnable out of the box). Raw data: `benchmarks/results/replay.json`. See `status/BENCH.json` and `status/BENCHMARKS.json` (both `done`).
+- Replay runs end to end against a real Vitest monorepo (`INCREMENTAL_BENCH_REPO`, defaults to the in-repo `fixture/` which is runnable out of the box). Raw data: `benchmarks/results/replay.json`. See `status/BENCH.json` and `status/BENCHMARKS.json` (both `done`).
 - Full benchmarks run: `make bench-smoke` (3 commits + warm-plan timing) and `make bench` (6 commits + warm-plan timing + `benchmarks/results/RESULTS.md`) both pass.
 - Evidence is recorded in `evidence/BENCH.txt`; see `evidence/` for E1/E2.

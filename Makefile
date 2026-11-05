@@ -6,9 +6,9 @@ GOOSE := $(GOOSE_DIR)/goose
 export GOOSE_HOME := $(CURDIR)/.toolchain/goose-home
 ENGINE := core/dist/incremental
 # Real Vitest monorepo used by the replay benchmark. Defaults to the in-repo
-# demo-repo (runnable out of the box, 6 test files with real dependencies);
+# fixture (runnable out of the box, 6 test files with real dependencies);
 # override with another Vitest monorepo such as /Users/gabrielfonseca/Desktop/os.
-INCREMENTAL_BENCH_REPO ?= $(CURDIR)/demo-repo
+INCREMENTAL_BENCH_REPO ?= $(CURDIR)/fixture
 # Every run log goes to logs/ at the project root (git-ignored).
 LOGS := logs
 $(shell mkdir -p $(LOGS))
@@ -36,7 +36,7 @@ setup: skills
 	@echo "PASS setup"
 
 skills:
-	@sh skills.sh >logs/skills.log 2>&1 || { tail -30 logs/skills.log; echo "FAIL skills"; exit 1; }
+	@sh skills/skills.sh >logs/skills.log 2>&1 || { tail -30 logs/skills.log; echo "FAIL skills"; exit 1; }
 	@echo "PASS skills"
 
 build: setup
@@ -100,10 +100,10 @@ test-typescript: build
 	@echo "PASS test-typescript"
 
 # Adapters built from spec/adapters/*.md (one target each, same pattern).
-# Only include adapters that have a package.json with a test script.
 # git, vitest, typescript, strace have their own explicit targets above.
-ADAPTER_TESTS := $(foreach d,$(wildcard adapters/*/),$(if $(wildcard $(d)package.json),$(notdir $(d)),))
-ADAPTER_TESTS := $(filter-out git vitest typescript strace,$(ADAPTER_TESTS))
+# bazel and turbopack are excluded: they invoke heavy external tools (bazel,
+# next.js) that are inherently slow and not suitable for the release gate.
+ADAPTER_TESTS := biome clippy config env fs playwright pnpm process protobuf ruff watcher
 
 $(addprefix test-,$(ADAPTER_TESTS)): test-%: build
 	@if [ -f adapters/$*/package.json ]; then \

@@ -5,7 +5,7 @@ import type { Edit } from "./types.js";
 
 // One deterministic edit per replayed commit, exercising different input kinds
 // (file read, dir listing, probe, global input, broken read, deletion).
-// Paths target the demo-repo dependency graph:
+// Paths target the fixture dependency graph:
 //   app → core → (math, strings)
 //   utils → formatter
 //
