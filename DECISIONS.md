@@ -1,6 +1,7 @@
 # Decisions
 
-Append-only (PLAN.md 16.2). Each entry starts with the role and milestone.
+Append-only decision log. Each entry records the role, milestone, decision, rationale, and consequences.
+Do not remove entries; append new decisions at the end. If a decision is superseded, keep the original and add a superseding entry that references it.
 
 ## D-E1-01 Additive affected options: env, config, declared_tasks (E1, Spec/Conformance)
 - Decision: `affected.options` gains three optional fields: `env` (the client's full env hash map), `config` (`ignore`, `globalInputs`, `fallbackContextKeys`), and `declared_tasks` (task ids the adapter knows, possibly with no observation).
