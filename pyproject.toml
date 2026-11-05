@@ -44,6 +44,10 @@ known-third-party = ["pytest", "requests"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
+[tool.ruff.lint.per-file-ignores]
+# Test helpers raise AssertionError with the observed output in the message, on purpose.
+"bindings/python/tests/**" = ["TRY003"]
+
 [tool.ruff.format]
 # Re-export style: preserve trailing comma, magic trailing comma
 line-ending = "lf"
