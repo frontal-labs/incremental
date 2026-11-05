@@ -46,7 +46,12 @@ async function main(): Promise<void> {
   const initStore = spawnSync(ENGINE, ["init", "--store", store], { encoding: "utf8" });
   if (initStore.status !== 0) throw new Error(`engine init failed: ${initStore.stderr}`);
 
-  const client = await connect({ store, root: repo, command: [ENGINE, "serve"], timeoutMs: 60_000 });
+  const client = await connect({
+    store,
+    root: repo,
+    command: [ENGINE, "serve"],
+    timeoutMs: 60_000,
+  });
   try {
     const walked: Array<{ index: number; id: string }> = [];
     let current = headOf(repo);
@@ -92,19 +97,20 @@ async function main(): Promise<void> {
 
       if (evaluated && plan !== null) {
         for (const t of gt.results) {
-          if (t.outcome !== "fail") continue;
-          if (invalid.has(t.task)) continue; // invalidated by the plan: not a skip
-          // Candidate false skip: failing in ground truth and not invalidated.
-          const r1 = runOnce(repo, t.task);
-          const r2 = runOnce(repo, t.task);
-          if (r1 === "fail" && r2 === "fail") {
-            falseSkips.push({
-              commit: id,
-              task: t.task,
-              query: [...reasonsById.entries()].map(([tid, reasons]) => ({ id: tid, reasons })),
-            });
-          } else {
-            flaky.push({ commit: id, task: t.task });
+          // invalidated by the plan: not a skip
+          if (t.outcome === "fail" && !invalid.has(t.task)) {
+            // Candidate false skip: failing in ground truth and not invalidated.
+            const r1 = runOnce(repo, t.task);
+            const r2 = runOnce(repo, t.task);
+            if (r1 === "fail" && r2 === "fail") {
+              falseSkips.push({
+                commit: id,
+                task: t.task,
+                query: [...reasonsById.entries()].map(([tid, reasons]) => ({ id: tid, reasons })),
+              });
+            } else {
+              flaky.push({ commit: id, task: t.task });
+            }
           }
         }
       }
@@ -132,6 +138,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((e: unknown) => {
-  console.error(e instanceof Error ? e.stack ?? String(e) : String(e));
+  console.error(e instanceof Error ? (e.stack ?? String(e)) : String(e));
   process.exit(1);
 });

@@ -1,4 +1,5 @@
 ---
+
 name: incremental-adapter
 description: Write or review an Incremental adapter - an observer that records one task's reads, lists, probes, writes and outcome, and feeds changes into the engine. Use when adding support for a new tool or runner, or when checking that an adapter does not skip a task it cannot prove unchanged.
 ---
@@ -27,7 +28,16 @@ const { baseline } = await client.baseline;
 const plan = await client.affected(changeSet, { baseline: baseline ?? headSha, context });
 for (const task of plan.tasks) {
   // run the task, collect its inputs, then:
-  await client.observe({ task: task.id, baseline: headSha, dirty, context, inputs, outputs: [], outcome, duration_ms });
+  await client.observe({
+    task: task.id,
+    baseline: headSha,
+    dirty,
+    context,
+    inputs,
+    outputs: [],
+    outcome,
+    duration_ms,
+  });
 }
 await client.advance(headSha, baseline);
 await client.close;

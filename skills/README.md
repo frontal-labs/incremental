@@ -4,11 +4,11 @@ Skills for Incremental: reusable AI agent skills (e.g. OpenCode skills) that ope
 
 ## Contents
 
-| Path | Description |
-|---|---|
-| `skills/incremental/engine/SKILL.md` | Operate the engine: store, observe, advance, affected, explain, plan checks. |
-| `skills/incremental/verify/SKILL.md` | Verify the repo: install, make targets, known failures by design, logs, Linux gate. |
-| `skills/incremental/adapter/SKILL.md` | Write or review an adapter: required pieces, Node client flow, review checklist. |
+| Path                                  | Description                                                                         |
+| ------------------------------------- | ----------------------------------------------------------------------------------- |
+| `skills/incremental/engine/SKILL.md`  | Operate the engine: store, observe, advance, affected, explain, plan checks.        |
+| `skills/incremental/verify/SKILL.md`  | Verify the repo: install, make targets, known failures by design, logs, Linux gate. |
+| `skills/incremental/adapter/SKILL.md` | Write or review an adapter: required pieces, Node client flow, review checklist.    |
 
 ## Purpose
 

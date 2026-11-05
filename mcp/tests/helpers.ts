@@ -7,7 +7,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import { connect, defaultEngine, type Context, type Input, type Observation, type Plan } from "@incremental/client";
+import {
+  connect,
+  defaultEngine,
+  type Context,
+  type Input,
+  type Observation,
+  type Plan,
+} from "@incremental/client";
 import { buildContext, sha256 } from "../src/context.js";
 import { defaultGitBinary } from "../src/git.js";
 
@@ -101,7 +108,16 @@ export function observation(
   context: Context = contextOf(repo),
   outcome: Observation["outcome"] = "pass",
 ): Observation {
-  return { task, baseline: repo.baseline, dirty: false, context, inputs, outputs: [], outcome, duration_ms: 1 };
+  return {
+    task,
+    baseline: repo.baseline,
+    dirty: false,
+    context,
+    inputs,
+    outputs: [],
+    outcome,
+    duration_ms: 1,
+  };
 }
 
 // Runs fn with an MCP client connected to the server (dist/src/index.js) over
@@ -144,7 +160,10 @@ export async function callTool(
 }
 
 // affected_tasks through MCP, parsed. Fails when the tool returned an error.
-export async function affectedTasks(client: Client, args: Record<string, unknown> = {}): Promise<Plan> {
+export async function affectedTasks(
+  client: Client,
+  args: Record<string, unknown> = {},
+): Promise<Plan> {
   const r = await callTool(client, "affected_tasks", args);
   if (r.isError) throw new Error(`affected_tasks failed: ${r.text}`);
   return JSON.parse(r.text) as Plan;

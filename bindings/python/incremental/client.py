@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 from ._transport import Engine, _FifoLock, default_engine, default_store, find_repo_root
 from .errors import IncrementalError
@@ -22,8 +23,9 @@ class Incremental:
 
     protocol = PROTOCOL
 
-    def __init__(self, argv_prefix: Sequence[str], store: str, root: str,
-                 timeout: float, restart: bool):
+    def __init__(
+        self, argv_prefix: Sequence[str], store: str, root: str, timeout: float, restart: bool
+    ):
         self._prefix = list(argv_prefix)
         self._store = store
         self._root = root
@@ -47,11 +49,16 @@ class Incremental:
     def _start_engine(self) -> None:
         self._engine.start()
         self._hello = self._engine.request(
-            "hello", {"protocol": PROTOCOL, "client": {"name": CLIENT_NAME, "version": CLIENT_VERSION}})
+            "hello",
+            {"protocol": PROTOCOL, "client": {"name": CLIENT_NAME, "version": CLIENT_VERSION}},
+        )
         if self._hello.get("protocol") != PROTOCOL:
             self._engine.kill()
-            raise IncrementalError("protocol_mismatch", "engine speaks another protocol",
-                                 {"supported": [self._hello.get("protocol")]})
+            raise IncrementalError(
+                "protocol_mismatch",
+                "engine speaks another protocol",
+                {"supported": [self._hello.get("protocol")]},
+            )
 
     @property
     def engine_pid(self) -> int | None:
@@ -89,7 +96,7 @@ class Incremental:
             self._closed = True
             self._engine.stop(graceful=True, wait=self._timeout)
 
-    def __enter__(self) -> "Incremental":
+    def __enter__(self) -> Incremental:
         return self
 
     def __exit__(self, *exc) -> None:
@@ -98,8 +105,10 @@ class Incremental:
     # ----- protocol methods --------------------------------------------------
 
     def hello(self) -> dict:
-        return self._call("hello", {"protocol": PROTOCOL,
-                                    "client": {"name": CLIENT_NAME, "version": CLIENT_VERSION}})
+        return self._call(
+            "hello",
+            {"protocol": PROTOCOL, "client": {"name": CLIENT_NAME, "version": CLIENT_VERSION}},
+        )
 
     def observe(self, observation: dict) -> dict:
         return self._call("observe", {"observation": observation})
@@ -113,10 +122,18 @@ class Incremental:
     def advance(self, to: str, expected: str | None) -> dict:
         return self._call("advance", {"to": to, "expected": expected})
 
-    def affected(self, changes: dict, *, baseline: str, context: dict | None = None,
-                 verify: bool = False, policy: str = "balanced",
-                 env: dict | None = None, config: dict | None = None,
-                 declared_tasks: list | None = None) -> dict:
+    def affected(
+        self,
+        changes: dict,
+        *,
+        baseline: str,
+        context: dict | None = None,
+        verify: bool = False,
+        policy: str = "balanced",
+        env: dict | None = None,
+        config: dict | None = None,
+        declared_tasks: list | None = None,
+    ) -> dict:
         options: dict[str, Any] = {"baseline": baseline, "verify": verify, "policy": policy}
         if context is not None:
             options["context"] = context
@@ -144,8 +161,14 @@ class Incremental:
         return self._call("ping")
 
 
-def connect(store: str | None = None, *, engine: str | Sequence[str] | None = None,
-            root: str | None = None, timeout: float = 10.0, restart: bool = True) -> Incremental:
+def connect(
+    store: str | None = None,
+    *,
+    engine: str | Sequence[str] | None = None,
+    root: str | None = None,
+    timeout: float = 10.0,
+    restart: bool = True,
+) -> Incremental:
     """Start the engine for a store and return a connected client.
 
     store: store directory. Default: $INCREMENTAL_STORE, else <repo>/.incremental.

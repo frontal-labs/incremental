@@ -4,16 +4,16 @@ The incremental specification: protocol, policy, store format, schemas, referenc
 
 ## Contents
 
-| Path | Description |
-|---|---|
-| `spec/PROTOCOL.md` | incremental Protocol v1: transport (JSON Lines over stdio), handshake (`hello`), methods (`observe`, `affected`, `explain`, `stats`, ...), errors, 10 s request budget. |
-| `spec/POLICY.md` | Policy engine: `plan(state, query)`, rules P0–P11, fallback priority, confidence, determinism, verify/stat cache, reason grammar, reserved context keys. |
-| `spec/FORMAT.md` | Store format v1: `tg.log` records, `graph_version`, `stat.cache`, `tg.lock`, compaction. |
-| `spec/bindings-python.md` | Python binding notes. |
-| `spec/CHANGE_REQUESTS.md` | Open change requests (CR-002 and CR-003 need human sign-off). |
-| `spec/reference/` | General reference implementation used by conformance and fuzz. |
-| `spec/schemas/` | JSON schemas for observations, changesets, plans, explanations. |
-| `spec/validate.mjs` | Schema + reference policy validation. |
+| Path                      | Description                                                                                                                                                             |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spec/PROTOCOL.md`        | incremental Protocol v1: transport (JSON Lines over stdio), handshake (`hello`), methods (`observe`, `affected`, `explain`, `stats`, ...), errors, 10 s request budget. |
+| `spec/POLICY.md`          | Policy engine: `plan(state, query)`, rules P0–P11, fallback priority, confidence, determinism, verify/stat cache, reason grammar, reserved context keys.                |
+| `spec/FORMAT.md`          | Store format v1: `tg.log` records, `graph_version`, `stat.cache`, `tg.lock`, compaction.                                                                                |
+| `spec/bindings-python.md` | Python binding notes.                                                                                                                                                   |
+| `spec/CHANGE_REQUESTS.md` | Open change requests (CR-002 and CR-003 need human sign-off).                                                                                                           |
+| `spec/reference/`         | General reference implementation used by conformance and fuzz.                                                                                                          |
+| `spec/schemas/`           | JSON schemas for observations, changesets, plans, explanations.                                                                                                         |
+| `spec/validate.mjs`       | Schema + reference policy validation.                                                                                                                                   |
 
 ## Running validation
 

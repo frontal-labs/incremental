@@ -35,9 +35,7 @@
     "tasks": [],
     "unobserved": [],
     "ignored": [],
-    "deleted_tasks": [
-      "packages/core/src/old.test.ts"
-    ],
+    "deleted_tasks": ["packages/core/src/old.test.ts"],
     "fallback": null,
     "confidence": "medium"
   }

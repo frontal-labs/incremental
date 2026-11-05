@@ -31,14 +31,23 @@ import {
 // Cases run through the engine process, not the client (see the note above).
 const RAW_CASES = new Set(["C34", "C35"]);
 
-const HELLO = { id: 1, method: "hello", params: { protocol: 1, client: { name: "conformance", version: "0.0.0" } } };
+const HELLO = {
+  id: 1,
+  method: "hello",
+  params: { protocol: 1, client: { name: "conformance", version: "0.0.0" } },
+};
 
 // The client's affected options for a query case (run.mjs affectedRequest).
 // A case without context is passed without it on purpose (P0b): the client
 // type requires context, so the test casts.
 function optionsOf(c: CaseFile): AffectedOptions {
   const q = c.query!;
-  const o: Record<string, unknown> = { baseline: q.baseline, verify: q.verify, policy: c.mode, context: q.context };
+  const o: Record<string, unknown> = {
+    baseline: q.baseline,
+    verify: q.verify,
+    policy: c.mode,
+    context: q.context,
+  };
   if (q.env !== undefined) o.env = q.env;
   if (q.declared_tasks !== undefined) o.declared_tasks = q.declared_tasks;
   if (c.config !== undefined) o.config = c.config;
@@ -58,7 +67,11 @@ async function buildStore(c: CaseFile, store: string, root: string): Promise<voi
 }
 
 // Engine process, one request per line; returns the parsed responses.
-function rawServe(store: string, root: string, lines: string[]): { status: number | null; responses: Record<string, unknown>[] } {
+function rawServe(
+  store: string,
+  root: string,
+  lines: string[],
+): { status: number | null; responses: Record<string, unknown>[] } {
   const r = spawnSync(ENGINE, ["serve", "--store", store, "--root", root], {
     input: lines.join("\n") + "\n",
     encoding: "utf8",
@@ -78,24 +91,29 @@ async function runRawCase(c: CaseFile): Promise<string[]> {
     // C34: hello with an unsupported protocol version.
     const r = rawServe(store, wt, [JSON.stringify({ id: 1, ...c.action })]);
     const err = r.responses[0]?.error as { code?: string } | undefined;
-    if (err?.code !== c.expect.error) diffs.push(`error: want ${String(c.expect.error)} got ${JSON.stringify(r.responses[0])}`);
+    if (err?.code !== c.expect.error)
+      diffs.push(`error: want ${String(c.expect.error)} got ${JSON.stringify(r.responses[0])}`);
     if (r.status !== 2) diffs.push(`exit: want 2 got ${String(r.status)}`);
     return diffs;
   }
   // C35: malformed line, then a valid request; the loop must continue.
   const seeds = seedsOf(c).map((m, i) => JSON.stringify({ id: 100 + i, ...m }));
   const r = rawServe(store, wt, [JSON.stringify(HELLO), ...seeds, ...(c.raw_lines ?? [])]);
-  const want = (c.expect.responses as { id: number | null; error_code?: string; result?: unknown }[]);
+  const want = c.expect.responses as { id: number | null; error_code?: string; result?: unknown }[];
   for (const w of want) {
     const got = r.responses.find((x) => x.id === w.id);
     if (got === undefined) {
       diffs.push(`no response with id ${String(w.id)}`);
-      continue;
+    } else {
+      if (
+        w.error_code !== undefined &&
+        (got.error as { code?: string } | undefined)?.code !== w.error_code
+      ) {
+        diffs.push(`id ${String(w.id)}: error ${JSON.stringify(got)}`);
+      }
+      if (w.result !== undefined && !sameJSON(got.result, w.result))
+        diffs.push(`id ${String(w.id)}: result ${JSON.stringify(got)}`);
     }
-    if (w.error_code !== undefined && (got.error as { code?: string } | undefined)?.code !== w.error_code) {
-      diffs.push(`id ${String(w.id)}: error ${JSON.stringify(got)}`);
-    }
-    if (w.result !== undefined && !sameJSON(got.result, w.result)) diffs.push(`id ${String(w.id)}: result ${JSON.stringify(got)}`);
   }
   return diffs;
 }
@@ -119,7 +137,9 @@ async function runAdvanceCase(c: CaseFile): Promise<string[]> {
     }
     const after = await k.baseline();
     if (c.expect.baseline_after !== undefined && after.baseline !== c.expect.baseline_after) {
-      diffs.push(`baseline_after: want ${String(c.expect.baseline_after)} got ${String(after.baseline)}`);
+      diffs.push(
+        `baseline_after: want ${String(c.expect.baseline_after)} got ${String(after.baseline)}`,
+      );
     }
   } finally {
     await k.close();
@@ -165,7 +185,8 @@ async function runConcurrencyCase(c: CaseFile): Promise<string[]> {
   const diffs: string[] = [];
   const want = c.expect as { tasks: number; observations: number };
   if (stats.tasks !== want.tasks) diffs.push(`tasks: want ${want.tasks} got ${stats.tasks}`);
-  if (stats.observations !== want.observations) diffs.push(`observations: want ${want.observations} got ${stats.observations}`);
+  if (stats.observations !== want.observations)
+    diffs.push(`observations: want ${want.observations} got ${stats.observations}`);
   return diffs;
 }
 
@@ -228,7 +249,10 @@ async function runQueryCase(c: CaseFile): Promise<string[]> {
   const cached = fs.existsSync(path.join(store, "stat.cache")); // written by verify
 
   if (c.determinism === "repeat") {
-    const [x, y] = await once(store, wt, async (k) => [await k.affected(cs, opts), await k.affected(cs, opts)]);
+    const [x, y] = await once(store, wt, async (k) => [
+      await k.affected(cs, opts),
+      await k.affected(cs, opts),
+    ]);
     if (!sameJSON(x, y)) diffs.push("repeat: bytes differ");
   }
   if (c.determinism === "shuffle") {
@@ -242,7 +266,8 @@ async function runQueryCase(c: CaseFile): Promise<string[]> {
     fs.rmSync(path.join(store, "stat.cache"), { force: true });
     const cold = await once(store, wt, (k) => k.affected(cs, opts));
     if (!cached) diffs.push("cache: stat.cache was not written by verify");
-    if (!sameJSON(again, plan) || !sameJSON(cold, plan)) diffs.push("cache: answer changed with the cache");
+    if (!sameJSON(again, plan) || !sameJSON(cold, plan))
+      diffs.push("cache: answer changed with the cache");
   }
   return diffs;
 }

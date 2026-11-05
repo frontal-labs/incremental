@@ -1,0 +1,40 @@
+# OpenCode project configuration (.opencode/config.yaml)
+#
+# Settings applied when OpenCode is run from this repository. These override
+# the user-level defaults in ~/.opencode/config.yaml.
+#
+# This directory is the project's OpenCode home. The `skills` symlink below
+# points to the project's skills/ directory so OpenCode loads the skills
+# defined here:
+#   - .opencode/skills -> skills/  (incremental-engine, incremental-verify, incremental-adapter)
+#
+# Install the skills into OpenCode's user skills home as well (so they load
+# regardless of working directory):
+#   ./skills.sh                # copies to ~/.opencode/skills/<skill>/
+#   or link the user skills dir to this project:
+#   ln -sfn "$PWD/.opencode/skills" ~/.opencode/skills
+
+# ---- Model ----
+# Prefer models available in this environment for engine/binding work.
+model: anthropic/claude-sonnet-4-5
+
+# ---- Skills ----
+# Load skills from the project skills/ directory via the symlink.
+skills:
+  path: skills
+  autoLoad: true
+
+# ---- MCP servers ----
+# Project-local MCP server: the incremental protocol v1 server in mcp/.
+mcpServers:
+  incremental:
+    description: Incremental protocol v1 MCP server over stdio (JSON Lines)
+    command: node
+    args:
+      - /Users/gabrielfonseca/Desktop/graph/mcp/dist/src/index.js
+    env:
+      INCREMENTAL_STORE: .incremental
+
+# ---- Display ----
+theme: system
+fontSize: 14

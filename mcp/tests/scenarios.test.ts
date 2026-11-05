@@ -37,7 +37,10 @@ test("S1 (V01-like): an edit to a leaf file selects only its reader", async () =
   // Store: tests/leaf.test.ts reads src/leaf.ts; tests/other.test.ts reads src/other.ts.
   // Edit: src/leaf.ts modified. POLICY P3: reads:src/leaf.ts for the reader.
   // No fallback; total 2, one skipped; not verify, so confidence medium (8.6).
-  const repo = makeRepo("s1", { "src/leaf.ts": "export const leaf = 1;\n", "src/other.ts": "export const other = 1;\n" });
+  const repo = makeRepo("s1", {
+    "src/leaf.ts": "export const leaf = 1;\n",
+    "src/other.ts": "export const other = 1;\n",
+  });
   await seedStore(repo, [
     observation(repo, "tests/leaf.test.ts", [fileInput(repo, "src/leaf.ts")]),
     observation(repo, "tests/other.test.ts", [fileInput(repo, "src/other.ts")]),
@@ -60,10 +63,16 @@ test("S1 (V01-like): an edit to a leaf file selects only its reader", async () =
 test("S2 (V03-like): an edit to a shared utility selects every reader of it", async () => {
   // Store: tests/a reads util; tests/b reads util and leaf; tests/c reads leaf.
   // Edit: src/util.ts modified. P3 selects a and b. c is not a reader: skipped.
-  const repo = makeRepo("s2", { "src/util.ts": "export const u = 1;\n", "src/leaf.ts": "export const l = 1;\n" });
+  const repo = makeRepo("s2", {
+    "src/util.ts": "export const u = 1;\n",
+    "src/leaf.ts": "export const l = 1;\n",
+  });
   await seedStore(repo, [
     observation(repo, "tests/a.test.ts", [fileInput(repo, "src/util.ts")]),
-    observation(repo, "tests/b.test.ts", [fileInput(repo, "src/util.ts"), fileInput(repo, "src/leaf.ts")]),
+    observation(repo, "tests/b.test.ts", [
+      fileInput(repo, "src/util.ts"),
+      fileInput(repo, "src/leaf.ts"),
+    ]),
     observation(repo, "tests/c.test.ts", [fileInput(repo, "src/leaf.ts")]),
   ]);
   writeRepoFile(repo, "src/util.ts", "export const u = 2;\n");
@@ -121,7 +130,10 @@ test("S4 (V10-like): an env-dependent task is selected when its env value change
   // P2b env_changed:TG_FIXTURE_MODE for env.test.ts only.
   const repo = makeRepo("s4", { "src/leaf.ts": "export const l = 1;\n" });
   await seedStore(repo, [
-    observation(repo, "tests/env.test.ts", [fileInput(repo, "src/leaf.ts"), envInput("TG_FIXTURE_MODE", "local")]),
+    observation(repo, "tests/env.test.ts", [
+      fileInput(repo, "src/leaf.ts"),
+      envInput("TG_FIXTURE_MODE", "local"),
+    ]),
     observation(repo, "tests/plain.test.ts", [fileInput(repo, "src/leaf.ts")]),
   ]);
   const plan = await withMcpClient(repo, { TG_FIXTURE_MODE: "ci" }, (c) => affectedTasks(c));
@@ -141,7 +153,10 @@ test("S5 (fallback): a changed runner in the stored context gives context_change
   // Store observations were recorded with runner vitest@4.1.11. The server
   // queries with vitest@4.1.12. P2 -> context_changed, the only fallback.
   // Every known task is run, with reason fallback; confidence n/a.
-  const repo = makeRepo("s5", { "src/leaf.ts": "export const l = 1;\n", "src/other.ts": "export const o = 1;\n" });
+  const repo = makeRepo("s5", {
+    "src/leaf.ts": "export const l = 1;\n",
+    "src/other.ts": "export const o = 1;\n",
+  });
   const oldContext = contextOf(repo, { runner: "vitest@4.1.11" });
   await seedStore(repo, [
     observation(repo, "tests/leaf.test.ts", [fileInput(repo, "src/leaf.ts")], oldContext),
@@ -165,5 +180,8 @@ test("S5 (fallback): a changed runner in the stored context gives context_change
 });
 
 test("the sha256 helper matches the adapter convention", () => {
-  assert.equal(sha256("x"), "sha256:2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881");
+  assert.equal(
+    sha256("x"),
+    "sha256:2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881",
+  );
 });

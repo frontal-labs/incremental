@@ -4,15 +4,15 @@ The language-neutral conformance suite for incremental Protocol v1 and the polic
 
 ## Contents
 
-| Path | Description |
-|---|---|
-| `conformance/cases/` | 40 conformance cases (C01–C40), covering policy rules P0–P11, fallbacks, confidence, verify, and protocol-level behavior. |
-| `conformance/run.mjs` | Conformance runner: executes the 40 cases through the engine (`core/dist/incremental`). |
-| `conformance/fuzz.mjs` | Differential fuzz against the general reference implementation (3 seeds). |
-| `conformance/adapters/` | Adapter-related conformance material. |
-| `conformance/spec/` | Spec snapshots used by conformance. |
-| `conformance/stores/` | Test stores used by cases. |
-| `conformance/worktrees/` | Test worktrees used by cases. |
+| Path                     | Description                                                                                                               |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `conformance/cases/`     | 40 conformance cases (C01–C40), covering policy rules P0–P11, fallbacks, confidence, verify, and protocol-level behavior. |
+| `conformance/run.mjs`    | Conformance runner: executes the 40 cases through the engine (`core/dist/incremental`).                                   |
+| `conformance/fuzz.mjs`   | Differential fuzz against the general reference implementation (3 seeds).                                                 |
+| `conformance/adapters/`  | Adapter-related conformance material.                                                                                     |
+| `conformance/spec/`      | Spec snapshots used by conformance.                                                                                       |
+| `conformance/stores/`    | Test stores used by cases.                                                                                                |
+| `conformance/worktrees/` | Test worktrees used by cases.                                                                                             |
 
 ## Running
 

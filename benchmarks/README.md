@@ -4,12 +4,12 @@ Benchmark harnesses and results for incremental. Benchmarks measure whether the 
 
 ## Contents
 
-| Path | Description |
-|---|---|
-| `benchmarks/replay/` | Replay driver: replays commits through the engine and measures false skips against ground truth. Built by `make build`. |
-| `benchmarks/warm-plan.mjs` | Warm plan latency benchmark script. |
-| `benchmarks/results/` | Benchmark outputs: `replay.json`, `warm-plan.json`, and generated `RESULTS.md`. |
-| `scripts/bench-summary.mjs` | Generates `benchmarks/results/RESULTS.md` from the raw outputs. |
+| Path                        | Description                                                                                                             |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `benchmarks/replay/`        | Replay driver: replays commits through the engine and measures false skips against ground truth. Built by `make build`. |
+| `benchmarks/warm-plan.mjs`  | Warm plan latency benchmark script.                                                                                     |
+| `benchmarks/results/`       | Benchmark outputs: `replay.json`, `warm-plan.json`, and generated `RESULTS.md`.                                         |
+| `scripts/bench-summary.mjs` | Generates `benchmarks/results/RESULTS.md` from the raw outputs.                                                         |
 
 ## Running
 

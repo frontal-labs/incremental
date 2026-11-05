@@ -152,7 +152,8 @@ class IncrementalClient implements incremental {
   hello(): Promise<Hello> {
     return this.enqueue(async () => {
       const run = await this.ensure();
-      if (run.hello === null) throw new incrementalError("internal", "no handshake", { reason: "bad_handshake" });
+      if (run.hello === null)
+        throw new incrementalError("internal", "no handshake", { reason: "bad_handshake" });
       return run.hello;
     });
   }
@@ -239,7 +240,11 @@ class IncrementalClient implements incremental {
         return await this.send(run, method, params, this.timeoutMs);
       } catch (e) {
         const retry =
-          isExitedError(e) && READ_ONLY.has(method) && this.restart && attempt === 0 && !this.closed;
+          isExitedError(e) &&
+          READ_ONLY.has(method) &&
+          this.restart &&
+          attempt === 0 &&
+          !this.closed;
         if (!retry) throw e;
       }
     }
@@ -247,10 +252,13 @@ class IncrementalClient implements incremental {
 
   // The running server, starting one (with hello) when there is none.
   private async ensure(): Promise<Run> {
-    if (this.closed) throw new incrementalError("internal", "the client is closed", { reason: "closed" });
+    if (this.closed)
+      throw new incrementalError("internal", "the client is closed", { reason: "closed" });
     if (this.current !== null) return this.current;
     if (this.started && !this.restart) {
-      throw new incrementalError("internal", "the server exited and restart is disabled", { reason: "exited" });
+      throw new incrementalError("internal", "the server exited and restart is disabled", {
+        reason: "exited",
+      });
     }
     return this.start();
   }
@@ -273,11 +281,17 @@ class IncrementalClient implements incremental {
     }
     if (!isRecord(hello) || typeof hello.protocol !== "number") {
       this.kill(run);
-      throw new incrementalError("internal", "the server answered hello with no protocol", { reason: "bad_handshake" });
+      throw new incrementalError("internal", "the server answered hello with no protocol", {
+        reason: "bad_handshake",
+      });
     }
     if (hello.protocol !== 1) {
       this.kill(run);
-      throw new incrementalError("protocol_mismatch", "the server does not speak protocol 1", hello);
+      throw new incrementalError(
+        "protocol_mismatch",
+        "the server does not speak protocol 1",
+        hello,
+      );
     }
     run.hello = hello as unknown as Hello;
     return run;
@@ -345,7 +359,9 @@ class IncrementalClient implements incremental {
       run.pending.delete(msg.id);
       clearTimeout(p.timer);
       if (isRecord(msg.error)) {
-        p.reject(new incrementalError(String(msg.error.code), String(msg.error.message), msg.error.data));
+        p.reject(
+          new incrementalError(String(msg.error.code), String(msg.error.message), msg.error.data),
+        );
       } else {
         p.resolve(msg.result);
       }
@@ -365,11 +381,13 @@ class IncrementalClient implements incremental {
       const id = this.nextId++;
       const timer = setTimeout(() => {
         run.pending.delete(id);
-        reject(new incrementalError("timeout", `${method} did not answer within ${timeoutMs} ms`, {
-          partial: false,
-          timeoutMs,
-          method,
-        }));
+        reject(
+          new incrementalError("timeout", `${method} did not answer within ${timeoutMs} ms`, {
+            partial: false,
+            timeoutMs,
+            method,
+          }),
+        );
         // The server may still be working on this request. Stop it so that the
         // next request starts from a fresh server.
         this.kill(run);

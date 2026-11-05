@@ -6,11 +6,24 @@
   "type": "object",
   "required": ["id", "method"],
   "properties": {
-    "id": {"type": "integer"},
+    "id": { "type": "integer" },
     "method": {
       "type": "string",
-      "enum": ["hello", "observe", "observe_many", "baseline", "advance", "affected", "explain", "forget", "stats", "compact", "ping", "shutdown"]
+      "enum": [
+        "hello",
+        "observe",
+        "observe_many",
+        "baseline",
+        "advance",
+        "affected",
+        "explain",
+        "forget",
+        "stats",
+        "compact",
+        "ping",
+        "shutdown"
+      ]
     },
-    "params": {"type": "object"}
+    "params": { "type": "object" }
   }
 }

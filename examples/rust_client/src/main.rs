@@ -30,16 +30,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     stdin_lock.flush()?;
 
     let reader = BufReader::new(stdout);
-    for line in reader.lines() {
-        let resp: Value = serde_json::from_str(&line?)?;
-        if resp.get("id") == Some(&json!(1)) {
-            if let Some(err) = resp.get("error") {
-                eprintln!("hello error: {}", err);
-                std::process::exit(1);
+    let mut lines = reader.lines();
+    let mut waiting = true;
+    while waiting {
+        match lines.next() {
+            Some(line) => {
+                let resp: Value = serde_json::from_str(&line?)?;
+                if resp.get("id") == Some(&json!(1)) {
+                    if let Some(err) = resp.get("error") {
+                        eprintln!("hello error: {}", err);
+                        std::process::exit(1);
+                    }
+                    println!("Engine: {:?}", resp["result"]["engine"]["name"]);
+                    println!("Capabilities: {:?}", resp["result"]["capabilities"]);
+                    waiting = false;
+                }
             }
-            println!("Engine: {:?}", resp["result"]["engine"]["name"]);
-            println!("Capabilities: {:?}", resp["result"]["capabilities"]);
-            break;
+            None => waiting = false,
         }
     }
 
@@ -73,19 +80,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     writeln!(stdin_lock, "{}", affected_req)?;
     stdin_lock.flush()?;
 
-    for line in BufReader::new(child.stdout.take().unwrap()).lines() {
-        let resp: Value = serde_json::from_str(&line?)?;
-        if resp.get("id") == Some(&json!(2)) {
-            if let Some(err) = resp.get("error") {
-                eprintln!("affected error: {}", err);
-                std::process::exit(1);
+    let mut lines = BufReader::new(child.stdout.take().unwrap()).lines();
+    let mut waiting = true;
+    while waiting {
+        match lines.next() {
+            Some(line) => {
+                let resp: Value = serde_json::from_str(&line?)?;
+                if resp.get("id") == Some(&json!(2)) {
+                    if let Some(err) = resp.get("error") {
+                        eprintln!("affected error: {}", err);
+                        std::process::exit(1);
+                    }
+                    let plan = &resp["result"];
+                    println!("Total tasks: {}", plan["total_tasks"]);
+                    println!("Invalid: {}", plan["tasks"].as_array().map(|a| a.len()).unwrap_or(0));
+                    println!("Skipped: {}", plan["skipped"]);
+                    println!("Confidence: {}", plan["confidence"]);
+                    waiting = false;
+                }
             }
-            let plan = &resp["result"];
-            println!("Total tasks: {}", plan["total_tasks"]);
-            println!("Invalid: {}", plan["tasks"].as_array().map(|a| a.len()).unwrap_or(0));
-            println!("Skipped: {}", plan["skipped"]);
-            println!("Confidence: {}", plan["confidence"]);
-            break;
+            None => waiting = false,
         }
     }
 

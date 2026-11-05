@@ -9,7 +9,7 @@ import tempfile
 import unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PY_ROOT = os.path.dirname(HERE)                       # bindings/python
+PY_ROOT = os.path.dirname(HERE)  # bindings/python
 REPO = os.path.abspath(os.path.join(PY_ROOT, "..", ".."))
 SRC = PY_ROOT
 CASES_DIR = os.path.join(REPO, "conformance", "cases")
@@ -19,7 +19,6 @@ FAKE_ENGINE = os.path.join(HERE, "fake_engine.py")
 if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
-import incremental  # noqa: E402  (needs the sys.path entry above)
 from incremental import IncrementalError, connect  # noqa: E402,F401
 
 ENGINE = os.environ.get("INCREMENTAL_ENGINE", os.path.join(REPO, "core", "dist", "incremental"))
@@ -92,10 +91,9 @@ def query_changes(case: dict) -> dict:
 def mismatches(plan: dict, expect: dict) -> list:
     out = []
     for key in COMPARED:
-        if key not in expect:
-            continue
-        if dumps(plan.get(key)) != dumps(expect[key]):
-            out.append(f"{key}: want {dumps(expect[key])} got {dumps(plan.get(key))}")
+        if key in expect:
+            if dumps(plan.get(key)) != dumps(expect[key]):
+                out.append(f"{key}: want {dumps(expect[key])} got {dumps(plan.get(key))}")
     return out
 
 

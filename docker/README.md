@@ -4,8 +4,8 @@ Docker definition for the Linux gate check : running the full incremental test t
 
 ## Contents
 
-| Path | Description |
-|---|---|
+| Path                      | Description                                                                                                                                                                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `docker/Dockerfile.linux` | Builds and runs the test target: Node 22 bookworm, git/python3/make/curl/build-essential, the released Goose linux-x64 binary, then `make all-tests test-python test-git test-fuzz`. |
 
 ## Running

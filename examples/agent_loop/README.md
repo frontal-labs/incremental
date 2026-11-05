@@ -2,7 +2,7 @@
 
 Demonstrates benchmark M8: Agent loop (edit to feedback) with 1, 5 and 20 agents on separate worktrees sharing one store. Target: at least 2x faster than full suite.
 
-Per  §12.4 M8 and §15.4 E6: "Build `examples/agent_loop/`: edit a fixture file, ask the plan, run the selected tests, print timings." The loop follows the adapter contract : baseline → ChangeSet → plan → run invalid → advance only on a clean complete run.
+Per §12.4 M8 and §15.4 E6: "Build `examples/agent_loop/`: edit a fixture file, ask the plan, run the selected tests, print timings." The loop follows the adapter contract : baseline → ChangeSet → plan → run invalid → advance only on a clean complete run.
 
 ## Layout
 
@@ -41,7 +41,7 @@ examples/agent_loop/
 ## Expected results
 
 | Agents | Total | Invalid | Skipped | Skip Share | Elapsed |
-|--------|-------|---------|---------|------------|---------|
+| ------ | ----- | ------- | ------- | ---------- | ------- |
 | 1      | 2     | 2       | 0       | 0.0%       | T1 ms   |
 | 5      | 2     | 1       | 1       | 50.0%      | T5 ms   |
 | 20     | 2     | 1       | 1       | 50.0%      | T20 ms  |

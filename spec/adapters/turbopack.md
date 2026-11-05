@@ -2,12 +2,12 @@
 
 Status: built (`adapters/turbopack`, `make test-turbopack`). Spec sign-off: not recorded in DECISIONS.md. Matched to adapters/turbopack/README.md on 2026-11-04.
 
-
-
 ## Task
+
 Each directory with a `package.json` that depends on `next` is one task: `next build --turbopack` in that directory, using the app's own `next` package (`nextPackage`). Task id: its repo-relative path, `.` for the root (D-2, `discoverApps`, `src/project.ts`).
 
 ## What the recorder can observe
+
 - The real outcome: exit status of `next build --turbopack`, duration, and the worktree and HEAD state checked by the git change source.
 - Inputs: every file under the repository root, minus `node_modules`, `.git`, `.next`, `.incremental` and `.toolchain`, hashed before and after each build. For an app, the directories of the other apps are excluded. `next-env.d.ts` is excluded. Any other file the build changes makes the observation dirty.
 - Tracked environment: `NEXT_*` variables and `NODE_ENV`.
@@ -15,6 +15,7 @@ Each directory with a `package.json` that depends on `next` is one task: `next b
 The module graph is not observed. The adapter does not read Turbopack's output (see Open questions).
 
 ## What it cannot observe
+
 - Build outputs are not stored . The adapter records inputs only.
 - Environment variables outside the tracked set (`NEXT_*` and `NODE_ENV` are tracked). Use the env adapter's allowlist, or set capability false.
 - Remote caches Turbopack may use. A cached build is recorded as a pass; the cache is not trusted as proof of a clean run.
@@ -24,6 +25,7 @@ The module graph is not observed. The adapter does not read Turbopack's output (
 ## Declared inputs (not observed)
 
 Recorded with kind `declared` and a SHA-256 taken before the build. Absent files are not recorded.
+
 - `next.config.{js,mjs,cjs,ts,mts,cts}` in the app directory.
 - `tsconfig.json` and `package.json` in the app directory. The root `package.json` when the app is not the root.
 - `.env`, `.env.local`, `.env.production`, `.env.production.local` in the app directory. These are build-time env files.
@@ -58,11 +60,13 @@ Context: lockfile, root `tsconfig.json`, hash of all `package.json` files, `runn
 ## Open questions
 
 Answered in adapters/turbopack/README.md ("Open questions and their answers", checked against `next@16.4.2`). Removed from this spec:
+
 - Whether Turbopack exposes its module graph: partly. The analyzer export is not used, so the graph is not claimed.
 - Whether there is a public, stable record of the modules read: no.
 - Whether `next build` can run offline: yes, in a fixture with `node_modules` installed.
 
 Still open:
+
 - Whether the analyzer export (`next analyze export`) can cover the read set exactly, with its coverage flags always `exact`. The README's revisit condition. Until then no module graph is recorded.
 
 ## Conformance and tests

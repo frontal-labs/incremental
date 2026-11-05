@@ -6,9 +6,7 @@
     "from": "conformance/stores/base.jsonl"
   },
   "config": {
-    "ignore": [
-      "docs/**"
-    ]
+    "ignore": ["docs/**"]
   },
   "query": {
     "baseline": "b1",
@@ -39,9 +37,7 @@
   "expect": {
     "tasks": [],
     "unobserved": [],
-    "ignored": [
-      "docs/guide.md"
-    ],
+    "ignored": ["docs/guide.md"],
     "deleted_tasks": [],
     "fallback": null,
     "confidence": "medium"

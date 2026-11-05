@@ -6,13 +6,13 @@ Spec: **replay**, benchmark **bench**.
 
 ## What it measures
 
-| Metric | Meaning |
-|--------|---------|
-| `commits_processed` | Commits walked, oldest → newest |
-| `commits_evaluated` | Commits whose predecessor's ground truth was green |
-| `task_commit_pairs_examined` | `(task, commit)` pairs compared vs ground truth |
-| `false_skips` | Task fails in ground truth, is not invalidated, and fails again on two reruns |
-| `rule_of_three_bound` | `3 / commits_evaluated` |
+| Metric                       | Meaning                                                                       |
+| ---------------------------- | ----------------------------------------------------------------------------- |
+| `commits_processed`          | Commits walked, oldest → newest                                               |
+| `commits_evaluated`          | Commits whose predecessor's ground truth was green                            |
+| `task_commit_pairs_examined` | `(task, commit)` pairs compared vs ground truth                               |
+| `false_skips`                | Task fails in ground truth, is not invalidated, and fails again on two reruns |
+| `rule_of_three_bound`        | `3 / commits_evaluated`                                                       |
 
 The report is written to `--out` (default `benchmarks/results/replay.json`) and printed to stdout.
 
@@ -32,12 +32,12 @@ It then resolves paths relative to the compiled output (`dist/src/`), so run fro
 node dist/src/index.js [--repo <path>] [--commits <n>] [--store <path>] [--out <path>]
 ```
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `--repo` | `adapters/vitest/fixtures/repo` | Fixture repo to copy and replay against |
-| `--commits` | `EDIT_SEQUENCE.length` (6) | Number of replayed commits to walk |
-| `--store` | `<tmp>/store` | Incremental store directory |
-| `--out` | `benchmarks/results/replay.json` | Report output path |
+| Option      | Default                          | Description                             |
+| ----------- | -------------------------------- | --------------------------------------- |
+| `--repo`    | `adapters/vitest/fixtures/repo`  | Fixture repo to copy and replay against |
+| `--commits` | `EDIT_SEQUENCE.length` (6)       | Number of replayed commits to walk      |
+| `--store`   | `<tmp>/store`                    | Incremental store directory             |
+| `--out`     | `benchmarks/results/replay.json` | Report output path                      |
 
 Examples:
 
@@ -66,16 +66,16 @@ make bench          # full replay + warm-plan timing + benchmarks/results/RESULT
 
 The driver is split into focused modules, with `src/index.ts` as the entry point:
 
-| Module | Responsibility |
-|--------|----------------|
-| `src/index.ts` | Entry point (shebang): CLI parsing, replay loop orchestration, report build/write, top-level error handling |
-| `src/cli.ts` | `--repo`/`--commits`/`--store`/`--out` argument parsing |
-| `src/git.ts` | `git` and `headOf` helpers |
-| `src/edits.ts` | Deterministic per-commit edit sequence (`EDIT_SEQUENCE`) and `applyEdit` |
+| Module          | Responsibility                                                                                                         |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `src/index.ts`  | Entry point (shebang): CLI parsing, replay loop orchestration, report build/write, top-level error handling            |
+| `src/cli.ts`    | `--repo`/`--commits`/`--store`/`--out` argument parsing                                                                |
+| `src/git.ts`    | `git` and `headOf` helpers                                                                                             |
+| `src/edits.ts`  | Deterministic per-commit edit sequence (`EDIT_SEQUENCE`) and `applyEdit`                                               |
 | `src/vitest.ts` | `groundTruth` (plain vitest run), `runOnce` (rerun a task twice), `runRecorded` (adapter loop iteration with recorder) |
-| `src/report.ts` | `median`, `buildReport`, `writeReport` |
-| `src/paths.ts` | Path constants (`ROOT`, `ENGINE`, `VITEST_RUN`, `VITEST_BIN`, `FIXTURE`) |
-| `src/types.ts` | Shared interfaces (`CliArgs`, `GtResult`, `Edit`, `RunReport`, `FalseSkip`, `Flaky`, `ReplayReport`) |
+| `src/report.ts` | `median`, `buildReport`, `writeReport`                                                                                 |
+| `src/paths.ts`  | Path constants (`ROOT`, `ENGINE`, `VITEST_RUN`, `VITEST_BIN`, `FIXTURE`)                                               |
+| `src/types.ts`  | Shared interfaces (`CliArgs`, `GtResult`, `Edit`, `RunReport`, `FalseSkip`, `Flaky`, `ReplayReport`)                   |
 
 Build:
 

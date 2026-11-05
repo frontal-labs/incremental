@@ -11,7 +11,12 @@ rl.on("line", (line) => {
     return;
   }
   if (req.method === "hello") {
-    const result = { protocol: 1, engine: { name: "silent", version: "0" }, capabilities: [], store: "silent" };
+    const result = {
+      protocol: 1,
+      engine: { name: "silent", version: "0" },
+      capabilities: [],
+      store: "silent",
+    };
     process.stdout.write(JSON.stringify({ id: req.id, result }) + "\n");
   }
 });

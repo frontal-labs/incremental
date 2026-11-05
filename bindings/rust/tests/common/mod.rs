@@ -146,13 +146,12 @@ pub fn query_plan(case: &Value, store: &Path) -> Value {
 pub fn mismatches(plan: &Value, expect: &Value) -> Vec<String> {
     let mut out = Vec::new();
     for key in COMPARED {
-        if expect.get(key).is_none() {
-            continue;
-        }
-        let want = dumps(&expect[key]);
-        let got = dumps(plan.get(key).unwrap_or(&Value::Null));
-        if want != got {
-            out.push(format!("{key}: want {want} got {got}"));
+        if expect.get(key).is_some() {
+            let want = dumps(&expect[key]);
+            let got = dumps(plan.get(key).unwrap_or(&Value::Null));
+            if want != got {
+                out.push(format!("{key}: want {want} got {got}"));
+            }
         }
     }
     out

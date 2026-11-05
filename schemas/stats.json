@@ -7,9 +7,9 @@
   "required": ["tasks", "observations", "baseline", "graph_version"],
   "additionalProperties": true,
   "properties": {
-    "tasks": {"type": "integer", "minimum": 0},
-    "observations": {"type": "integer", "minimum": 0},
-    "baseline": {"type": ["string", "null"]},
-    "graph_version": {"type": "string", "pattern": "^g_[0-9a-f]{8}$"}
+    "tasks": { "type": "integer", "minimum": 0 },
+    "observations": { "type": "integer", "minimum": 0 },
+    "baseline": { "type": ["string", "null"] },
+    "graph_version": { "type": "string", "pattern": "^g_[0-9a-f]{8}$" }
   }
 }

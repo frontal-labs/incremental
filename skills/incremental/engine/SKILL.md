@@ -1,4 +1,5 @@
 ---
+
 name: incremental-engine
 description: Operate the Incremental engine from the CLI or the Node client - create a store, record task observations, set the baseline, ask which tasks are invalid (affected), explain a task, forget tasks, and check store health. Use when a user wants to know which tasks to rerun after a change, or to inspect or repair an Incremental store.
 ---
@@ -40,9 +41,15 @@ core/dist/incremental serve --store $STORE --root .               # protocol v1 
 Every observation and every `affected` query carries a context. It is the set of global facts that change what a task's result means:
 
 ```json
-{"lockfile": "sha256:...", "tsconfig": "sha256:...", "pkgjson": "sha256:...",
- "runner": "vitest@4.1.12", "node": "22.11.0", "fmt": 1,
- "caps": {"probes": false, "dirs": false, "env": false}}
+{
+  "lockfile": "sha256:...",
+  "tsconfig": "sha256:...",
+  "pkgjson": "sha256:...",
+  "runner": "vitest@4.1.12",
+  "node": "22.11.0",
+  "fmt": 1,
+  "caps": { "probes": false, "dirs": false, "env": false }
+}
 ```
 
 A query fails over to a fallback (`context_changed`, P2) when a reserved context key, or a key listed in `fallbackContextKeys`, differs from the store's context. Set `caps` to `true` only when the adapter really records probes, directory listings or environment reads. Otherwise a change to an unobserved path falls back (P6/P7). See `docs/spec/POLICY.md` for the full rule order.

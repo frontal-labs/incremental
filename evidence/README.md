@@ -4,19 +4,19 @@ Evidence records for incremental verification milestones (E1–E10 per the plan)
 
 ## Contents
 
-| Path | Description |
-|---|---|
-| `evidence/E1.txt` | Protocol and conformance suite evidence: `make check-spec` (reference ran 33 query cases; 7 protocol-level cases run by `conformance/run.mjs`). |
-| `evidence/E2.txt` | Core engine evidence: `make test-core test-policy test-protocol loc` (40 cases pass; 1892 lines of core). |
-| `evidence/invalid/` | Invalid / negative evidence cases. |
-| `evidence/.gitkeep` | Placeholder so the directory is tracked. |
+| Path                | Description                                                                                                                                     |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `evidence/E1.txt`   | Protocol and conformance suite evidence: `make check-spec` (reference ran 33 query cases; 7 protocol-level cases run by `conformance/run.mjs`). |
+| `evidence/E2.txt`   | Core engine evidence: `make test-core test-policy test-protocol loc` (40 cases pass; 1892 lines of core).                                       |
+| `evidence/invalid/` | Invalid / negative evidence cases.                                                                                                              |
+| `evidence/.gitkeep` | Placeholder so the directory is tracked.                                                                                                        |
 
 ## Status
 
-| Evidence | Milestone | State |
-|---|---|---|
-| E1 | Spec conformance | verify — spec docs, 40 cases, general reference, coverage matrix, schemas checked against engine responses (`status/SPEC_CONFORMANCE.json`). Needs Spec sign-off. |
-| E2 | Core engine | verify — all 40 cases pass; reverse indexes and binary index image format 2 built (`status/CORE.json`). Needs Spec sign-off. |
+| Evidence | Milestone        | State                                                                                                                                                             |
+| -------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| E1       | Spec conformance | verify — spec docs, 40 cases, general reference, coverage matrix, schemas checked against engine responses (`status/SPEC_CONFORMANCE.json`). Needs Spec sign-off. |
+| E2       | Core engine      | verify — all 40 cases pass; reverse indexes and binary index image format 2 built (`status/CORE.json`). Needs Spec sign-off.                                      |
 
 E3–E10 (adapters, bindings, benchmarks, gates) do not yet have dedicated evidence files; their status lives in `status/*.json` and `STATUS.md`.
 

@@ -32,7 +32,10 @@ export function findRoot(start: string): string {
   }
 }
 
-export function resolveSettings(env: NodeJS.ProcessEnv = process.env, cwd: string = process.cwd()): ServerSettings {
+export function resolveSettings(
+  env: NodeJS.ProcessEnv = process.env,
+  cwd: string = process.cwd(),
+): ServerSettings {
   const root = findRoot(cwd);
   return {
     root,

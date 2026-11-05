@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 permissions:
   contents: read
@@ -19,16 +19,35 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          bun-version: '2.2'
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
+          node-version: "22"
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Install Goose toolchain (Linux x64, v2026.3)
+        run: |
+          mkdir -p .toolchain/goose
+          curl -fsSL -o goose.tar.gz https://github.com/aardappel/goose/releases/download/v2026.3/goose-v2026.3-linux-x64.tar.gz
+          echo "06ac30284338269d3996d457412bf4f2b47c1f9a5601de65b6317187fe78d5c9  goose.tar.gz" | sha256sum -c -
+          tar -xzf goose.tar.gz -C .toolchain/goose
+          echo "GOOSE_DIR=$PWD/.toolchain/goose/goose-v2026.3-linux-x64" >> "$GITHUB_ENV"
+      - name: Install adapter tools (ruff, protoc, buf, pnpm, bazelisk)
+        run: |
+          pip install ruff==0.14.13
+          sudo apt-get update && sudo apt-get install -y protobuf-compiler
+          npm install -g pnpm@9.0.0 @bufbuild/buf@1.70.0 @bazel/bazelisk@1.28.1
+      - name: Install TypeScript package dependencies
+        run: |
+          for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/biome adapters/clippy adapters/bazel adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbopack adapters/watcher mcp; do
+            (cd "$d" && npm install --no-audit --no-fund)
+          done
       - name: Run release check
         run: make release-check
       - name: Build artifacts
-        run: make build 2>/dev/null || bun run build 2>/dev/null || echo "build: no-op"
+        run: "make build 2>/dev/null || npm run build 2>/dev/null || echo 'build: no-op'"
       - name: Create release
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
@@ -44,10 +63,10 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          bun-version: '2.2'
+          node-version: "22"
       - name: Run linux check
         run: make linux-gate
       - name: Docker build

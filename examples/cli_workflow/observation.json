@@ -9,11 +9,15 @@
     "runner": "vitest@4.1.12",
     "node": "22.11.0",
     "fmt": 1,
-    "caps": {"probes": true, "dirs": true, "env": true}
+    "caps": { "probes": true, "dirs": true, "env": true }
   },
   "inputs": [
-    {"kind": "file", "path": "src/math.ts", "hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-    {"kind": "dir", "path": "src"}
+    {
+      "kind": "file",
+      "path": "src/math.ts",
+      "hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    { "kind": "dir", "path": "src" }
   ],
   "outputs": [],
   "outcome": "pass",

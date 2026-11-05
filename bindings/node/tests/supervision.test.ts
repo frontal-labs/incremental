@@ -3,7 +3,14 @@
 import path from "node:path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { incrementalError, connect, isIncrementalError, type AffectedOptions, type Observation, type incremental } from "../src/index.js";
+import {
+  incrementalError,
+  connect,
+  isIncrementalError,
+  type AffectedOptions,
+  type Observation,
+  type incremental,
+} from "../src/index.js";
 import {
   SILENT_ENGINE,
   comparePlan,
@@ -20,7 +27,12 @@ import {
 const base = loadCases().find((c) => c.id === "C01")!;
 const q = base.query!;
 const changes = { baseline: q.baseline, changes: q.changes };
-const options = { baseline: q.baseline, context: q.context!, verify: false, policy: "balanced" } as AffectedOptions;
+const options = {
+  baseline: q.baseline,
+  context: q.context!,
+  verify: false,
+  policy: "balanced",
+} as AffectedOptions;
 
 // A store holding the base conformance history, plus its worktree.
 async function seededStore(label: string): Promise<{ store: string; root: string }> {
@@ -117,7 +129,12 @@ test("restart: false: after the server dies, requests reject with internal inste
 
 test("timeout: a request that the server does not answer rejects with code timeout", async () => {
   const store = initStore("timeout");
-  const c = await connect({ command: [process.execPath, SILENT_ENGINE], store, root: tempDir("troot"), timeoutMs: 1 });
+  const c = await connect({
+    command: [process.execPath, SILENT_ENGINE],
+    store,
+    root: tempDir("troot"),
+    timeoutMs: 1,
+  });
   try {
     // The silent engine answers hello only; affected is never answered.
     await assert.rejects(c.affected(changes, options), (e: unknown) => {
@@ -149,14 +166,28 @@ test("queue: concurrent observe and affected calls run in call order, each gets 
       track(1, c.affected(changes, options)),
       track(2, c.observe(observation("packages/core/src/q2.test.ts"))),
       track(3, c.affected(changes, options)),
-      track(4, c.observeMany([observation("packages/core/src/q3.test.ts"), observation("packages/core/src/q4.test.ts")])),
+      track(
+        4,
+        c.observeMany([
+          observation("packages/core/src/q3.test.ts"),
+          observation("packages/core/src/q4.test.ts"),
+        ]),
+      ),
       track(5, c.stats()),
     ]);
     assert.deepEqual(done, [0, 1, 2, 3, 4, 5], "completed in call order");
     assert.deepEqual(results[0], { accepted: true });
-    assert.equal((results[1] as { total_tasks: number }).total_tasks, 8, "affected sees the first write only");
+    assert.equal(
+      (results[1] as { total_tasks: number }).total_tasks,
+      8,
+      "affected sees the first write only",
+    );
     assert.deepEqual(results[2], { accepted: true });
-    assert.equal((results[3] as { total_tasks: number }).total_tasks, 9, "affected sees the second write only");
+    assert.equal(
+      (results[3] as { total_tasks: number }).total_tasks,
+      9,
+      "affected sees the second write only",
+    );
     assert.deepEqual(results[4], { accepted: 2 });
     assert.equal((results[5] as { tasks: number }).tasks, 11, "stats after all writes");
     assert.equal((results[5] as { observations: number }).observations, 11);
@@ -197,7 +228,10 @@ test("connect: a missing store rejects with store_missing", async () => {
 });
 
 test("incrementalError: carries code and data; an unknown engine code becomes internal", () => {
-  const e = new incrementalError("baseline_conflict", "expected b0", { expected: "b0", actual: "b1" });
+  const e = new incrementalError("baseline_conflict", "expected b0", {
+    expected: "b0",
+    actual: "b1",
+  });
   assert.ok(e instanceof Error);
   assert.equal(e.name, "incrementalError");
   assert.equal(e.code, "baseline_conflict");

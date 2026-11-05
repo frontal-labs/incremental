@@ -8,9 +8,19 @@
   "properties": {
     "code": {
       "type": "string",
-      "enum": ["invalid_params", "unknown_method", "protocol_mismatch", "store_missing", "store_corrupt", "lock_busy", "baseline_conflict", "timeout", "internal"]
+      "enum": [
+        "invalid_params",
+        "unknown_method",
+        "protocol_mismatch",
+        "store_missing",
+        "store_corrupt",
+        "lock_busy",
+        "baseline_conflict",
+        "timeout",
+        "internal"
+      ]
     },
-    "message": {"type": "string"},
-    "data": {"type": "object"}
+    "message": { "type": "string" },
+    "data": { "type": "object" }
   }
 }

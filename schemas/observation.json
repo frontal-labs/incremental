@@ -56,8 +56,8 @@
         "type": "object",
         "required": ["path"],
         "properties": {
-          "path": {"type": "string"},
-          "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+          "path": { "type": "string" },
+          "hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
         }
       }
     },

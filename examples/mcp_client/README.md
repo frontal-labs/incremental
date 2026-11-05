@@ -2,11 +2,11 @@
 
 Demonstrates an MCP client driving `incremental-mcp` from an AI agent. Per `docs/adapters/ADAPTERS.md` section E8 and `docs/spec/PROTOCOL.md`, the MCP server exposes three tools over MCP stdio:
 
-| Tool | Input | Output |
-|------|-------|--------|
-| `affected_tasks` | `{verify?}` | Plan |
+| Tool                 | Input       | Output       |
+| -------------------- | ----------- | ------------ |
+| `affected_tasks`     | `{verify?}` | Plan         |
 | `record_observation` | Observation | `{accepted}` |
-| `engine_status` | none | Stats |
+| `engine_status`      | none        | Stats        |
 
 ## Layout
 
@@ -122,17 +122,19 @@ User: "Which tests are affected by my recent changes?"
 MCP Client → incremental-mcp: `affected_tasks({verify: true})`
 
 incremental-mcp → incremental engine (via @incremental/client):
-  1. `hello` handshake → `{protocol: 1, engine: {...}, capabilities: [...], store: ".incremental"}`
-  2. Build ChangeSet from git (baseline → HEAD)
-  3. `affected({changes, options: {baseline, context, verify: true}})`
+
+1. `hello` handshake → `{protocol: 1, engine: {...}, capabilities: [...], store: ".incremental"}`
+2. Build ChangeSet from git (baseline → HEAD)
+3. `affected({changes, options: {baseline, context, verify: true}})`
 
 incremental engine → incremental-mcp: Plan
-  - `tasks: [{id: "src/math.test.ts", reasons: ["reads:src/math.ts"]}]`
-  - `skipped: 99`
-  - `confidence: "medium"`
+
+- `tasks: [{id: "src/math.test.ts", reasons: ["reads:src/math.ts"]}]`
+- `skipped: 99`
+- `confidence: "medium"`
 
 MCP Client → User:
-  "1 task is affected: src/math.test.ts (reads src/math.ts). 99 tests can be skipped."
+"1 task is affected: src/math.test.ts (reads src/math.ts). 99 tests can be skipped."
 ```
 
 ## Reference

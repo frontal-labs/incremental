@@ -5,8 +5,15 @@
   "type": "object",
   "required": ["kind", "path", "hash"],
   "properties": {
-    "kind": {"const": "file"},
-    "path": {"type": "string", "description": "Repo-relative path with / separators, canonical (realpath) resolved."},
-    "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$", "description": "Content hash of the file at read time."}
+    "kind": { "const": "file" },
+    "path": {
+      "type": "string",
+      "description": "Repo-relative path with / separators, canonical (realpath) resolved."
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "Content hash of the file at read time."
+    }
   }
 }

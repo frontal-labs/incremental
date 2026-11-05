@@ -4,16 +4,16 @@ The incremental engine core, written in **Goose** (a Go-like systems language, s
 
 ## Contents
 
-| Path | Description |
-|---|---|
-| `core/src/main.goose` | CLI entry point: a thin binding over protocol v1 (`init`, `stats`, `serve`, ...). Shares `dispatch` with the serve loop, so CLI and protocol answers are identical. |
-| `core/src/policy.goose` | Policy engine: `plan(state, query)` per `docs/spec/POLICY.md` (rules P0–P11, fallbacks, confidence). |
-| `core/src/protocol.goose` | Protocol v1 server: JSON Lines over stdio, handshake, methods, errors, 10 s request budget. |
-| `core/src/store.goose` | Store: append-only log (`tg.log`), index, lock (`tg.lock`), stat cache (`stat.cache`), verification. |
-| `core/src/native.c` / `core/src/native.goose` | Native bindings for the engine. |
-| `core/src/main.build` | Goose build descriptor. |
-| `core/tests/` | Goose tests (run with `goose --multi-test --stdlib core/src`). |
-| `core/dist/` | Build output: `incremental` engine binary and build logs. |
+| Path                                          | Description                                                                                                                                                         |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `core/src/main.goose`                         | CLI entry point: a thin binding over protocol v1 (`init`, `stats`, `serve`, ...). Shares `dispatch` with the serve loop, so CLI and protocol answers are identical. |
+| `core/src/policy.goose`                       | Policy engine: `plan(state, query)` per `docs/spec/POLICY.md` (rules P0–P11, fallbacks, confidence).                                                                |
+| `core/src/protocol.goose`                     | Protocol v1 server: JSON Lines over stdio, handshake, methods, errors, 10 s request budget.                                                                         |
+| `core/src/store.goose`                        | Store: append-only log (`tg.log`), index, lock (`tg.lock`), stat cache (`stat.cache`), verification.                                                                |
+| `core/src/native.c` / `core/src/native.goose` | Native bindings for the engine.                                                                                                                                     |
+| `core/src/main.build`                         | Goose build descriptor.                                                                                                                                             |
+| `core/tests/`                                 | Goose tests (run with `goose --multi-test --stdlib core/src`).                                                                                                      |
+| `core/dist/`                                  | Build output: `incremental` engine binary and build logs.                                                                                                           |
 
 ## Building
 
@@ -48,7 +48,7 @@ Default store: `<repo>/.incremental/` (configurable via `INCREMENTAL_STORE` or `
 
 ## Status
 
-Core verification status is tracked in `status/CORE.json` (E2 verify: all 40 conformance cases pass; reverse indexes  and binary index image format 2 built; M2 met on a same-day baseline).
+Core verification status is tracked in `status/CORE.json` (E2 verify: all 40 conformance cases pass; reverse indexes and binary index image format 2 built; M2 met on a same-day baseline).
 
 Evidence: `evidence/E2.txt`.
 

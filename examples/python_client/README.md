@@ -1,6 +1,6 @@
 # Python Client Example
 
-Demonstrates the Python binding (`bindings/python`, package `incremental`) speaking incremental Protocol v1 over stdio. Per `docs/spec/bindings-python.md` and 
+Demonstrates the Python binding (`bindings/python`, package `incremental`) speaking incremental Protocol v1 over stdio. Per `docs/spec/bindings-python.md` and
 
 ## Layout
 

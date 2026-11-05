@@ -21,7 +21,7 @@
         "type": "object",
         "required": ["path", "status"],
         "properties": {
-          "path": {"type": "string", "description": "Repo-relative path with / separators."},
+          "path": { "type": "string", "description": "Repo-relative path with / separators." },
           "status": {
             "type": "string",
             "enum": ["modified", "added", "deleted", "renamed"],
@@ -32,8 +32,8 @@
             "description": "Previous path, required when status is renamed."
           }
         },
-        "if": {"properties": {"status": {"const": "renamed"}}},
-        "then": {"required": ["old_path"]}
+        "if": { "properties": { "status": { "const": "renamed" } } },
+        "then": { "required": ["old_path"] }
       }
     }
   }

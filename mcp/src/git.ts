@@ -15,13 +15,25 @@ export function defaultGitBinary(env: NodeJS.ProcessEnv): string {
 
 // The ChangeSet from baseline to the worktree at root. The baseline is the
 // stored one, so the query always matches the store (POLICY P0).
-export async function changeSet(gitBinary: string, root: string, baseline: string): Promise<ChangeSet> {
-  const { stdout } = await execFileAsync(gitBinary, ["changes", "--base", baseline, "--root", root], {
-    encoding: "utf8",
-    maxBuffer: 64 * 1024 * 1024,
-  });
+export async function changeSet(
+  gitBinary: string,
+  root: string,
+  baseline: string,
+): Promise<ChangeSet> {
+  const { stdout } = await execFileAsync(
+    gitBinary,
+    ["changes", "--base", baseline, "--root", root],
+    {
+      encoding: "utf8",
+      maxBuffer: 64 * 1024 * 1024,
+    },
+  );
   const parsed: unknown = JSON.parse(stdout);
-  if (typeof parsed !== "object" || parsed === null || !Array.isArray((parsed as { changes?: unknown }).changes)) {
+  if (
+    typeof parsed !== "object" ||
+    parsed === null ||
+    !Array.isArray((parsed as { changes?: unknown }).changes)
+  ) {
     throw new Error("incremental-git did not print a ChangeSet");
   }
   const raw = (parsed as { changes: Array<Record<string, unknown>> }).changes;

@@ -11,7 +11,8 @@ export const TOOL_DESCRIPTIONS = {
     "Returns the tasks to re-run for the changes in the worktree since the stored baseline, with their reasons and any fallback.",
   record_observation:
     "Records one observation of a task run with its inputs, context and outcome, and reports whether it was accepted.",
-  engine_status: "Returns the task count, observation count, baseline and graph version of the engine store.",
+  engine_status:
+    "Returns the task count, observation count, baseline and graph version of the engine store.",
 } as const;
 
 // Runtime the tools need: the client (started lazily), the repo root, the git

@@ -3,9 +3,9 @@
   "type": "object",
   "required": ["tasks", "observations", "baseline", "graph_version"],
   "properties": {
-    "tasks": {"type": "integer"},
-    "observations": {"type": "integer"},
-    "baseline": {"type": ["string", "null"]},
-    "graph_version": {"type": "string"}
+    "tasks": { "type": "integer" },
+    "observations": { "type": "integer" },
+    "baseline": { "type": ["string", "null"] },
+    "graph_version": { "type": "string" }
   }
 }

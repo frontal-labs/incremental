@@ -26,8 +26,15 @@ examples/cli_workflow/
   "roots": ["."],
   "exclude": ["**/node_modules/**", ".git/**", ".incremental/**"],
   "ignore": [],
-  "globalInputs": ["pnpm-lock.yaml", "package-lock.json", "yarn.lock", "package.json",
-                   "tsconfig*.json", "vitest.config.*", "vite.config.*"],
+  "globalInputs": [
+    "pnpm-lock.yaml",
+    "package-lock.json",
+    "yarn.lock",
+    "package.json",
+    "tsconfig*.json",
+    "vitest.config.*",
+    "vite.config.*"
+  ],
   "policy": "balanced",
   "fallbackContextKeys": ["lockfile", "tsconfig", "pkgjson", "runner", "node", "fmt", "caps"],
   "adapters": {

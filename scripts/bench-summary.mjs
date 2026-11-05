@@ -11,10 +11,16 @@ const RESULTS = path.join(ROOT, "benchmarks", "results");
 function load(name) {
   const p = path.join(RESULTS, name);
   if (!existsSync(p)) return null;
-  try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; }
+  try {
+    return JSON.parse(readFileSync(p, "utf8"));
+  } catch {
+    return null;
+  }
 }
 
-function ms(x) { return x == null ? "n/a" : x.toString(); }
+function ms(x) {
+  return x == null ? "n/a" : x.toString();
+}
 
 function msMedian(obj) {
   return obj && obj.median != null ? obj.median.toFixed(3) : "n/a";
@@ -105,7 +111,12 @@ function main() {
       "",
     );
   }
-  lines.push("## Thresholds", "", "- Warm plan: p50 under 5 ms, p99 under 20 ms at 100k tasks. - Cold CLI plan under 300 ms at 100k tasks (hyperfine).", "");
+  lines.push(
+    "## Thresholds",
+    "",
+    "- Warm plan: p50 under 5 ms, p99 under 20 ms at 100k tasks. - Cold CLI plan under 300 ms at 100k tasks (hyperfine).",
+    "",
+  );
   writeFileSync(path.join(RESULTS, "RESULTS.md"), lines.join("\n") + "\n");
   console.log("wrote benchmarks/results/RESULTS.md");
 }

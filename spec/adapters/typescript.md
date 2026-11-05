@@ -1,6 +1,6 @@
 # typescript adapter
 
-Status: built (`adapters/typescript`, `make test-typescript`; 6 integration tests against the real engine). Spec sign-off: not recorded in DECISIONS.md. Matched to adapters/typescript/README.md on 2026-11-04. Chosen by the lead from the drafts because  names `tsc, bundler inputs` as a later adapter. Build recorded in DECISIONS.md, "TypeScript adapter (built)".
+Status: built (`adapters/typescript`, `make test-typescript`; 6 integration tests against the real engine). Spec sign-off: not recorded in DECISIONS.md. Matched to adapters/typescript/README.md on 2026-11-04. Chosen by the lead from the drafts because names `tsc, bundler inputs` as a later adapter. Build recorded in DECISIONS.md, "TypeScript adapter (built)".
 
 ## As built
 
@@ -19,26 +19,32 @@ Status: built (`adapters/typescript`, `make test-typescript`; 6 integration test
 - **Command-line options are not checked against the config.** `--noEmit`, `--incremental false` and `--composite false` override the config for the check only.
 
 ## Task
+
 A TypeScript project: a `tsconfig.json`, or a project reference in a `tsc -b` build. Task id: the repo-relative path of the `tsconfig.json` (D-2).
 
 ## What the recorder can observe
+
 - Every input file tsc reads for a project, from `tsc --listFilesOnly` (lists the program's source files, without emitting). Each file is hashed at read time.
 - `tsconfig.json` and every `extends` chain. These are declared inputs.
 - Type declaration packages under `node_modules`: their version comes from the lockfile, not per-file hashes.
 
 ## What it cannot observe
+
 - Outputs (`.js`, `.d.ts`). Not stored . Only inputs are recorded.
 - Files outside the program, such as a `tsc` plugin that reads its own config.
 - Environment variables that change emit (for example `TSC_*` options set through the environment), unless the env adapter lists them.
 
 ## Declared inputs
+
 - `tsconfig*.json`, `package.json`, the lockfile, `typescript` version in the context.
 
 ## Conformance cases (to write as adapter tests; adapters are not in the conformance suite, )
+
 - Changing a source file in the program invalidates the project.
 - Changing a file that is not in the program does not invalidate it.
 - Changing a `typescript` version invalidates every project (context change).
 
 ## Open questions
+
 - Whether `--listFilesOnly` matches the set of files tsc actually reads for type checking. The two are the same by design but this needs a test on a real project.
 - The relation to the Turborepo and Nx cache keys in COMPETITORS.md. This adapter must not claim to replace them.

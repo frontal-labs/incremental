@@ -243,15 +243,24 @@ fn main() {
 
     if cmd == "serve" {
         var status: i64 = 0;
-        while true {
+        var running = true;
+        while running {
             var line: u8[>..] = [];
-            if !read_line(line) { break; }
-            if line.len == 0 { continue; }
-            var out: u8[>..] = [];
-            status = handle(sess, st, line, out);
-            write_stdout(out);
-            flush_stdout();
-            if status != 0 { break; }
+            if read_line(line) {
+                if line.len != 0 {
+                    var out: u8[>..] = [];
+                    status = handle(sess, st, line, out);
+                    write_stdout(out);
+                    flush_stdout();
+                    if status == 0 {
+                        // keep serving
+                    } else {
+                        running = false;
+                    }
+                }
+            } else {
+                running = false;
+            }
         }
         write_index(st, sess.idx_path);
         // A protocol mismatch closes the stream with exit status 2 (9.7).

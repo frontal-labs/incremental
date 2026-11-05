@@ -4,23 +4,23 @@ on:
   push:
     branches: [main]
     tags:
-      - 'v*'
+      - "v*"
     paths:
-      - 'docker/Dockerfile.linux'
-      - 'core/**'
-      - 'bindings/**'
-      - 'cli/**'
-      - 'mcp/**'
-      - 'package.json'
+      - "docker/Dockerfile.linux"
+      - "core/**"
+      - "bindings/**"
+      - "cli/**"
+      - "mcp/**"
+      - "package.json"
   pull_request:
     branches: [main]
     paths:
-      - 'docker/Dockerfile.linux'
-      - 'core/**'
-      - 'bindings/**'
-      - 'cli/**'
-      - 'mcp/**'
-      - 'package.json'
+      - "docker/Dockerfile.linux"
+      - "core/**"
+      - "bindings/**"
+      - "cli/**"
+      - "mcp/**"
+      - "package.json"
 
 permissions:
   contents: read

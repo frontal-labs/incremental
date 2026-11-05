@@ -17,62 +17,69 @@ export const EDIT_SEQUENCE: Edit[] = [
   {
     op: "write",
     path: "packages/core/src/math.ts",
-    content: "export function add(a: number, b: number): number {\n  return a + b;\n}\nexport function mul(a: number, b: number): number {\n  return a * b;\n}\nexport function sum3(a: number, b: number, c: number): number {\n  return add(add(a, b), c);\n}\n// reserved for future use\nexport const RESERVED: number = 0;\n",
+    content:
+      "export function add(a: number, b: number): number {\n  return a + b;\n}\nexport function mul(a: number, b: number): number {\n  return a * b;\n}\nexport function sum3(a: number, b: number, c: number): number {\n  return add(add(a, b), c);\n}\n// reserved for future use\nexport const RESERVED: number = 0;\n",
   },
   // 2. Non-breaking: add a comment to core strings source → all tests pass.
   {
     op: "write",
     path: "packages/core/src/strings.ts",
-    content: "export function upper(s: string): string {\n  return s.toUpperCase();\n}\nexport function lower(s: string): string {\n  return s.toLowerCase();\n}\nexport function reverse(s: string): string {\n  return s.split(\"\").reverse().join(\"\");\n}\n// reserved\n",
+    content:
+      'export function upper(s: string): string {\n  return s.toUpperCase();\n}\nexport function lower(s: string): string {\n  return s.toLowerCase();\n}\nexport function reverse(s: string): string {\n  return s.split("").reverse().join("");\n}\n// reserved\n',
   },
   // 3. Non-breaking: add a comment to core index → all tests pass.
   {
     op: "write",
     path: "packages/core/src/index.ts",
-    content: "export * from \"./math\";\nexport * from \"./strings\";\n// module index\n",
+    content: 'export * from "./math";\nexport * from "./strings";\n// module index\n',
   },
   // 4. Non-breaking: add a comment to app calculator → all tests pass.
   {
     op: "write",
     path: "packages/app/src/calculator.ts",
-    content: "import { add, mul } from \"../../core/src/math\";\n\nexport function calculator(a: number, b: number): number {\n  return add(mul(a, 2), b);\n}\n\nexport function total(items: number[]): number {\n  return items.reduce((acc, v) => add(acc, v), 0);\n}\n// calculator module\n",
+    content:
+      'import { add, mul } from "../../core/src/math";\n\nexport function calculator(a: number, b: number): number {\n  return add(mul(a, 2), b);\n}\n\nexport function total(items: number[]): number {\n  return items.reduce((acc, v) => add(acc, v), 0);\n}\n// calculator module\n',
   },
   // 5. Non-breaking: add a comment to utils formatter → all tests pass.
   {
     op: "write",
     path: "packages/utils/src/formatter.ts",
-    content: "export function formatCurrency(amount: number): string {\n  return \"$\" + amount.toFixed(2);\n}\nexport function formatDate(iso: string): string {\n  return new Date(iso).toISOString().split(\"T\")[0];\n}\nexport function slugify(text: string): string {\n  return text.toLowerCase().replace(/\\s+/g, \"-\").replace(/[^a-z0-9-]/g, \"\");\n}\n// formatter module\n",
+    content:
+      'export function formatCurrency(amount: number): string {\n  return "$" + amount.toFixed(2);\n}\nexport function formatDate(iso: string): string {\n  return new Date(iso).toISOString().split("T")[0];\n}\nexport function slugify(text: string): string {\n  return text.toLowerCase().replace(/\\s+/g, "-").replace(/[^a-z0-9-]/g, "");\n}\n// formatter module\n',
   },
   // 6. Non-breaking: re-export core math with extra blank line → all tests pass.
   {
     op: "write",
     path: "packages/core/src/math.ts",
-    content: "\nexport function add(a: number, b: number): number {\n  return a + b;\n}\n\nexport function mul(a: number, b: number): number {\n  return a * b;\n}\n\nexport function sum3(a: number, b: number, c: number): number {\n  return add(add(a, b), c);\n}\n\n",
+    content:
+      "\nexport function add(a: number, b: number): number {\n  return a + b;\n}\n\nexport function mul(a: number, b: number): number {\n  return a * b;\n}\n\nexport function sum3(a: number, b: number, c: number): number {\n  return add(add(a, b), c);\n}\n\n",
   },
   // 7. Non-breaking: reorder strings exports → all tests pass.
   {
     op: "write",
     path: "packages/core/src/strings.ts",
-    content: "export function reverse(s: string): string {\n  return s.split(\"\").reverse().join(\"\");\n}\nexport function upper(s: string): string {\n  return s.toUpperCase();\n}\nexport function lower(s: string): string {\n  return s.toLowerCase();\n}\n",
+    content:
+      'export function reverse(s: string): string {\n  return s.split("").reverse().join("");\n}\nexport function upper(s: string): string {\n  return s.toUpperCase();\n}\nexport function lower(s: string): string {\n  return s.toLowerCase();\n}\n',
   },
   // 8. Non-breaking: add blank line to app index → all tests pass.
   {
     op: "write",
     path: "packages/app/src/index.ts",
-    content: "export * from \"./calculator\";\n\n",
+    content: 'export * from "./calculator";\n\n',
   },
   // 9. Non-breaking: add blank line to utils index → all tests pass.
   {
     op: "write",
     path: "packages/utils/src/index.ts",
-    content: "export * from \"./formatter\";\n\n",
+    content: 'export * from "./formatter";\n\n',
   },
   // 10. Break core strings source → causes core/test/strings.test.ts to fail.
   //     The engine should invalidate it; if not, it's a false skip.
   {
     op: "write",
     path: "packages/core/src/strings.ts",
-    content: "export function upper(s: string): string {\n  throw new Error('broken strings');\n}\nexport function lower(s: string): string {\n  return s.toLowerCase();\n}\nexport function reverse(s: string): string {\n  return s.split(\"\").reverse().join(\"\");\n}\n",
+    content:
+      'export function upper(s: string): string {\n  throw new Error(\'broken strings\');\n}\nexport function lower(s: string): string {\n  return s.toLowerCase();\n}\nexport function reverse(s: string): string {\n  return s.split("").reverse().join("");\n}\n',
   },
 ];
 

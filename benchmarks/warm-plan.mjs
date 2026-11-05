@@ -95,11 +95,15 @@ class Session {
     this.buf = "";
     this.pending = new Map();
     this.nextId = 1;
-    this.exited = new Promise((res) => { proc.once("close", res); });
+    this.exited = new Promise((res) => {
+      proc.once("close", res);
+    });
     proc.stdout.setEncoding("utf8");
     proc.stdout.on("data", (c) => this.onData(c));
     proc.stderr.on("data", () => {});
-    proc.on("error", (e) => { this._fail(`engine error: ${e.message}`); });
+    proc.on("error", (e) => {
+      this._fail(`engine error: ${e.message}`);
+    });
   }
   onData(c) {
     this.buf += c;
@@ -107,16 +111,29 @@ class Session {
     while ((nl = this.buf.indexOf("\n")) >= 0) {
       const line = this.buf.slice(0, nl);
       this.buf = this.buf.slice(nl + 1);
-      if (!line.trim()) continue;
-      try { this.onLine(JSON.parse(line)); } catch { /* non-protocol line; ignore */ }
+      if (line.trim()) {
+        try {
+          this.onLine(JSON.parse(line));
+        } catch {
+          /* non-protocol line; ignore */
+        }
+      }
     }
   }
   onLine(msg) {
     const p = this.pending && this.pending.get(msg.id);
-    if (p) { this.pending.delete(p.id); clearTimeout(p.timer); if (msg.error) p.reject(new Error(String(msg.error))); else p.resolve(msg.result); }
+    if (p) {
+      this.pending.delete(p.id);
+      clearTimeout(p.timer);
+      if (msg.error) p.reject(new Error(String(msg.error)));
+      else p.resolve(msg.result);
+    }
   }
   _fail(msg) {
-    for (const p of this.pending.values()) { clearTimeout(p.timer); p.reject(new Error(msg)); }
+    for (const p of this.pending.values()) {
+      clearTimeout(p.timer);
+      p.reject(new Error(msg));
+    }
     this.pending.clear();
   }
   request(method, params, timeoutMs = 15000) {
@@ -125,18 +142,26 @@ class Session {
       const timer = setTimeout(() => {
         this.pending.delete(id);
         reject(new Error(`timeout on ${method}`));
-        try { this.proc.kill("SIGKILL"); } catch {}
+        try {
+          this.proc.kill("SIGKILL");
+        } catch {}
       }, timeoutMs);
       this.pending.set(id, { resolve, reject, timer });
       try {
         this.proc.stdin.write(JSON.stringify({ id, method, params }) + "\n");
-      } catch (e) { reject(e); }
+      } catch (e) {
+        reject(e);
+      }
     });
   }
   async close() {
-    try { await this.request("shutdown", {}); } catch {}
+    try {
+      await this.request("shutdown", {});
+    } catch {}
     await this.exited;
-    try { this.proc.kill("SIGKILL"); } catch {}
+    try {
+      this.proc.kill("SIGKILL");
+    } catch {}
   }
 }
 
@@ -157,7 +182,9 @@ async function main() {
   });
   const setupSess = new Session(setup);
   await setupSess.request("hello", { protocol: 1, client: { name: "setup", version: "0.1.0" } });
-  await setupSess.request("observe_many", { observations: Array.from({ length: tasks }, (_, i) => synthObs(i, baseline)) });
+  await setupSess.request("observe_many", {
+    observations: Array.from({ length: tasks }, (_, i) => synthObs(i, baseline)),
+  });
   await setupSess.request("advance", { to: baseline, expected: null });
   setupSess.close();
 
@@ -206,7 +233,9 @@ async function main() {
   // 5. log_bytes: size of the index image written by graceful shutdown.
   const idxPath = join(store, "tg.idx");
   let logBytes = 0;
-  try { logBytes = statSync(idxPath).size; } catch {}
+  try {
+    logBytes = statSync(idxPath).size;
+  } catch {}
 
   const result = {
     tasks,
@@ -220,7 +249,12 @@ async function main() {
   console.log(JSON.stringify(result));
   // Best-effort cleanup of the temp store dir (the engine may release file
   // handles asynchronously on some platforms).
-  try { rmSync(work, { recursive: true, force: true }); } catch {}
+  try {
+    rmSync(work, { recursive: true, force: true });
+  } catch {}
 }
 
-main().catch((e) => { console.error(`benchmark: ${e.message}`); process.exit(1); });
+main().catch((e) => {
+  console.error(`benchmark: ${e.message}`);
+  process.exit(1);
+});

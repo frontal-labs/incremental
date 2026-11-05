@@ -2,13 +2,13 @@ name: Bench
 
 on:
   schedule:
-    - cron: '0 6 * * 1'
+    - cron: "0 6 * * 1"
   workflow_dispatch:
     inputs:
       full:
-        description: 'Run full benchmarksmark suite'
+        description: "Run full benchmarksmark suite"
         required: false
-        default: 'false'
+        default: "false"
         type: boolean
 
 permissions:
@@ -24,7 +24,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: '2.2'
+          bun-version: "2.2"
       - name: Run benchmarks smoke
         run: make benchmarks-smoke
 
@@ -38,7 +38,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: '2.2'
+          bun-version: "2.2"
       - name: Run benchmarks
         run: make benchmarks
 
@@ -51,4 +51,4 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
-          bun-version: '2.2'
+          bun-version: "2.2"

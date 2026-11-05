@@ -1,4 +1,5 @@
 ---
+
 name: incremental-verify
 description: Verify the Incremental repository - install dependencies, build the engine, run the conformance, binding, adapter and Linux checks, read failure logs, and tell real failures from the ones that fail by design. Use before claiming a change works, when a make target fails, or when reporting milestone status.
 ---
@@ -18,23 +19,23 @@ for d in $(git ls-files '*package.json' | grep -v -e '^package.json$' -e fixture
 
 ## Targets
 
-| Question | Target | Notes |
-|---|---|---|
-| Does the engine build? | `make build` | Also builds `adapters/git` (`incremental-git`). |
-| Are the schemas and the spec consistent? | `make check-spec` | |
-| Do the 40 conformance cases pass? | `make test-policy` | Through the engine. |
-| Core CLI and smoke tests | `make test-core`, `make test-protocol` | |
-| Fuzz against the reference | `make test-fuzz` | Not in `all-tests`. |
-| TypeScript client | `make test-bindings` | |
-| Python client | `make test-python` | Not in `all-tests`. |
-| Git change source | `make test-git` | Not in `all-tests`. |
-| Vitest recorder, V01 to V16 | `make test-vitest`, `make test-e2e` | |
-| strace oracle | `make test-oracle` | Passes on macOS with one test skipped; the Linux path runs on Linux only. |
-| Adapters | `make test-adapters` | Runs `test-typescript`, `test-rust` and the 13 per-adapter targets. |
-| One adapter | `make test-pnpm` (and the others) | |
-| MCP server | `make test-mcp` | |
-| Everything in the default set | `make all-tests` | Does not include fuzz, python or git. |
-| Linux, in Docker | `make linux-gate` | Builds `docker/Dockerfile.linux` and runs `all-tests`, `test-python`, `test-git`, `test-fuzz` inside it. |
+| Question                                 | Target                                 | Notes                                                                                                    |
+| ---------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Does the engine build?                   | `make build`                           | Also builds `adapters/git` (`incremental-git`).                                                          |
+| Are the schemas and the spec consistent? | `make check-spec`                      |                                                                                                          |
+| Do the 40 conformance cases pass?        | `make test-policy`                     | Through the engine.                                                                                      |
+| Core CLI and smoke tests                 | `make test-core`, `make test-protocol` |                                                                                                          |
+| Fuzz against the reference               | `make test-fuzz`                       | Not in `all-tests`.                                                                                      |
+| TypeScript client                        | `make test-bindings`                   |                                                                                                          |
+| Python client                            | `make test-python`                     | Not in `all-tests`.                                                                                      |
+| Git change source                        | `make test-git`                        | Not in `all-tests`.                                                                                      |
+| Vitest recorder, V01 to V16              | `make test-vitest`, `make test-e2e`    |                                                                                                          |
+| strace oracle                            | `make test-oracle`                     | Passes on macOS with one test skipped; the Linux path runs on Linux only.                                |
+| Adapters                                 | `make test-adapters`                   | Runs `test-typescript`, `test-rust` and the 13 per-adapter targets.                                      |
+| One adapter                              | `make test-pnpm` (and the others)      |                                                                                                          |
+| MCP server                               | `make test-mcp`                        |                                                                                                          |
+| Everything in the default set            | `make all-tests`                       | Does not include fuzz, python or git.                                                                    |
+| Linux, in Docker                         | `make linux-gate`                      | Builds `docker/Dockerfile.linux` and runs `all-tests`, `test-python`, `test-git`, `test-fuzz` inside it. |
 
 Pass several targets to one `make` command (`make test-core test-policy`) so the engine is built once. Separate `make` commands rebuild it every time.
 

@@ -40,10 +40,11 @@ main() {
     installed=0
     for src in "$SKILLS_DIR"/incremental/*/SKILL.md; do
       # Skip the glob itself when nothing matches.
-      [ -f "$src" ] || continue
-      skill="$(basename "$(dirname "$src")")"
-      install_skill "$skill" || true
-      installed=$((installed + 1))
+      if [ -f "$src" ]; then
+        skill="$(basename "$(dirname "$src")")"
+        install_skill "$skill" || true
+        installed=$((installed + 1))
+      fi
     done
     if [ "$installed" -eq 0 ]; then
       echo "skills.sh: no skills found under $SKILLS_DIR/incremental/" >&2

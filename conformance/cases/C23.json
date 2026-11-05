@@ -31,9 +31,7 @@
     "tasks": [
       {
         "id": "packages/core/src/old.test.ts",
-        "reasons": [
-          "stale:packages/core/src/old.ts"
-        ]
+        "reasons": ["stale:packages/core/src/old.ts"]
       }
     ],
     "unobserved": [],

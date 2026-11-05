@@ -2,12 +2,12 @@
 
 ## Files in `<store>/`
 
-| File | Kind | Notes |
-|---|---|---|
-| `tg.log` | canonical, append-only JSON Lines, UTF-8 | Source of truth (D-4) |
-| `tg.lock` | local | Exclusive-create lock: `{"pid": N, "start": "<start time>"}` |
-| `stat.cache` | local | Verify-mode cache, safe to delete (6.3, 7.6) |
-| `tg.idx` | cache | Index image. **Not implemented in this milestone** (see DECISIONS.md D-E2-01) |
+| File         | Kind                                     | Notes                                                                         |
+| ------------ | ---------------------------------------- | ----------------------------------------------------------------------------- |
+| `tg.log`     | canonical, append-only JSON Lines, UTF-8 | Source of truth (D-4)                                                         |
+| `tg.lock`    | local                                    | Exclusive-create lock: `{"pid": N, "start": "<start time>"}`                  |
+| `stat.cache` | local                                    | Verify-mode cache, safe to delete (6.3, 7.6)                                  |
+| `tg.idx`     | cache                                    | Index image. **Not implemented in this milestone** (see DECISIONS.md D-E2-01) |
 
 The on-disk prefix `tg.*` is kept until E0 decides it .
 
@@ -25,7 +25,7 @@ Each line is one JSON object with a record type in `r`. The core reads the whole
 
 Rules:
 
-- The `obs` record holds the observation exactly as `observe` received it, with `"r":"obs"` added. Members are re-serialized in received order. Inputs are inline (`{"kind":"file","path":...,"hash":...}`). There is no interning (`path`, `fv`, `cid`), so the interning records of  6.1 are not written. See D-E2-03.
+- The `obs` record holds the observation exactly as `observe` received it, with `"r":"obs"` added. Members are re-serialized in received order. Inputs are inline (`{"kind":"file","path":...,"hash":...}`). There is no interning (`path`, `fv`, `cid`), so the interning records of 6.1 are not written. See D-E2-03.
 - The latest `obs` per task wins. A later `forget` removes the task until its next `obs`.
 - The latest `baseline` record is `B`. A log with no `baseline` record has `B = null`.
 - A line that does not parse is ignored only if it is the final line (a truncated tail). A non-final line that does not parse is `store_corrupt` (exit 3). Records with an unknown `r` are skipped (C36, C37).

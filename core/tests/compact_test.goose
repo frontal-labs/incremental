@@ -39,9 +39,10 @@ fn main() {
     out.append("{\"r\":\"hdr\",\"v\":1,\"hash\":\"sha256\",\"created\":\"2026-01-01T00:00:00Z\"}\n");
     for i in g_tasks.len {
         let t = g_tasks[i];
-        if t.forgotten || t.latest < 0 { continue; }
-        out.append(line_text(g_obs[t.latest].line));
-        out.push('\n');
+        if !(t.forgotten || t.latest < 0) {
+            out.append(line_text(g_obs[t.latest].line));
+            out.push('\n');
+        }
     }
     let wrote = write_file_atomic("/tmp/core_compact_test_log", out);
     check(wrote, "compact log written");

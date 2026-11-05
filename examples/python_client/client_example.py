@@ -1,9 +1,10 @@
 """Example Python client for incremental Protocol v1."""
 
-from typing import Any
-from incremental import Incremental, IncrementalError, connect
 import asyncio
 import sys
+from typing import Any
+
+from incremental import IncrementalError, connect
 
 
 async def main() -> None:

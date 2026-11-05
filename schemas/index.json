@@ -12,9 +12,9 @@
         "type": "object",
         "required": ["name", "path", "description"],
         "properties": {
-          "name": {"type": "string"},
-          "path": {"type": "string"},
-          "description": {"type": "string"}
+          "name": { "type": "string" },
+          "path": { "type": "string" },
+          "description": { "type": "string" }
         }
       }
     }

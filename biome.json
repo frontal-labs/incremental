@@ -1,10 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "root": true,
-  "extends": [
-    "./biome-presets/core.json",
-    "./biome-presets/type-aware.json"
-  ],
+  "extends": ["./biome-presets/core.json", "./biome-presets/type-aware.json"],
   "files": {
     "includes": [
       "**",

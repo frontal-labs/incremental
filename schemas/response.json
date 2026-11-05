@@ -6,12 +6,12 @@
   "type": "object",
   "required": ["id"],
   "properties": {
-    "id": {"type": ["integer", "null"]},
+    "id": { "type": ["integer", "null"] },
     "result": {},
-    "error": {"$ref": "error.json"}
+    "error": { "$ref": "error.json" }
   },
   "oneOf": [
-    {"required": ["result"], "not": {"required": ["error"]}},
-    {"required": ["error"], "not": {"required": ["result"]}}
+    { "required": ["result"], "not": { "required": ["error"] } },
+    { "required": ["error"], "not": { "required": ["result"] } }
   ]
 }

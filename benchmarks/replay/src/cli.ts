@@ -9,16 +9,18 @@ export function parseArgs(argv: string[]): CliArgs {
       if (x === undefined) throw new Error(`${a} needs a value`);
       return x;
     };
-    switch (a) {
-      case "--repo": out.repo = value(); break;
-      case "--commits": {
-        out.commits = Number(value());
-        if (!Number.isInteger(out.commits) || out.commits < 1) throw new Error("--commits needs a positive integer");
-        break;
-      }
-      case "--store": out.store = value(); break;
-      case "--out": out.out = value(); break;
-      default: throw new Error(`unknown option ${a}`);
+    if (a === "--repo") {
+      out.repo = value();
+    } else if (a === "--commits") {
+      out.commits = Number(value());
+      if (!Number.isInteger(out.commits) || out.commits < 1)
+        throw new Error("--commits needs a positive integer");
+    } else if (a === "--store") {
+      out.store = value();
+    } else if (a === "--out") {
+      out.out = value();
+    } else {
+      throw new Error(`unknown option ${a}`);
     }
   }
   return out;

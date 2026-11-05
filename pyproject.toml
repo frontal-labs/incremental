@@ -11,43 +11,30 @@ target-version = "py310"
 line-length = 100
 indent-width = 4
 exclude = [
-    ".git",
-    ".toolchain",
-    "node_modules",
-    "dist",
-    "build",
-    "logs",
-    "*.egg-info",
-    "__pycache__",
-    ".venv",
+  ".git",
+  ".toolchain",
+  "node_modules",
+  "dist",
+  "build",
+  "logs",
+  "*.egg-info",
+  "__pycache__",
+  ".venv",
 ]
 
 [tool.ruff.lint]
-select = [
-    "E",
-    "F",
-    "I",
-    "UP",
-    "B",
-    "C4",
-    "D",
-    "RET",
-    "SIM",
-    "TID",
-    "TRY",
-    "W",
-]
+select = ["E", "F", "I", "UP", "B", "C4", "D", "RET", "SIM", "TID", "TRY", "W"]
 ignore = [
-    "E501",
-    "D100",
-    "D101",
-    "D102",
-    "D103",
-    "D104",
-    "D205",
-    "D401",
-    "PLR2004",
-    "TRY300",
+  "E501",
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
+  "D205",
+  "D401",
+  "PLR2004",
+  "TRY300",
 ]
 
 [tool.ruff.lint.isort]

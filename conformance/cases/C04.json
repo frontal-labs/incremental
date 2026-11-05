@@ -25,17 +25,13 @@
     },
     "changes": [],
     "verify": false,
-    "declared_tasks": [
-      "packages/core/src/fresh.test.ts"
-    ]
+    "declared_tasks": ["packages/core/src/fresh.test.ts"]
   },
   "expect": {
     "tasks": [
       {
         "id": "packages/core/src/fresh.test.ts",
-        "reasons": [
-          "no_observation"
-        ]
+        "reasons": ["no_observation"]
       }
     ],
     "unobserved": [],

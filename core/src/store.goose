@@ -638,10 +638,12 @@ fn state_records(st: Store&, out: u8[>..]&) {
     if g_obs.len > 0 { lo = g_obs.len - 1; }
     for i in g_tasks.len {
         let t = g_tasks[i];
-        if t.forgotten || t.latest < 0 { continue; }
-        if t.latest == lo { continue; }
-        out.append(line_text(g_obs[t.latest].line));
-        out.push('\n');
+        if !(t.forgotten || t.latest < 0) {
+            if t.latest != lo {
+                out.append(line_text(g_obs[t.latest].line));
+                out.push('\n');
+            }
+        }
     }
     if lo >= 0 {
         let t = g_tasks[g_obs[lo].task];

@@ -8,22 +8,22 @@
   "properties": {
     "roots": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "Directories to consider (default [\".\"])."
     },
     "exclude": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "Globs matched against canonical (realpath) paths only."
     },
     "ignore": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "Paths to ignore (P11) - dropped from changes, listed in ignored."
     },
     "globalInputs": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "Any change triggers fallback (global_input) - affects everything."
     },
     "policy": {
@@ -33,7 +33,7 @@
     },
     "fallbackContextKeys": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": { "type": "string" },
       "description": "Context keys that trigger fallback if changed (plus reserved keys always checked)."
     },
     "adapters": {

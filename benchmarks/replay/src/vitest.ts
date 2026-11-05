@@ -13,12 +13,23 @@ export function groundTruth(repo: string): { results: GtResult[]; allPassed: boo
   const report = path.join(dir, "report.json");
   const r = spawnSync(
     process.execPath,
-    [VITEST_BIN, "run", "--root", repo, "--pool=forks", "--reporter=json", `--outputFile=${report}`],
+    [
+      VITEST_BIN,
+      "run",
+      "--root",
+      repo,
+      "--pool=forks",
+      "--reporter=json",
+      `--outputFile=${report}`,
+    ],
     { encoding: "utf8", timeout: 900_000 },
   );
-  if (r.error !== undefined) throw new Error(`ground-truth vitest failed to start: ${r.error.message}`);
+  if (r.error !== undefined)
+    throw new Error(`ground-truth vitest failed to start: ${r.error.message}`);
   // vitest exits non-zero when tests fail: that is ground-truth data, not a harness error.
-  const json = JSON.parse(readFileSync(report, "utf8")) as { testResults?: Array<{ name: string; status: string }> };
+  const json = JSON.parse(readFileSync(report, "utf8")) as {
+    testResults?: Array<{ name: string; status: string }>;
+  };
   const results: GtResult[] = [];
   for (const tr of json.testResults ?? []) {
     const rel = path.relative(repoReal, realpathSync(tr.name)).split(path.sep).join("/");
@@ -35,12 +46,23 @@ export function runOnce(repo: string, task: string): "pass" | "fail" | "error" {
   const report = path.join(dir, "report.json");
   const r = spawnSync(
     process.execPath,
-    [VITEST_BIN, "run", task, "--root", repo, "--pool=forks", "--reporter=json", `--outputFile=${report}`],
+    [
+      VITEST_BIN,
+      "run",
+      task,
+      "--root",
+      repo,
+      "--pool=forks",
+      "--reporter=json",
+      `--outputFile=${report}`,
+    ],
     { cwd: repo, encoding: "utf8", timeout: 300_000 },
   );
   if (r.error !== undefined) return "error";
   try {
-    const json = JSON.parse(readFileSync(report, "utf8")) as { testResults?: Array<{ status?: string }> };
+    const json = JSON.parse(readFileSync(report, "utf8")) as {
+      testResults?: Array<{ status?: string }>;
+    };
     const status = json.testResults?.[0]?.status;
     return status === "passed" ? "pass" : status === "failed" ? "fail" : "error";
   } catch {
@@ -55,9 +77,16 @@ export function runRecorded(repo: string, store: string): RunReport {
   const r = spawnSync(
     process.execPath,
     [VITEST_RUN, "run", "--root", repo, "--store", store, "--json", "--jobs", "2"],
-    { cwd: repo, encoding: "utf8", timeout: 900_000, maxBuffer: 64 * 1024 * 1024, env: { ...process.env, NODE_ENV: "test" } },
+    {
+      cwd: repo,
+      encoding: "utf8",
+      timeout: 900_000,
+      maxBuffer: 64 * 1024 * 1024,
+      env: { ...process.env, NODE_ENV: "test" },
+    },
   );
-  if (r.status !== 0 && r.status !== 1 && r.status !== 7) throw new Error(`incremental-vitest run failed (exit ${r.status}): ${r.stderr.slice(-1000)}`);
+  if (r.status !== 0 && r.status !== 1 && r.status !== 7)
+    throw new Error(`incremental-vitest run failed (exit ${r.status}): ${r.stderr.slice(-1000)}`);
   const parsed = JSON.parse(r.stdout) as RunReport & { total_tasks?: number };
   return {
     plan: parsed.plan ?? null,

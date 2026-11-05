@@ -1,11 +1,13 @@
 """Engine process and line protocol. Internal: use incremental.connect instead."""
 
+import contextlib
 import json
 import os
 import queue
 import subprocess
 import threading
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 from .errors import IncrementalError
 
@@ -83,7 +85,9 @@ class Engine:
         )
         self._lines = queue.Queue()
         self._stderr_tail = []
-        threading.Thread(target=self._read_stdout, args=(self._proc, self._lines), daemon=True).start()
+        threading.Thread(
+            target=self._read_stdout, args=(self._proc, self._lines), daemon=True
+        ).start()
         threading.Thread(target=self._drain_stderr, args=(self._proc,), daemon=True).start()
 
     def _read_stdout(self, proc, q):
@@ -110,10 +114,8 @@ class Engine:
         if proc is None:
             return
         if graceful and proc.poll() is None:
-            try:
+            with contextlib.suppress(IncrementalError):
                 self.request("shutdown", {}, timeout=wait)
-            except IncrementalError:
-                pass
             # The engine writes its index image before it exits. Let it finish.
             self.wait_exit(max(wait, 1.0))
         try:
@@ -182,13 +184,19 @@ class Engine:
             if msg.get("id") == req_id:
                 if "error" in msg:
                     err = msg["error"]
-                    raise IncrementalError(err.get("code", "internal"), err.get("message", ""), err.get("data"))
+                    raise IncrementalError(
+                        err.get("code", "internal"), err.get("message", ""), err.get("data")
+                    )
                 if "result" not in msg:
-                    raise IncrementalError("bad_response", f"response has neither result nor error: {msg!r}")
+                    raise IncrementalError(
+                        "bad_response", f"response has neither result nor error: {msg!r}"
+                    )
                 return msg["result"]
             if msg.get("id") is None and msg.get("ok") is False and "error" in msg:
                 err = msg["error"]
-                raise IncrementalError(err.get("code", "internal"), err.get("message", ""), err.get("data"))
+                raise IncrementalError(
+                    err.get("code", "internal"), err.get("message", ""), err.get("data")
+                )
             # Any other line belongs to an earlier request and is dropped.
 
     def _read_one(self, timeout: float) -> dict:
@@ -196,14 +204,18 @@ class Engine:
             raw = self._lines.get(timeout=timeout)
         except queue.Empty:
             self.kill()
-            raise IncrementalError("timeout", f"no response within {timeout} s", {"partial": False})
+            raise IncrementalError("timeout", f"no response within {timeout} s", {"partial": False}) from None
         if raw is _EOF:
             code = self._wait_exit()
-            raise IncrementalError("engine_exited", f"engine exited (status {code})", self._stderr_text() or None)
+            raise IncrementalError(
+                "engine_exited", f"engine exited (status {code})", self._stderr_text() or None
+            )
         try:
             msg = json.loads(raw)
         except ValueError:
-            raise IncrementalError("bad_response", f"engine wrote a line that is not JSON: {raw[:200]!r}")
+            raise IncrementalError(
+                "bad_response", f"engine wrote a line that is not JSON: {raw[:200]!r}"
+            ) from None
         if not isinstance(msg, dict):
             raise IncrementalError("bad_response", f"engine wrote a non-object line: {raw[:200]!r}")
         return msg

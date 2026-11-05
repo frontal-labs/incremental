@@ -1,6 +1,6 @@
 # Rust Client Example
 
-Demonstrates the Rust binding (`bindings/rust`, crate `incremental-rust`) speaking incremental Protocol v1 over stdio. Per `docs/spec/adapters/rust.md` and 
+Demonstrates the Rust binding (`bindings/rust`, crate `incremental-rust`) speaking incremental Protocol v1 over stdio. Per `docs/spec/adapters/rust.md` and
 
 ## Layout
 

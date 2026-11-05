@@ -23,13 +23,7 @@
   "telemetry": {
     "enabled": false,
     "sample_rate": 0,
-    "events": [
-      "session_start",
-      "session_end",
-      "tool_use",
-      "error",
-      "command_completion"
-    ]
+    "events": ["session_start", "session_end", "tool_use", "error", "command_completion"]
   },
   "mcp": {
     "enabled": true,
@@ -62,16 +56,7 @@
   "runtime": {
     "default_provider": "frontal",
     "default_model": "frontal-code",
-    "allowed_tools": [
-      "bash",
-      "read",
-      "write",
-      "edit",
-      "grep",
-      "glob",
-      "web_search",
-      "web_fetch"
-    ],
+    "allowed_tools": ["bash", "read", "write", "edit", "grep", "glob", "web_search", "web_fetch"],
     "max_tokens": 4096,
     "temperature": 0.2,
     "timeout": 300,

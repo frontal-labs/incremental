@@ -6,36 +6,39 @@
   "type": "object",
   "required": ["id", "desc", "mode", "store", "query", "expect"],
   "properties": {
-    "id": {"type": "string", "pattern": "^C\\d{2}$|^V\\d{2}$"},
-    "desc": {"type": "string"},
-    "mode": {"type": "string", "enum": ["balanced", "conservative"]},
+    "id": { "type": "string", "pattern": "^C\\d{2}$|^V\\d{2}$" },
+    "desc": { "type": "string" },
+    "mode": { "type": "string", "enum": ["balanced", "conservative"] },
     "store": {
       "type": "object",
       "required": ["from"],
       "properties": {
-        "from": {"type": "string", "description": "JSONL file of protocol messages that set up state."}
+        "from": {
+          "type": "string",
+          "description": "JSONL file of protocol messages that set up state."
+        }
       }
     },
-    "context_override": {"type": "object"},
+    "context_override": { "type": "object" },
     "query": {
       "type": "object",
       "required": ["baseline", "changes"],
       "properties": {
-        "baseline": {"type": "string"},
-        "changes": {"type": "array", "$ref": "changeset.json#/properties/changes"},
-        "verify": {"type": "boolean"},
-        "policy": {"type": "string", "enum": ["balanced", "conservative"]}
+        "baseline": { "type": "string" },
+        "changes": { "type": "array", "$ref": "changeset.json#/properties/changes" },
+        "verify": { "type": "boolean" },
+        "policy": { "type": "string", "enum": ["balanced", "conservative"] }
       }
     },
     "expect": {
       "type": "object",
       "properties": {
-        "tasks": {"type": "array"},
-        "unobserved": {"type": "array", "items": {"type": "string"}},
-        "ignored": {"type": "array", "items": {"type": "string"}},
-        "deleted_tasks": {"type": "array", "items": {"type": "string"}},
+        "tasks": { "type": "array" },
+        "unobserved": { "type": "array", "items": { "type": "string" } },
+        "ignored": { "type": "array", "items": { "type": "string" } },
+        "deleted_tasks": { "type": "array", "items": { "type": "string" } },
         "fallback": {},
-        "confidence": {"type": "string", "enum": ["high", "medium", "n/a"]}
+        "confidence": { "type": "string", "enum": ["high", "medium", "n/a"] }
       }
     }
   }

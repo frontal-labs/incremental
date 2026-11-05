@@ -31,9 +31,7 @@
     "tasks": [
       {
         "id": "packages/core/src/envall.test.ts",
-        "reasons": [
-          "env_all_changed"
-        ]
+        "reasons": ["env_all_changed"]
       }
     ],
     "unobserved": [],

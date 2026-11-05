@@ -10,11 +10,11 @@ Status: v1, written before the implementation . Package `incremental`, located i
 
 ## 2. Engine, store and root
 
-| Setting | Source, in order |
-|---|---|
+| Setting        | Source, in order                                                                  |
+| -------------- | --------------------------------------------------------------------------------- |
 | engine command | argument `engine`; else `INCREMENTAL_ENGINE`; else `<repo>/core/dist/incremental` |
-| store | argument `store`; else `INCREMENTAL_STORE`; else `<repo>/.incremental` |
-| root | argument `root`; else `<repo>` |
+| store          | argument `store`; else `INCREMENTAL_STORE`; else `<repo>/.incremental`            |
+| root           | argument `root`; else `<repo>`                                                    |
 
 `<repo>` is the nearest ancestor of the current directory that contains `.git`, or the current directory if there is none.
 
@@ -78,12 +78,12 @@ The Python dicts use the protocol schema exactly (`spec/PROTOCOL.md`, section "O
 
 `IncrementalError.code` is one of the protocol codes: `invalid_params`, `unknown_method`, `protocol_mismatch`, `store_missing`, `store_corrupt`, `lock_busy`, `baseline_conflict`, `timeout`, `internal`. The client adds these codes of its own:
 
-| Code | Meaning |
-|---|---|
-| `timeout` | The engine did not answer within `timeout`. The same code as the protocol timeout error. `data = {"partial": false}` |
-| `engine_exited` | The engine exited during a request, or it is down and `restart` is false |
-| `closed` | The client was closed |
-| `bad_response` | The engine wrote a line that is not JSON or has no `id` and `error`/`result` |
+| Code            | Meaning                                                                                                              |
+| --------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `timeout`       | The engine did not answer within `timeout`. The same code as the protocol timeout error. `data = {"partial": false}` |
+| `engine_exited` | The engine exited during a request, or it is down and `restart` is false                                             |
+| `closed`        | The client was closed                                                                                                |
+| `bad_response`  | The engine wrote a line that is not JSON or has no `id` and `error`/`result`                                         |
 
 ## 7. Conformance mapping
 
