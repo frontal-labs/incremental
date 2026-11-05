@@ -107,10 +107,11 @@ class Session {
   }
   onData(c) {
     this.buf += c;
-    let nl;
-    while ((nl = this.buf.indexOf("\n")) >= 0) {
+    let nl = this.buf.indexOf("\n");
+    while (nl >= 0) {
       const line = this.buf.slice(0, nl);
       this.buf = this.buf.slice(nl + 1);
+      nl = this.buf.indexOf("\n");
       if (line.trim()) {
         try {
           this.onLine(JSON.parse(line));

@@ -1,6 +1,6 @@
 # Benchmark results
 
-Generated: 2026-11-05T18:16:04.072Z
+Generated: 2026-11-05T19:20:00.569Z
 
 ## Raw data
 
@@ -22,27 +22,26 @@ Generated: 2026-11-05T18:16:04.072Z
 
 | tasks | queries | iterations | process_load_ms (median) | per_query_ms (median) | per_query_ms (min–max) | log_bytes |
 |---|---|---|---|---|---|---|
-| 10000 | 100 | 3 | 45.325 | 0.191 | 0.162–0.243 | 6348249 |
+| 10000 | 100 | 3 | 45.445 | 0.223 | 0.155–0.328 | 6348249 |
 
 _Note: warm plan latency over protocol v1 stdio; each query invalidates one task; process_load includes engine spawn + hello + store load; stats over multiple iterations_
 
 ## Comparison vs alternatives
 
 Measured on three dedicated monorepo fixtures under `monorepos/`. Each fixture has 4 packages
-with a `shared → api/web` dependency graph (`utils` standalone), 6 vitest tests, and git history.
-Changed `packages/shared/src/index.ts`; measured affected-project detection time.
+with a `shared → api/web` dependency graph (`utils` standalone), 8 vitest tests, and git history.
+The change at HEAD is `packages/shared/src/index.ts`, so the expected affected set is shared, api, web.
 
-| Tool | Detect time | Projects/tasks found | Correct deps? | Monorepo |
+| Tool | Detect time | Projects/tasks found | Correct set? | Monorepo |
 |---|---|---|---|---|
-| **Incremental** | **0.177 ms/query** | per-task invalidation | Yes | native (synthetic store) |
-| **Nx** | 1656 ms detect | 2 projects | Yes | monorepos/nx/ |
-| **Turbo** | 513 ms detect | 0 tasks | Not valid (fixture has no pnpm-workspace.yaml) | monorepos/turborepo/ |
-| **Bazel** | 1561 ms query (all targets) | 4 targets listed | Not measured (fixture declares no deps) | monorepos/bazel/ |
+| **Incremental** | **0.210 ms/query** | per-task invalidation | n/a (synthetic store) | native (synthetic store) |
+| **Nx** | 1930 ms detect | 3 projects | Yes | monorepos/nx/ |
+| **Turbo** | 506 ms detect | 3 tasks (`--filter=...[HEAD~1]`) | Yes | monorepos/turborepo/ |
+| **Bazel** | 1871 ms rdeps query | 3 targets | Yes | monorepos/bazel/ |
 
 Not like-for-like: the Incremental figure is a warm query against a 10,000-task synthetic store
-(`benchmarks/warm-plan.mjs`). The Nx figure is one affected-detection run against a 4-package fixture.
-The Turbo and Bazel rows are not affected-detection results (see BENCHMARKS.md, Known issues).
-Do not read any ratio between these rows as a speedup.
+(`benchmarks/warm-plan.mjs`). The Nx, Turbo and Bazel figures are each one affected-detection run
+against a 4-package fixture, with a cold tool process. Do not read any ratio between these rows as a speedup.
 
 ## Thresholds
 

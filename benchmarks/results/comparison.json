@@ -1,52 +1,52 @@
 {
-  "timestamp": "2026-11-05T18:16:03.881Z",
+  "timestamp": "2026-11-05T19:20:00.459Z",
   "iterations": 3,
   "incremental": {
     "process_load_ms": null,
-    "per_query_ms": 0.1767629000000001,
+    "per_query_ms": 0.21009706,
     "samples": [
-      0.15538833,
-      0.1767629000000001,
-      0.30092041999999997
+      0.21009706,
+      0.18511247,
+      0.47171049000000004
     ]
   },
   "nx": {
-    "affected_detect_ms": 1655.71175,
+    "affected_detect_ms": 1929.709583,
     "projects": [
+      "shared",
       "api",
       "web"
     ],
     "samples": [
-      1655.71175,
-      1736.062375,
-      1598.00525
+      2181.30025,
+      1929.709583,
+      1854.819708
     ],
     "error": null,
     "monorepo": "/Users/gabrielfonseca/Desktop/graph/monorepos/nx"
   },
   "turbo": {
-    "affected_detect_ms": 512.923834,
-    "tasks_found": 0,
+    "affected_detect_ms": 506.033958,
+    "tasks_found": 3,
     "samples": [
-      1072.176458,
-      332.131584,
-      512.923834
+      646.414042,
+      506.033958,
+      450.833875
     ],
     "error": null,
     "monorepo": "/Users/gabrielfonseca/Desktop/graph/monorepos/turborepo"
   },
   "bazel": {
-    "affected_detect_ms": 1561.128709,
+    "affected_detect_ms": 1870.95925,
     "targets": [
       "//packages/api:api_pkg",
       "//packages/shared:shared_pkg",
-      "//packages/utils:utils_pkg",
       "//packages/web:web_pkg"
     ],
     "samples": [
-      2267.902666,
-      1561.128709,
-      1494.703917
+      1920.964666,
+      1870.95925,
+      1612.970875
     ],
     "error": null,
     "monorepo": "/Users/gabrielfonseca/Desktop/graph/monorepos/bazel"

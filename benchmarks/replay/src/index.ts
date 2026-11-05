@@ -41,7 +41,9 @@ async function main(): Promise<void> {
 
   git(repo, ["init", "-q", "-b", "main"]);
   git(repo, ["add", "-A"]);
-  git(repo, ["commit", "-q", "-m", "fixture base"]);
+  // --allow-empty: a fixture whose working tree is already clean (its own .git was copied
+  // above) has nothing to commit. Without it the replay fails on such a fixture.
+  git(repo, ["commit", "-q", "--allow-empty", "-m", "fixture base"]);
 
   const initStore = spawnSync(ENGINE, ["init", "--store", store], { encoding: "utf8" });
   if (initStore.status !== 0) throw new Error(`engine init failed: ${initStore.stderr}`);
