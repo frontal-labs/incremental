@@ -10,5 +10,5 @@ __pycache__/
 logs/
 status/*.tmp
 
-# Generated demo repo for local Gate 0 / adapter work
+# Generated demo repo for local adapter work
 demo-repo/

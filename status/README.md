@@ -7,8 +7,8 @@ Machine-readable verification status for incremental milestones (E1–E10 per th
 | File | Tracks | Milestone |
 |---|---|---|
 | `status/ADAPTERS.json` | Adapters (`test-vitest`, `test-adapters`, ...) | E4 verify |
-| `status/BENCH.json` | Benchmark Gate 0 | GATE0 done (result STOP) |
-| `status/BENCHMARKS.json` | Benchmarks Gate 1 | GATE0 blocked (needs a real Vitest monorepo) |
+| `status/BENCH.json` | Benchmark replay | Benchmark replay status |
+| `status/BENCHMARKS.json` | Benchmarks | Benchmarks status |
 | `status/BINDINGS.json` | Node (`@incremental/client`), Python, Rust bindings | E3 verify (TS), E9 verify (Python) |
 | `status/CORE.json` | Core engine (Goose) | E2 verify |
 | `status/SPEC_CONFORMANCE.json` | Spec conformance suite | E1 verify |
@@ -25,7 +25,7 @@ make status   # rewrites STATUS.md from status/*.json
 
 ## Reading the status
 
-Human-readable summary: [`STATUS.md`](../STATUS.md). Open items — including Gate 0 decisions (which needs a real Vitest monorepo and a human decision) and CR-002/CR-003 — are in `DECISIONS.md` and `spec/CHANGE_REQUESTS.md`.
+Human-readable summary: [`STATUS.md`](../STATUS.md). Open items — including CR-002/CR-003 — are in `DECISIONS.md` and `spec/CHANGE_REQUESTS.md`.
 
 Per-milestone detail:
 
@@ -34,4 +34,4 @@ Per-milestone detail:
 - **E3 verify** (TypeScript bindings): `status/BINDINGS.json`.
 - **E4 verify** (adapters): `status/ADAPTERS.json`.
 - **E9 verify** (Python bindings): `status/BINDINGS.json`.
-- **Gate 0 / benchmarks**: `status/BENCH.json`, `status/BENCHMARKS.json`.
+- **Benchmarks**: `status/BENCH.json`, `status/BENCHMARKS.json`.

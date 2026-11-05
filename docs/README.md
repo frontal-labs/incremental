@@ -15,7 +15,7 @@ This directory contains comprehensive documentation for the Incremental project,
 | [adapters/ADAPTERS.md](adapters/ADAPTERS.md) | Adapter types, recorder contract, Vitest adapter, git source, strace oracle, MCP |
 | [../adapters/README.md](../adapters/README.md) | The built adapters under `adapters/`, one row each |
 | [conformance/CONFORMANCE_AND_TESTING.md](conformance/CONFORMANCE_AND_TESTING.md) | Conformance suite, test cases (C01-C40, V01-V16), guarantees, testing commands |
-| [benchmarks/BENCHMARKS_AND_GATES.md](benchmarks/BENCHMARKS_AND_GATES.md) | Benchmark targets, replay methodology, Gate 0 and Gate 1 criteria |
+| [benchmarks/BENCHMARKS_AND_GATES.md](benchmarks/BENCHMARKS_AND_GATES.md) | Benchmark targets, replay methodology |
 | [development/DEVELOPMENT_GUIDE.md](development/DEVELOPMENT_GUIDE.md) | Quick start, structure, ground rules, roles, workflow, milestones |
 
 ## Quick References

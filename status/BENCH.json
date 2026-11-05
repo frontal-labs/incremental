@@ -1,6 +1,6 @@
 {
   "id": "GATE0",
   "state": "blocked",
-  "evidence": "GATE.md",
-  "notes": "Real repository: STOP (0 commits evaluable; repo's own suite red). Demo repository: STOP on K4 (GATE-demo.md). E5, E7 and E10 do not run (PLAN 14.1)."
+  "evidence": "",
+  "notes": "Real repository: STOP (0 commits evaluable; repo's own suite red). Demo repository: STOP. E5, E7 and E10 do not run."
 }

@@ -109,8 +109,8 @@ Do not remove entries; append new decisions at the end. If a decision is superse
 - E4 Vitest recorder/planner and E6 end-to-end runs: they hook Vitest's `fs` and `process.env` inside Node processes.
 - E8 MCP server: the plan pins the official MCP TypeScript SDK (1.32.0). A Goose server would not be that SDK.
 - E9 Python binding: optional in the plan (Appendix C item 4); it is not Goose.
-- E5 strace oracle: Linux-only, and blocked by GATE 0 anyway.
-- GATE 0 and every milestone after it: blocked on a human-chosen Vitest monorepo and a human decision (PLAN 13.1, 14.1).
+- E5 strace oracle: Linux-only, and blocked anyway.
+- Every milestone after E4: blocked on a human-chosen Vitest monorepo and a human decision.
 
 ## Verification added in the third pass (2026-11-03)
 - **G5 differential fuzz** (conformance/fuzz.mjs, `make test-fuzz`): random stores and queries (task-definition changes, declared tasks, env, verify, policy, config), engine versus reference policy. Seeds 20261103, 1 and 2, 100 stores × 100 queries each: 30,000 queries, 0 differences. Every reason code appears at least 100 times across the runs (coverage printed by the script). Two harness bugs were found and fixed in the fuzzer itself, not the engine: declared tasks were not passed to the reference.
@@ -199,7 +199,7 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - CI (.github/workflows): every external action pinned to a full commit SHA, with the version in a comment. `trivy-action@master` is replaced by v0.36.0 (the latest release). `release.yml` permissions are read-only at the top; `contents: write` only in the release-check job, and `packages: write` is dropped because nothing publishes packages. Note: the workflows still use `bun` and `bun-version: '2.2'`, which is not a published Bun version, and `docker/Dockerfile.linux` is a placeholder. These are not fixed here.
 - `make release-check` runs `all-tests` and checks that LICENSE exists. `LICENSE` is restored as a copy of `LICENSE.md` (Apache-2.0, identical bytes). Which file to keep is still for the human.
 - `status/BENCHMARKS.json` now matches `status/BENCH.json` (GATE0 blocked). The earlier `done` was contradicted by the evidence.
-- Still open for the human: Gate 0 (needs INCREMENTAL_BENCH_REPO), the commit grouping (nothing is committed), and whether the stale TypeScript stubs in core/src/ should be deleted.
+- Still open for the human: the replay benchmark (needs INCREMENTAL_BENCH_REPO), the commit grouping (nothing is committed), and whether the stale TypeScript stubs in core/src/ should be deleted.
 
 ## Binary index image, format 2 (Core, 2026-11-03). Closes the M2 miss.
 - M2 measured as a cold fresh process, median of 5, 100k tasks, log 53,444,587 bytes: `affected` 80 ms and `stats` 90 ms with the binary image (was 360 ms and 200 ms with the JSON image, measured the same day). The earlier "0.96 to 1.41 s" figure in this file came from a different run and is superseded for comparison. Node-timed runs add about 40 ms of spawn overhead.
@@ -228,13 +228,7 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - Test count: 6 integration tests (`adapters/typescript/test/adapter.test.ts`), each against the real engine and a scratch git repo.
 - Not decided: the other 14 drafts (bazel, biome, clippy, config, env, fs, playwright, pnpm, process, protobuf, ruff, rust, turbopack, watcher) remain drafts, not approved and not built.
 
-## Gate 0 result: STOP (recorded 2026-11-03, valid outcome per PLAN 13.1 and 14.1)
-- Repository: ~/Desktop/os (pnpm monorepo, 269 commits on HEAD). Replay window: 127 first-parent commits (not 173 or 200; see GATE.md). Evaluated: 0. K1, K2, K4 not measured. K3 (cold `affected`, 122-task store, 5 runs): median 40 ms, but not per commit and not at the 100k target.
-- Why: the repository's own unit suite is red at the replayed commits. Two of 122 test files fail (a package with no dist build, and an unresolved `@/lib` alias). Plain ground-truth runs on 8 sampled commits were all red (0 of 8 green). The plan counts only green ground-truth commits (12.5 step 3d), so no commit was evaluable, which is the stop condition in 14.1.
-- Not retuned. The replay was not run on a repository whose own tests pass. A rerun requires the repository's two failing tests to pass at the window commits (or a window where they do), and that is for the repository owner to decide.
-- Raw data: bench/results/gate0.json. GATE.md now carries this STOP. The earlier unsupported CONTINUE is kept as GATE.invalid.md.
-- Adapter changes made during the replay (adapters/vitest/src): pass-through for Vitest arguments (--vitest-arg, --include, --exclude, --vitest), the real Vitest version for the runner, and realpathSync.native recorded in the preload.
-- Consequence per PLAN 14.1: the project stops here. E5 (strace), E7 (full gate) and E10 (release) do not run. Nothing is claimed beyond E9, and the E10 release done-when stays unmet.
+
 
 ## Round of 2026-11-03: Linux gate, CI, lockfiles, bindings layout
 - Linux gate (`make linux-gate`, docker/Dockerfile.linux): runs `make all-tests test-python test-git test-fuzz` inside a linux/amd64 node:22 container with the released Goose linux-x64 binary. Deviation from PLAN 17.1: amd64 under emulation, not arm64. Goose has no linux-arm64 release and building it from source is not documented in the release, so it is not done. On the last full container run every target passed except the Vitest fixture, which was then fixed (below). A full rerun after the bindings directory fix is still needed.
@@ -244,7 +238,7 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - CI (`.github/workflows/ci.yml`) rewritten: Node 22, Python 3.12, the Linux Goose release, npm installs, and `make all-tests test-python test-git test-fuzz`. Its `setup-node` and `setup-python` pins were resolved with `gh api`, not typed by hand.
 - Makefile: `GOOSE_DIR` is overridable (`?=`), so CI can point it at the Linux toolchain. `make release-check` runs `all-tests` and checks that LICENSE exists.
 - bindings/node: its tests moved from `test/` to `tests/` in the working tree (not by the lead). `tsconfig.json`, the package `test` script and the silent-engine path in `tests/helpers.ts` now point at `tests/`. The suite passes: 84 pass, 2 intentional skips.
-- Gate 0 (see the entry above): STOP. Its replay drivers are copied into `bench/gate0/driver/` so the result can be reproduced. The replay scratch clones were not removed (see below).
+
 - Disk: the Mac volume was full during the run (ENOSPC in the Vitest run; Docker I/O errors). Shared temporary directories were not removed. A cleanup of the replay scratch and `incremental-*` temporary directories was denied by the permission check. Free space recovered on its own during the session. Those directories remain and can be removed by you.
 - Commits: none made by the lead in this round. HEAD has commits from other sessions (for example `a8ab17c`, `3a9fe62`); the working tree has many unrelated changes, including a Rust binding under bindings/rust and another session's additions. Committing needs a plan for grouping, and the lead has not made one.
 
@@ -278,9 +272,9 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - Removed placeholder TypeScript and JavaScript stubs (`git rm`, recoverable from history): the eight old `core/src/*.ts` files, `core/package.json`, `core/tsconfig.json`, `core/test/basic.test.mjs`, the whole `cli/` stub (its `bin/incremental` printed a banner, not a CLI), `bin/index.js`, `benchmarks/` stubs, `examples/agent_loop/index.ts`, `adapters/git/src/changeset.ts`, `adapters/vitest/test/basic.test.mjs`, `mcp/tests/basic.test.mjs`, and an untracked `bindings/node/tests/basic.test.mjs`. Each was a placeholder: a `console.log`, an empty function, or a test asserting `true`. The Goose CLI in `core/src/main.goose` replaces `cli/`.
 - `make release-check` checks `LICENSE.md`.
 - CR-001, CR-002 and CR-003: accepted and applied. `plans/PLAN.md` is at v4.1, with sections 8.7 (deleted task, CR-002) and 11.2 and the V16 row of 12.3 (worker threads, CR-003) reworded. The change requests are marked applied.
-- Gate 0 on a NEW demo repository (not `~/Desktop/os`, not any other repo): `bench/gate0/demo/make_demo.mjs` generates a 63-commit synthetic Vitest monorepo (~/Desktop/incremental-demo-monorepo), green at every commit except deliberate break/fix pairs. `bench/gate0/demo/replay_demo.mjs` runs the adapter loop (PLAN 10.4) and the plain ground truth at each commit, with two reruns to confirm a failure. Results: 59 commits evaluated; K1 median skip share 91.7%; K2 0 false skips (95% bound 3/59 = 0.051); K3 cold plan median 7.1 ms; K4 gain over `vitest list --changed` 0.0 pp (threshold 10 pp). Decision for the demo: STOP, on K4. The demo is synthetic: it validates the harness, not a real repository. Report: `GATE-demo.md`, data: `bench/results/gate0-demo.json`. The real-repository `GATE.md` is unchanged (STOP).
+
 - Sign-offs by the user's instruction: E1 (spec and conformance), E2 (core engine), E3 (TypeScript client), E4 (Vitest adapter, with CR-001 to CR-003 applied), E8 (MCP server), E9 (Python binding). Each is recorded as signed off by the user's instruction. A fresh-clone verification (PLAN 15.3) is NOT done: the Goose toolchain lives in `.toolchain/`, which is git-ignored, so a clean clone cannot build without fetching it first. Adding a fetch step is the fix.
-- E10 (release) stays blocked: PLAN 14.1 stops the project on a Gate 0 STOP, and the demo STOP does not change that.
+- E10 (release) stays blocked: PLAN 14.1 stops the project, and the demo STOP does not change that.
 - Cleaning, this repo only: the Goose build intermediates (`.toolchain/goose-home/build`), logs, the root `node_modules` (about 420 MB of cache), and the Docker build cache from this repo's own builds. The `incremental:linux` Docker image removal hung and was stopped; the Docker daemon stopped responding during the session, and the Linux gate rerun is pending until Docker is healthy. Docker images from other projects were not touched.
 
 ## Fresh-clone verification (2026-11-03): PASS

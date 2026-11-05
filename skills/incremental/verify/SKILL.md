@@ -33,7 +33,7 @@ for d in $(git ls-files '*package.json' | grep -v -e '^package.json$' -e fixture
 | Adapters | `make test-adapters` | Runs `test-typescript`, `test-rust` and the 13 per-adapter targets. |
 | One adapter | `make test-pnpm` (and the others) | |
 | MCP server | `make test-mcp` | |
-| Everything in the default gate | `make all-tests` | Does not include fuzz, python or git. |
+| Everything in the default set | `make all-tests` | Does not include fuzz, python or git. |
 | Linux, in Docker | `make linux-gate` | Builds `docker/Dockerfile.linux` and runs `all-tests`, `test-python`, `test-git`, `test-fuzz` inside it. |
 
 Pass several targets to one `make` command (`make test-core test-policy`) so the engine is built once. Separate `make` commands rebuild it every time.
@@ -42,7 +42,7 @@ Pass several targets to one `make` command (`make test-core test-policy`) so the
 
 These print `FAIL` and exit 1 until their milestone is done. A `FAIL` from them is expected and is not a setup problem:
 
-- `make gate0`, `make bench-smoke`, `make bench`, `make gate`. They need a real repository (set `INCREMENTAL_BENCH_REPO`; the Makefile default is a machine-specific path) and a human decision on Gate 0 (`STATUS.md`).
+- `make bench-smoke`, `make bench`. They need a real repository (set `INCREMENTAL_BENCH_REPO`; the Makefile default is a machine-specific path) and a human decision.
 
 ## Reading a failure
 

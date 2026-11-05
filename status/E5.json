@@ -2,5 +2,5 @@
   "id": "E5",
   "state": "skipped",
   "evidence": "",
-  "notes": "strace oracle: Linux-only (PLAN 11.5, 15.1); not runnable on this macOS host (G4 fails: not runnable on this host strace is Linux-only). Gate 0 is STOP so E5 does not run (PLAN 14.1). Skipped pending a Linux host or human decision."
+  "notes": "strace oracle: Linux-only (PLAN 11.5, 15.1); not runnable on this macOS host (strace is Linux-only). Skipped pending a Linux host or human decision."
 }

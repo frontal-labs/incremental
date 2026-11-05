@@ -12,7 +12,7 @@ The incremental engine core, written in **Goose** (a Go-like systems language, s
 | `core/src/store.goose` | Store: append-only log (`tg.log`), index, lock (`tg.lock`), stat cache (`stat.cache`), verification. |
 | `core/src/native.c` / `core/src/native.goose` | Native bindings for the engine. |
 | `core/src/main.build` | Goose build descriptor. |
-| `core/tests/` | Smoke and CLI tests (`node --test core/tests/*.test.mjs`). |
+| `core/tests/` | Goose tests (run with `goose --multi-test --stdlib core/src`). |
 | `core/dist/` | Build output: `incremental` engine binary and build logs. |
 
 ## Building
@@ -34,7 +34,7 @@ core/dist/incremental serve --store .incremental   # protocol v1 over stdio
 ## Testing
 
 ```sh
-make test-core   # smoke and CLI tests
+make test-core   # Goose tests: goose --multi-test on core/tests/*.goose
 make loc         # lines of code in core/src (Goose + C)
 ```
 

@@ -1,5 +1,5 @@
 # E6: End-to-end and replay driver (Adapters with Bench)
-# Depends: E5 (strace oracle; GATE 0 blocked, so E6 verify runs on this branch's changes)
+# Depends: E5 (strace oracle; verify runs on this branch's changes)
 Command: make test-e2e && make bench-replay && bash examples/agent_loop/agent_loop.sh
 Date: 2026-11-04T00:00:00Z
 Commit: uncommitted (base agent/adapters/E6 branch off main)
