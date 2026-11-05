@@ -26,6 +26,7 @@ class Incremental:
     def __init__(
         self, argv_prefix: Sequence[str], store: str, root: str, timeout: float, restart: bool
     ):
+        """Store the engine launch settings. The engine starts on the first call."""
         self._prefix = list(argv_prefix)
         self._store = store
         self._root = root
@@ -97,9 +98,11 @@ class Incremental:
             self._engine.stop(graceful=True, wait=self._timeout)
 
     def __enter__(self) -> Incremental:
+        """Return this connection for use in a with-statement."""
         return self
 
     def __exit__(self, *exc) -> None:
+        """Close the connection when the with-statement ends."""
         self.close()
 
     # ----- protocol methods --------------------------------------------------

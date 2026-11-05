@@ -91,9 +91,8 @@ def query_changes(case: dict) -> dict:
 def mismatches(plan: dict, expect: dict) -> list:
     out = []
     for key in COMPARED:
-        if key in expect:
-            if dumps(plan.get(key)) != dumps(expect[key]):
-                out.append(f"{key}: want {dumps(expect[key])} got {dumps(plan.get(key))}")
+        if key in expect and dumps(plan.get(key)) != dumps(expect[key]):
+            out.append(f"{key}: want {dumps(expect[key])} got {dumps(plan.get(key))}")
     return out
 
 

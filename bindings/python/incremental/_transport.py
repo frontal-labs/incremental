@@ -204,7 +204,9 @@ class Engine:
             raw = self._lines.get(timeout=timeout)
         except queue.Empty:
             self.kill()
-            raise IncrementalError("timeout", f"no response within {timeout} s", {"partial": False}) from None
+            raise IncrementalError(
+                "timeout", f"no response within {timeout} s", {"partial": False}
+            ) from None
         if raw is _EOF:
             code = self._wait_exit()
             raise IncrementalError(

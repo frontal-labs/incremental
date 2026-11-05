@@ -1,4 +1,6 @@
-"""A stand-in engine for timeout tests. Answers hello, ping and baseline.
+"""A stand-in engine for timeout tests.
+
+Answers hello, ping and baseline.
 Never answers stats: it sleeps, so a client timeout is observed.
 Answers hello with its pid in "store" so tests can see a restart.
 Usage (by tests): python3 fake_engine.py serve --store X --root Y
