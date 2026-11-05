@@ -198,7 +198,7 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - `baseline_conflict` now carries `data: {expected, actual}` (PLAN 9.1). The Python test that asserted no data was updated to match. C26 checks only the code, so it still passes.
 - CI (.github/workflows): every external action pinned to a full commit SHA, with the version in a comment. `trivy-action@master` is replaced by v0.36.0 (the latest release). `release.yml` permissions are read-only at the top; `contents: write` only in the release-check job, and `packages: write` is dropped because nothing publishes packages. Note: the workflows still use `bun` and `bun-version: '2.2'`, which is not a published Bun version, and `docker/Dockerfile.linux` is a placeholder. These are not fixed here.
 - `make release-check` runs `all-tests` and checks that LICENSE exists. `LICENSE` is restored as a copy of `LICENSE.md` (Apache-2.0, identical bytes). Which file to keep is still for the human.
-- `status/BENCHMARKS.json` now matches `status/BENCH.json` (GATE0 blocked). The earlier `done` was contradicted by the evidence.
+- `status/BENCHMARKS.json` now matches `status/BENCH.json` (blocked). The earlier `done` was contradicted by the evidence.
 - Still open for the human: the replay benchmark (needs INCREMENTAL_BENCH_REPO), the commit grouping (nothing is committed), and whether the stale TypeScript stubs in core/src/ should be deleted.
 
 ## Binary index image, format 2 (Core, 2026-11-03). Closes the M2 miss.

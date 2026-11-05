@@ -1,5 +1,5 @@
 {
-  "id": "GATE0",
+  "id": "BENCH",
   "state": "blocked",
   "evidence": "",
   "notes": "Real repository: STOP (0 commits evaluable; repo's own suite red). Demo repository: STOP. E5, E7 and E10 do not run."

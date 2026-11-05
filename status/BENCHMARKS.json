@@ -1,6 +1,6 @@
 {
-  "id": "GATE0",
+  "id": "BENCHMARKS",
   "state": "blocked",
-  "evidence": "evidence/invalid/GATE0.txt",
+  "evidence": "",
   "notes": "Matches BENCH.json. Needs a real Vitest monorepo (INCREMENTAL_BENCH_REPO) and a human decision."
 }
