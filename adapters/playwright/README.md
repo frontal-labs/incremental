@@ -19,7 +19,7 @@ Exit codes: 0 advanced and all passed; 1 advanced and a test failed; 2 usage; 4 
 - Live servers. The app under test is a network resource the engine cannot hash. A task is recorded `dirty` (and so is never valid next run) when:
   - the config mentions `webServer` or `baseURL` (every task is dirty);
   - its test file or a relative import matches a static pattern for a server: the `page`, `context`, `browser`, `request` or `goto` fixtures, `fetch`, or the `http`, `https`, `net`, `tls` and `undici` modules.
-  This is a static guard, not an observation. A test that reaches a backend by a path the pattern does not name (a child process, a dependency that is not a relative import) is recorded clean. That is a gap: do not treat a clean task as protected from backend changes.
+    This is a static guard, not an observation. A test that reaches a backend by a path the pattern does not name (a child process, a dependency that is not a relative import) is recorded clean. That is a gap: do not treat a clean task as protected from backend changes.
 - Not hashed: `process.env` (no env capability), directory listings and probes (`caps` are false), and any file reached through a non-relative import (a package is covered by the lockfile only; tsconfig `paths` aliases are not followed and an alias import is treated as a package).
 - Unresolved relative imports and dynamic `require`/`import` with a non-literal argument make the task dirty.
 - Test files outside the root, or a config in a subdirectory (Playwright only finds the config in the working directory, which is the root), are not supported.

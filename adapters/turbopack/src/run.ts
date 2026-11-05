@@ -96,13 +96,22 @@ interface GitChangeSet {
 
 // The git change source (PLAN 11.7). Throws on failure.
 function gitSourcePath(): string {
-  return process.env.INCREMENTAL_GIT || path.join(repoRoot(), "adapters", "git", "dist", "incremental-git");
+  return (
+    process.env.INCREMENTAL_GIT ||
+    path.join(repoRoot(), "adapters", "git", "dist", "incremental-git")
+  );
 }
 
 function gitChangeSet(root: string, ref: string): GitChangeSet {
-  const r = spawnSync(gitSourcePath(), ["changes", "--base", ref, "--root", root], { encoding: "utf8" });
-  if (r.error !== undefined) throw new Error(`cannot run the git change source: ${r.error.message}`);
-  if (r.status !== 0) throw new Error(`git change source failed (exit ${r.status}): ${(r.stdout || r.stderr || "").trim()}`);
+  const r = spawnSync(gitSourcePath(), ["changes", "--base", ref, "--root", root], {
+    encoding: "utf8",
+  });
+  if (r.error !== undefined)
+    throw new Error(`cannot run the git change source: ${r.error.message}`);
+  if (r.status !== 0)
+    throw new Error(
+      `git change source failed (exit ${r.status}): ${(r.stdout || r.stderr || "").trim()}`,
+    );
   return JSON.parse(r.stdout) as GitChangeSet;
 }
 
@@ -116,7 +125,11 @@ function hashOrAbsent(file: string): string {
 // Hashes of the tracked environment, as observation inputs (kind env), so a change
 // to a tracked variable invalidates the apps that recorded it.
 function envInputs(): Input[] {
-  return Object.entries(envHashes(process.env)).map(([name, value_hash]) => ({ kind: "env" as const, name, value_hash }));
+  return Object.entries(envHashes(process.env)).map(([name, value_hash]) => ({
+    kind: "env" as const,
+    name,
+    value_hash,
+  }));
 }
 
 // The directories of the other apps, for the app `task`. An app that contains
@@ -124,9 +137,10 @@ function envInputs(): Input[] {
 export function excludedFor(task: string, apps: readonly string[]): Set<string> {
   const out = new Set<string>();
   for (const other of apps) {
-    if (other === task) continue;
-    const containsTask = other === "." || task.startsWith(`${other}/`);
-    if (!containsTask) out.add(other);
+    if (other !== task) {
+      const containsTask = other === "." || task.startsWith(`${other}/`);
+      if (!containsTask) out.add(other);
+    }
   }
   return out;
 }
@@ -139,7 +153,9 @@ export function contextFor(root: string, runner: string): Context {
   const lock = LOCKFILES.find((f) => existsSync(path.join(root, f)));
   const pkgs = allPackageJsons(root);
   const pkgjson =
-    pkgs.length === 0 ? "absent" : sha256(pkgs.map((rel) => `${rel}\0${hashOrAbsent(path.join(root, rel))}`).join("\n"));
+    pkgs.length === 0
+      ? "absent"
+      : sha256(pkgs.map((rel) => `${rel}\0${hashOrAbsent(path.join(root, rel))}`).join("\n"));
   return {
     lockfile: lock === undefined ? "absent" : hashOrAbsent(path.join(root, lock)),
     tsconfig: hashOrAbsent(path.join(root, "tsconfig.json")),
@@ -165,14 +181,16 @@ function runnerFor(root: string, apps: string[]): string {
     }
   }
   if (versions.size === 0) return "next@none";
-  if (versions.size > 1) throw new Error(`apps resolve different next versions: ${[...versions].sort().join(", ")}`);
+  if (versions.size > 1)
+    throw new Error(`apps resolve different next versions: ${[...versions].sort().join(", ")}`);
   return `next@${[...versions][0]}`;
 }
 
 function ensureStore(store: string): void {
   if (existsSync(store)) return;
   const r = spawnSync(defaultEngine(), ["init", "--store", store], { encoding: "utf8" });
-  if (r.status !== 0) throw new UsageError(`cannot create the store at ${store}: ${(r.stderr || "").trim()}`);
+  if (r.status !== 0)
+    throw new UsageError(`cannot create the store at ${store}: ${(r.stderr || "").trim()}`);
 }
 
 // The task of a deleted package.json, if it was an app directory.
@@ -196,7 +214,12 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     throw new UsageError(e instanceof Error ? e.message : String(e));
   }
 
-  const client = await connect({ store, root, command: [defaultEngine(), "serve"], timeoutMs: 60_000 });
+  const client = await connect({
+    store,
+    root,
+    command: [defaultEngine(), "serve"],
+    timeoutMs: 60_000,
+  });
   try {
     const stored = (await client.baseline()).baseline;
 
@@ -211,14 +234,23 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       throw new UsageError(gitError ?? "the git change source failed");
     }
     if (cs !== null && opts.base !== undefined && stored !== null && cs.baseline !== stored) {
-      throw new UsageError(`--base resolves to ${cs.baseline}, but the store baseline is ${stored}`);
+      throw new UsageError(
+        `--base resolves to ${cs.baseline}, but the store baseline is ${stored}`,
+      );
     }
 
     let plan: Plan | null = null;
     if (cs !== null) {
       plan = await client.affected(
         { baseline: cs.baseline, head: cs.head, changes: cs.changes },
-        { baseline: cs.baseline, context, env: envHashes(process.env), declared_tasks: discovered, verify: false, policy: "balanced" },
+        {
+          baseline: cs.baseline,
+          context,
+          env: envHashes(process.env),
+          declared_tasks: discovered,
+          verify: false,
+          policy: "balanced",
+        },
       );
     }
 
@@ -243,29 +275,33 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       try {
         nextDir = nextPackage(appAbs).dir;
         before = repoInputs(root, excludedFor(task, discovered));
+        const build = buildApp(appAbs, nextDir, opts.timeoutMs);
+        results.push({
+          task,
+          outcome: build.outcome,
+          durationMs: build.durationMs,
+          problem: build.problem,
+        });
+        // The inputs are read after the build, because the build may write some of
+        // them (next-env.d.ts, a rewritten tsconfig.json). If it changed any file,
+        // this build did not read the state it records, so the observation is dirty.
+        const after = repoInputs(root, excludedFor(task, discovered));
+        const rewritten = !sameInputs(before, after);
+        const inputs = [...after, ...envInputs()];
+        observations.push({
+          task,
+          baseline: obsBaseline,
+          dirty: rewritten,
+          context,
+          inputs,
+          outputs: [],
+          outcome: build.outcome,
+          duration_ms: build.durationMs,
+        });
       } catch (e) {
         const problem = e instanceof Error ? e.message : String(e);
         results.push({ task, outcome: "error", durationMs: 0, problem });
-        continue;
       }
-      const build = buildApp(appAbs, nextDir, opts.timeoutMs);
-      results.push({ task, outcome: build.outcome, durationMs: build.durationMs, problem: build.problem });
-      // The inputs are read after the build, because the build may write some of
-      // them (next-env.d.ts, a rewritten tsconfig.json). If it changed any file,
-      // this build did not read the state it records, so the observation is dirty.
-      const after = repoInputs(root, excludedFor(task, discovered));
-      const rewritten = !sameInputs(before, after);
-      const inputs = [...after, ...envInputs()];
-      observations.push({
-        task,
-        baseline: obsBaseline,
-        dirty: rewritten,
-        context,
-        inputs,
-        outputs: [],
-        outcome: build.outcome,
-        duration_ms: build.durationMs,
-      });
     }
 
     const end = gitChangeSet(root, "HEAD");
@@ -284,8 +320,13 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
 
     const notAdvanced: string[] = [];
     if (!canAdvance) {
-      for (const r of results) if (r.outcome === "error") notAdvanced.push(`error: ${r.task}${r.problem ? ` (${r.problem})` : ""}`);
-      if (dirty) notAdvanced.push("the worktree is dirty at the end of the run (next build writes .next and may rewrite tsconfig.json)");
+      for (const r of results)
+        if (r.outcome === "error")
+          notAdvanced.push(`error: ${r.task}${r.problem ? ` (${r.problem})` : ""}`);
+      if (dirty)
+        notAdvanced.push(
+          "the worktree is dirty at the end of the run (next build writes .next and may rewrite tsconfig.json)",
+        );
       if (headEnd !== head0.head) notAdvanced.push("HEAD moved during the run");
     }
     const failed = results.some((r) => r.outcome === "fail");
@@ -301,7 +342,9 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       dirty,
       changes: cs?.changes ?? [],
       plan,
-      fallback: plan?.fallback ?? (runAll && plan === null ? { action: "run_all", reason: "git_source" } : null),
+      fallback:
+        plan?.fallback ??
+        (runAll && plan === null ? { action: "run_all", reason: "git_source" } : null),
       selected,
       discovered,
       results,
@@ -322,7 +365,10 @@ interface ParsedArgs {
 
 export function parseArgs(argv: string[]): ParsedArgs {
   const [cmd, ...rest] = argv;
-  if (cmd !== "run") throw new UsageError("usage: incremental-turbopack run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]");
+  if (cmd !== "run")
+    throw new UsageError(
+      "usage: incremental-turbopack run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]",
+    );
   const opts: RunOptions = { root: process.cwd(), store: "", all: false, timeoutMs: 1_200_000 };
   let json = false;
   let storeGiven = false;
@@ -333,23 +379,28 @@ export function parseArgs(argv: string[]): ParsedArgs {
       if (v === undefined) throw new UsageError(`${a} needs a value`);
       return v;
     };
-    switch (a) {
-      case "--base": opts.base = value(); break;
-      case "--json": json = true; break;
-      case "--all": opts.all = true; break;
-      case "--store": opts.store = value(); storeGiven = true; break;
-      case "--root": opts.root = value(); break;
-      case "--timeout": {
-        const n = Number(value());
-        if (!Number.isInteger(n) || n < 1) throw new UsageError("--timeout needs a positive integer");
-        opts.timeoutMs = n;
-        break;
-      }
-      default: throw new UsageError(`unknown option ${a}`);
+    if (a === "--base") {
+      opts.base = value();
+    } else if (a === "--json") {
+      json = true;
+    } else if (a === "--all") {
+      opts.all = true;
+    } else if (a === "--store") {
+      opts.store = value();
+      storeGiven = true;
+    } else if (a === "--root") {
+      opts.root = value();
+    } else if (a === "--timeout") {
+      const n = Number(value());
+      if (!Number.isInteger(n) || n < 1) throw new UsageError("--timeout needs a positive integer");
+      opts.timeoutMs = n;
+    } else {
+      throw new UsageError(`unknown option ${a}`);
     }
   }
   opts.root = path.resolve(opts.root);
-  if (!storeGiven) opts.store = process.env.INCREMENTAL_STORE || path.join(opts.root, ".incremental");
+  if (!storeGiven)
+    opts.store = process.env.INCREMENTAL_STORE || path.join(opts.root, ".incremental");
   return { opts, json };
 }
 
@@ -360,9 +411,16 @@ function printText(r: RunReport): void {
     `incremental turbopack ${r.mode}: stored ${r.stored ?? "none"}, query ${r.base ?? "none"}, head ${r.headEnd}${r.dirty ? " (dirty)" : ""}`,
   ];
   if (r.fallback !== null) lines.push(`fallback: ${r.fallback.reason}`);
-  else if (r.plan !== null) lines.push(`plan: ${r.plan.tasks.length} invalid of ${r.plan.total_tasks}, confidence ${r.plan.confidence}`);
-  lines.push(`built ${r.results.length}: pass ${counts.pass}, fail ${counts.fail}, error ${counts.error}`);
-  for (const t of r.results) if (t.outcome !== "pass") lines.push(`  ${t.outcome} ${t.task}${t.problem ? ` (${t.problem})` : ""}`);
+  else if (r.plan !== null)
+    lines.push(
+      `plan: ${r.plan.tasks.length} invalid of ${r.plan.total_tasks}, confidence ${r.plan.confidence}`,
+    );
+  lines.push(
+    `built ${r.results.length}: pass ${counts.pass}, fail ${counts.fail}, error ${counts.error}`,
+  );
+  for (const t of r.results)
+    if (t.outcome !== "pass")
+      lines.push(`  ${t.outcome} ${t.task}${t.problem ? ` (${t.problem})` : ""}`);
   lines.push(r.advanced ? `advanced to ${r.headEnd}` : `not advanced: ${r.notAdvanced.join("; ")}`);
   lines.push(`exit ${r.exit}`);
   process.stdout.write(lines.join("\n") + "\n");
@@ -382,9 +440,11 @@ export async function main(argv: string[]): Promise<number> {
     else printText(report);
     return report.exit;
   } catch (e) {
-    const code = e instanceof UsageError ? "invalid_params" : isIncrementalError(e) ? e.code : "internal";
+    const code =
+      e instanceof UsageError ? "invalid_params" : isIncrementalError(e) ? e.code : "internal";
     const message = e instanceof Error ? e.message : String(e);
-    if (parsed.json) process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
+    if (parsed.json)
+      process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
     process.stderr.write(`incremental turbopack: ${message}\n`);
     return e instanceof UsageError ? 2 : 4;
   }

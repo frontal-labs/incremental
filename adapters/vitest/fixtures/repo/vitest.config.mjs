@@ -2,8 +2,8 @@
 // copied anywhere and still run with the adapter's vitest binary (CR-001).
 export default {
   test: {
-    pool: 'forks',
+    pool: "forks",
     globals: true,
-    include: ['packages/*/test/**/*.test.ts'],
+    include: ["packages/*/test/**/*.test.ts"],
   },
 };

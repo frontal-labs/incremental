@@ -44,7 +44,11 @@ export function envInputs(env: Env, names: readonly string[], envAll: boolean): 
 }
 
 // The `env` map of an affected query: every hashed variable the plan may compare.
-export function queryEnv(env: Env, names: readonly string[], envAll: boolean): Record<string, string> {
+export function queryEnv(
+  env: Env,
+  names: readonly string[],
+  envAll: boolean,
+): Record<string, string> {
   return envAll ? hashAll(env) : hashNames(env, names);
 }
 

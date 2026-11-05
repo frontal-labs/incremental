@@ -27,7 +27,12 @@ export function bazelBin(): string {
 }
 
 function bazel(root: string, args: string[], timeoutMs: number): SpawnSyncReturns<string> {
-  return spawnSync(bazelBin(), args, { cwd: root, encoding: "utf8", timeout: timeoutMs, maxBuffer: 512 * 1024 * 1024 });
+  return spawnSync(bazelBin(), args, {
+    cwd: root,
+    encoding: "utf8",
+    timeout: timeoutMs,
+    maxBuffer: 512 * 1024 * 1024,
+  });
 }
 
 function failure(r: SpawnSyncReturns<string>, what: string): BazelError {
@@ -63,7 +68,7 @@ export function discoverTests(root: string, timeoutMs: number): string[] {
 export function labelPath(label: string): string | null {
   const m = /^\/\/([^:]*):(.+)$/.exec(label);
   if (m === null) return null;
-  return m[1] === "" ? m[2] as string : `${m[1]}/${m[2]}`;
+  return m[1] === "" ? (m[2] as string) : `${m[1]}/${m[2]}`;
 }
 
 // Embedded Bazel tools (bazel_tools), pinned by the runner version.
@@ -103,7 +108,11 @@ export function taskInputs(root: string, label: string, timeoutMs: number): Task
   const files = new Set<string>();
   const external = new Set<string>();
   const unobservable: string[] = [];
-  const closure = queryLabels(root, `kind("source file", deps(${label})) + buildfiles(deps(${label})) + loadfiles(deps(${label}))`, timeoutMs);
+  const closure = queryLabels(
+    root,
+    `kind("source file", deps(${label})) + buildfiles(deps(${label})) + loadfiles(deps(${label}))`,
+    timeoutMs,
+  );
   for (const l of closure) {
     const p = labelPath(l);
     if (p !== null) files.add(p);
@@ -112,19 +121,23 @@ export function taskInputs(root: string, label: string, timeoutMs: number): Task
   const r = bazel(root, ["aquery", `deps(${label})`, "--output=text"], timeoutMs);
   if (r.status !== 0) throw failure(r, "bazel aquery");
   for (const line of r.stdout.split("\n")) {
-    if (!/^\s*Inputs:/.test(line)) continue;
-    const m = /^\s*Inputs: \[(.*)\]\s*$/.exec(line);
-    if (m === null) throw new BazelError(`cannot parse aquery inputs: ${line.trim()}`);
-    for (const p of (m[1] as string).split(", ").map((s) => s.trim()).filter((s) => s.length > 0)) {
-      if (p.startsWith("bazel-out/")) continue;
-      if (isEmbedded(p)) continue;
-      if (p.startsWith("external/")) {
-        external.add(p);
-        continue;
+    if (/^\s*Inputs:/.test(line)) {
+      const m = /^\s*Inputs: \[(.*)\]\s*$/.exec(line);
+      if (m === null) throw new BazelError(`cannot parse aquery inputs: ${line.trim()}`);
+      for (const p of (m[1] as string)
+        .split(", ")
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0)) {
+        if (!p.startsWith("bazel-out/") && !isEmbedded(p)) {
+          if (p.startsWith("external/")) {
+            external.add(p);
+          } else {
+            const abs = path.join(root, p);
+            if (existsSync(abs) && statSync(abs).isFile()) files.add(p);
+            else unobservable.push(p);
+          }
+        }
       }
-      const abs = path.join(root, p);
-      if (existsSync(abs) && statSync(abs).isFile()) files.add(p);
-      else unobservable.push(p);
     }
   }
   return { files: [...files].sort(), external: [...external].sort(), unobservable };
@@ -147,6 +160,7 @@ export function runTest(root: string, label: string, timeoutMs: number): TestRun
   }
   if (r.status === 0) return { outcome: "pass", durationMs, problem: null };
   // 1: a build or test failure of the target; 3: tests failed.
-  if (r.status === 1 || r.status === 3) return { outcome: "fail", durationMs, problem: `bazel test exited ${r.status}` };
+  if (r.status === 1 || r.status === 3)
+    return { outcome: "fail", durationMs, problem: `bazel test exited ${r.status}` };
   return { outcome: "error", durationMs, problem: `bazel test exited ${r.status}` };
 }

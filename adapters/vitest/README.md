@@ -1,6 +1,6 @@
 # Vitest adapter (`adapters/vitest`)
 
-`incremental-vitest run` is the adapter loop  for Vitest test files. Each file is one task. A preload (`src/preload.ts`) records its reads, probes and environment, and turns the trace into an observation. The planner (`src/planner.ts`) builds the context from the lockfile, `tsconfig.json`, `package.json` files and the Vitest version.
+`incremental-vitest run` is the adapter loop for Vitest test files. Each file is one task. A preload (`src/preload.ts`) records its reads, probes and environment, and turns the trace into an observation. The planner (`src/planner.ts`) builds the context from the lockfile, `tsconfig.json`, `package.json` files and the Vitest version.
 
 ```sh
 incremental-vitest run [--base REF] [--json] [--all] [--jobs N] [--shadow] [--include GLOB] [--exclude GLOB] [--vitest-arg ARG] [--vitest FILE]

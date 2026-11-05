@@ -16,7 +16,10 @@ test("NODE_OPTIONS reaches the forked worker: the preload runs there", async () 
   const dir = tmp("bp-probe-");
   try {
     mkdirSync(path.join(dir, "packages", "probe", "test"), { recursive: true });
-    copyFileSync(path.join(ADAPTER, "fixtures", "repo", "vitest.config.mjs"), path.join(dir, "vitest.config.mjs"));
+    copyFileSync(
+      path.join(ADAPTER, "fixtures", "repo", "vitest.config.mjs"),
+      path.join(dir, "vitest.config.mjs"),
+    );
     writeFileSync(
       path.join(dir, PROBE_TASK),
       [
@@ -61,9 +64,15 @@ test("NODE_OPTIONS reaches the forked worker: the preload runs there", async () 
     assert.equal(obs.dirty, false, "a clean probe run is not dirty");
     assert.equal(obs.outcome, "pass");
     for (const input of obs.inputs) {
-      assert.ok(["file", "dir", "probe", "env", "env_all"].includes(input.kind), `known kind ${input.kind}`);
+      assert.ok(
+        ["file", "dir", "probe", "env", "env_all"].includes(input.kind),
+        `known kind ${input.kind}`,
+      );
     }
-    assert.ok(obs.inputs.some((i) => i.kind === "file" && i.path === PROBE_TASK), "the probe file is an input");
+    assert.ok(
+      obs.inputs.some((i) => i.kind === "file" && i.path === PROBE_TASK),
+      "the probe file is an input",
+    );
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -74,7 +83,10 @@ test("a worker thread makes the observation dirty (PLAN 11.2)", async () => {
   const dir = tmp("bp-thread-");
   try {
     mkdirSync(path.join(dir, "packages", "probe", "test"), { recursive: true });
-    copyFileSync(path.join(ADAPTER, "fixtures", "repo", "vitest.config.mjs"), path.join(dir, "vitest.config.mjs"));
+    copyFileSync(
+      path.join(ADAPTER, "fixtures", "repo", "vitest.config.mjs"),
+      path.join(dir, "vitest.config.mjs"),
+    );
     writeFileSync(
       path.join(dir, PROBE_TASK),
       [
@@ -100,9 +112,24 @@ test("a worker thread makes the observation dirty (PLAN 11.2)", async () => {
       preloadPath: PRELOAD,
     });
     assert.equal(result.outcome, "pass", `thread test must pass: ${result.problem}`);
-    assert.ok(result.events.some((e) => e.k === "worker"), "the worker start is recorded");
-    const ctx = { lockfile: "absent", tsconfig: "absent", pkgjson: "absent", runner: "vitest@4.1.12", node: process.version, fmt: 1, caps: { probes: true, dirs: true, env: true } };
-    assert.equal(buildObservation(result, dir, ctx, "b1", false).dirty, true, "a worker thread makes the task dirty");
+    assert.ok(
+      result.events.some((e) => e.k === "worker"),
+      "the worker start is recorded",
+    );
+    const ctx = {
+      lockfile: "absent",
+      tsconfig: "absent",
+      pkgjson: "absent",
+      runner: "vitest@4.1.12",
+      node: process.version,
+      fmt: 1,
+      caps: { probes: true, dirs: true, env: true },
+    };
+    assert.equal(
+      buildObservation(result, dir, ctx, "b1", false).dirty,
+      true,
+      "a worker thread makes the task dirty",
+    );
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

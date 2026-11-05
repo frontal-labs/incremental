@@ -7,6 +7,7 @@
 - Test: `make test-bazel` (2 unit tests and 4 integration tests against a scratch workspace, bazel 9.3.1, and the real engine).
 
 Gaps and caveats:
+
 - Remote execution is detected from `bazel canonicalize-flags`, and the run is then dirty. Only the parser is unit-tested, not an end-to-end remote run.
 - Bazel's own action cache is trusted. Only test results are forced uncached.
 - Legacy `WORKSPACE` externals and repo rules are not pinned by the lockfile. That gap is not detected.

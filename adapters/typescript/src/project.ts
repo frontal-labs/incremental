@@ -30,7 +30,9 @@ export function tscEntry(): string {
 }
 
 export function typescriptVersion(): string {
-  const pkg = JSON.parse(readFileSync(path.join(TS_PACKAGE_DIR, "package.json"), "utf8")) as { version: string };
+  const pkg = JSON.parse(readFileSync(path.join(TS_PACKAGE_DIR, "package.json"), "utf8")) as {
+    version: string;
+  };
   return pkg.version;
 }
 
@@ -47,13 +49,14 @@ export function discoverProjects(root: string): string[] {
   const out: string[] = [];
   const visit = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue;
-      const abs = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (!SKIP_DIRS.has(entry.name)) visit(abs);
-        continue;
+      if (!entry.isSymbolicLink()) {
+        const abs = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (!SKIP_DIRS.has(entry.name)) visit(abs);
+        } else if (entry.isFile() && entry.name === "tsconfig.json") {
+          out.push(relPath(root, abs));
+        }
       }
-      if (entry.isFile() && entry.name === "tsconfig.json") out.push(relPath(root, abs));
     }
   };
   visit(root);
@@ -99,23 +102,30 @@ export function configChain(configAbs: string): ConfigChain {
     files.push(file);
     const read = ts.readConfigFile(file, ts.sys.readFile);
     if (read.error !== undefined) {
-      throw new ProjectError(`cannot read ${file}: ${ts.flattenDiagnosticMessageText(read.error.messageText, "\n")}`);
+      throw new ProjectError(
+        `cannot read ${file}: ${ts.flattenDiagnosticMessageText(read.error.messageText, "\n")}`,
+      );
     }
     const config = read.config as { extends?: string | string[]; references?: unknown[] };
     if (Array.isArray(config.references) && config.references.length > 0) references = true;
-    const ext = config.extends === undefined ? [] : Array.isArray(config.extends) ? config.extends : [config.extends];
+    const ext =
+      config.extends === undefined
+        ? []
+        : Array.isArray(config.extends)
+          ? config.extends
+          : [config.extends];
     for (const target of ext) {
       if (!target.startsWith(".") && !path.isAbsolute(target)) {
         unhashable.push(target);
-        continue;
+      } else {
+        let abs = path.resolve(path.dirname(file), target);
+        if (!existsSync(abs) && existsSync(`${abs}.json`)) abs = `${abs}.json`;
+        if (!existsSync(abs)) {
+          unhashable.push(target);
+        } else {
+          visit(abs);
+        }
       }
-      let abs = path.resolve(path.dirname(file), target);
-      if (!existsSync(abs) && existsSync(`${abs}.json`)) abs = `${abs}.json`;
-      if (!existsSync(abs)) {
-        unhashable.push(target);
-        continue;
-      }
-      visit(abs);
     }
   };
   visit(configAbs);
@@ -128,13 +138,14 @@ export function allPackageJsons(root: string): string[] {
   const out: string[] = [];
   const visit = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue;
-      const abs = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (!SKIP_DIRS.has(entry.name)) visit(abs);
-        continue;
+      if (!entry.isSymbolicLink()) {
+        const abs = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (!SKIP_DIRS.has(entry.name)) visit(abs);
+        } else if (entry.isFile() && entry.name === "package.json") {
+          out.push(relPath(root, abs));
+        }
       }
-      if (entry.isFile() && entry.name === "package.json") out.push(relPath(root, abs));
     }
   };
   visit(root);
@@ -151,8 +162,9 @@ export function packageJsonsFor(root: string, files: readonly string[]): string[
     let dir = path.dirname(file);
     while (dir.startsWith(root) && !dirs.has(dir)) {
       dirs.add(dir);
-      if (dir === root) break;
-      dir = path.dirname(dir);
+      if (dir !== root) {
+        dir = path.dirname(dir);
+      }
     }
   }
   dirs.add(root);
@@ -181,8 +193,9 @@ export function parseListFiles(stdout: string): string[] {
   const files: string[] = [];
   for (const raw of stdout.split("\n")) {
     const line = raw.trim();
-    if (line.length === 0 || !line.startsWith("/") || /\(\d+,\d+\): (error|warning)/.test(line)) continue;
-    files.push(path.normalize(line));
+    if (line.length !== 0 && line.startsWith("/") && !/\(\d+,\d+\): (error|warning)/.test(line)) {
+      files.push(path.normalize(line));
+    }
   }
   return files;
 }
@@ -191,18 +204,43 @@ export function checkProject(configAbs: string, timeoutMs: number): CheckResult 
   const started = Date.now();
   const r = spawnSync(
     process.execPath,
-    [tscEntry(), "-p", configAbs, "--noEmit", "--listFiles", "--incremental", "false", "--composite", "false"],
-    { cwd: path.dirname(configAbs), encoding: "utf8", timeout: timeoutMs, maxBuffer: 256 * 1024 * 1024 },
+    [
+      tscEntry(),
+      "-p",
+      configAbs,
+      "--noEmit",
+      "--listFiles",
+      "--incremental",
+      "false",
+      "--composite",
+      "false",
+    ],
+    {
+      cwd: path.dirname(configAbs),
+      encoding: "utf8",
+      timeout: timeoutMs,
+      maxBuffer: 256 * 1024 * 1024,
+    },
   );
   const durationMs = Date.now() - started;
   if (r.error !== undefined || r.signal !== null) {
-    return { outcome: "error", durationMs, problem: r.error?.message ?? `killed by ${r.signal}`, files: [] };
+    return {
+      outcome: "error",
+      durationMs,
+      problem: r.error?.message ?? `killed by ${r.signal}`,
+      files: [],
+    };
   }
   const files = parseListFiles(r.stdout ?? "");
   // A failed load (for example an unreadable config) prints no file list. That
   // is an error, not a type error: the project was never checked.
   if (r.status !== 0 && files.length === 0) {
-    return { outcome: "error", durationMs, problem: `tsc could not load the project (exit ${r.status})`, files };
+    return {
+      outcome: "error",
+      durationMs,
+      problem: `tsc could not load the project (exit ${r.status})`,
+      files,
+    };
   }
   if (r.status === 0) return { outcome: "pass", durationMs, problem: null, files };
   return { outcome: "fail", durationMs, problem: `tsc reported errors (exit ${r.status})`, files };

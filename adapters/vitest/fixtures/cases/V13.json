@@ -22,27 +22,19 @@
     "tasks": [
       {
         "id": "packages/app/test/disposable.test.ts",
-        "reasons": [
-          "removed_read:packages/app/test/disposable.test.ts"
-        ]
+        "reasons": ["removed_read:packages/app/test/disposable.test.ts"]
       },
       {
         "id": "packages/core/test/worker.test.ts",
-        "reasons": [
-          "dirty_observation"
-        ]
+        "reasons": ["dirty_observation"]
       }
     ],
     "unobserved": [],
     "ignored": [],
-    "deleted_tasks": [
-      "packages/app/test/disposable.test.ts"
-    ],
+    "deleted_tasks": ["packages/app/test/disposable.test.ts"],
     "fallback": null,
     "confidence": "medium",
-    "ran": [
-      "packages/core/test/worker.test.ts"
-    ],
+    "ran": ["packages/core/test/worker.test.ts"],
     "exit": 0,
     "advanced": true
   },

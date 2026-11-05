@@ -31,10 +31,11 @@ import path from "node:path";
 export const EXCLUDED_DIRS: readonly string[] = ["node_modules", ".git", ".incremental"];
 
 // The syscall set from PLAN §11.5.
-export const STRACE_TRACE = "openat,open,openat2,stat,newfstatat,statx,access,faccessat,faccessat2,getdents64,readlink,readlinkat,execve";
+export const STRACE_TRACE =
+  "openat,open,openat2,stat,newfstatat,statx,access,faccessat,faccessat2,getdents64,readlink,readlinkat,execve";
 
 export interface OracleResult {
-  files: string[];   // repo-relative, sorted, unique
+  files: string[]; // repo-relative, sorted, unique
   dirs: string[];
   probes: string[];
   execs: string[];
@@ -71,7 +72,7 @@ export class StraceUnavailableError extends Error {
 }
 
 interface FdInfo {
-  real: string;   // realpath of what the fd refers to
+  real: string; // realpath of what the fd refers to
   isDir: boolean;
 }
 
@@ -109,12 +110,14 @@ function resolvePath(p: string, ctx: ParseOptions): Resolved {
     }
   }
   let root = "";
-  for (const candidate of ctx.roots) {
-    const realRoot = realpathDir(candidate);
+  let matched = false;
+  for (let k = 0; !matched && k < ctx.roots.length; k++) {
+    const realRoot = realpathDir(ctx.roots[k] as string);
     const under = path.relative(realRoot, real);
-    if (under === "" || under.startsWith("..") || path.isAbsolute(under)) continue;
-    root = realRoot;
-    break;
+    if (!(under === "" || under.startsWith("..") || path.isAbsolute(under))) {
+      root = realRoot;
+      matched = true;
+    }
   }
   if (root === "") return { rel: null, real };
   const rel = path.relative(root, real);
@@ -173,10 +176,10 @@ function findUnquoted(line: string, sep: string, from: number): number {
     const ch = line[i];
     if (ch === "\\") {
       i++; // skip the escaped character
-      continue;
+    } else {
+      if (ch === '"') inQuote = !inQuote;
+      if (!inQuote && line.startsWith(sep, i)) return i;
     }
-    if (ch === '"') inQuote = !inQuote;
-    if (!inQuote && line.startsWith(sep, i)) return i;
   }
   return -1;
 }
@@ -194,46 +197,37 @@ function firstQuoted(text: string): string | null {
   const out: string[] = [];
   for (let i = 0; i < raw.length; i++) {
     const ch = raw[i];
-    if (ch === undefined) break;
-    if (ch === "\\") {
-      const n = raw[i + 1];
-      if (n === undefined) return null; // trailing backslash: not a clean path
-      switch (n) {
-        case '"':
+    if (ch !== undefined) {
+      if (ch === "\\") {
+        const n = raw[i + 1];
+        if (n === undefined) return null; // trailing backslash: not a clean path
+        if (n === '"') {
           out.push('"');
-          break;
-        case "\\":
+        } else if (n === "\\") {
           out.push("\\");
-          break;
-        case "n":
+        } else if (n === "n") {
           out.push("\n");
-          break;
-        case "t":
+        } else if (n === "t") {
           out.push("\t");
-          break;
-        case "r":
+        } else if (n === "r") {
           out.push("\r");
-          break;
-        case "a":
+        } else if (n === "a") {
           out.push("\u0007");
-          break;
-        case "b":
+        } else if (n === "b") {
           out.push("\b");
-          break;
-        case "v":
+        } else if (n === "v") {
           out.push("\v");
-          break;
-        case "f":
+        } else if (n === "f") {
           out.push("\f");
-          break;
-        default:
+        } else {
           // Octal (\NNN), hex (\xNN) or any other escape: raw bytes, not a path.
           return null;
+        }
+        i++; // skip the escaped character
+      } else {
+        out.push(ch);
       }
-      i++;
-      continue;
     }
-    out.push(ch);
   }
   const s = out.join("");
   // A real repository path is printable; reject anything else.
@@ -259,16 +253,15 @@ function flagsOf(args: string): string | undefined {
   }
   let cut = -1;
   let inQuote = false;
-  for (let i = args.length - 1; i >= 0; i--) {
+  for (let i = args.length - 1; cut === -1 && i >= 0; i--) {
     const ch = args[i];
     if (ch === "\\") {
       i--;
-      continue;
-    }
-    if (ch === '"') inQuote = !inQuote;
-    if (!inQuote && ch === ",") {
-      cut = i;
-      break;
+    } else {
+      if (ch === '"') inQuote = !inQuote;
+      if (!inQuote && ch === ",") {
+        cut = i;
+      }
     }
   }
   const seg = cut === -1 ? args : args.slice(cut + 1);
@@ -279,16 +272,15 @@ function flagsOf(args: string): string | undefined {
 function firstSegment(args: string): string {
   let cut = -1;
   let inQuote = false;
-  for (let i = 0; i < args.length; i++) {
+  for (let i = 0; cut === -1 && i < args.length; i++) {
     const ch = args[i];
     if (ch === "\\") {
       i++;
-      continue;
-    }
-    if (ch === '"') inQuote = !inQuote;
-    if (!inQuote && ch === ",") {
-      cut = i;
-      break;
+    } else {
+      if (ch === '"') inQuote = !inQuote;
+      if (!inQuote && ch === ",") {
+        cut = i;
+      }
     }
   }
   return cut === -1 ? args.trim() : args.slice(0, cut).trim();
@@ -336,7 +328,15 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
     byPid.set(fd, { real: resolved.real, isDir: nodeType(resolved.real) === "dir" });
   };
 
-  const statLike = new Set(["stat", "lstat", "newfstatat", "statx", "access", "faccessat", "faccessat2"]);
+  const statLike = new Set([
+    "stat",
+    "lstat",
+    "newfstatat",
+    "statx",
+    "access",
+    "faccessat",
+    "faccessat2",
+  ]);
   const openLike = new Set(["open", "openat", "openat2"]);
 
   // A syscall that strace split across an `<unfinished ...>` line and a later
@@ -351,7 +351,11 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
       if (result.ok) {
         const resolved = resolvePath(p, opts);
         if (result.fd !== undefined) trackFd(pid, result.fd, p);
-        if (resolved.rel !== null && nodeType(resolved.real) === "file" && readIntent(flagsOf(args))) {
+        if (
+          resolved.rel !== null &&
+          nodeType(resolved.real) === "file" &&
+          readIntent(flagsOf(args))
+        ) {
           add("file", pid, p);
         }
       } else {
@@ -365,7 +369,12 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
       if (fd === undefined) return;
       const info = fds.get(pid)?.get(fd);
       // A successful directory read is a dir input of the task.
-      if (info !== undefined && info.isDir && result.ok && (result.fd === undefined || result.fd >= 0)) {
+      if (
+        info !== undefined &&
+        info.isDir &&
+        result.ok &&
+        (result.fd === undefined || result.fd >= 0)
+      ) {
         add("dir", pid, info.real);
       }
       return;
@@ -419,27 +428,27 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
         const unfinished = line.indexOf("<unfinished");
         const args = line.slice(m[0].length, unfinished).replace(/\)\s*$/, "");
         pending.set(pid, { sys, args });
-        continue;
+      } else {
+        // A complete syscall line: `pid sys(args) = result`.
+        const sep = findUnquoted(line, " = ", m[0].length);
+        if (sep !== -1) {
+          const args = line.slice(m[0].length, sep).replace(/\)\s*$/, "");
+          const result = parseResult(line.slice(sep + 3));
+          handle(pid, sys, args, result);
+        }
       }
-      // A complete syscall line: `pid sys(args) = result`.
-      const sep = findUnquoted(line, " = ", m[0].length);
-      if (sep === -1) continue;
-      const args = line.slice(m[0].length, sep).replace(/\)\s*$/, "");
-      const result = parseResult(line.slice(sep + 3));
-      handle(pid, sys, args, result);
-      continue;
-    }
-    // A resumed syscall line: `pid <... sys resumed>) = result`.
-    const resumed = /^\s*(\d+)\s+<\.{3}\s+([a-z_][a-z0-9_]*)\s+resumed>\)\s*=\s*(.*)$/.exec(line);
-    if (resumed !== null) {
-      const pid = Number(resumed[1] ?? "");
-      const sys = resumed[2] ?? "";
-      const pend = pending.get(pid);
-      if (pend !== undefined && pend.sys === sys) {
-        pending.delete(pid);
-        handle(pid, sys, pend.args, parseResult(resumed[3] ?? ""));
+    } else {
+      // A resumed syscall line: `pid <... sys resumed>) = result`.
+      const resumed = /^\s*(\d+)\s+<\.{3}\s+([a-z_][a-z0-9_]*)\s+resumed>\)\s*=\s*(.*)$/.exec(line);
+      if (resumed !== null) {
+        const pid = Number(resumed[1] ?? "");
+        const sys = resumed[2] ?? "";
+        const pend = pending.get(pid);
+        if (pend !== undefined && pend.sys === sys) {
+          pending.delete(pid);
+          handle(pid, sys, pend.args, parseResult(resumed[3] ?? ""));
+        }
       }
-      continue;
     }
   }
 
@@ -453,10 +462,11 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
   };
   for (const e of events) {
     const key = e.kind + "\0" + e.path;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    const bucket = summary[kindToKey[e.kind]];
-    if (bucket !== undefined) bucket.push(e.path);
+    if (!seen.has(key)) {
+      seen.add(key);
+      const bucket = summary[kindToKey[e.kind]];
+      if (bucket !== undefined) bucket.push(e.path);
+    }
   }
   for (const kind of Object.keys(summary) as Array<keyof OracleResult>) {
     summary[kind].sort();
@@ -469,56 +479,71 @@ export async function runOracle(
   opts: RunOptions,
 ): Promise<{ log: string; events: StraceEvent[]; summary: OracleResult }> {
   if (process.platform !== "linux") {
-    throw new StraceUnavailableError("the strace oracle is Linux-only; strace is not available on this platform");
+    throw new StraceUnavailableError(
+      "the strace oracle is Linux-only; strace is not available on this platform",
+    );
   }
   const log = path.join(os.tmpdir(), `incremental-strace-${process.pid}-${Date.now()}.log`);
   const child = spawn(
     "strace",
     ["-f", "-e", `trace=${STRACE_TRACE}`, "-o", log, "--", ...command],
-    { cwd: opts.cwd, env: opts.env ?? process.env, stdio: ["ignore", "inherit", "inherit"], detached: true },
+    {
+      cwd: opts.cwd,
+      env: opts.env ?? process.env,
+      stdio: ["ignore", "inherit", "inherit"],
+      detached: true,
+    },
   );
-  return new Promise<{ log: string; events: StraceEvent[]; summary: OracleResult }>((resolve, reject) => {
-    let finished = false;
-    const fail = (err: unknown): void => {
-      if (finished) return;
-      finished = true;
-      reject(err);
-    };
-    child.on("error", (err) => fail(new StraceUnavailableError(`cannot run strace: ${(err as NodeJS.ErrnoException).message} (is strace installed?)`)));
-    child.on("close", () => {
-      if (finished) return;
-      finished = true;
-      let text = "";
-      try {
-        text = readFileSync(log, "utf8");
-      } catch {
-        // no log: nothing was traced
-      }
-      try {
-        rmSync(log, { force: true });
-      } catch {
-        // the temp log is best effort
-      }
-      let parsed: ParsedLog;
-      try {
-        parsed = parseStraceLog(text, { cwd: opts.cwd, roots: opts.roots });
-      } catch (err) {
-        fail(err);
-        return;
-      }
-      resolve({ log, events: parsed.events, summary: parsed.summary });
-    });
-    const timeoutMs = opts.timeoutMs ?? 120_000;
-    const timer = setTimeout(() => {
-      try {
-        // strace is the process group leader (detached): kill the group so the
-        // traced command and its children stop too.
-        const pid = child.pid;
-        if (pid !== undefined) process.kill(-pid, "SIGTERM");
-      } catch {
-        // best effort
-      }
-    }, timeoutMs);
-    timer.unref();
-  });
+  return new Promise<{ log: string; events: StraceEvent[]; summary: OracleResult }>(
+    (resolve, reject) => {
+      let finished = false;
+      const fail = (err: unknown): void => {
+        if (finished) return;
+        finished = true;
+        reject(err);
+      };
+      child.on("error", (err) =>
+        fail(
+          new StraceUnavailableError(
+            `cannot run strace: ${(err as NodeJS.ErrnoException).message} (is strace installed?)`,
+          ),
+        ),
+      );
+      child.on("close", () => {
+        if (finished) return;
+        finished = true;
+        let text = "";
+        try {
+          text = readFileSync(log, "utf8");
+        } catch {
+          // no log: nothing was traced
+        }
+        try {
+          rmSync(log, { force: true });
+        } catch {
+          // the temp log is best effort
+        }
+        let parsed: ParsedLog;
+        try {
+          parsed = parseStraceLog(text, { cwd: opts.cwd, roots: opts.roots });
+        } catch (err) {
+          fail(err);
+          return;
+        }
+        resolve({ log, events: parsed.events, summary: parsed.summary });
+      });
+      const timeoutMs = opts.timeoutMs ?? 120_000;
+      const timer = setTimeout(() => {
+        try {
+          // strace is the process group leader (detached): kill the group so the
+          // traced command and its children stop too.
+          const pid = child.pid;
+          if (pid !== undefined) process.kill(-pid, "SIGTERM");
+        } catch {
+          // best effort
+        }
+      }, timeoutMs);
+      timer.unref();
+    },
+  );
 }

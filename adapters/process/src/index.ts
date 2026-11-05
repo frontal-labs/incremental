@@ -6,7 +6,14 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { connect, defaultEngine, type incremental, type Outcome } from "@incremental/client";
-import { recordFiles, recordOracle, type CheckResult, type FileTask, type OracleFileTask, type OracleRun } from "@incremental/fs";
+import {
+  recordFiles,
+  recordOracle,
+  type CheckResult,
+  type FileTask,
+  type OracleFileTask,
+  type OracleRun,
+} from "@incremental/fs";
 
 export interface TaskConfig {
   // argv, not a shell line. The first entry is the program.
@@ -60,7 +67,11 @@ export function loadConfig(root: string): ProcessConfig {
 }
 
 // Runs argv with no shell. Output goes to the caller's terminal.
-export function runCommand(command: readonly string[], cwd: string, timeoutMs: number): CheckResult {
+export function runCommand(
+  command: readonly string[],
+  cwd: string,
+  timeoutMs: number,
+): CheckResult {
   const started = Date.now();
   const [program, ...args] = command;
   if (program === undefined) return { outcome: "error", durationMs: 0, problem: "empty command" };
@@ -72,7 +83,11 @@ export function runCommand(command: readonly string[], cwd: string, timeoutMs: n
   const durationMs = Date.now() - started;
   if (r.error !== undefined) {
     const timedOut = (r.error as NodeJS.ErrnoException).code === "ETIMEDOUT";
-    return { outcome: "error", durationMs, problem: timedOut ? `timed out after ${timeoutMs} ms` : r.error.message };
+    return {
+      outcome: "error",
+      durationMs,
+      problem: timedOut ? `timed out after ${timeoutMs} ms` : r.error.message,
+    };
   }
   if (r.signal !== null) return { outcome: "error", durationMs, problem: `killed by ${r.signal}` };
   if (r.status === 0) return { outcome: "pass", durationMs, problem: null };
@@ -102,7 +117,13 @@ export async function runTask(
       timeoutMs: opts.timeoutMs,
     };
     const rec = await recordOracle(client, spec, opts.baseline, runOracle);
-    return { task: name, outcome: rec.result.outcome, durationMs: rec.result.durationMs, problem: rec.result.problem, dirty: rec.dirty };
+    return {
+      task: name,
+      outcome: rec.result.outcome,
+      durationMs: rec.result.durationMs,
+      problem: rec.result.problem,
+      dirty: rec.dirty,
+    };
   }
   const spec: FileTask = {
     task: name,
@@ -111,8 +132,16 @@ export async function runTask(
     complete: cfg.complete === true,
   };
   const cwd = path.resolve(root, cfg.cwd ?? ".");
-  const rec = await recordFiles(client, spec, opts.baseline, () => runCommand(cfg.command, cwd, opts.timeoutMs));
-  return { task: name, outcome: rec.result.outcome, durationMs: rec.result.durationMs, problem: rec.result.problem, dirty: rec.dirty };
+  const rec = await recordFiles(client, spec, opts.baseline, () =>
+    runCommand(cfg.command, cwd, opts.timeoutMs),
+  );
+  return {
+    task: name,
+    outcome: rec.result.outcome,
+    durationMs: rec.result.durationMs,
+    problem: rec.result.problem,
+    dirty: rec.dirty,
+  };
 }
 
 export interface RunOptions {
@@ -136,17 +165,38 @@ export async function runTasks(opts: RunOptions): Promise<TaskRun[]> {
   for (const n of names) {
     if (config.tasks[n] === undefined) throw new Error(`no task named ${n} in ${CONFIG_FILE}`);
   }
-  const client = await connect({ store, root, command: [defaultEngine(), "serve"], timeoutMs: 60_000 });
+  const client = await connect({
+    store,
+    root,
+    command: [defaultEngine(), "serve"],
+    timeoutMs: 60_000,
+  });
   try {
     const baseline = (await client.baseline()).baseline ?? headOf(root);
     const results: TaskRun[] = [];
     for (const name of names) {
       const cfg = config.tasks[name];
-      if (cfg === undefined) continue;
-      try {
-        results.push(await runTask(client, root, name, cfg, { baseline, timeoutMs: opts.timeoutMs }, opts.runOracle));
-      } catch (e) {
-        results.push({ task: name, outcome: "error", durationMs: 0, problem: e instanceof Error ? e.message : String(e), dirty: true });
+      if (cfg !== undefined) {
+        try {
+          results.push(
+            await runTask(
+              client,
+              root,
+              name,
+              cfg,
+              { baseline, timeoutMs: opts.timeoutMs },
+              opts.runOracle,
+            ),
+          );
+        } catch (e) {
+          results.push({
+            task: name,
+            outcome: "error",
+            durationMs: 0,
+            problem: e instanceof Error ? e.message : String(e),
+            dirty: true,
+          });
+        }
       }
     }
     return results;

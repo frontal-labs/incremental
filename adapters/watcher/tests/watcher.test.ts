@@ -104,7 +104,10 @@ test("an edit event adds a ChangeSet entry and invalidates only the task that re
     assert.deepEqual(edit.changes, [{ path: "pkg/a/src/index.ts", status: "modified" }]);
     assert.equal(edit.plan?.fallback, null);
     assert.deepEqual(edit.selected, ["pkg/a"]);
-    assert.deepEqual(edit.results.map((r) => r.outcome), ["pass"]);
+    assert.deepEqual(
+      edit.results.map((r) => r.outcome),
+      ["pass"],
+    );
     assert.equal(edit.advanced, false, "an uncommitted edit never advances");
   } finally {
     await session.close();
@@ -182,7 +185,11 @@ test("a restart with no in-memory history runs everything", async () => {
     } finally {
       await restarted.close();
     }
-    assert.equal(await storedBaseline(store, root), before, "a watcher run without a complete window does not move the baseline");
+    assert.equal(
+      await storedBaseline(store, root),
+      before,
+      "a watcher run without a complete window does not move the baseline",
+    );
   } finally {
     rmSync(base, { recursive: true, force: true });
   }
@@ -219,7 +226,10 @@ test("a task input under an ignored directory is refused, not silently skipped",
   const { root } = { root: mkdtempSync(path.join(os.tmpdir(), "incremental-watcher-cfg-")) };
   try {
     write(root, "node_modules/dep/index.js", "x\n");
-    assert.throws(() => inputsOf(root, { id: "t", command: ["true"], inputs: ["node_modules/dep"] }), ConfigError);
+    assert.throws(
+      () => inputsOf(root, { id: "t", command: ["true"], inputs: ["node_modules/dep"] }),
+      ConfigError,
+    );
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -244,7 +254,10 @@ test("an edit with no event delivered is still reported, and a rebase clears it"
     rmSync(path.join(dir, "b.ts"));
     // No start(): no watch is open, so no event exists for either change.
     const after = w.state();
-    assert.deepEqual(after.changes.map((c) => `${c.status} ${c.path}`), ["modified a.ts", "deleted b.ts"]);
+    assert.deepEqual(
+      after.changes.map((c) => `${c.status} ${c.path}`),
+      ["modified a.ts", "deleted b.ts"],
+    );
     assert.equal(after.lost, null);
 
     w.rebase();

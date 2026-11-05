@@ -46,7 +46,11 @@ function makeRepo(): { root: string; store: string } {
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");
   write(root, "lib/a.proto", LIB_A);
-  write(root, "app/b.proto", `syntax = "proto3";\npackage app;\nimport "lib/a.proto";\nmessage B { lib.A a = 1; }\n`);
+  write(
+    root,
+    "app/b.proto",
+    `syntax = "proto3";\npackage app;\nimport "lib/a.proto";\nmessage B { lib.A a = 1; }\n`,
+  );
   write(root, "c/c.proto", `syntax = "proto3";\npackage c;\nmessage C { int32 y = 1; }\n`);
   write(root, "README.md", "fixture\n");
   commit(root, "init");
@@ -64,7 +68,7 @@ async function run(root: string, store: string): Promise<RunReport> {
 test("discovers each .proto and buf.yaml as a target, skipping node_modules", () => {
   const { root } = makeRepo();
   try {
-    write(root, "node_modules/dep/x.proto", "syntax = \"proto3\";\n");
+    write(root, "node_modules/dep/x.proto", 'syntax = "proto3";\n');
     write(root, "mod/buf.yaml", "version: v2\n");
     const t = discoverTargets(root);
     assert.deepEqual(t.protoc, ["app/b.proto", "c/c.proto", "lib/a.proto"]);
@@ -75,7 +79,8 @@ test("discovers each .proto and buf.yaml as a target, skipping node_modules", ()
 });
 
 test("parses protoc dependency files with continuations and escaped spaces", () => {
-  const text = "/out/x.pb: /repo/lib/a.proto\\\n /usr/include/google/protobuf/timestamp.proto\\\n /repo/my\\ dir/b.proto\n";
+  const text =
+    "/out/x.pb: /repo/lib/a.proto\\\n /usr/include/google/protobuf/timestamp.proto\\\n /repo/my\\ dir/b.proto\n";
   assert.deepEqual(parseDepFile(text), [
     "/repo/lib/a.proto",
     "/usr/include/google/protobuf/timestamp.proto",
@@ -88,7 +93,10 @@ test("first run compiles every target and advances the baseline", async () => {
   try {
     const r = await run(root, store);
     assert.deepEqual(r.selected, ["app/b.proto", "c/c.proto", "lib/a.proto"]);
-    assert.deepEqual(r.results.map((x) => x.outcome), ["pass", "pass", "pass"]);
+    assert.deepEqual(
+      r.results.map((x) => x.outcome),
+      ["pass", "pass", "pass"],
+    );
     assert.equal(r.advanced, true, r.notAdvanced.join("; "));
     assert.equal(r.exit, 0);
   } finally {
@@ -150,7 +158,10 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
     const r = await run(root, store);
     assert.equal(r.advanced, false);
     assert.equal(r.exit, 7);
-    assert.ok(r.notAdvanced.some((m) => m.includes("dirty")), r.notAdvanced.join("; "));
+    assert.ok(
+      r.notAdvanced.some((m) => m.includes("dirty")),
+      r.notAdvanced.join("; "),
+    );
   } finally {
     cleanup(root);
   }

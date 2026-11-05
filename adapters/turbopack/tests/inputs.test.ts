@@ -28,13 +28,18 @@ test("an app's inputs exclude the other apps, and keep shared code and root file
     assert.ok(!web.some((p) => p.startsWith("apps/docs/")), "the other app is excluded");
 
     const root2 = repoInputs(root, excludedFor(".", ["."])).map((i) => i.path);
-    assert.ok(root2.includes("apps/docs/app/page.tsx"), "a root app that is the only app sees everything");
+    assert.ok(
+      root2.includes("apps/docs/app/page.tsx"),
+      "a root app that is the only app sees everything",
+    );
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
 });
 
 test("the root app excludes the apps it does not contain, and an app keeps the root", () => {
-  assert.deepEqual([...excludedFor("apps/web", [".", "apps/web", "apps/docs"])].sort(), ["apps/docs"]);
+  assert.deepEqual([...excludedFor("apps/web", [".", "apps/web", "apps/docs"])].sort(), [
+    "apps/docs",
+  ]);
   assert.deepEqual([...excludedFor(".", [".", "apps/web"])].sort(), ["apps/web"]);
 });

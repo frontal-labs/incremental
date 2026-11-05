@@ -67,11 +67,12 @@ function readEvents(file: string): TraceEvent[] {
   if (!existsSync(file)) return [];
   const events: TraceEvent[] = [];
   for (const line of readFileSync(file, "utf8").split("\n")) {
-    if (line.length === 0) continue;
-    try {
-      events.push(JSON.parse(line) as TraceEvent);
-    } catch {
-      // a torn final line is ignored
+    if (line.length !== 0) {
+      try {
+        events.push(JSON.parse(line) as TraceEvent);
+      } catch {
+        // a torn final line is ignored
+      }
     }
   }
   return events;
@@ -80,7 +81,13 @@ function readEvents(file: string): TraceEvent[] {
 // Runs one fixture test file exactly like the Vitest recorder does
 // (adapters/vitest/src/record.ts runFile): one Vitest process per file with
 // the preload loaded through NODE_OPTIONS, trace written to a temp file.
-async function recordTask(dir: string, task: string, work: string, index: number, env: NodeJS.ProcessEnv): Promise<TraceEvent[]> {
+async function recordTask(
+  dir: string,
+  task: string,
+  work: string,
+  index: number,
+  env: NodeJS.ProcessEnv,
+): Promise<TraceEvent[]> {
   const trace = path.join(work, `trace-${index}.ndjson`);
   const report = path.join(work, `report-${index}.json`);
   rmSync(trace, { force: true });
@@ -97,9 +104,18 @@ async function recordTask(dir: string, task: string, work: string, index: number
     "--reporter=json",
     `--outputFile=${report}`,
   ];
-  const childEnv: NodeJS.ProcessEnv = { ...env, NODE_OPTIONS: nodeOptions, INCREMENTAL_TRACE_OUT: trace, INCREMENTAL_TRACE_ROOT: dir };
+  const childEnv: NodeJS.ProcessEnv = {
+    ...env,
+    NODE_OPTIONS: nodeOptions,
+    INCREMENTAL_TRACE_OUT: trace,
+    INCREMENTAL_TRACE_ROOT: dir,
+  };
   return new Promise<TraceEvent[]>((resolve) => {
-    const child = spawn(process.execPath, args, { cwd: dir, env: childEnv, stdio: ["ignore", "pipe", "pipe"] });
+    const child = spawn(process.execPath, args, {
+      cwd: dir,
+      env: childEnv,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     let done = false;
     const finish = (): void => {
       if (done) return;
@@ -108,7 +124,12 @@ async function recordTask(dir: string, task: string, work: string, index: number
     };
     child.on("close", finish);
     child.on("error", finish);
-    setTimeout(() => { try { child.kill("SIGKILL"); } catch {}; finish(); }, 120_000).unref();
+    setTimeout(() => {
+      try {
+        child.kill("SIGKILL");
+      } catch {}
+      finish();
+    }, 120_000).unref();
   });
 }
 
@@ -118,7 +139,8 @@ function recorderPaths(events: TraceEvent[], dir: string): Set<string> {
   const paths = new Set<string>();
   for (const ev of events) {
     if (ev.k === "file" || ev.k === "dir" || ev.k === "probe") {
-      if (ev.p !== undefined && (ev.k !== "file" || existsSync(path.join(dir, ev.p)))) paths.add(ev.p);
+      if (ev.p !== undefined && (ev.k !== "file" || existsSync(path.join(dir, ev.p))))
+        paths.add(ev.p);
     }
   }
   return paths;
@@ -165,9 +187,9 @@ m10(
           const rootPid = first === undefined ? -1 : first.pid;
           const oraclePaths = new Set<string>();
           for (const e of events) {
-            if (e.kind === "exec") continue;
-            if (e.kind === "dir" && e.pid === rootPid) continue;
-            oraclePaths.add(e.path);
+            if (e.kind !== "exec" && !(e.kind === "dir" && e.pid === rootPid)) {
+              oraclePaths.add(e.path);
+            }
           }
 
           const recPaths = recorderPaths(recEvents, dir);

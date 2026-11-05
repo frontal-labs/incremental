@@ -54,7 +54,11 @@ export interface PlanOptions {
 export async function planChanges(client: incremental, opts: PlanOptions): Promise<Plan> {
   const config = affectedConfig(loadConfig(opts.root));
   return client.affected(
-    { baseline: opts.baseline, ...(opts.head !== undefined ? { head: opts.head } : {}), changes: opts.changes },
+    {
+      baseline: opts.baseline,
+      ...(opts.head !== undefined ? { head: opts.head } : {}),
+      changes: opts.changes,
+    },
     {
       baseline: opts.baseline,
       context: opts.context,

@@ -12,7 +12,7 @@ Checked against `next@16.4.2` (pinned), its `dist/docs` and its CLI help.
    - It is a bundle graph of the emitted client and server bundles. It does not list files the build reads without bundling them, such as files that only the type check reads (the log shows `Running TypeScript`). Not tested here, but it is the reason it cannot be the read set.
    - The route records carry coverage flags (`entries` and `groups`) that are `unknown` when the data is missing. An `unknown` coverage cannot be trusted as complete.
    - It needs a second analyzer build, and the docs still ask for feedback on it.
-   Revisit when the export covers the read set exactly and the coverage flags are always `exact`. Then the graph becomes a second capability and the adapter can claim the graph.
+     Revisit when the export covers the read set exactly and the coverage flags are always `exact`. Then the graph becomes a second capability and the adapter can claim the graph.
 2. **Is there a public, stable record of the modules read?** No. Turbopack has `--internal-trace`, which is internal. Nothing else lists the files a build read.
 3. **Can `next build` run offline?** Yes, in a fixture with `node_modules` installed. The build compiles, type checks and prerenders with no network access, with `NEXT_TELEMETRY_DISABLED=1`. Two requirements found on the way:
    - Turbopack resolves `next` from the app's own `node_modules` inside the workspace root. A `node_modules` symlinked from outside the repo fails with "Could not find the Next.js package". The tests copy `node_modules` instead.
@@ -25,6 +25,7 @@ Each directory with a `package.json` that depends on `next` is one task. The id 
 ## Declared inputs (not observed)
 
 Recorded with kind `declared` and a SHA-256 taken before the build. Absent files are not recorded.
+
 - `next.config.{js,mjs,cjs,ts,mts,cts}` in the app directory.
 - `tsconfig.json` and `package.json` in the app directory. The root `package.json` when the app is not the root.
 - `.env`, `.env.local`, `.env.production`, `.env.production.local` in the app directory. These are build-time env files.

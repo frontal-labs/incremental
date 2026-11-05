@@ -1,14 +1,34 @@
 {
-  "id": "V04", "desc": "Edit a JSON file read at runtime", "mode":"balanced",
-  "edit": [{"op":"write","path":"packages/app/data/config.json","content":"{ \"name\": \"fixture\", \"retries\": 3 }\n"}],
-  "query": {"changes":[{"path":"packages/app/data/config.json","status":"modified"}],"verify":false,"policy":"balanced"},
+  "id": "V04",
+  "desc": "Edit a JSON file read at runtime",
+  "mode": "balanced",
+  "edit": [
+    {
+      "op": "write",
+      "path": "packages/app/data/config.json",
+      "content": "{ \"name\": \"fixture\", \"retries\": 3 }\n"
+    }
+  ],
+  "query": {
+    "changes": [{ "path": "packages/app/data/config.json", "status": "modified" }],
+    "verify": false,
+    "policy": "balanced"
+  },
   "expect": {
     "tasks": [
-      {"id":"packages/app/test/config.test.ts","reasons":["reads:packages/app/data/config.json"]},
-      {"id":"packages/core/test/worker.test.ts","reasons":["dirty_observation"]}
+      {
+        "id": "packages/app/test/config.test.ts",
+        "reasons": ["reads:packages/app/data/config.json"]
+      },
+      { "id": "packages/core/test/worker.test.ts", "reasons": ["dirty_observation"] }
     ],
-    "unobserved": [], "ignored": [], "deleted_tasks": [], "fallback": null, "confidence": "medium",
-    "ran": ["packages/app/test/config.test.ts","packages/core/test/worker.test.ts"],
-    "exit": 0, "advanced": true
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium",
+    "ran": ["packages/app/test/config.test.ts", "packages/core/test/worker.test.ts"],
+    "exit": 0,
+    "advanced": true
   }
 }

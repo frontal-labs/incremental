@@ -34,17 +34,17 @@ export function discoverTargets(root: string): Targets {
   const out: Targets = { protoc: [], buf: [], bufLock: [] };
   const visit = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue;
-      const abs = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (!SKIP_DIRS.has(entry.name)) visit(abs);
-        continue;
+      if (!entry.isSymbolicLink()) {
+        const abs = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (!SKIP_DIRS.has(entry.name)) visit(abs);
+        } else if (entry.isFile()) {
+          const rel = relPath(root, abs);
+          if (entry.name.endsWith(".proto")) out.protoc.push(rel);
+          else if (entry.name === "buf.yaml") out.buf.push(rel);
+          else if (entry.name === "buf.lock") out.bufLock.push(rel);
+        }
       }
-      if (!entry.isFile()) continue;
-      const rel = relPath(root, abs);
-      if (entry.name.endsWith(".proto")) out.protoc.push(rel);
-      else if (entry.name === "buf.yaml") out.buf.push(rel);
-      else if (entry.name === "buf.lock") out.bufLock.push(rel);
     }
   };
   visit(root);
@@ -65,9 +65,10 @@ const SHIM_DIR = /[\\/](mise|asdf)[\\/]shims([\\/]|$)/;
 export function resolveTool(name: string): string | null {
   if (name.includes(path.sep)) return existsSync(name) ? realpathSync(name) : null;
   for (const dir of (process.env.PATH ?? "").split(path.delimiter)) {
-    if (dir === "" || SHIM_DIR.test(dir)) continue;
-    const abs = path.join(dir, name);
-    if (existsSync(abs)) return realpathSync(abs);
+    if (!(dir === "" || SHIM_DIR.test(dir))) {
+      const abs = path.join(dir, name);
+      if (existsSync(abs)) return realpathSync(abs);
+    }
   }
   return null;
 }
@@ -83,7 +84,8 @@ function firstLine(text: string | null | undefined): string {
 
 export function protocBin(): string {
   const bin = resolveTool(process.env.INCREMENTAL_PROTOC || "protoc");
-  if (bin === null) throw new Error("protoc is not installed or not on PATH (set INCREMENTAL_PROTOC)");
+  if (bin === null)
+    throw new Error("protoc is not installed or not on PATH (set INCREMENTAL_PROTOC)");
   return bin;
 }
 
@@ -105,7 +107,9 @@ export function wellKnownDir(): string {
 
 export function wellKnownDigest(): string {
   const dir = path.join(wellKnownDir(), "google", "protobuf");
-  const names = readdirSync(dir).filter((n) => n.endsWith(".proto")).sort();
+  const names = readdirSync(dir)
+    .filter((n) => n.endsWith(".proto"))
+    .sort();
   return sha256(names.map((n) => `${n}\0${sha256(readFileSync(path.join(dir, n)))}`).join("\n"));
 }
 
@@ -170,14 +174,32 @@ export function compileProto(root: string, rel: string, timeoutMs: number): Comp
     const complete = existsSync(depFile);
     const deps = complete ? parseDepFile(readFileSync(depFile, "utf8")) : [];
     if (r.error !== undefined || r.signal !== null) {
-      return { outcome: "error", deps, complete, durationMs, problem: r.error?.message ?? `killed by ${r.signal}` };
+      return {
+        outcome: "error",
+        deps,
+        complete,
+        durationMs,
+        problem: r.error?.message ?? `killed by ${r.signal}`,
+      };
     }
     if (r.status === 0) {
       if (complete) return { outcome: "pass", deps, complete, durationMs, problem: null };
-      return { outcome: "error", deps, complete, durationMs, problem: "protoc wrote no dependency file" };
+      return {
+        outcome: "error",
+        deps,
+        complete,
+        durationMs,
+        problem: "protoc wrote no dependency file",
+      };
     }
     if (r.status === 1) {
-      return { outcome: "fail", deps, complete, durationMs, problem: `protoc reported errors: ${firstLine(r.stderr)}` };
+      return {
+        outcome: "fail",
+        deps,
+        complete,
+        durationMs,
+        problem: `protoc reported errors: ${firstLine(r.stderr)}`,
+      };
     }
     return { outcome: "error", deps, complete, durationMs, problem: `protoc exited ${r.status}` };
   } finally {
@@ -188,14 +210,18 @@ export function compileProto(root: string, rel: string, timeoutMs: number): Comp
 // Classifies protoc's reads. Repo files become file inputs (the caller hashes
 // them), the well-known types are covered by the context digest, and any other
 // path outside the repo cannot be named repo-relative, so the observation is dirty.
-export function classifyDeps(root: string, deps: readonly string[]): { files: string[]; dirty: boolean } {
+export function classifyDeps(
+  root: string,
+  deps: readonly string[],
+): { files: string[]; dirty: boolean } {
   const wkt = wellKnownDir() + path.sep;
   const files = new Set<string>();
   let dirty = false;
   for (const dep of deps.map((d) => path.normalize(d))) {
-    if (dep.startsWith(wkt)) continue;
-    if (dep.startsWith(root + path.sep)) files.add(relPath(root, dep));
-    else dirty = true;
+    if (!dep.startsWith(wkt)) {
+      if (dep.startsWith(root + path.sep)) files.add(relPath(root, dep));
+      else dirty = true;
+    }
   }
   return { files: [...files].sort(), dirty };
 }
@@ -215,7 +241,12 @@ export function checkBuf(root: string, bufRel: string, timeoutMs: number): BufCh
   const started = Date.now();
   const bin = resolveTool(process.env.INCREMENTAL_BUF || "buf");
   if (bin === null) {
-    return { outcome: "error", files: [], durationMs: 0, problem: "buf is not installed or not on PATH (set INCREMENTAL_BUF)" };
+    return {
+      outcome: "error",
+      files: [],
+      durationMs: 0,
+      problem: "buf is not installed or not on PATH (set INCREMENTAL_BUF)",
+    };
   }
   const opts = { cwd: dir, encoding: "utf8" as const, timeout: timeoutMs, maxBuffer: MAX_BUFFER };
   const list = spawnSync(bin, ["ls-files", "."], opts);
@@ -231,11 +262,21 @@ export function checkBuf(root: string, bufRel: string, timeoutMs: number): BufCh
   const r = spawnSync(bin, ["build", "."], opts);
   const durationMs = Date.now() - started;
   if (r.error !== undefined || r.signal !== null) {
-    return { outcome: "error", files, durationMs, problem: r.error?.message ?? `killed by ${r.signal}` };
+    return {
+      outcome: "error",
+      files,
+      durationMs,
+      problem: r.error?.message ?? `killed by ${r.signal}`,
+    };
   }
   if (r.status === 0) return { outcome: "pass", files, durationMs, problem: null };
   if (r.status === 1) {
-    return { outcome: "fail", files, durationMs, problem: `buf build reported errors: ${firstLine(r.stderr)}` };
+    return {
+      outcome: "fail",
+      files,
+      durationMs,
+      problem: `buf build reported errors: ${firstLine(r.stderr)}`,
+    };
   }
   return { outcome: "error", files, durationMs, problem: `buf build exited ${r.status}` };
 }

@@ -6,7 +6,13 @@ import { mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { connect, defaultEngine, type incremental, type Context, type Plan } from "@incremental/client";
+import {
+  connect,
+  defaultEngine,
+  type incremental,
+  type Context,
+  type Plan,
+} from "@incremental/client";
 import { contextFor, planEnv, recordTasks, type Env, type EnvTask } from "../src/index.js";
 
 interface Fixture {
@@ -92,7 +98,9 @@ test("a variable unset when recorded is compared as unset, so setting it invalid
     await withClient(f, async (c) => {
       await c.advance(BASE, null);
       const context = await record(c, {}, [{ id: "tasks/a", names: ["TG_MODE"] }]);
-      const p = await plan(c, context, { TG_MODE: "fast" }, [{ id: "tasks/a", names: ["TG_MODE"] }]);
+      const p = await plan(c, context, { TG_MODE: "fast" }, [
+        { id: "tasks/a", names: ["TG_MODE"] },
+      ]);
       assert.deepEqual(reasonsOf(p, "tasks/a"), ["env_changed:TG_MODE"]);
       const same = await plan(c, context, {}, [{ id: "tasks/a", names: ["TG_MODE"] }]);
       assert.deepEqual(same.tasks, []);

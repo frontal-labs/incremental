@@ -8,7 +8,17 @@ import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { connect, defaultEngine, type incremental } from "@incremental/client";
-import { contextFor, declaredInputs, oracleContext, recordFiles, recordOracle, type CheckResult, type OracleFileTask, type OracleResult, type OracleRun } from "../src/index.js";
+import {
+  contextFor,
+  declaredInputs,
+  oracleContext,
+  recordFiles,
+  recordOracle,
+  type CheckResult,
+  type OracleFileTask,
+  type OracleResult,
+  type OracleRun,
+} from "../src/index.js";
 
 const ok: CheckResult = { outcome: "pass", durationMs: 1, problem: null };
 
@@ -27,7 +37,13 @@ async function fixture(): Promise<Fixture> {
   mkdirSync(root);
   writeFileSync(path.join(root, "a.txt"), "a\n");
   writeFileSync(path.join(root, "undeclared.txt"), "u\n");
-  const env = { ...process.env, GIT_AUTHOR_NAME: "t", GIT_AUTHOR_EMAIL: "t@e", GIT_COMMITTER_NAME: "t", GIT_COMMITTER_EMAIL: "t@e" };
+  const env = {
+    ...process.env,
+    GIT_AUTHOR_NAME: "t",
+    GIT_AUTHOR_EMAIL: "t@e",
+    GIT_COMMITTER_NAME: "t",
+    GIT_COMMITTER_EMAIL: "t@e",
+  };
   const git = (...args: string[]) => spawnSync("git", args, { cwd: root, encoding: "utf8", env });
   git("init", "-q", "-b", "main");
   git("add", "-A");
@@ -35,7 +51,12 @@ async function fixture(): Promise<Fixture> {
   const head = git("rev-parse", "HEAD").stdout.trim();
   const init = spawnSync(defaultEngine(), ["init", "--store", store], { encoding: "utf8" });
   assert.equal(init.status, 0, init.stderr);
-  const client = await connect({ store, root, command: [defaultEngine(), "serve"], timeoutMs: 60_000 });
+  const client = await connect({
+    store,
+    root,
+    command: [defaultEngine(), "serve"],
+    timeoutMs: 60_000,
+  });
   await client.advance(head, null);
   return { base, root, client, baseline: head };
 }
@@ -71,10 +92,15 @@ test("an undeclared observation is dirty, records only declared inputs and reads
   const f = await fixture();
   try {
     const task = "reader";
-    const rec = await recordFiles(f.client, { task, root: f.root, declared: ["a.txt"] }, f.baseline, () => {
-      readFileSync(path.join(f.root, "undeclared.txt"));
-      return ok;
-    });
+    const rec = await recordFiles(
+      f.client,
+      { task, root: f.root, declared: ["a.txt"] },
+      f.baseline,
+      () => {
+        readFileSync(path.join(f.root, "undeclared.txt"));
+        return ok;
+      },
+    );
     assert.equal(rec.dirty, true, "no completeness assertion means dirty");
     const ex = await f.client.explain(task);
     assert.equal(ex.observed, true);
@@ -97,7 +123,12 @@ test("a complete declaration is clean, and a declared change invalidates the tas
   const f = await fixture();
   try {
     const task = "declared";
-    const rec = await recordFiles(f.client, { task, root: f.root, declared: ["a.txt"], complete: true }, f.baseline, () => ok);
+    const rec = await recordFiles(
+      f.client,
+      { task, root: f.root, declared: ["a.txt"], complete: true },
+      f.baseline,
+      () => ok,
+    );
     assert.equal(rec.dirty, false);
     assert.equal((await f.client.explain(task)).dirty, false);
 
@@ -116,10 +147,15 @@ test("a declared input changed during the check makes the observation dirty", as
   const f = await fixture();
   try {
     const task = "mutator";
-    await recordFiles(f.client, { task, root: f.root, declared: ["a.txt"], complete: true }, f.baseline, () => {
-      writeFileSync(path.join(f.root, "a.txt"), "changed during the run\n");
-      return ok;
-    });
+    await recordFiles(
+      f.client,
+      { task, root: f.root, declared: ["a.txt"], complete: true },
+      f.baseline,
+      () => {
+        writeFileSync(path.join(f.root, "a.txt"), "changed during the run\n");
+        return ok;
+      },
+    );
     assert.equal((await f.client.explain(task)).dirty, true);
   } finally {
     await done(f);
@@ -132,10 +168,15 @@ test("an ENOENT probe is not recorded, so creating the probed file falls back", 
   const f = await fixture();
   try {
     const task = "prober";
-    await recordFiles(f.client, { task, root: f.root, declared: ["a.txt"], complete: true }, f.baseline, () => {
-      existsSync(path.join(f.root, "probe.txt"));
-      return ok;
-    });
+    await recordFiles(
+      f.client,
+      { task, root: f.root, declared: ["a.txt"], complete: true },
+      f.baseline,
+      () => {
+        existsSync(path.join(f.root, "probe.txt"));
+        return ok;
+      },
+    );
     const plan = await f.client.affected(
       { baseline: f.baseline, changes: [{ path: "probe.txt", status: "added" }] },
       { baseline: f.baseline, context: contextFor(), declared_tasks: [task] },

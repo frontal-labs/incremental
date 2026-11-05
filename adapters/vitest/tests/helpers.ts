@@ -1,6 +1,15 @@
 // Shared helpers for the adapter tests. Compiled to dist/tests/helpers.js.
 import { spawnSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -79,9 +88,13 @@ export function tmp(prefix: string): string {
 }
 
 export function git(dir: string, args: string[]): string {
-  const r = spawnSync("git", ["-C", dir, "-c", "user.name=test", "-c", "user.email=test@example.com", ...args], {
-    encoding: "utf8",
-  });
+  const r = spawnSync(
+    "git",
+    ["-C", dir, "-c", "user.name=test", "-c", "user.email=test@example.com", ...args],
+    {
+      encoding: "utf8",
+    },
+  );
   if (r.status !== 0) throw new Error(`git ${args.join(" ")} failed: ${r.stderr}`);
   return r.stdout;
 }
@@ -124,14 +137,23 @@ export interface CliResult {
 }
 
 // Runs the adapter CLI on a repo and store, with --json.
-export function runCli(dir: string, store: string, extra: string[] = [], env: Record<string, string> = {}): CliResult {
-  const r = spawnSync(process.execPath, [RUN_JS, "run", "--root", dir, "--store", store, "--json", ...extra], {
-    cwd: dir,
-    encoding: "utf8",
-    env: { ...process.env, ...env },
-    maxBuffer: 64 * 1024 * 1024,
-    timeout: 900_000,
-  });
+export function runCli(
+  dir: string,
+  store: string,
+  extra: string[] = [],
+  env: Record<string, string> = {},
+): CliResult {
+  const r = spawnSync(
+    process.execPath,
+    [RUN_JS, "run", "--root", dir, "--store", store, "--json", ...extra],
+    {
+      cwd: dir,
+      encoding: "utf8",
+      env: { ...process.env, ...env },
+      maxBuffer: 64 * 1024 * 1024,
+      timeout: 900_000,
+    },
+  );
   let out: Record<string, unknown> | null = null;
   try {
     out = JSON.parse(r.stdout) as Record<string, unknown>;
@@ -141,14 +163,20 @@ export function runCli(dir: string, store: string, extra: string[] = [], env: Re
   return { status: r.status, out, stderr: r.stderr };
 }
 
-export function stats(store: string): { tasks: number; observations: number; baseline: string | null } {
+export function stats(store: string): {
+  tasks: number;
+  observations: number;
+  baseline: string | null;
+} {
   const r = spawnSync(ENGINE, ["stats", "--store", store, "--json"], { encoding: "utf8" });
   if (r.status !== 0) throw new Error(`stats failed: ${r.stderr}`);
   return JSON.parse(r.stdout) as { tasks: number; observations: number; baseline: string | null };
 }
 
 export function sortChanges(cs: Change[]): Change[] {
-  return [...cs].sort((a, b) => (a.path + a.status + (a.old_path ?? "")).localeCompare(b.path + b.status + (b.old_path ?? "")));
+  return [...cs].sort((a, b) =>
+    (a.path + a.status + (a.old_path ?? "")).localeCompare(b.path + b.status + (b.old_path ?? "")),
+  );
 }
 
 export function normTasks(tasks: Reason[]): Reason[] {

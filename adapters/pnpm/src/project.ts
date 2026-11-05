@@ -11,7 +11,12 @@ import type { Context, Input } from "@incremental/client";
 // Directories the walk never enters. Build output (dist) is not skipped: a
 // dependent reads its dependency's output.
 const SKIP_DIRS = new Set(["node_modules", ".git", ".incremental", ".toolchain"]);
-const DEP_FIELDS = ["dependencies", "devDependencies", "optionalDependencies", "peerDependencies"] as const;
+const DEP_FIELDS = [
+  "dependencies",
+  "devDependencies",
+  "optionalDependencies",
+  "peerDependencies",
+] as const;
 
 export type DeclaredInput = Extract<Input, { kind: "declared" }>;
 
@@ -107,16 +112,18 @@ export function closure(pkgs: Pkg[], rel: string): string[] {
   const seen = new Set<string>();
   const stack = [rel];
   for (let next = stack.pop(); next !== undefined; next = stack.pop()) {
-    if (seen.has(next)) continue;
-    seen.add(next);
-    for (const d of byRel.get(next)?.deps ?? []) stack.push(d);
+    if (!seen.has(next)) {
+      seen.add(next);
+      for (const d of byRel.get(next)?.deps ?? []) stack.push(d);
+    }
   }
   return [...seen].sort();
 }
 
 export function tasksOf(pkgs: Pkg[]): TaskDef[] {
   const out: TaskDef[] = [];
-  for (const pkg of pkgs) for (const script of pkg.scripts) out.push({ task: `${pkg.rel}#${script}`, pkg, script });
+  for (const pkg of pkgs)
+    for (const script of pkg.scripts) out.push({ task: `${pkg.rel}#${script}`, pkg, script });
   return out.sort((a, b) => (a.task < b.task ? -1 : a.task > b.task ? 1 : 0));
 }
 
@@ -125,12 +132,13 @@ function filesUnder(root: string, rel: string): string[] {
   const out: string[] = [];
   const visit = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue;
-      const abs = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (!SKIP_DIRS.has(entry.name)) visit(abs);
-      } else if (entry.isFile()) {
-        out.push(relPath(root, abs));
+      if (!entry.isSymbolicLink()) {
+        const abs = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (!SKIP_DIRS.has(entry.name)) visit(abs);
+        } else if (entry.isFile()) {
+          out.push(relPath(root, abs));
+        }
       }
     }
   };
@@ -231,8 +239,9 @@ export function runScript(root: string, t: TaskDef, timeoutMs: number): ScriptRe
 export function ignoreOutside(root: string, pkgs: Pkg[], confined: Set<string>): string[] {
   const inputs = new Set<string>(["incremental-pnpm.json"]);
   for (const t of tasksOf(pkgs)) {
-    if (!confined.has(t.task)) continue;
-    for (const d of declaredInputs(root, pkgs, t.pkg.rel)) inputs.add(d.path);
+    if (confined.has(t.task)) {
+      for (const d of declaredInputs(root, pkgs, t.pkg.rel)) inputs.add(d.path);
+    }
   }
   const hasInputUnder = (rel: string): boolean => {
     for (const f of inputs) if (f.startsWith(`${rel}/`)) return true;
@@ -242,13 +251,14 @@ export function ignoreOutside(root: string, pkgs: Pkg[], confined: Set<string>):
   const visit = (rel: string): void => {
     const dir = path.join(root, rel);
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink() || SKIP_DIRS.has(entry.name)) continue;
-      const childRel = rel === "" ? entry.name : `${rel}/${entry.name}`;
-      if (entry.isDirectory()) {
-        if (hasInputUnder(childRel)) visit(childRel);
-        else out.push(`${childRel}/**`);
-      } else if (!inputs.has(childRel)) {
-        out.push(childRel);
+      if (!entry.isSymbolicLink() && !SKIP_DIRS.has(entry.name)) {
+        const childRel = rel === "" ? entry.name : `${rel}/${entry.name}`;
+        if (entry.isDirectory()) {
+          if (hasInputUnder(childRel)) visit(childRel);
+          else out.push(`${childRel}/**`);
+        } else if (!inputs.has(childRel)) {
+          out.push(childRel);
+        }
       }
     }
   };

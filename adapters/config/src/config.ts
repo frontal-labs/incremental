@@ -31,9 +31,12 @@ export function loadConfig(root: string): Config {
   try {
     raw = JSON.parse(readFileSync(file, "utf8"));
   } catch (e) {
-    throw new ConfigError(`cannot parse ${CONFIG_FILE}: ${e instanceof Error ? e.message : String(e)}`);
+    throw new ConfigError(
+      `cannot parse ${CONFIG_FILE}: ${e instanceof Error ? e.message : String(e)}`,
+    );
   }
-  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) throw new ConfigError(`${CONFIG_FILE} must be an object`);
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw))
+    throw new ConfigError(`${CONFIG_FILE} must be an object`);
   return raw as Config;
 }
 
@@ -42,7 +45,8 @@ export function affectedConfig(config: Config): Config {
   const out: Config = {};
   if (config.ignore !== undefined) out.ignore = config.ignore;
   if (config.globalInputs !== undefined) out.globalInputs = config.globalInputs;
-  if (config.fallbackContextKeys !== undefined) out.fallbackContextKeys = config.fallbackContextKeys;
+  if (config.fallbackContextKeys !== undefined)
+    out.fallbackContextKeys = config.fallbackContextKeys;
   return out;
 }
 
@@ -75,12 +79,13 @@ export function walkFiles(root: string): string[] {
   const out: string[] = [];
   const visit = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue;
-      const abs = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (!SKIP_DIRS.has(entry.name)) visit(abs);
-      } else if (entry.isFile()) {
-        out.push(path.relative(root, abs).split(path.sep).join("/"));
+      if (!entry.isSymbolicLink()) {
+        const abs = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (!SKIP_DIRS.has(entry.name)) visit(abs);
+        } else if (entry.isFile()) {
+          out.push(path.relative(root, abs).split(path.sep).join("/"));
+        }
       }
     }
   };
@@ -128,9 +133,15 @@ export function declaredInputs(root: string, paths: readonly string[]): Input[] 
 // The context (PLAN 8.4). The config adapter does not own lockfile, tsconfig or pkgjson,
 // so those are hashed from the root for completeness. caps is the caller's claim: the
 // config adapter records no probes or dirs, so the default is all false (see README.md).
-export function contextFor(root: string, caps: Context["caps"] = { probes: false, dirs: false, env: false }): Context {
-  const hashOf = (rel: string): string => (existsSync(path.join(root, rel)) ? sha256(readFileSync(path.join(root, rel))) : "absent");
-  const lock = ["package-lock.json", "pnpm-lock.yaml", "yarn.lock"].find((f) => existsSync(path.join(root, f)));
+export function contextFor(
+  root: string,
+  caps: Context["caps"] = { probes: false, dirs: false, env: false },
+): Context {
+  const hashOf = (rel: string): string =>
+    existsSync(path.join(root, rel)) ? sha256(readFileSync(path.join(root, rel))) : "absent";
+  const lock = ["package-lock.json", "pnpm-lock.yaml", "yarn.lock"].find((f) =>
+    existsSync(path.join(root, f)),
+  );
   return {
     lockfile: lock === undefined ? "absent" : hashOf(lock),
     tsconfig: hashOf("tsconfig.json"),

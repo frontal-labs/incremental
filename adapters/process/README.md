@@ -5,7 +5,16 @@ Generic task runner (spec/adapters/process.md, ). It runs a named command from `
 ## Config
 
 ```json
-{ "tasks": { "lint": { "command": ["node", "lint.js"], "cwd": "tools", "declared": ["tools/lint.js"], "complete": true } } }
+{
+  "tasks": {
+    "lint": {
+      "command": ["node", "lint.js"],
+      "cwd": "tools",
+      "declared": ["tools/lint.js"],
+      "complete": true
+    }
+  }
+}
 ```
 
 `command` is argv, not a shell line. Task ids are the config names .
@@ -28,7 +37,7 @@ Generic task runner (spec/adapters/process.md, ). It runs a named command from `
 - **Undeclared reads, network calls, environment reads.** Not recorded. Every observation is `dirty` unless the task sets `complete: true`, which the engine takes on trust.
 - **Output files.** Not stored . The command's writes are not outputs.
 - **Shell features.** No shell is used, so globs and pipes in `command` are not expanded.
-- **Advancing the baseline.** Not done here. The TypeScript adapter loop  owns advance and exit code 7.
+- **Advancing the baseline.** Not done here. The TypeScript adapter loop owns advance and exit code 7.
 
 ## CLI
 

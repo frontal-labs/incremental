@@ -47,31 +47,41 @@ const RACY_MS = 2_000;
 
 // Every entry under dir with its stat signature, skipping SKIP_DIRS and not
 // following symbolic links.
-export function statWalk(root: string, dir: string, out: Map<string, Entry> = new Map()): Map<string, Entry> {
+export function statWalk(
+  root: string,
+  dir: string,
+  out: Map<string, Entry> = new Map(),
+): Map<string, Entry> {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    if (SKIP_DIRS.has(entry.name)) continue;
-    const abs = path.join(dir, entry.name);
-    const rel = relOf(root, abs);
-    const st = lstatSync(abs);
-    const kind: Kind = st.isFile() ? "file" : st.isDirectory() ? "dir" : "other";
-    out.set(rel, { kind, size: st.size, mtimeMs: st.mtimeMs, ino: st.ino });
-    if (kind === "dir") statWalk(root, abs, out);
+    if (!SKIP_DIRS.has(entry.name)) {
+      const abs = path.join(dir, entry.name);
+      const rel = relOf(root, abs);
+      const st = lstatSync(abs);
+      const kind: Kind = st.isFile() ? "file" : st.isDirectory() ? "dir" : "other";
+      out.set(rel, { kind, size: st.size, mtimeMs: st.mtimeMs, ino: st.ino });
+      if (kind === "dir") statWalk(root, abs, out);
+    }
   }
   return out;
 }
 
-export function walk(root: string, dir: string, out: Map<string, Kind> = new Map()): Map<string, Kind> {
+export function walk(
+  root: string,
+  dir: string,
+  out: Map<string, Kind> = new Map(),
+): Map<string, Kind> {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    if (SKIP_DIRS.has(entry.name)) continue;
-    const abs = path.join(dir, entry.name);
-    const rel = relOf(root, abs);
-    if (entry.isDirectory()) {
-      out.set(rel, "dir");
-      walk(root, abs, out);
-    } else if (entry.isFile()) {
-      out.set(rel, "file");
-    } else {
-      out.set(rel, "other");
+    if (!SKIP_DIRS.has(entry.name)) {
+      const abs = path.join(dir, entry.name);
+      const rel = relOf(root, abs);
+      if (entry.isDirectory()) {
+        out.set(rel, "dir");
+        walk(root, abs, out);
+      } else if (entry.isFile()) {
+        out.set(rel, "file");
+      } else {
+        out.set(rel, "other");
+      }
     }
   }
   return out;
@@ -107,7 +117,9 @@ export class Watcher {
   // edit during the snapshot is recorded, not missed.
   start(): void {
     this.stop();
-    this.handle = watch(this.root, { recursive: true, encoding: "utf8" }, (_event, name) => this.onEvent(name));
+    this.handle = watch(this.root, { recursive: true, encoding: "utf8" }, (_event, name) =>
+      this.onEvent(name),
+    );
     this.handle.on("error", (e: Error) => this.loss(`watch error: ${e.message}`));
     this.rebase();
   }
@@ -157,33 +169,41 @@ export class Watcher {
     for (const [rel, now] of fresh) {
       if (now.kind === "other") {
         lost ??= `symbolic link or special file: ${rel}`;
-        continue;
-      }
-      if (now.kind === "dir") continue;
-      const before = this.base.get(rel);
-      if (before === undefined) {
-        changes.push({ path: rel, status: "added" });
-      } else if (before.kind !== "file") {
-        lost ??= `directory or link replaced by a file: ${rel}`;
-      } else if (before.hash !== undefined) {
-        if (sha256(readFileSync(path.join(this.root, rel))) !== before.hash) changes.push({ path: rel, status: "modified" });
-      } else if (before.size !== now.size || before.mtimeMs !== now.mtimeMs || before.ino !== now.ino) {
-        changes.push({ path: rel, status: "modified" });
+      } else if (now.kind !== "dir") {
+        const before = this.base.get(rel);
+        if (before === undefined) {
+          changes.push({ path: rel, status: "added" });
+        } else if (before.kind !== "file") {
+          lost ??= `directory or link replaced by a file: ${rel}`;
+        } else if (before.hash !== undefined) {
+          if (sha256(readFileSync(path.join(this.root, rel))) !== before.hash)
+            changes.push({ path: rel, status: "modified" });
+        } else if (
+          before.size !== now.size ||
+          before.mtimeMs !== now.mtimeMs ||
+          before.ino !== now.ino
+        ) {
+          changes.push({ path: rel, status: "modified" });
+        }
       }
     }
     for (const [rel, before] of this.base) {
-      if (before.kind === "other") continue;
-      const now = fresh.get(rel);
-      if (now === undefined) {
-        if (before.kind === "dir") lost ??= `directory removed: ${rel}`;
-        else changes.push({ path: rel, status: "deleted" });
-      } else if (before.kind === "dir" && now.kind !== "dir") {
-        lost ??= `directory replaced: ${rel}`;
-      } else if (before.kind === "file" && now.kind === "dir") {
-        lost ??= `file replaced by a directory: ${rel}`;
+      if (before.kind !== "other") {
+        const now = fresh.get(rel);
+        if (now === undefined) {
+          if (before.kind === "dir") lost ??= `directory removed: ${rel}`;
+          else changes.push({ path: rel, status: "deleted" });
+        } else if (before.kind === "dir" && now.kind !== "dir") {
+          lost ??= `directory replaced: ${rel}`;
+        } else if (before.kind === "file" && now.kind === "dir") {
+          lost ??= `file replaced by a directory: ${rel}`;
+        }
       }
     }
-    return { changes: changes.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0)), lost };
+    return {
+      changes: changes.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0)),
+      lost,
+    };
   }
 
   private racyAt(entry: Entry, time: number): boolean {

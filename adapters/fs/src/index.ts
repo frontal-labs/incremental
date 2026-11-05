@@ -43,13 +43,13 @@ export interface Recorded {
 // Linux-only). The runner observes one command and returns the paths it
 // touched under the configured roots (PLAN §11.5).
 export interface OracleRunOptions {
-  roots: string[];   // absolute repo roots; observed paths must live under one
-  cwd: string;       // absolute cwd the command ran in
+  roots: string[]; // absolute repo roots; observed paths must live under one
+  cwd: string; // absolute cwd the command ran in
   timeoutMs?: number;
   env?: NodeJS.ProcessEnv;
 }
 export interface OracleResult {
-  files: string[];   // repo-relative, sorted, unique
+  files: string[]; // repo-relative, sorted, unique
   dirs: string[];
   probes: string[];
   execs: string[];
@@ -106,7 +106,12 @@ export function declaredInputs(root: string, declared: readonly string[]): Decla
   for (const rel of declared) {
     const abs = path.resolve(root, rel);
     const repoRel = path.relative(root, abs).split(path.sep).join("/");
-    if (repoRel === "" || repoRel === ".." || repoRel.startsWith("../") || path.isAbsolute(repoRel)) {
+    if (
+      repoRel === "" ||
+      repoRel === ".." ||
+      repoRel.startsWith("../") ||
+      path.isAbsolute(repoRel)
+    ) {
       throw new Error(`declared path is outside the repository: ${rel}`);
     }
     const hash = existsSync(abs) ? sha256(readFileSync(abs)) : "absent";
@@ -185,7 +190,8 @@ export async function recordOracle(
   }
 
   const inputs: Input[] = [];
-  for (const p of [...files.keys()].sort()) inputs.push({ kind: "file", path: p, hash: files.get(p) as string });
+  for (const p of [...files.keys()].sort())
+    inputs.push({ kind: "file", path: p, hash: files.get(p) as string });
   for (const p of oracle.dirs) inputs.push({ kind: "dir", path: p });
   for (const p of oracle.probes) inputs.push({ kind: "probe", path: p });
 

@@ -25,10 +25,13 @@ export function ruffBinary(): string {
 export function ruffRunner(): string {
   const r = spawnSync(ruffBinary(), ["--version"], { encoding: "utf8" });
   if (r.error !== undefined || r.status !== 0) {
-    throw new ProjectError(`cannot run ${ruffBinary()} --version: ${r.error?.message ?? (r.stderr || "").trim()}`);
+    throw new ProjectError(
+      `cannot run ${ruffBinary()} --version: ${r.error?.message ?? (r.stderr || "").trim()}`,
+    );
   }
   const version = r.stdout.trim().split(/\s+/)[1];
-  if (version === undefined) throw new ProjectError(`unexpected output of ${ruffBinary()} --version: ${r.stdout.trim()}`);
+  if (version === undefined)
+    throw new ProjectError(`unexpected output of ${ruffBinary()} --version: ${r.stdout.trim()}`);
   return `ruff@${version}`;
 }
 
@@ -50,9 +53,14 @@ export function relPath(root: string, abs: string): string {
 // own TOML rules.
 export function discoverFiles(root: string): string[] {
   const real = realpathSync(root);
-  const r = spawnSync(ruffBinary(), ["check", "--no-cache", "--show-files"], { cwd: real, encoding: "utf8" });
+  const r = spawnSync(ruffBinary(), ["check", "--no-cache", "--show-files"], {
+    cwd: real,
+    encoding: "utf8",
+  });
   if (r.error !== undefined || r.status !== 0) {
-    throw new ProjectError(`ruff --show-files failed: ${(r.stdout || r.stderr || r.error?.message || "").trim()}`);
+    throw new ProjectError(
+      `ruff --show-files failed: ${(r.stdout || r.stderr || r.error?.message || "").trim()}`,
+    );
   }
   return r.stdout
     .split("\n")
@@ -66,7 +74,10 @@ export function discoverFiles(root: string): string[] {
 // found. Read from `ruff check --show-settings`, whose "Settings path:" line
 // names the config file.
 export function settingsPath(root: string, rel: string): string | null {
-  const r = spawnSync(ruffBinary(), ["check", "--no-cache", "--show-settings", rel], { cwd: root, encoding: "utf8" });
+  const r = spawnSync(ruffBinary(), ["check", "--no-cache", "--show-settings", rel], {
+    cwd: root,
+    encoding: "utf8",
+  });
   if (r.error !== undefined || r.status !== 0) {
     const detail = `${r.stdout ?? ""}${r.stderr ?? ""}`.trim() || (r.error?.message ?? "no output");
     throw new ProjectError(`ruff --show-settings failed for ${rel}: ${detail}`);
@@ -131,7 +142,8 @@ export function checkFile(root: string, rel: string, timeoutMs: number): CheckRe
     timeout: timeoutMs,
     maxBuffer: 256 * 1024 * 1024,
   });
-  if (r.error !== undefined || r.signal !== null) return finish("error", r.error?.message ?? `killed by ${r.signal}`);
+  if (r.error !== undefined || r.signal !== null)
+    return finish("error", r.error?.message ?? `killed by ${r.signal}`);
   if (r.status === 0) return finish("pass", null);
   if (r.status === 1) {
     let count = 0;
@@ -142,6 +154,8 @@ export function checkFile(root: string, rel: string, timeoutMs: number): CheckRe
     }
     return finish("fail", `ruff reported ${count} violation(s)`);
   }
-  const first = (r.stderr || "").split("\n").find((l) => l.trim().length > 0 && !l.startsWith("warning:"));
+  const first = (r.stderr || "")
+    .split("\n")
+    .find((l) => l.trim().length > 0 && !l.startsWith("warning:"));
   return finish("error", `ruff exited ${r.status}${first ? `: ${first.trim()}` : ""}`);
 }

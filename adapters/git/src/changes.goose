@@ -108,37 +108,40 @@ fn main() {
     let lines = split(diff, '\n');
     for k in lines.len {
         let ln = lines[k];
-        if ln.len == 0 { continue; }
-        let f = split(ln, '\t');
-        if f.len < 2 { continue; }
-        var st: u8[>..] = [];
-        var status_name = "modified";
-        if f[0][0] == 'A' { status_name = "added"; }
-        else if f[0][0] == 'D' { status_name = "deleted"; }
-        else if f[0][0] == 'R' { status_name = "renamed"; }
-        else if f[0][0] == 'C' { status_name = "added"; }
-        if !first { out.push(','); }
-        first = false;
-        out.append("{\"path\":");
-        if status_name == "renamed" && f.len >= 3 {
-            json::format_string(out, f[2]);
-            out.append(",\"status\":\"renamed\",\"old_path\":");
-            json::format_string(out, f[1]);
-        } else {
-            json::format_string(out, f[1]);
-            out.append(",\"status\":");
-            json::format_string(out, status_name);
+        if ln.len != 0 {
+            let f = split(ln, '\t');
+            if f.len >= 2 {
+                var st: u8[>..] = [];
+                var status_name = "modified";
+                if f[0][0] == 'A' { status_name = "added"; }
+                else if f[0][0] == 'D' { status_name = "deleted"; }
+                else if f[0][0] == 'R' { status_name = "renamed"; }
+                else if f[0][0] == 'C' { status_name = "added"; }
+                if !first { out.push(','); }
+                first = false;
+                out.append("{\"path\":");
+                if status_name == "renamed" && f.len >= 3 {
+                    json::format_string(out, f[2]);
+                    out.append(",\"status\":\"renamed\",\"old_path\":");
+                    json::format_string(out, f[1]);
+                } else {
+                    json::format_string(out, f[1]);
+                    out.append(",\"status\":");
+                    json::format_string(out, status_name);
+                }
+                out.push('}');
+            }
         }
-        out.push('}');
     }
     let ulines = split(untracked, '\n');
     for k in ulines.len {
-        if ulines[k].len == 0 { continue; }
-        if !first { out.push(','); }
-        first = false;
-        out.append("{\"path\":");
-        json::format_string(out, ulines[k]);
-        out.append(",\"status\":\"added\"}");
+        if ulines[k].len != 0 {
+            if !first { out.push(','); }
+            first = false;
+            out.append("{\"path\":");
+            json::format_string(out, ulines[k]);
+            out.append(",\"status\":\"added\"}");
+        }
     }
     out.append("]}\n");
     write_stdout(out);

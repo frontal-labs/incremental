@@ -18,11 +18,13 @@ Exit codes follow the TypeScript adapter: 0 ok and advanced, 1 a target failed, 
 ## Real versus declared
 
 Real (observed on each run):
+
 - protoc reads: `protoc --dependency_out` lists every file it read, including the target. Each
   repo file in that list becomes a `file` input, hashed after the compile.
 - buf module files: `buf ls-files` lists them. They become `file` inputs.
 
 Declared:
+
 - A buf module's `buf.yaml`, `buf.lock` and `buf.gen.yaml` are `declared` inputs.
 - Context `lockfile` is the digest of every `buf.lock`. A lock change falls back to running all targets.
 - Context `runner` names the protoc version, a digest of the well-known types in protoc's install,

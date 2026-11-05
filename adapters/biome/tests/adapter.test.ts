@@ -54,10 +54,17 @@ function cleanup(root: string): void {
 }
 
 async function run(root: string, store: string, base?: string): Promise<RunReport> {
-  return runAdapter({ root, store, all: false, timeoutMs: 120_000, ...(base !== undefined ? { base } : {}) });
+  return runAdapter({
+    root,
+    store,
+    all: false,
+    timeoutMs: 120_000,
+    ...(base !== undefined ? { base } : {}),
+  });
 }
 
-const outcomeOf = (r: RunReport, rel: string): string | undefined => r.results.find((x) => x.task === taskId(rel))?.outcome;
+const outcomeOf = (r: RunReport, rel: string): string | undefined =>
+  r.results.find((x) => x.task === taskId(rel))?.outcome;
 
 test("biome's file list is the task set, repo-relative and without the store", () => {
   const { root } = makeRepo();
@@ -74,8 +81,16 @@ test("first run checks every file and advances the baseline", async () => {
   const { root, store } = makeRepo();
   try {
     const r = await run(root, store);
-    assert.deepEqual(r.selected, ["biome check biome.json", "biome check src/a.ts", "biome check src/b.ts", "biome check src/sub/c.ts"]);
-    assert.deepEqual(r.results.map((x) => x.outcome), ["pass", "pass", "pass", "pass"]);
+    assert.deepEqual(r.selected, [
+      "biome check biome.json",
+      "biome check src/a.ts",
+      "biome check src/b.ts",
+      "biome check src/sub/c.ts",
+    ]);
+    assert.deepEqual(
+      r.results.map((x) => x.outcome),
+      ["pass", "pass", "pass", "pass"],
+    );
     assert.equal(r.advanced, true);
     assert.equal(r.exit, 0);
   } finally {
@@ -121,7 +136,12 @@ test("a change to biome.json invalidates every task", async () => {
     write(root, "biome.json", '{\n  "formatter": { "indentStyle": "space" }\n}\n');
     commit(root, "config");
     const r = await run(root, store);
-    assert.deepEqual(r.selected, ["biome check biome.json", "biome check src/a.ts", "biome check src/b.ts", "biome check src/sub/c.ts"]);
+    assert.deepEqual(r.selected, [
+      "biome check biome.json",
+      "biome check src/a.ts",
+      "biome check src/b.ts",
+      "biome check src/sub/c.ts",
+    ]);
     assert.equal(r.exit, 0);
   } finally {
     cleanup(root);
@@ -136,7 +156,10 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
     const r = await run(root, store);
     assert.equal(r.advanced, false);
     assert.equal(r.exit, 7);
-    assert.ok(r.notAdvanced.some((m) => m.includes("dirty")), r.notAdvanced.join("; "));
+    assert.ok(
+      r.notAdvanced.some((m) => m.includes("dirty")),
+      r.notAdvanced.join("; "),
+    );
   } finally {
     cleanup(root);
   }

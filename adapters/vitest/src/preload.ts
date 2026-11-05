@@ -30,12 +30,16 @@ const isTaskProcess = typeof process.send === "function" || !wt.isMainThread;
 if (RECORD) install(OUT as string);
 
 // The baseline environment the main process recorded (env_base), or null.
-function readBaseline(out: string, read: (file: string, enc: BufferEncoding) => string): Record<string, string> | null {
+function readBaseline(
+  out: string,
+  read: (file: string, enc: BufferEncoding) => string,
+): Record<string, string> | null {
   try {
     for (const line of read(out, "utf8").split("\n")) {
-      if (!line.includes("\"env_base\"")) continue;
-      const e = JSON.parse(line) as { k?: string; s?: Record<string, string> };
-      if (e.k === "env_base" && e.s !== undefined) return e.s;
+      if (line.includes('"env_base"')) {
+        const e = JSON.parse(line) as { k?: string; s?: Record<string, string> };
+        if (e.k === "env_base" && e.s !== undefined) return e.s;
+      }
     }
   } catch {
     // no trace yet: the caller falls back to its own environment
@@ -89,7 +93,8 @@ function install(out: string): void {
       }
     }
     const rel = path.relative(root, real);
-    if (rel === "" || rel === ".." || rel.startsWith(".." + path.sep) || path.isAbsolute(rel)) return null;
+    if (rel === "" || rel === ".." || rel.startsWith(".." + path.sep) || path.isAbsolute(rel))
+      return null;
     const parts = rel.split(path.sep);
     if (parts.some((s) => EXCLUDED_DIRS.includes(s))) return null;
     return parts.join("/");
@@ -142,7 +147,12 @@ function install(out: string): void {
   function isReadFlags(flags: unknown): boolean {
     if (flags === undefined || flags === null) return true;
     if (typeof flags === "number") {
-      const writing = fs.constants.O_WRONLY | fs.constants.O_RDWR | fs.constants.O_CREAT | fs.constants.O_TRUNC | fs.constants.O_APPEND;
+      const writing =
+        fs.constants.O_WRONLY |
+        fs.constants.O_RDWR |
+        fs.constants.O_CREAT |
+        fs.constants.O_TRUNC |
+        fs.constants.O_APPEND;
       return (flags & writing) === 0 || (flags & fs.constants.O_RDWR) !== 0;
     }
     return typeof flags === "string" && flags.startsWith("r");
@@ -167,44 +177,72 @@ function install(out: string): void {
     // Keep the properties of the original (fs.realpathSync.native is read by
     // Vite as a function, so a wrapper without it breaks module loading).
     for (const key of Reflect.ownKeys(orig)) {
-      if (key === "length" || key === "name" || key === "prototype") continue;
-      const desc = Object.getOwnPropertyDescriptor(orig, key);
-      if (desc !== undefined) Object.defineProperty(target[name], key, desc);
+      if (key !== "length" && key !== "name" && key !== "prototype") {
+        const desc = Object.getOwnPropertyDescriptor(orig, key);
+        if (desc !== undefined) Object.defineProperty(target[name], key, desc);
+      }
     }
   }
 
   const openKind = (args: unknown[]): Kind | null => (isReadFlags(args[1]) ? "read" : null);
   for (const name of ["readFile", "readFileSync", "createReadStream"]) patch(fs, name, "read");
   for (const name of ["open", "openSync"]) patch(fs, name, openKind);
-  for (const name of ["stat", "statSync", "lstat", "lstatSync", "access", "accessSync", "exists", "existsSync", "realpath", "realpathSync"]) {
+  for (const name of [
+    "stat",
+    "statSync",
+    "lstat",
+    "lstatSync",
+    "access",
+    "accessSync",
+    "exists",
+    "existsSync",
+    "realpath",
+    "realpathSync",
+  ]) {
     patch(fs, name, "stat");
   }
   for (const name of ["readdir", "readdirSync", "opendir", "opendirSync"]) patch(fs, name, "list");
   // Vite calls fs.realpathSync.native directly; record those calls too.
   patch(fs.realpathSync, "native", "stat");
-  for (const name of ["readFile", "open"]) patch(fs.promises, name, name === "open" ? openKind : "read");
+  for (const name of ["readFile", "open"])
+    patch(fs.promises, name, name === "open" ? openKind : "read");
   for (const name of ["stat", "lstat", "access", "realpath"]) patch(fs.promises, name, "stat");
   patch(fs.promises, "readdir", "list");
 
   // Subprocesses are not observed. Their reads are not in the trace, so the
   // task is recorded as incomplete (PLAN 11.1 rule 4).
   const cpObj = cp as unknown as Record<string, unknown>;
-  for (const name of ["spawn", "spawnSync", "exec", "execSync", "execFile", "execFileSync", "fork"]) {
+  for (const name of [
+    "spawn",
+    "spawnSync",
+    "exec",
+    "execSync",
+    "execFile",
+    "execFileSync",
+    "fork",
+  ]) {
     const orig = cpObj[name];
-    if (typeof orig !== "function") continue;
-    cpObj[name] = function (this: unknown, ...args: unknown[]): unknown {
-      if (isTaskProcess) emit("inc:sub", { k: "incomplete", why: "subprocess" });
-      return (orig as (...a: unknown[]) => unknown).apply(this, args);
-    };
+    if (typeof orig === "function") {
+      cpObj[name] = function (this: unknown, ...args: unknown[]): unknown {
+        if (isTaskProcess) emit("inc:sub", { k: "incomplete", why: "subprocess" });
+        return (orig as (...a: unknown[]) => unknown).apply(this, args);
+      };
+    }
   }
 
   // Module resolution by require() is done with native stat calls that are
   // not visible here. A require() from a repo file marks the task incomplete.
   const ModuleCls = Module as unknown as { _resolveFilename: (...a: unknown[]) => string };
   const origResolve = ModuleCls._resolveFilename;
-  ModuleCls._resolveFilename = function (this: unknown, request: unknown, parent: unknown, ...rest: unknown[]): string {
+  ModuleCls._resolveFilename = function (
+    this: unknown,
+    request: unknown,
+    parent: unknown,
+    ...rest: unknown[]
+  ): string {
     const from = (parent as { filename?: unknown } | undefined)?.filename;
-    if (typeof from === "string" && canonical(from) !== null) emit("inc:cjs", { k: "incomplete", why: "cjs-resolution" });
+    if (typeof from === "string" && canonical(from) !== null)
+      emit("inc:cjs", { k: "incomplete", why: "cjs-resolution" });
     return origResolve.call(this, request, parent, ...rest);
   };
 
@@ -229,9 +267,10 @@ function install(out: string): void {
   const origEnv = process.env;
   const initial: Record<string, string> = {};
   for (const name of Object.keys(origEnv)) {
-    if (!isTrackedEnv(name)) continue;
-    const value = origEnv[name];
-    if (value !== undefined) initial[name] = sha256(value);
+    if (isTrackedEnv(name)) {
+      const value = origEnv[name];
+      if (value !== undefined) initial[name] = sha256(value);
+    }
   }
   let baseline: Record<string, string> = initial;
   if (isTaskProcess) {

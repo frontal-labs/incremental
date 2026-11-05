@@ -58,7 +58,13 @@ const TSCONFIG = JSON.stringify({
     resolveJsonModule: true,
     plugins: [{ name: "next" }],
   },
-  include: ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
+  include: [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+  ],
   exclude: ["node_modules"],
 });
 
@@ -71,7 +77,11 @@ function makeRepo(): { root: string; store: string } {
   git(root, "init", "-q", "-b", "main");
   write(root, ".gitignore", "node_modules/\n.next/\nnext-env.d.ts\n.incremental/\n");
   write(root, "package.json", JSON.stringify({ name: "fixture", private: true }));
-  write(root, "package-lock.json", readFileSync(path.join(PACKAGE_DIR, "package-lock.json"), "utf8"));
+  write(
+    root,
+    "package-lock.json",
+    readFileSync(path.join(PACKAGE_DIR, "package-lock.json"), "utf8"),
+  );
   write(root, "libs/util/package.json", JSON.stringify({ name: "util", private: true }));
   write(root, "libs/util/index.ts", "export const u = 1;\n");
   write(
@@ -81,14 +91,26 @@ function makeRepo(): { root: string; store: string } {
       name: "web",
       private: true,
       dependencies: { next: "16.4.2", react: "19.2.8", "react-dom": "19.2.8" },
-      devDependencies: { typescript: "5.9.3", "@types/node": "22.20.5", "@types/react": "19.2.8", "@types/react-dom": "19.2.3" },
+      devDependencies: {
+        typescript: "5.9.3",
+        "@types/node": "22.20.5",
+        "@types/react": "19.2.8",
+        "@types/react-dom": "19.2.3",
+      },
     }),
   );
   write(root, `${APP}/next.config.mjs`, "export default {};\n");
   write(root, `${APP}/tsconfig.json`, TSCONFIG);
-  write(root, `${APP}/app/layout.tsx`, "export default function RootLayout({ children }: { children: React.ReactNode }) {\n  return <html lang=\"en\"><body>{children}</body></html>;\n}\n");
+  write(
+    root,
+    `${APP}/app/layout.tsx`,
+    'export default function RootLayout({ children }: { children: React.ReactNode }) {\n  return <html lang="en"><body>{children}</body></html>;\n}\n',
+  );
   write(root, `${APP}/app/page.tsx`, PAGE_OK);
-  cpSync(path.join(PACKAGE_DIR, "node_modules"), path.join(root, "node_modules"), { recursive: true, verbatimSymlinks: true });
+  cpSync(path.join(PACKAGE_DIR, "node_modules"), path.join(root, "node_modules"), {
+    recursive: true,
+    verbatimSymlinks: true,
+  });
   commit(root, "init");
   return { root, store: path.join(base, "store") };
 }
@@ -115,7 +137,11 @@ test("first run builds every app and advances the baseline", async () => {
   try {
     const r = await run(root, store);
     assert.deepEqual(r.selected, [APP]);
-    assert.deepEqual(r.results.map((x) => x.outcome), ["pass"], JSON.stringify(r.results));
+    assert.deepEqual(
+      r.results.map((x) => x.outcome),
+      ["pass"],
+      JSON.stringify(r.results),
+    );
     assert.equal(r.advanced, true, r.notAdvanced.join("; "));
     assert.equal(r.exit, 0);
   } finally {
@@ -131,7 +157,10 @@ test("an edit to a declared input invalidates the app", async () => {
     commit(root, "edit next config");
     const r = await run(root, store);
     assert.deepEqual(r.selected, [APP]);
-    assert.deepEqual(r.results.map((x) => x.outcome), ["pass"]);
+    assert.deepEqual(
+      r.results.map((x) => x.outcome),
+      ["pass"],
+    );
     assert.equal(r.advanced, true, r.notAdvanced.join("; "));
   } finally {
     cleanup(root);
@@ -142,10 +171,18 @@ test("a failed build is reported as fail and exits 1", async () => {
   const { root, store } = makeRepo();
   try {
     await run(root, store);
-    write(root, `${APP}/app/page.tsx`, 'export default function Page() {\n  const x: number = "not a number";\n  return <main>{x}</main>;\n}\n');
+    write(
+      root,
+      `${APP}/app/page.tsx`,
+      'export default function Page() {\n  const x: number = "not a number";\n  return <main>{x}</main>;\n}\n',
+    );
     commit(root, "break the page");
     const r = await run(root, store);
-    assert.deepEqual(r.results.map((x) => x.outcome), ["fail"], JSON.stringify(r.results));
+    assert.deepEqual(
+      r.results.map((x) => x.outcome),
+      ["fail"],
+      JSON.stringify(r.results),
+    );
     assert.equal(r.advanced, true, "a failed build is a complete run, so the baseline advances");
     assert.equal(r.exit, 1);
   } finally {
@@ -157,11 +194,18 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
   const { root, store } = makeRepo();
   try {
     await run(root, store);
-    write(root, `${APP}/app/page.tsx`, "export default function Page() {\n  return <main>changed</main>;\n}\n");
+    write(
+      root,
+      `${APP}/app/page.tsx`,
+      "export default function Page() {\n  return <main>changed</main>;\n}\n",
+    );
     const r = await run(root, store);
     assert.equal(r.advanced, false);
     assert.equal(r.exit, 7);
-    assert.ok(r.notAdvanced.some((m) => m.includes("dirty")), r.notAdvanced.join("; "));
+    assert.ok(
+      r.notAdvanced.some((m) => m.includes("dirty")),
+      r.notAdvanced.join("; "),
+    );
   } finally {
     cleanup(root);
   }

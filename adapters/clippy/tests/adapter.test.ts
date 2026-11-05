@@ -6,7 +6,13 @@ import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "nod
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { memberTasks, parseDepInfo, runAdapter, workspaceOf, type RunReport } from "../src/index.js";
+import {
+  memberTasks,
+  parseDepInfo,
+  runAdapter,
+  workspaceOf,
+  type RunReport,
+} from "../src/index.js";
 
 const GIT_ENV = {
   ...process.env,
@@ -34,7 +40,11 @@ function commit(root: string, message: string): void {
 }
 
 function crate(root: string, name: string, lib: string, extra = ""): void {
-  write(root, `crates/${name}/Cargo.toml`, `[package]\nname = "${name}"\nversion = "0.1.0"\nedition = "2021"\n${extra}`);
+  write(
+    root,
+    `crates/${name}/Cargo.toml`,
+    `[package]\nname = "${name}"\nversion = "0.1.0"\nedition = "2021"\n${extra}`,
+  );
   write(root, `crates/${name}/src/lib.rs`, lib);
 }
 
@@ -48,7 +58,12 @@ function makeRepo(): { root: string; store: string } {
   git(root, "init", "-q", "-b", "main");
   write(root, "Cargo.toml", '[workspace]\nresolver = "2"\nmembers = ["crates/*"]\n');
   crate(root, "a", "pub fn a() -> u32 {\n    1\n}\n");
-  crate(root, "b", "pub fn b() -> u32 {\n    a::a() + 1\n}\n", "[dependencies]\na = { path = \"../a\" }\n");
+  crate(
+    root,
+    "b",
+    "pub fn b() -> u32 {\n    a::a() + 1\n}\n",
+    '[dependencies]\na = { path = "../a" }\n',
+  );
   crate(root, "c", "pub fn c() -> u32 {\n    3\n}\n");
   write(root, "README.md", "fixture\n");
   lockfile(root);
@@ -66,7 +81,13 @@ function cleanup(root: string): void {
 }
 
 async function run(root: string, store: string, base?: string): Promise<RunReport> {
-  return runAdapter({ root, store, all: false, timeoutMs: 300_000, ...(base !== undefined ? { base } : {}) });
+  return runAdapter({
+    root,
+    store,
+    all: false,
+    timeoutMs: 300_000,
+    ...(base !== undefined ? { base } : {}),
+  });
 }
 
 function resultOf(r: RunReport, task: string) {
@@ -76,14 +97,18 @@ function resultOf(r: RunReport, task: string) {
 }
 
 test("parses dep-info: rules, escaped spaces, continuation lines and env records", () => {
-  const text = "/t/deps/a-1.d: src/lib.rs Cargo.toml\n\nsrc/lib.rs:\n/t/a.d: my\\ file.rs \\\n  other.rs\n# env-dep:X=\n";
+  const text =
+    "/t/deps/a-1.d: src/lib.rs Cargo.toml\n\nsrc/lib.rs:\n/t/a.d: my\\ file.rs \\\n  other.rs\n# env-dep:X=\n";
   assert.deepEqual(parseDepInfo(text), ["src/lib.rs", "Cargo.toml", "my file.rs", "other.rs"]);
 });
 
 test("discovers each workspace member as a task", () => {
   const { root } = makeRepo();
   try {
-    assert.deepEqual(memberTasks(workspaceOf(root), root).map((m) => m.task), ["crates/a", "crates/b", "crates/c"]);
+    assert.deepEqual(
+      memberTasks(workspaceOf(root), root).map((m) => m.task),
+      ["crates/a", "crates/b", "crates/c"],
+    );
   } finally {
     cleanup(root);
   }
@@ -94,7 +119,10 @@ test("first run checks every crate and advances the baseline", async () => {
   try {
     const r = await run(root, store);
     assert.deepEqual(r.selected, ["crates/a", "crates/b", "crates/c"]);
-    assert.deepEqual(r.results.map((x) => x.outcome), ["pass", "pass", "pass"]);
+    assert.deepEqual(
+      r.results.map((x) => x.outcome),
+      ["pass", "pass", "pass"],
+    );
     assert.equal(r.advanced, true, r.notAdvanced.join("; "));
     assert.equal(r.exit, 0);
   } finally {
@@ -136,7 +164,11 @@ test("a deny-level clippy lint fails its crate, exits 1 and still advances", asy
   const { root, store } = makeRepo();
   try {
     await run(root, store);
-    write(root, "crates/c/src/lib.rs", "#![deny(clippy::needless_return)]\npub fn c() -> u32 {\n    return 3;\n}\n");
+    write(
+      root,
+      "crates/c/src/lib.rs",
+      "#![deny(clippy::needless_return)]\npub fn c() -> u32 {\n    return 3;\n}\n",
+    );
     commit(root, "break c");
     const r = await run(root, store);
     assert.deepEqual(r.selected, ["crates/c"]);
@@ -156,7 +188,10 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
     const r = await run(root, store);
     assert.equal(r.advanced, false);
     assert.equal(r.exit, 7);
-    assert.ok(r.notAdvanced.some((m) => m.includes("dirty")), r.notAdvanced.join("; "));
+    assert.ok(
+      r.notAdvanced.some((m) => m.includes("dirty")),
+      r.notAdvanced.join("; "),
+    );
   } finally {
     cleanup(root);
   }
@@ -168,7 +203,11 @@ test("a build script without rerun-if-changed is recorded dirty; one with it is 
     crate(root, "d", "pub fn d() {}\n");
     write(root, "crates/d/build.rs", "fn main() {}\n");
     crate(root, "e", "pub fn e() {}\n");
-    write(root, "crates/e/build.rs", 'fn main() {\n    println!("cargo:rerun-if-changed=build-input.txt");\n}\n');
+    write(
+      root,
+      "crates/e/build.rs",
+      'fn main() {\n    println!("cargo:rerun-if-changed=build-input.txt");\n}\n',
+    );
     write(root, "crates/e/build-input.txt", "x\n");
     lockfile(root);
     commit(root, "add build scripts");
@@ -176,7 +215,10 @@ test("a build script without rerun-if-changed is recorded dirty; one with it is 
     const d = resultOf(r, "crates/d");
     assert.equal(d.outcome, "pass");
     assert.equal(d.dirty, true);
-    assert.ok(d.reasons.some((m) => m.includes("rerun-if-changed")), d.reasons.join("; "));
+    assert.ok(
+      d.reasons.some((m) => m.includes("rerun-if-changed")),
+      d.reasons.join("; "),
+    );
     const e = resultOf(r, "crates/e");
     assert.equal(e.dirty, false, e.reasons.join("; "));
     assert.equal(r.advanced, true);

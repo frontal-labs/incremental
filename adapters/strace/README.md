@@ -2,7 +2,7 @@
 
 Native recorder for Linux: runs a command under `strace` and reports the paths
 it touches, as `file`, `dir`, `probe` and `exec` inputs. It is the oracle that
-tests the Vitest Node recorder's completeness  and a
+tests the Vitest Node recorder's completeness and a
 fallback for native tools (`fs`, `process`) on Linux.
 
 ## Command

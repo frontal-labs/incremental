@@ -67,14 +67,21 @@ export async function main(argv: string[]): Promise<number> {
     if (!existsSync(store)) {
       mkdirSync(path.dirname(store), { recursive: true });
       const init = spawnSync(defaultEngine(), ["init", "--store", store], { encoding: "utf8" });
-      if (init.status !== 0) throw new Error(`cannot create the store at ${store}: ${(init.stderr || "").trim()}`);
+      if (init.status !== 0)
+        throw new Error(`cannot create the store at ${store}: ${(init.stderr || "").trim()}`);
     }
     const config = loadConfig(root);
     let runOracle: OracleRun | undefined;
     if (Object.values(config.tasks).some((t) => t.oracle === true)) {
       runOracle = await loadOracleRunner();
     }
-    const results = await runTasks({ root, store, names: names.length > 0 ? names : undefined, timeoutMs, runOracle });
+    const results = await runTasks({
+      root,
+      store,
+      names: names.length > 0 ? names : undefined,
+      timeoutMs,
+      runOracle,
+    });
     printResults(results);
     if (results.some((r) => r.outcome === "error")) return 4;
     if (results.some((r) => r.outcome === "fail")) return 1;

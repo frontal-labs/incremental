@@ -1,1 +1,1 @@
-export const LINKED: string = 'linked';
+export const LINKED: string = "linked";

@@ -32,7 +32,11 @@ before(() => {
   const prime = runCli(repo, store);
   assert.equal(prime.status, 0, `prime run failed: ${prime.stderr} ${JSON.stringify(prime.out)}`);
   assert.equal(prime.out?.["advanced"], true, "the prime run must advance the baseline");
-  assert.equal((prime.out?.["results"] as unknown[]).length, 14, "the prime run must run all 14 tests");
+  assert.equal(
+    (prime.out?.["results"] as unknown[]).length,
+    14,
+    "the prime run must run all 14 tests",
+  );
 });
 
 after(() => {
@@ -40,7 +44,12 @@ after(() => {
 });
 
 // Compares one step's actual output with its expectation. Returns mismatches.
-function compareStep(step: Step, status: number | null, out: Record<string, unknown> | null, stderr: string): string[] {
+function compareStep(
+  step: Step,
+  status: number | null,
+  out: Record<string, unknown> | null,
+  stderr: string,
+): string[] {
   if (out === null) return [`no JSON output (exit ${status}): ${stderr.slice(-800)}`];
   const problems: string[] = [];
   const plan = (out["plan"] ?? null) as Record<string, unknown> | null;
@@ -87,7 +96,8 @@ for (const c of loadCases() as CaseFile[]) {
         const env = applyEdits(repo, step.edit ?? []);
         commitAll(repo);
         const r = runCli(repo, store, [], env);
-        for (const p of compareStep(step, r.status, r.out, r.stderr)) problems.push(`step ${i + 1}: ${p}`);
+        for (const p of compareStep(step, r.status, r.out, r.stderr))
+          problems.push(`step ${i + 1}: ${p}`);
       });
       assert.deepEqual(problems, [], `${c.id} mismatches (expected first, got second)`);
     } finally {

@@ -98,7 +98,11 @@ export class UsageError extends Error {
   }
 }
 
-async function mapPool<T, R>(items: readonly T[], limit: number, fn: (item: T, index: number) => Promise<R>): Promise<R[]> {
+async function mapPool<T, R>(
+  items: readonly T[],
+  limit: number,
+  fn: (item: T, index: number) => Promise<R>,
+): Promise<R[]> {
   const out: R[] = new Array<R>(items.length);
   let next = 0;
   const lane = async (): Promise<void> => {
@@ -116,7 +120,8 @@ function ensureStore(store: string): void {
   if (existsSync(store)) return;
   const engine = defaultEngine();
   const r = spawnSync(engine, ["init", "--store", store], { encoding: "utf8" });
-  if (r.status !== 0) throw new UsageError(`cannot create the store at ${store}: ${(r.stderr || "").trim()}`);
+  if (r.status !== 0)
+    throw new UsageError(`cannot create the store at ${store}: ${(r.stderr || "").trim()}`);
 }
 
 export async function runAdapter(opts: RunOptions): Promise<RunReport> {
@@ -141,7 +146,12 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     throw new UsageError(e instanceof Error ? e.message : String(e));
   }
 
-  const client = await connect({ store, root, command: [defaultEngine(), "serve"], timeoutMs: 60_000 });
+  const client = await connect({
+    store,
+    root,
+    command: [defaultEngine(), "serve"],
+    timeoutMs: 60_000,
+  });
   try {
     const stored = (await client.baseline()).baseline;
 
@@ -157,7 +167,9 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       throw new UsageError(gitError ?? "the git change source failed");
     }
     if (cs !== null && opts.base !== undefined && stored !== null && cs.baseline !== stored) {
-      throw new UsageError(`--base resolves to ${cs.baseline}, but the store baseline is ${stored}`);
+      throw new UsageError(
+        `--base resolves to ${cs.baseline}, but the store baseline is ${stored}`,
+      );
     }
 
     // The plan is asked even in --all and --shadow mode, for the deleted tasks
@@ -166,20 +178,31 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     if (cs !== null) {
       plan = await client.affected(
         { baseline: cs.baseline, head: cs.head, changes: cs.changes },
-        { baseline: cs.baseline, context, env: hashes, config, declared_tasks: discovered, verify: false, policy: "balanced" },
+        {
+          baseline: cs.baseline,
+          context,
+          env: hashes,
+          config,
+          declared_tasks: discovered,
+          verify: false,
+          policy: "balanced",
+        },
       );
     }
 
     const deleted = new Set<string>(plan?.deleted_tasks ?? []);
     for (const c of cs?.changes ?? []) {
       if (c.status === "deleted" && TEST_FILE.test(c.path)) deleted.add(c.path);
-      if (c.status === "renamed" && c.old_path !== undefined && TEST_FILE.test(c.old_path)) deleted.add(c.old_path);
+      if (c.status === "renamed" && c.old_path !== undefined && TEST_FILE.test(c.old_path))
+        deleted.add(c.old_path);
     }
     if (!opts.shadow) for (const t of [...deleted].sort()) await client.forget(t);
 
     const runAll = opts.all || opts.shadow || plan === null || plan.fallback !== null;
     const planned = new Set((plan?.tasks ?? []).map((t) => t.id));
-    const selected = runAll ? discovered : [...planned].filter((t) => discovered.includes(t)).sort();
+    const selected = runAll
+      ? discovered
+      : [...planned].filter((t) => discovered.includes(t)).sort();
     const wouldSkip = plan === null ? [] : discovered.filter((t) => !planned.has(t));
 
     const workDir = mkdtempSync(path.join(os.tmpdir(), "incremental-vitest-"));
@@ -208,7 +231,9 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     // the baseline is null, and the observations name the commit they were
     // taken at, which is the one the first advance will name.
     const obsBaseline = stored ?? headEnd;
-    const observations: Observation[] = files.map((f) => buildObservation(f, root, context, obsBaseline, dirty));
+    const observations: Observation[] = files.map((f) =>
+      buildObservation(f, root, context, obsBaseline, dirty),
+    );
     let advanced = false;
     if (!opts.shadow) {
       if (observations.length > 0) await client.observeMany(observations);
@@ -224,7 +249,9 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
 
     const notAdvanced: string[] = [];
     if (!opts.shadow && !canAdvance) {
-      for (const f of files) if (f.outcome === "error") notAdvanced.push(`error: ${f.task}${f.problem ? ` (${f.problem})` : ""}`);
+      for (const f of files)
+        if (f.outcome === "error")
+          notAdvanced.push(`error: ${f.task}${f.problem ? ` (${f.problem})` : ""}`);
       if (dirty) notAdvanced.push("the worktree is dirty at the end of the run");
       if (headEnd !== head0.head) notAdvanced.push("HEAD moved during the run");
     }
@@ -245,12 +272,19 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       dirty,
       changes: cs?.changes ?? [],
       plan,
-      fallback: plan?.fallback ?? (runAll && plan === null ? { action: "run_all", reason: "git_source" } : null),
+      fallback:
+        plan?.fallback ??
+        (runAll && plan === null ? { action: "run_all", reason: "git_source" } : null),
       gitError,
       selected,
       discovered,
       wouldSkip,
-      results: files.map((f) => ({ task: f.task, outcome: f.outcome, durationMs: f.durationMs, problem: f.problem })),
+      results: files.map((f) => ({
+        task: f.task,
+        outcome: f.outcome,
+        durationMs: f.durationMs,
+        problem: f.problem,
+      })),
       observed: opts.shadow ? 0 : observations.length,
       advanced,
       notAdvanced,
@@ -268,7 +302,10 @@ interface ParsedArgs {
 
 export function parseArgs(argv: string[]): ParsedArgs {
   const [cmd, ...rest] = argv;
-  if (cmd !== "run") throw new UsageError("usage: incremental-vitest run [--base REF] [--json] [--all] [--jobs N] [--shadow] [--store DIR] [--root DIR] [--include GLOB]... [--exclude GLOB]... [--vitest-arg ARG]... [--vitest FILE]");
+  if (cmd !== "run")
+    throw new UsageError(
+      "usage: incremental-vitest run [--base REF] [--json] [--all] [--jobs N] [--shadow] [--store DIR] [--root DIR] [--include GLOB]... [--exclude GLOB]... [--vitest-arg ARG]... [--vitest FILE]",
+    );
   const opts: RunOptions = {
     root: process.cwd(),
     store: "",
@@ -289,28 +326,38 @@ export function parseArgs(argv: string[]): ParsedArgs {
       if (v === undefined) throw new UsageError(`${a} needs a value`);
       return v;
     };
-    switch (a) {
-      case "--base": opts.base = value(); break;
-      case "--json": json = true; break;
-      case "--all": opts.all = true; break;
-      case "--shadow": opts.shadow = true; break;
-      case "--jobs": {
-        const n = Number(value());
-        if (!Number.isInteger(n) || n < 1) throw new UsageError("--jobs needs a positive integer");
-        opts.jobs = n;
-        break;
-      }
-      case "--store": opts.store = value(); storeGiven = true; break;
-      case "--root": opts.root = value(); break;
-      case "--include": opts.include.push(value()); break;
-      case "--exclude": opts.exclude.push(value()); break;
-      case "--vitest-arg": opts.vitestArgs.push(value()); break;
-      case "--vitest": opts.vitest = value(); break;
-      default: throw new UsageError(`unknown option ${a}`);
+    if (a === "--base") {
+      opts.base = value();
+    } else if (a === "--json") {
+      json = true;
+    } else if (a === "--all") {
+      opts.all = true;
+    } else if (a === "--shadow") {
+      opts.shadow = true;
+    } else if (a === "--jobs") {
+      const n = Number(value());
+      if (!Number.isInteger(n) || n < 1) throw new UsageError("--jobs needs a positive integer");
+      opts.jobs = n;
+    } else if (a === "--store") {
+      opts.store = value();
+      storeGiven = true;
+    } else if (a === "--root") {
+      opts.root = value();
+    } else if (a === "--include") {
+      opts.include.push(value());
+    } else if (a === "--exclude") {
+      opts.exclude.push(value());
+    } else if (a === "--vitest-arg") {
+      opts.vitestArgs.push(value());
+    } else if (a === "--vitest") {
+      opts.vitest = value();
+    } else {
+      throw new UsageError(`unknown option ${a}`);
     }
   }
   opts.root = path.resolve(opts.root);
-  if (!storeGiven) opts.store = process.env.INCREMENTAL_STORE || path.join(opts.root, ".incremental");
+  if (!storeGiven)
+    opts.store = process.env.INCREMENTAL_STORE || path.join(opts.root, ".incremental");
   return { opts, json };
 }
 
@@ -321,12 +368,24 @@ function printText(r: RunReport): void {
     `incremental vitest ${r.mode}: stored ${r.stored ?? "none"}, query ${r.base ?? "none"}, head ${r.headEnd}${r.dirty ? " (dirty)" : ""}`,
   ];
   if (r.fallback !== null) lines.push(`fallback: ${r.fallback.reason}`);
-  else if (r.plan !== null) lines.push(`plan: ${r.plan.tasks.length} invalid of ${r.plan.total_tasks}, confidence ${r.plan.confidence}`);
+  else if (r.plan !== null)
+    lines.push(
+      `plan: ${r.plan.tasks.length} invalid of ${r.plan.total_tasks}, confidence ${r.plan.confidence}`,
+    );
   if (r.gitError !== null) lines.push(`git: ${r.gitError}`);
-  lines.push(`ran ${r.results.length}: pass ${counts.pass}, fail ${counts.fail}, error ${counts.error}`);
-  if (r.mode === "shadow") lines.push(`would skip ${r.wouldSkip.length}: ${r.wouldSkip.join(", ")}`);
-  for (const t of r.results) if (t.outcome !== "pass") lines.push(`  ${t.outcome} ${t.task}${t.problem ? ` (${t.problem})` : ""}`);
-  lines.push(r.advanced ? `advanced to ${r.headEnd}` : `not advanced: ${r.notAdvanced.join("; ") || "shadow mode"}`);
+  lines.push(
+    `ran ${r.results.length}: pass ${counts.pass}, fail ${counts.fail}, error ${counts.error}`,
+  );
+  if (r.mode === "shadow")
+    lines.push(`would skip ${r.wouldSkip.length}: ${r.wouldSkip.join(", ")}`);
+  for (const t of r.results)
+    if (t.outcome !== "pass")
+      lines.push(`  ${t.outcome} ${t.task}${t.problem ? ` (${t.problem})` : ""}`);
+  lines.push(
+    r.advanced
+      ? `advanced to ${r.headEnd}`
+      : `not advanced: ${r.notAdvanced.join("; ") || "shadow mode"}`,
+  );
   lines.push(`exit ${r.exit}`);
   process.stdout.write(lines.join("\n") + "\n");
 }
@@ -345,9 +404,11 @@ export async function main(argv: string[]): Promise<number> {
     else printText(report);
     return report.exit;
   } catch (e) {
-    const code = e instanceof UsageError ? "invalid_params" : isIncrementalError(e) ? e.code : "internal";
+    const code =
+      e instanceof UsageError ? "invalid_params" : isIncrementalError(e) ? e.code : "internal";
     const message = e instanceof Error ? e.message : String(e);
-    if (parsed.json) process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
+    if (parsed.json)
+      process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
     process.stderr.write(`incremental vitest: ${message}\n`);
     return e instanceof UsageError ? 2 : 4;
   }
