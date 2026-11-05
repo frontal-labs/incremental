@@ -45,7 +45,7 @@ Context: lockfile, root `tsconfig.json`, hash of all `package.json` files, `runn
 - Inputs are every file under the repository root, minus the skipped directories and minus the directories of the other apps (an app does not import from another app's directory: this is an assumption, not checked). Shared code under `libs/` and the root files are inputs for every app, so an edit there reruns every app. Inputs are hashed before and after each build. The build may write files: `next-env.d.ts` is excluded because its content follows the `next` version, and any other file the build changes makes the observation dirty, because the build did not read the state it recorded.
 - Tracked environment: `NEXT_*` variables and `NODE_ENV`, recorded as env inputs. Other variables are not observed.
 - Not observed: variables outside the tracked set, files outside the repository root, and the `.next` build cache, which can change how a build behaves without changing any input. A build with an unobserved cache can therefore produce a different result for the same inputs.
-- Build outputs (`.next`) are not stored (PLAN 4.3). Remote build caches are not consulted. A `next build` that hits a cache is still recorded as a pass, and the cache is not trusted as proof.
+- Build outputs (`.next`) are not stored . Remote build caches are not consulted. A `next build` that hits a cache is still recorded as a pass, and the cache is not trusted as proof.
 
 ## Gaps
 

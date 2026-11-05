@@ -26,7 +26,7 @@ A Cargo workspace member, identified by the repo-relative directory of its `Carg
 - `lockfile` (hash of `Cargo.lock`), `pkgjson` (hash of the workspace `Cargo.toml`), `runner` (the toolchain version strings above). `tsconfig` and `node` do not apply and are `"n/a"`. Capabilities `probes`, `dirs` and `env` are all false.
 
 ## Conformance cases
-The adapter is not in the conformance suite (PLAN §12.1, §12.3 cover the Vitest adapter only). The cases below are intended checks, not suite cases. The adapter's own tests cover the first three and a build script with and without `rerun-if-changed`.
+The adapter is not in the conformance suite . The cases below are intended checks, not suite cases. The adapter's own tests cover the first three and a build script with and without `rerun-if-changed`.
 - Editing a source file invalidates the crate's task.
 - Editing a dependency crate invalidates the dependent crate.
 - A build script without `rerun-if-changed` is recorded `dirty`.

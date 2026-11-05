@@ -1,6 +1,6 @@
 # Rust Client Example
 
-Demonstrates the Rust binding (`bindings/rust`, crate `incremental-rust`) speaking incremental Protocol v1 over stdio. Per `docs/spec/adapters/rust.md` and PLAN §10.6.
+Demonstrates the Rust binding (`bindings/rust`, crate `incremental-rust`) speaking incremental Protocol v1 over stdio. Per `docs/spec/adapters/rust.md` and 
 
 ## Layout
 
@@ -35,16 +35,16 @@ use serde_json::{json, Value};
 use std::process::{Command, Stdio};
 use std::io::{BufRead, BufReader, Write};
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main -> Result<, Box<dyn std::error::Error>> {
     let mut child = Command::new("incremental")
         .args(["serve", "--store", ".incremental", "--root", "."])
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()?;
+        .stdin(Stdio::piped)
+        .stdout(Stdio::piped)
+        .stderr(Stdio::piped)
+        .spawn?;
 
-    let stdin = child.stdin.take().expect("stdin piped");
-    let stdout = child.stdout.take().expect("stdout piped");
+    let stdin = child.stdin.take.expect("stdin piped");
+    let stdout = child.stdout.take.expect("stdout piped");
     let mut stdin_lock = stdin;
 
     // hello handshake
@@ -57,10 +57,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     });
     writeln!(stdin_lock, "{}", hello_req)?;
-    stdin_lock.flush()?;
+    stdin_lock.flush?;
 
     let reader = BufReader::new(stdout);
-    for line in reader.lines() {
+    for line in reader.lines {
         let resp: Value = serde_json::from_str(&line?)?;
         if resp.get("id") == Some(&json!(1)) {
             if let Some(err) = resp.get("error") {
@@ -101,9 +101,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     });
     writeln!(stdin_lock, "{}", affected_req)?;
-    stdin_lock.flush()?;
+    stdin_lock.flush?;
 
-    for line in BufReader::new(child.stdout.take().unwrap()).lines() {
+    for line in BufReader::new(child.stdout.take.unwrap).lines {
         let resp: Value = serde_json::from_str(&line?)?;
         if resp.get("id") == Some(&json!(2)) {
             if let Some(err) = resp.get("error") {
@@ -112,15 +112,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             let plan = &resp["result"];
             println!("Total tasks: {}", plan["total_tasks"]);
-            println!("Invalid: {}", plan["tasks"].as_array().map(|a| a.len()).unwrap_or(0));
+            println!("Invalid: {}", plan["tasks"].as_array.map(|a| a.len).unwrap_or(0));
             println!("Skipped: {}", plan["skipped"]);
             println!("Confidence: {}", plan["confidence"]);
             break;
         }
     }
 
-    let _ = child.kill();
-    Ok(())
+    let _ = child.kill;
+    Ok()
 }
 ```
 

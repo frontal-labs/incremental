@@ -1,6 +1,6 @@
 # Python Client Example
 
-Demonstrates the Python binding (`bindings/python`, package `incremental`) speaking incremental Protocol v1 over stdio. Per `docs/spec/bindings-python.md` and PLAN §10.3.
+Demonstrates the Python binding (`bindings/python`, package `incremental`) speaking incremental Protocol v1 over stdio. Per `docs/spec/bindings-python.md` and 
 
 ## Layout
 
@@ -25,18 +25,18 @@ from typing import Any
 from incremental import Incremental, IncrementalError, connect
 
 
-async def main() -> None:
+async def main -> None:
     store = ".incremental"
     client = await connect(store=store)
 
     try:
         # Handshake
-        hello = await client.hello()
+        hello = await client.hello
         print(f"Engine: {hello['engine']['name']} v{hello['engine']['version']}")
         print(f"Capabilities: {hello['capabilities']}")
 
         # Get current baseline
-        baseline_resp = await client.baseline()
+        baseline_resp = await client.baseline
         baseline = baseline_resp["baseline"]
         print(f"Baseline: {baseline}")
 
@@ -80,20 +80,20 @@ async def main() -> None:
         print(f"Incremental error: {e.code}: {e.message}", file=sys.stderr)
         sys.exit(1)
     finally:
-        await client.close()
+        await client.close
 
 
 if __name__ == "__main__":
     import asyncio
     import sys
-    asyncio.run(main())
+    asyncio.run(main)
 ```
 
 ## requirements.txt
 
 ```
 # Standard library only — incremental uses no external dependencies
-# per PLAN.md §9 rule 2 (Bindings: stdlib + protocol).
+# per  §9 rule 2 (Bindings: stdlib + protocol).
 ```
 
 ## incremental_config.json

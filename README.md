@@ -8,7 +8,7 @@ An incremental dependency engine. It records what each task reads, lists, probes
 
 The engine is written in Goose (`core/`). Protocol clients are TypeScript (`bindings/node`, `adapters/vitest`, `mcp`) and Python (`bindings/python`). The specification is in `spec/`, and the conformance suite (40 cases) is in `conformance/`.
 
-**Name status:** the project is named Incremental (renamed from its former name on 2026-11-04; the binary, packages and store follow the new name). The earlier trademark, GitHub and domain checks (DECISIONS.md D-E0-01) covered the former name only. The checks for "Incremental" are not done (PLAN E0 step 1).
+**Name status:** the project is named Incremental (renamed from its former name on 2026-11-04; the binary, packages and store follow the new name). The earlier trademark, GitHub and domain checks (DECISIONS.md D-E0-01) covered the former name only. The checks for "Incremental" are not done .
 
 ## Quickstart
 
@@ -67,7 +67,7 @@ core/dist/incremental affected --store $STORE --changes changes.json --baseline 
 
 The last command prints a plan. It lists `src/math.test.ts` with the reason `reads:src/math.ts`, and `skipped` is 0. Two other commands are `stats` (store summary) and `serve` (protocol v1 over stdio). See `examples/cli_workflow/README.md` for the full walkthrough and `spec/PROTOCOL.md` for the protocol.
 
-## Limits (PLAN 9.6, D-11)
+## Limits 
 
 - Non-file inputs (time, network, randomness) are not observed. A task that depends on them is not protected by the engine; re-run it when they matter.
 - A store is per worktree by default (`<repo>/.incremental`). A store shared between worktrees is safe, but a baseline mismatch falls back to running everything.

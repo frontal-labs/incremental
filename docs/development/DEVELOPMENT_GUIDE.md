@@ -5,7 +5,7 @@
 cd /Users/gabrielfonseca/Desktop/graph
 git status && git log --oneline -5
 ```
-Read PLAN.md sections 0,1,2,14 first. Follow the start protocol for every session.
+Read  sections 0,1,2,14 first. Follow the start protocol for every session.
 
 ## Project Structure
 ```
@@ -18,7 +18,7 @@ incremental/
 ├── conformance/    # Conformance suite (cases, stores, runner)
 ├── spec/           # Specifications (PROTOCOL, POLICY, FORMAT, schemas)
 ├── benchmarks/     # Benchmark harness and results
-├── plans/          # PLAN.md (canonical spec)
+├── plans/          #  (canonical spec)
 └── status/         # Role status JSON files
 ```
 
@@ -40,14 +40,14 @@ incremental/
 ## Roles
 | Role | Purpose | Owns |
 |---|---|---|
-| Spec/Conformance | Freeze protocol/policy, write conformance first, verify milestones | `plans/PLAN.md` (CR only), `spec/`, `conformance/`, `Makefile`, `Dockerfile.linux`, signoffs |
+| Spec/Conformance | Freeze protocol/policy, write conformance first, verify milestones | `` (CR only), `spec/`, `conformance/`, `Makefile`, `Dockerfile.linux`, signoffs |
 | Core | Engine (store, index, policy, protocol server, CLI) | `core/`, `cli/` |
 | Bindings | Language clients over protocol (Node first, Python later) | `bindings/` |
 | Adapters | Recorders/planners (Vitest, strace, git, MCP) | `adapters/`, `mcp/`, `examples/` |
 | Bench | Harness, baselines, replay, gate numbers | `benchmarks/`, `RESULTS.md`, `GATE.md` |
 
 ## Workflow
-1. Read PLAN.md sections 0,1,2,14 + your role's milestones in section 15
+1. Read  sections 0,1,2,14 + your role's milestones in section 15
 2. Check `STATUS.md` and `spec/CHANGE_REQUESTS.md`
 3. Work only on first milestone in your role's list that's `todo`/`doing` with deps done. Set to `doing` in status file
 4. When finished: run verify command, save output to `evidence/<id>.txt`, commit as `<id>: <deliverable>`, set state to `verify`, stop

@@ -6,20 +6,20 @@ Status: the drafts below were built on 2026-11-03 under the goal to build all ad
 
 # Adapter drafts (not approved)
 
-One draft per adapter that PLAN.md §4.3 lists as "later", plus the Rust binding. The status column below is current: each one is built and tested against the engine, but none is in the conformance suite (PLAN §12).
+One draft per adapter that  §4.3 lists as "later", plus the Rust binding. The status column below is current: each one is built and tested against the engine, but none is in the conformance suite .
 
 Each draft answers the same questions, so the reviewer can compare them:
 
-1. What a task is (its id, per PLAN D-2).
-2. What the recorder can observe, and how (PLAN §11.1).
-3. What it cannot observe. Each gap must set a capability to false or mark the run `dirty`. Gaps are never hidden (PLAN §11.5).
-4. Its declared inputs (the `declared` kind, PLAN §9.5).
+1. What a task is (its id, per ).
+2. What the recorder can observe, and how .
+3. What it cannot observe. Each gap must set a capability to false or mark the run `dirty`. Gaps are never hidden .
+4. Its declared inputs (the `declared` kind, ).
 5. The conformance cases it would need.
 6. Open questions that the docs did not settle.
 
-Status of the drafts is tracked in `DECISIONS.md` under "Adapter drafts". Approving a draft means writing a `DECISIONS.md` entry for it (PLAN §2.9), then building.
+Status of the drafts is tracked in `DECISIONS.md` under "Adapter drafts". Approving a draft means writing a `DECISIONS.md` entry for it , then building.
 
-| Draft | Tool | Plan tier |
+| Draft | Tool | Tier |
 |---|---|---|
 | [bazel](bazel.md) | Bazel | **built** (`adapters/bazel`, `make test-bazel`) |
 | [biome](biome.md) | Biome | **built** (`adapters/biome`, `make test-biome`) |

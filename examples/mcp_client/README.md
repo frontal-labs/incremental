@@ -69,10 +69,10 @@ async def run_affected_tasks(store: str, verify: bool = False) -> dict[str, Any]
         },
     }
     assert proc.stdin
-    proc.stdin.write((json.dumps(init_req) + "\n").encode())
-    await proc.stdin.drain()
-    init_resp = await proc.stdout.readline()
-    print(f"initialize: {init_resp.decode().strip()}")
+    proc.stdin.write((json.dumps(init_req) + "\n").encode)
+    await proc.stdin.drain
+    init_resp = await proc.stdout.readline
+    print(f"initialize: {init_resp.decode.strip}")
 
     # List tools
     list_tools = {
@@ -80,10 +80,10 @@ async def run_affected_tasks(store: str, verify: bool = False) -> dict[str, Any]
         "id": 2,
         "method": "tools/list",
     }
-    proc.stdin.write((json.dumps(list_tools) + "\n").encode())
-    await proc.stdin.drain()
-    tools_resp = await proc.stdout.readline()
-    print(f"tools/list: {tools_resp.decode().strip()}")
+    proc.stdin.write((json.dumps(list_tools) + "\n").encode)
+    await proc.stdin.drain
+    tools_resp = await proc.stdout.readline
+    print(f"tools/list: {tools_resp.decode.strip}")
 
     # Call affected_tasks
     call_req = {
@@ -95,13 +95,13 @@ async def run_affected_tasks(store: str, verify: bool = False) -> dict[str, Any]
             "arguments": {"verify": verify},
         },
     }
-    proc.stdin.write((json.dumps(call_req) + "\n").encode())
-    await proc.stdin.drain()
-    call_resp = await proc.stdout.readline()
-    print(f"affected_tasks: {call_resp.decode().strip()}")
+    proc.stdin.write((json.dumps(call_req) + "\n").encode)
+    await proc.stdin.drain
+    call_resp = await proc.stdout.readline
+    print(f"affected_tasks: {call_resp.decode.strip}")
 
-    proc.stdin.close()
-    await proc.wait()
+    proc.stdin.close
+    await proc.wait
     return json.loads(call_resp)
 
 

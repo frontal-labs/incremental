@@ -1,12 +1,12 @@
 # @incremental/env
 
-Environment variables as observation inputs (spec/adapters/env.md, PLAN 8.4, D-E1-02).
+Environment variables as observation inputs (spec/adapters/env.md, , D-E1-02).
 Not a task runner. For each allowlisted variable a task records an `env` input with
 `value_hash` (`sha256:...`, or `unset` when missing). Values are hashed, never stored.
 
 ## Use
 
-- `contextFor(envAll)`: the context (PLAN 8.4). `caps.env` is true only when `envAll` is set.
+- `contextFor(envAll)`: the context . `caps.env` is true only when `envAll` is set.
 - `recordTasks(client, { baseline, context, env, tasks })`: one observation per task. A task
   is `{ id, names, envAll?, outcome? }`. `env` is passed in, so process.env is never read here.
 - `planEnv(client, { baseline, context, env, tasks, changes? })`: the affected query with the

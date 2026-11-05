@@ -1,6 +1,6 @@
 # Incremental Schemas
 
-JSON schemas for incremental: observations, changesets, plans, explanations, errors, requests, responses, stats, store records, config, change requests, conformance cases, status JSON, store layout, and friction entries. Schemas are the machine-readable counterpart to `docs/spec/PROTOCOL.md`, `docs/spec/POLICY.md`, `docs/spec/FORMAT.md`, and `plans/PLAN.md`.
+JSON schemas for incremental: observations, changesets, plans, explanations, errors, requests, responses, stats, store records, config, change requests, conformance cases, status JSON, store layout, and friction entries. Schemas are the machine-readable counterpart to `docs/spec/PROTOCOL.md`, `docs/spec/POLICY.md`, `docs/spec/FORMAT.md`, and ``.
 
 The authoritative schema artifacts checked by `spec/validate.mjs` live in `spec/schemas/`. This directory (`schemas/`) mirrors those schemas with full `$id` URIs, discriminators, and additional schema domains (store layout, config, change requests, conformance cases, role status, friction entries).
 
@@ -40,7 +40,7 @@ The authoritative schema artifacts checked by `spec/validate.mjs` live in `spec/
 - `docs/spec/FORMAT.md` — Store format v1: tg.log records, graph_version, stat.cache, tg.lock, compaction.
 - `docs/spec/DATA_MODEL.md` — Core concepts, terms, input kinds, observation and ChangeSet schemas.
 - `docs/spec/CONFIGURATION.md` — Config file, environment variables, CLI options, defaults.
-- `plans/PLAN.md` — Full specification v4.1 (canonical plan).
+- `` — Full specification v4.1 (canonical plan).
 
 ## Validating
 

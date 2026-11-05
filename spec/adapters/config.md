@@ -6,7 +6,7 @@ Status: built (adapters/config, make test-config). Spec sign-off: not recorded i
 Not a task runner. The config adapter records config files as declared inputs, so that other adapters can name them in `globalInputs` (docs/spec/CONFIGURATION.md) and so that a change to shared config invalidates the right tasks.
 
 ## Task
-None of its own. Built: `recordTasks` produces one observation per task the caller supplies. Each task declares every global input plus its own `declares` list. Observations are of kind `declared` (PLAN §9.5), with content hashes.
+None of its own. Built: `recordTasks` produces one observation per task the caller supplies. Each task declares every global input plus its own `declares` list. Observations are of kind `declared` , with content hashes.
 
 ## What it can observe
 - The file path and its content hash. It cannot observe whether a task read the file, so it is only correct when the config is listed as global or the task's own recorder records the read.
@@ -20,10 +20,10 @@ None of its own. Built: `recordTasks` produces one observation per task the call
 - Built: `incremental.config.json` itself is not an input of any task unless a task declares it.
 
 ## Declared inputs
-- Whatever `incremental.config.json` lists under `globalInputs` (PLAN §6.7), and each task's own `declares` list. Built: the `adapters` key named here is not read by `adapters/config/src`; this line is not confirmed from the README or code (see report).
+- Whatever `incremental.config.json` lists under `globalInputs` , and each task's own `declares` list. Built: the `adapters` key named here is not read by `adapters/config/src`; this line is not confirmed from the README or code (see report).
 
 ## Conformance cases
-The adapter is not in the conformance suite (PLAN §12.1, §12.3 cover the Vitest adapter only). The cases below are intended checks, not suite cases. The adapter's own wiring tests (`test/config.test.ts`, through the real engine) are not listed here.
+The adapter is not in the conformance suite . The cases below are intended checks, not suite cases. The adapter's own wiring tests (`test/config.test.ts`, through the real engine) are not listed here.
 - A changed global input invalidates every task. Built: the change falls back (`global_input`, P1) and invalidates every known task.
 - A changed non-global input does not invalidate tasks that never declared it. Built: it invalidates the declaring task (`declared:<path>`, P3). Undeclared changes fall back under the default caps (see "What it cannot observe").
 

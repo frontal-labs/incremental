@@ -24,12 +24,12 @@ One task per file that `biome check` processes. Task id: `biome check <repo-rela
 - Root `.gitignore`, `.editorconfig`, `package.json`, and the lockfile, when present.
 
 ## Conformance cases
-The adapter is not in the conformance suite (PLAN §12.1, §12.3 cover the Vitest adapter only). The cases below are intended checks, not suite cases.
+The adapter is not in the conformance suite . The cases below are intended checks, not suite cases.
 - Changing one file invalidates only that file's task.
 - Changing `biome.json` invalidates every task that uses it.
 - A config change through `extends` is detected.
 
 ## Open questions
-- Per-file task count at PLAN §13 sizes: not measured. Each run starts two Biome processes per 200 selected files, and discovery checks the whole repository once before planning.
+- Per-file task count at  sizes: not measured. Each run starts two Biome processes per 200 selected files, and discovery checks the whole repository once before planning.
 - Lockfile coverage of package plugins: assumed, not verified against `node_modules` contents.
-- Reads of files outside the declared set are observable only through the strace fallback (PLAN §11.5), which gives no macOS coverage. The file list itself no longer needs it: the text list is used (Biome 2.5.15 has no machine-readable list, per README).
+- Reads of files outside the declared set are observable only through the strace fallback , which gives no macOS coverage. The file list itself no longer needs it: the text list is used (Biome 2.5.15 has no machine-readable list, per README).

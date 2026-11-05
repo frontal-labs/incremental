@@ -10,7 +10,7 @@ Exit codes follow the TypeScript adapter: 0 advanced and clean, 1 advanced with 
 
 ## Tasks
 
-- Task id: `ruff check <repo-relative path>` (PLAN D-2).
+- Task id: `ruff check <repo-relative path>` .
 - The task list is `ruff check --show-files`, so ruff's own excludes and `.gitignore` apply. `pyproject.toml` is a task too, because ruff checks it for its TOML rules.
 - Each task runs `ruff check --no-cache --output-format json <file>`. Exit 0 is `pass`, exit 1 is `fail`, anything else is `error`.
 
@@ -29,7 +29,7 @@ Exit codes follow the TypeScript adapter: 0 advanced and clean, 1 advanced with 
 - **Environment.** Ruff's environment variables (for example `RUFF_*`) are not recorded. The adapter does not record them, and `env` is false.
 - **`ruff format`** is not covered. Only `ruff check`.
 - **Notebooks.** `.ipynb` files that ruff lists are tasks, but the adapter has not been tested on them.
-- **Shallow clones and symlinks.** Inherited from the git change source (PLAN 11.7). Symlinked files are not resolved by the adapter.
+- **Shallow clones and symlinks.** Inherited from the git change source . Symlinked files are not resolved by the adapter.
 
 ## Dependencies
 

@@ -21,16 +21,16 @@ An adapter answers two questions for the engine: what does each task depend on, 
 ```ts
 import { connect, repoRoot } from "@incremental/client";
 
-const root = repoRoot();
+const root = repoRoot;
 const client = await connect({ root });
-const { baseline } = await client.baseline();
+const { baseline } = await client.baseline;
 const plan = await client.affected(changeSet, { baseline: baseline ?? headSha, context });
 for (const task of plan.tasks) {
   // run the task, collect its inputs, then:
   await client.observe({ task: task.id, baseline: headSha, dirty, context, inputs, outputs: [], outcome, duration_ms });
 }
 await client.advance(headSha, baseline);
-await client.close();
+await client.close;
 ```
 
 Use `observeMany` for batches. Use `explain` to debug a plan, and `forget` for tasks a tool removed. Read `plan.fallback` before you trust a short task list.
@@ -55,4 +55,4 @@ Use `observeMany` for batches. Use `explain` to debug a plan, and `forget` for t
 
 ## Status and approval
 
-Adapters are not in the conformance suite (PLAN §12). Mark that in the spec. An adapter's spec is approved only when `DECISIONS.md` has a sign-off entry for it. A built adapter without a sign-off is still `built`, not `done`.
+Adapters are not in the conformance suite . Mark that in the spec. An adapter's spec is approved only when `DECISIONS.md` has a sign-off entry for it. A built adapter without a sign-off is still `built`, not `done`.

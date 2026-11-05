@@ -1,4 +1,4 @@
-# GATE.md: Gate 1 (PLAN 13.2, E7)
+# GATE.md: Gate 1 
 
 Generated: 2026-11-04T23:31:58.037Z
 
@@ -13,13 +13,13 @@ Generated: 2026-11-04T23:31:58.037Z
 
 Decision: **STOP**
 
-## Stop (PLAN 14.1)
+## Stop 
 
 One or more Gate 1 criteria failed. Do not retune thresholds; fix the code or report the stop.
 
 ### Options
 - A) fix the failing criterion and re-run `make gate`
 - B) file a change request if the criterion or its target is wrong
-- C) escalate per PLAN 14.3
+- C) escalate per 
 
-Recommendation: stop and address the failing criteria per PLAN 14.
+Recommendation: stop and address the failing criteria per 

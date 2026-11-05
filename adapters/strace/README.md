@@ -2,7 +2,7 @@
 
 Native recorder for Linux: runs a command under `strace` and reports the paths
 it touches, as `file`, `dir`, `probe` and `exec` inputs. It is the oracle that
-tests the Vitest Node recorder's completeness (PLAN §11.5, milestone E5) and a
+tests the Vitest Node recorder's completeness  and a
 fallback for native tools (`fs`, `process`) on Linux.
 
 ## Command
@@ -20,8 +20,8 @@ strace -f -e trace=openat,open,openat2,stat,newfstatat,statx,access,faccessat,fa
 
 Paths are `realpath`'d, confined to the configured `roots`, excluded of
 `node_modules`, `.git` and `.incremental`, and returned repo-relative with `/`
-separators — the same canonicalization as the Vitest recorder (PLAN 11.4).
-strace cannot see environment reads (PLAN 11.5).
+separators — the same canonicalization as the Vitest recorder .
+strace cannot see environment reads .
 
 ## Rule
 

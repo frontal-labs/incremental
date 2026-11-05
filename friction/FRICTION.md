@@ -2,7 +2,7 @@
 
 Friction log for incremental: notes on developer experience, rough edges, and open friction encountered while adopting, extending, or contributing to incremental. Append-only — each entry starts with `## F-NNN <title> (Role, Milestone)`.
 
-Per PLAN.md §7 rule 6: log surprises in `FRICTION.md`, choices in `DECISIONS.md`, versions in `VERSIONS.md`. These three are append-only. Per PLAN §16.2: `FRICTION.md`, `DECISIONS.md`, `VERSIONS.md` and `friction/` are append-only. Any role may append. No role may edit another role's entry.
+Per  §7 rule 6: log surprises in `FRICTION.md`, choices in `DECISIONS.md`, versions in `VERSIONS.md`. These three are append-only. Per : `FRICTION.md`, `DECISIONS.md`, `VERSIONS.md` and `friction/` are append-only. Any role may append. No role may edit another role's entry.
 
 ## Friction Entries
 

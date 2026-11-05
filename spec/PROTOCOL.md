@@ -1,4 +1,4 @@
-# incremental Protocol v1 (from plans/PLAN.md section 9)
+# incremental Protocol v1 (from  section 9)
 
 ## Transport (9.1)
 

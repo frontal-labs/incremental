@@ -1,8 +1,8 @@
 # VERSIONS.md
 
-Pinned tool and package versions (PLAN.md E0 step 2, rule 2.11).
-Append-only: any role may append, no role may edit another role's entry (PLAN 16.2).
-A pin is eligible only if released at least 14 days before the pin date (PLAN rule 2.11), unless a DECISIONS.md entry explains the exception.
+Pinned tool and package versions .
+Append-only: any role may append, no role may edit another role's entry .
+A pin is eligible only if released at least 14 days before the pin date , unless a DECISIONS.md entry explains the exception.
 Checked and pinned 2026-11-04 unless a row states otherwise. Publish dates from npm view, crates.io, PyPI, nodejs.org/dist/index.json and GitHub releases.
 
 ## Toolchain pins (E0 step 2)
@@ -20,8 +20,8 @@ Checked and pinned 2026-11-04 unless a row states otherwise. Publish dates from 
 | Docker image (docker/Dockerfile.linux) | node:22-bookworm@sha256:18a6d90fd60542269850c80ca03b29b1d9b14d6b221ac7ee8e35b0d33ef904bd | image digest verified 2026-11-04 | 2026-11-04 | n/a (digest-pinned image) | docker inspect node:22-bookworm |
 
 Notes:
-- Node pin per PLAN E0 step 2: newest LTS released at least 14 days ago. Node 24 (Krypton) is the newest LTS; v24.22.1 (2026-10-20) qualifies; v24.22.2 (2026-10-27) does not yet. The local dev machine runs Node v22.23.3; CI/docker use Node 22.
-- ajv is named by PLAN.md section 2/E0 and is a transitive dependency of @modelcontextprotocol/sdk (via zod-to-json-schema); no direct ajv dependency was added (see friction/F-010).
+- Node pin per  step 2: newest LTS released at least 14 days ago. Node 24 (Krypton) is the newest LTS; v24.22.1 (2026-10-20) qualifies; v24.22.2 (2026-10-27) does not yet. The local dev machine runs Node v22.23.3; CI/docker use Node 22.
+- ajv is named by  section 2/E0 and is a transitive dependency of @modelcontextprotocol/sdk (via zod-to-json-schema); no direct ajv dependency was added (see friction/F-010).
 - Goose v2026.3 was pinned on 2026-11-03, one day short of the 14-day rule, under a recorded human exception (DECISIONS.md D-14-GOOSE). On 2026-11-04 it reached 14 days, so the exception is resolved.
 
 ## Dependency pins (from package.json / package-lock.json / Cargo.lock)

@@ -52,16 +52,16 @@ A query fails over to a fallback (`context_changed`, P2) when a reserved context
 ```ts
 import { connect, isIncrementalError } from "@incremental/client";
 
-const client = await connect({ root: process.cwd() }); // store: $INCREMENTAL_STORE or <repo>/.incremental
+const client = await connect({ root: process.cwd }); // store: $INCREMENTAL_STORE or <repo>/.incremental
 try {
-  const { baseline } = await client.baseline();
+  const { baseline } = await client.baseline;
   const plan = await client.affected(changeSet, { baseline: baseline!, context });
   for (const t of plan.tasks) console.log(t.id, t.reasons);
 } catch (e) {
   if (isIncrementalError(e)) console.error(e.code, e.message);
   else throw e;
 } finally {
-  await client.close();
+  await client.close;
 }
 ```
 

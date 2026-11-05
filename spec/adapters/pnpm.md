@@ -1,7 +1,7 @@
 # pnpm adapter
 
 Status: built (adapters/pnpm, make test-pnpm). Spec sign-off: not recorded in DECISIONS.md. Matched to adapters/pnpm/README.md on 2026-11-04.
-PLAN tier: later. Also a context input: the lockfile is already a global input (docs/spec/CONFIGURATION.md).
+Also a context input: the lockfile is already a global input (docs/spec/CONFIGURATION.md).
 
 ## Task
 A workspace package, from `pnpm -r list --depth -1 --json`, run with `pnpm --filter <name> run <script>` (a `./<path>` filter when the package has no name). Task id: `<package path>#<script>`, repo-relative. The root package is `.`. pnpm's exit status is `pass` at 0 and `fail` otherwise; a spawn error or timeout is `error`.
@@ -27,7 +27,7 @@ A workspace package, from `pnpm -r list --depth -1 --json`, run with `pnpm --fil
 - For a confined task: its package's own files, its manifest, the root files and every file of each workspace dependency, as above.
 - `pnpm-lock.yaml` is the context `lockfile`, not a per-task declared input.
 
-## Cases (not in the conformance suite, PLAN §12)
+## Cases (not in the conformance suite, )
 The adapter is not in the conformance suite. Behaviors to check:
 - A dependency version change in the lockfile invalidates every package that uses it (through the `lockfile` context, which falls back to every task).
 - A change in a workspace dependency invalidates its dependents.

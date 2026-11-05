@@ -1,4 +1,4 @@
-# Policy (spec v4, from plans/PLAN.md sections 3, 4.1, 5, 8)
+# Policy (spec v4, from  sections 3, 4.1, 5, 8)
 
 This file defines `plan(state, query)`. The reference implementation (`spec/reference/policy.mjs`) and the core (`core/src/policy.ts`) must both match it. Conformance cases are the tests.
 
@@ -9,7 +9,7 @@ This file defines `plan(state, query)`. The reference implementation (`spec/refe
 - **Query**: `baseline`, `context` (may be absent), `changes` (ChangeSet entries), `verify` (bool, default false), `policy` (`balanced` or `conservative`, default `balanced`), and the optional fields below.
 - **Optional query fields** (additive to PROTOCOL.md 9.3, see DECISIONS.md D-E1-01):
   - `env`: object `{NAME: value_hash}`. The client's full environment hash map. Missing names mean `"unset"`.
-  - `config`: `{ignore: [globs], globalInputs: [globs], fallbackContextKeys: [names]}`. Missing fields take the defaults in PLAN.md 6.7.
+  - `config`: `{ignore: [globs], globalInputs: [globs], fallbackContextKeys: [names]}`. Missing fields take the defaults in  6.7.
   - `declared_tasks`: task ids known to the adapter. A declared task with no observation is a known task for this query only (P8 `no_observation`).
 
 ## 2. Procedure

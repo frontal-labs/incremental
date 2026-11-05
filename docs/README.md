@@ -37,4 +37,4 @@ This directory contains comprehensive documentation for the Incremental project,
 
 ## Current Implementation Status
 
-Based on PLAN.md milestones and current codebase state - see [STATUS.md](../STATUS.md) for current progress.
+Based on  milestones and current codebase state - see [STATUS.md](../STATUS.md) for current progress.

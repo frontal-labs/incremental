@@ -20,7 +20,7 @@ A Bazel test target label, repo-relative (e.g. `//pkg/app:test`). Labels are the
 - Bazel rewrites `MODULE.bazel.lock` on the first test run. A repo must commit the lockfile before a run can advance the baseline.
 
 ## Conformance cases
-The adapter is not in the conformance suite (PLAN §12.1, §12.3 cover the Vitest adapter only). The cases below are intended checks, not suite cases; the adapter's own tests (2 unit, 4 integration against a scratch workspace) are not listed here.
+The adapter is not in the conformance suite . The cases below are intended checks, not suite cases; the adapter's own tests (2 unit, 4 integration against a scratch workspace) are not listed here.
 - A target whose source changes is invalid.
 - A target whose BUILD dependency changes is invalid.
 - A remote-execution run is recorded `dirty`.

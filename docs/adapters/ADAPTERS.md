@@ -58,7 +58,7 @@ Workspace packages reached via `node_modules` symlinks resolve to real location.
 strace -f -e trace=openat,open,openat2,stat,newfstatat,statx,access,faccessat,faccessat2,getdents64,readlink,readlinkat,execve -o <file> -- <cmd>
 ```
 
-`src/oracle.ts` runs that command and parses the log: `runOracle(command, opts)` spawns strace (Linux only), `parseStraceLog(text, opts)` parses strace output text on any platform. Reports `files` (successful read opens and stats of regular files), `dirs` (`getdents64` on directory fds), `probes` (failed lookups) and `execs` (`execve` targets), all realpath'd, confined to `roots`, excluded of `node_modules`/`.git`/`.incremental`, repo-relative with `/` separators — the same canonicalization as the Vitest recorder (PLAN 11.4). strace cannot see env reads (PLAN 11.5).
+`src/oracle.ts` runs that command and parses the log: `runOracle(command, opts)` spawns strace (Linux only), `parseStraceLog(text, opts)` parses strace output text on any platform. Reports `files` (successful read opens and stats of regular files), `dirs` (`getdents64` on directory fds), `probes` (failed lookups) and `execs` (`execve` targets), all realpath'd, confined to `roots`, excluded of `node_modules`/`.git`/`.incremental`, repo-relative with `/` separators — the same canonicalization as the Vitest recorder . strace cannot see env reads .
 
 **Rule**: the Node recorder must contain every path the strace oracle sees (after exclude/realpath). M10: zero gaps. Gaps are recorder bugs and can never be waived.
 

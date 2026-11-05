@@ -13,7 +13,7 @@ Built: tasks come from `tasks.json` (`{ "id", "command", "inputs" }`), because t
 - Renames are reported as `deleted` plus `added` (no `old_path`). Symbolic links are a loss.
 
 ## What it cannot observe (the core problem)
-- The baseline. Events only say what changed since the watcher started. A watcher that restarts loses every change made while it was down. Without a baseline the adapter must fall back to running everything (fallback `baseline_mismatch`, PLAN §6.7).
+- The baseline. Events only say what changed since the watcher started. A watcher that restarts loses every change made while it was down. Without a baseline the adapter must fall back to running everything (fallback `baseline_mismatch`, ).
 - Changes made before the watcher started. A watcher can never be the sole source of truth for skips. It can only be an input to a plan that has a git or file-hash baseline.
 - Events can be coalesced or dropped by the OS. As built, events never decide what changed: the changes come from a stat walk compared with the window's snapshot (racy files by hash), so a dropped event cannot hide a change (see adapters/watcher/README.md).
 
@@ -23,7 +23,7 @@ Built: tasks come from `tasks.json` (`{ "id", "command", "inputs" }`), because t
 
 ## Conformance cases and tests
 
-Adapters are not in the conformance suite (PLAN §12; §12.3 covers the Vitest adapter only). The planned cases below are adapter tests, and they are written to the built behavior:
+Adapters are not in the conformance suite . The planned cases below are adapter tests, and they are written to the built behavior:
 - An edit with no event delivered is still reported, and a rebase clears it (test `an edit with no event delivered is still reported`, no watch open).
 - A dropped or overflow event delays a run; it does not produce a partial ChangeSet, because no ChangeSet is read from events.
 - A restart without a complete window runs everything. The first cycle of a session runs every task.

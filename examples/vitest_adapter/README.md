@@ -2,7 +2,7 @@
 
 Demonstrates the Vitest adapter integration: record → plan → skip unchanged tests.
 
-Per PLAN.md §11.2–11.3 and `docs/adapters/ADAPTERS.md`, the Vitest adapter consists of:
+Per  §11.2–11.3 and `docs/adapters/ADAPTERS.md`, the Vitest adapter consists of:
 - **Recorder** (preload): wraps `fs` API and `process.env`, records observations per test file.
 - **Planner**: maps a plan to Vitest work, runs invalid tests, follows the adapter loop.
 

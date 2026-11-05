@@ -1,7 +1,7 @@
 # INCREMENTAL CONFIGURATION
 
 ## Config File
-`incremental.config.json` at repo root (shape defined in PLAN.md 6.7):
+`incremental.config.json` at repo root (shape defined in  6.7):
 
 ```json
 {
@@ -53,4 +53,4 @@ Store defaults to `$INCREMENTAL_STORE`, then `<repo>/.incremental`. Errors print
 
 ## Defaults
 - `affected` options: `verify=false`, `policy="balanced"`
-- Node client `connect()`: store from env/default, command `["incremental","serve"]`, timeout 10000ms, `restart=true`
+- Node client `connect`: store from env/default, command `["incremental","serve"]`, timeout 10000ms, `restart=true`

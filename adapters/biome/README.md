@@ -27,6 +27,6 @@ Tests: `npm test` (builds the client binding, then runs `node --test` against th
 
 ## Open questions from the draft
 
-- **Machine-readable file list:** not available in Biome 2.5.15. The text list is used. The strace fallback (PLAN 11.5) is not needed for the list, but it is still the only way to observe reads of files outside the declared set.
-- **Per-file task count at PLAN 13 sizes:** not measured. Each run starts two Biome processes per 200 selected files, and discovery checks the whole repository once before planning.
+- **Machine-readable file list:** not available in Biome 2.5.15. The text list is used. The strace fallback  is not needed for the list, but it is still the only way to observe reads of files outside the declared set.
+- **Per-file task count at  sizes:** not measured. Each run starts two Biome processes per 200 selected files, and discovery checks the whole repository once before planning.
 - **Lockfile coverage of package plugins:** assumed, not verified against `node_modules` contents.

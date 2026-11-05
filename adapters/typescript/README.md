@@ -1,6 +1,6 @@
 # TypeScript adapter (`adapters/typescript`)
 
-`incremental-typescript run` checks each `tsconfig.json` in the repo with `tsc --noEmit`, one task per project (PLAN 10.4). Its inputs come from `tsc --listFilesOnly`, the `extends` chain, and the `package.json` files on each project's paths. Every input is hashed when the project is observed.
+`incremental-typescript run` checks each `tsconfig.json` in the repo with `tsc --noEmit`, one task per project . Its inputs come from `tsc --listFilesOnly`, the `extends` chain, and the `package.json` files on each project's paths. Every input is hashed when the project is observed.
 
 ```sh
 incremental-typescript run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]

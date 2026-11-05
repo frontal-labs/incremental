@@ -10,4 +10,4 @@ All notable changes to this project will be documented in this file.
 - Git change source (`incremental-git changes`).
 - Open: Gate 0 not run on a real repository (STOP: repo's own suite red; demo STOP on K4); CR-002 and CR-003 open (see spec/CHANGE_REQUESTS.md).
 - LICENSE: added as an identical copy of LICENSE.md (Apache-2.0). `make release-check` verifies LICENSE.md exists; LICENSE.md is the canonical source.
-- Release (E10): BLOCKED. Per PLAN 14.1 the project is stopped at Gate 0 (STOP), so E5, E7 and E10 do not run; no release is cut. `make release-check` cannot pass until Gate 0 is resolved.
+- Release (E10): BLOCKED. Per  the project is stopped at Gate 0 (STOP), so E5, E7 and E10 do not run; no release is cut. `make release-check` cannot pass until Gate 0 is resolved.

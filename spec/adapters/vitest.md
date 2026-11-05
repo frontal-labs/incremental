@@ -6,7 +6,7 @@ Status: built (`adapters/vitest`, `make test-vitest`; E4). Spec sign-off: record
 A Vitest test file, repo-relative (D-2). Built: `adapters/vitest/src/`.
 
 ## What the recorder observes
-- A preload (`adapters/vitest/src/preload.ts`) records module loads, file reads, directory listings, probes and environment reads during each test file's run (PLAN §11.2).
+- A preload (`adapters/vitest/src/preload.ts`) records module loads, file reads, directory listings, probes and environment reads during each test file's run .
 - Context: the lockfile, `tsconfig.json`, all `package.json` files, the Vitest version, the Node version, and capabilities `probes`, `dirs`, `env` set to true (`contextFor`, `adapters/vitest/src/planner.ts`).
 
 ## What it cannot observe

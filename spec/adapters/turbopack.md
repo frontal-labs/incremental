@@ -2,7 +2,7 @@
 
 Status: built (`adapters/turbopack`, `make test-turbopack`). Spec sign-off: not recorded in DECISIONS.md. Matched to adapters/turbopack/README.md on 2026-11-04.
 
-PLAN tier: later (§4.3 `tsc, bundler inputs`: "observed build inputs for Turborepo or Nx cache keys; no build outputs stored").
+
 
 ## Task
 Each directory with a `package.json` that depends on `next` is one task: `next build --turbopack` in that directory, using the app's own `next` package (`nextPackage`). Task id: its repo-relative path, `.` for the root (D-2, `discoverApps`, `src/project.ts`).
@@ -15,7 +15,7 @@ Each directory with a `package.json` that depends on `next` is one task: `next b
 The module graph is not observed. The adapter does not read Turbopack's output (see Open questions).
 
 ## What it cannot observe
-- Build outputs are not stored (PLAN §4.3). The adapter records inputs only.
+- Build outputs are not stored . The adapter records inputs only.
 - Environment variables outside the tracked set (`NEXT_*` and `NODE_ENV` are tracked). Use the env adapter's allowlist, or set capability false.
 - Remote caches Turbopack may use. A cached build is recorded as a pass; the cache is not trusted as proof of a clean run.
 - Files outside the repository root and the `.next` build cache.
@@ -44,7 +44,7 @@ Context: lockfile, root `tsconfig.json`, hash of all `package.json` files, `runn
 - Inputs are every file under the repository root, minus the skipped directories and minus the directories of the other apps (an app does not import from another app's directory: this is an assumption, not checked). Shared code under `libs/` and the root files are inputs for every app, so an edit there reruns every app. Inputs are hashed before and after each build. The build may write files: `next-env.d.ts` is excluded because its content follows the `next` version, and any other file the build changes makes the observation dirty, because the build did not read the state it recorded.
 - Tracked environment: `NEXT_*` variables and `NODE_ENV`, recorded as env inputs. Other variables are not observed.
 - Not observed: variables outside the tracked set, files outside the repository root, and the `.next` build cache, which can change how a build behaves without changing any input. A build with an unobserved cache can therefore produce a different result for the same inputs.
-- Build outputs (`.next`) are not stored (PLAN 4.3). Remote build caches are not consulted. A `next build` that hits a cache is still recorded as a pass, and the cache is not trusted as proof.
+- Build outputs (`.next`) are not stored . Remote build caches are not consulted. A `next build` that hits a cache is still recorded as a pass, and the cache is not trusted as proof.
 
 ## Gaps
 
@@ -67,6 +67,6 @@ Still open:
 
 ## Conformance and tests
 
-Adapters are not in the conformance suite (PLAN §12; §12.3 covers the Vitest adapter only). The planned cases for a module graph (change inside or outside the graph, unresolved dynamic import) do not apply, because no graph is recorded.
+Adapters are not in the conformance suite . The planned cases for a module graph (change inside or outside the graph, unresolved dynamic import) do not apply, because no graph is recorded.
 
 `npm test` in `adapters/turbopack` (builds the binding, then runs `node --test`). The integration tests use a scratch repo with one app at `apps/web` and a non-app package. They cover discovery, the first run advancing, a declared-input edit invalidating the app, a failed build reported as fail with exit 1, an uncommitted change exiting 7, and the skip. Each build takes tens of seconds, so the suite is slow.

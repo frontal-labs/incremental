@@ -1,6 +1,6 @@
 # Bazel adapter (`adapters/bazel`)
 
-`incremental-bazel run` runs Bazel test targets as tasks (PLAN 10.4). A task is a test label. Its file inputs come from the target's dependency closure (sources, BUILD and `.bzl` files) and from the main repo's action inputs in `bazel aquery`. Each input is hashed when the target is observed.
+`incremental-bazel run` runs Bazel test targets as tasks . A task is a test label. Its file inputs come from the target's dependency closure (sources, BUILD and `.bzl` files) and from the main repo's action inputs in `bazel aquery`. Each input is hashed when the target is observed.
 
 - Declared inputs: `MODULE.bazel`, `MODULE.bazel.lock`, `.bazelrc`, `.bazelversion`, recorded as global inputs. External repos are pinned by `MODULE.bazel.lock`, which is the context lockfile. `bazel_tools` is pinned by the runner version.
 - Capabilities: probes, dirs and env are false.

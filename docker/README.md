@@ -1,6 +1,6 @@
 # Incremental Docker
 
-Docker definition for the Linux gate check (PLAN 17.1 `linux-gate`): running the full incremental test target on linux/amd64.
+Docker definition for the Linux gate check : running the full incremental test target on linux/amd64.
 
 ## Contents
 

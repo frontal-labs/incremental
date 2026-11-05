@@ -2,7 +2,7 @@
 
 Examples of using incremental: CLI workflows, adapter integrations, protocol clients, and CI recipes.
 
-Per PLAN.md §12.4 M8 and §1180, the `examples/` directory is owned by the Adapters role and includes an `agent_loop` example. Per `docs/adapters/ADAPTERS.md`, examples demonstrate the adapter loop contract (section 10.4).
+Per  §12.4 M8 and §1180, the `examples/` directory is owned by the Adapters role and includes an `agent_loop` example. Per `docs/adapters/ADAPTERS.md`, examples demonstrate the adapter loop contract (section 10.4).
 
 ## Example Projects
 
@@ -35,4 +35,4 @@ Add example projects here, one subdirectory per example, each with its own READM
 - `docs/adapters/ADAPTERS.md` — adapter types, recorder contract, adapter loop contract.
 - `docs/spec/PROTOCOL.md` — incremental Protocol v1.
 - `docs/spec/POLICY.md` — policy rules P0–P11.
-- `plans/PLAN.md` — full specification v4.1 (sections 10–11 for adapters, 12.4 for benchmarks).
+- `` — full specification v4.1 (sections 10–11 for adapters, 12.4 for benchmarks).

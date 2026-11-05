@@ -1,6 +1,6 @@
 # ruff adapter
 
-Status: built (adapters/ruff, make test-ruff). Spec sign-off: not recorded in DECISIONS.md. Matched to adapters/ruff/README.md on 2026-11-04. PLAN tier: later. The non-JavaScript ecosystem decision (PLAN §4.3) is recorded in DECISIONS.md (2026-11-03, "Adapters and bindings built from spec/adapters").
+Status: built (adapters/ruff, make test-ruff). Spec sign-off: not recorded in DECISIONS.md. Matched to adapters/ruff/README.md on 2026-11-04. The non-JavaScript ecosystem decision  is recorded in DECISIONS.md (2026-11-03, "Adapters and bindings built from spec/adapters").
 
 ## Task
 One task per file that `ruff check` checks. Task id: `ruff check <repo-relative path>` (D-2). The task list is `ruff check --show-files`, so ruff's excludes and `.gitignore` apply. `pyproject.toml` is also a task, because ruff checks it for its TOML rules. Each task runs `ruff check --no-cache --output-format json <file>`. `ruff format` is not covered.
@@ -11,7 +11,7 @@ One task per file that `ruff check` checks. Task id: `ruff check <repo-relative 
 
 ## What it cannot observe
 - Imports that ruff resolves for import-aware rules (isort `I`, flake8-type-checking `TCH`). Ruff checks whether modules exist under the `src` roots; those existence checks are probes, which are not recorded. No per-rule capability is set. Instead, an added or modified file that is not already an input, or a deleted `.py`/`.pyi`, runs every task (`unobserved_input`). This is sound but costs a full run.
-- Plugin rules: not observed. The ruff version is in the context (`runner`, PLAN §8.4).
+- Plugin rules: not observed. The ruff version is in the context (`runner`, ).
 - Ruff environment variables (for example `RUFF_*`): not recorded. `env` is false.
 
 ## Declared inputs
@@ -23,11 +23,11 @@ One task per file that `ruff check` checks. Task id: `ruff check <repo-relative 
 `adapters/ruff/tests/adapter.test.ts` (8 tests) runs the real engine and the installed ruff in scratch git repositories. These are adapter tests, not conformance cases. They cover: discovery of each file ruff checks; the first run checking every file and advancing; an edit to one file selecting only that file's task; a changed `[tool.ruff]` in `pyproject.toml` selecting every task; a rule violation failing its file with exit 1 and advancing; an uncommitted change leaving the baseline in place with exit 7; a new Python file falling back to every task; and a deleted Python file running every remaining task.
 
 ## Gaps
-- The adapter is not in the conformance suite (PLAN §12).
+- The adapter is not in the conformance suite .
 - Import-aware rules are covered by the full-run fallback, not a dirty flag. An "undeclared import is dirty" case is not built.
 - `ruff format` is not covered.
 - Notebooks: `.ipynb` files that ruff lists are tasks, but the adapter has not been tested on them.
-- Symlinked files are not resolved. Shallow clones are inherited from the git change source (PLAN §11.7).
+- Symlinked files are not resolved. Shallow clones are inherited from the git change source .
 - Config discovery is covered only through the settings path that `--show-settings` prints.
 
 ## Open questions

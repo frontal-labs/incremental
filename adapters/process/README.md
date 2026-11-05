@@ -1,6 +1,6 @@
 # @incremental/process
 
-Generic task runner (spec/adapters/process.md, PLAN 10.4). It runs a named command from `incremental-process.json`, records its outcome, and records its declared inputs through `@incremental/fs`.
+Generic task runner (spec/adapters/process.md, ). It runs a named command from `incremental-process.json`, records its outcome, and records its declared inputs through `@incremental/fs`.
 
 ## Config
 
@@ -8,7 +8,7 @@ Generic task runner (spec/adapters/process.md, PLAN 10.4). It runs a named comma
 { "tasks": { "lint": { "command": ["node", "lint.js"], "cwd": "tools", "declared": ["tools/lint.js"], "complete": true } } }
 ```
 
-`command` is argv, not a shell line. Task ids are the config names (PLAN D-2).
+`command` is argv, not a shell line. Task ids are the config names .
 
 ## Outcomes
 
@@ -24,11 +24,11 @@ Generic task runner (spec/adapters/process.md, PLAN 10.4). It runs a named comma
 
 ## What is not observed (gaps)
 
-- **Child processes.** On Linux, a task with `oracle: true` is run under the strace oracle (PLAN 11.5), so executed programs (`execve`) and all file reads, dir listings and probes become observed inputs. On macOS there is no tracer, so child processes are not recorded.
+- **Child processes.** On Linux, a task with `oracle: true` is run under the strace oracle , so executed programs (`execve`) and all file reads, dir listings and probes become observed inputs. On macOS there is no tracer, so child processes are not recorded.
 - **Undeclared reads, network calls, environment reads.** Not recorded. Every observation is `dirty` unless the task sets `complete: true`, which the engine takes on trust.
-- **Output files.** Not stored (PLAN 4.3). The command's writes are not outputs.
+- **Output files.** Not stored . The command's writes are not outputs.
 - **Shell features.** No shell is used, so globs and pipes in `command` are not expanded.
-- **Advancing the baseline.** Not done here. The TypeScript adapter loop (PLAN 10.4) owns advance and exit code 7.
+- **Advancing the baseline.** Not done here. The TypeScript adapter loop  owns advance and exit code 7.
 
 ## CLI
 

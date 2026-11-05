@@ -2,7 +2,7 @@
 
 Demonstrates benchmark M8: Agent loop (edit to feedback) with 1, 5 and 20 agents on separate worktrees sharing one store. Target: at least 2x faster than full suite.
 
-Per PLAN.md §12.4 M8 and §15.4 E6: "Build `examples/agent_loop/`: edit a fixture file, ask the plan, run the selected tests, print timings." The loop follows the adapter contract (PLAN §10.4): baseline → ChangeSet → plan → run invalid → advance only on a clean complete run.
+Per  §12.4 M8 and §15.4 E6: "Build `examples/agent_loop/`: edit a fixture file, ask the plan, run the selected tests, print timings." The loop follows the adapter contract : baseline → ChangeSet → plan → run invalid → advance only on a clean complete run.
 
 ## Layout
 
@@ -34,7 +34,7 @@ examples/agent_loop/
 #   2. stats → baseline; git change source → ChangeSet baseline→worktree
 #   3. engine affected → plan of invalid tests
 #   4. run_tests.sh runs only the invalid tests (vitest, forks pool)
-#   5. advance baseline to HEAD when the worktree is clean (PLAN 10.4)
+#   5. advance baseline to HEAD when the worktree is clean 
 #   6. print total/invalid/skipped/skip_share/elapsed_ms
 ```
 
@@ -50,6 +50,6 @@ Round 1 has no baseline yet, so the plan falls back (`baseline_mismatch`) and ru
 
 ## Reference
 
-- `plans/PLAN.md` section 10.4 (adapter loop), 12.4 (M8) and 15.4 (E6).
+- `` section 10.4 (adapter loop), 12.4 (M8) and 15.4 (E6).
 - `docs/benchmarks/BENCHMARKS_AND_GATES.md` — benchmark targets and methodology.
 - `adapters/vitest/README.md` — Vitest adapter loop (`incremental vitest run`).

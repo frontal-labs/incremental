@@ -1,6 +1,6 @@
 # @incremental/playwright
 
-Playwright test adapter (spec/adapters/playwright.md, draft). One task is one Playwright test file, repo-relative. The loop follows PLAN 10.4: baseline, change set, affected, forget deleted files, run each selected file, advance only on a clean, complete run, else exit 7.
+Playwright test adapter (spec/adapters/playwright.md, draft). One task is one Playwright test file, repo-relative. The loop follows : baseline, change set, affected, forget deleted files, run each selected file, advance only on a clean, complete run, else exit 7.
 
     incremental-playwright run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS] [--playwright CLI]
 
@@ -9,7 +9,7 @@ Exit codes: 0 advanced and all passed; 1 advanced and a test failed; 2 usage; 4 
 ## What is real
 
 - Discovery: `playwright test --list --reporter=json`, so the runner's testMatch and testIgnore decide the task set. No browser is needed.
-- Test file input: the file itself, plus the relative imports it reaches (a static scan of `import`, `export from`, `require`, `import()` with a literal). Hashed before the run.
+- Test file input: the file itself, plus the relative imports it reaches (a static scan of `import`, `export from`, `require`, `import` with a literal). Hashed before the run.
 - Playwright config and its relative imports are file inputs of every task.
 - Context: lockfile, package.json files, tsconfig, runner version (`playwright@<version>`), Node version, and the browser executable path with its presence (the revision is in the path; the binary bytes are not hashed).
 - Output goes to a directory outside the worktree (`--output`), so a run leaves no files behind.

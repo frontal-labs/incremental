@@ -2,11 +2,11 @@
 
 Config files as declared inputs (spec/adapters/config.md). Not a task runner: it records
 the global config files that `incremental.config.json` lists under `globalInputs`, and any
-config a task declares, as `declared` inputs with content hashes (PLAN 9.5).
+config a task declares, as `declared` inputs with content hashes .
 
 ## Use
 
-- `contextFor(root, caps?)`: the context (PLAN 8.4). Default `caps` are all false.
+- `contextFor(root, caps?)`: the context . Default `caps` are all false.
 - `recordTasks(client, { root, baseline, context, tasks })`: one observation per task. Each
   task declares every global input plus its own `declares` list.
 - `planChanges(client, { root, baseline, context, changes })`: the affected query, with
