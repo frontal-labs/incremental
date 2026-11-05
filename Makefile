@@ -30,6 +30,7 @@ build: setup
 	@mkdir -p core/dist adapters/git/dist
 	@$(GOOSE) build core/src/main.goose -o $(ENGINE) >logs/build.log 2>&1 || { tail -20 logs/build.log; echo "FAIL build"; exit 1; }
 	@$(GOOSE) build adapters/git/src/changes.goose -o adapters/git/dist/incremental-git >logs/build-git.log 2>&1 || { tail -20 logs/build-git.log; echo "FAIL build"; exit 1; }
+	@cd bindings/node && npm run build >../../logs/build-bindings.log 2>&1 || { tail -20 ../../logs/build-bindings.log; echo "FAIL build-bindings"; exit 1; }
 	@cd benchmarks/replay && $(CURDIR)/node_modules/.bin/tsc-rs -b >../../logs/build-replay.log 2>&1 || { tail -20 ../../logs/build-replay.log; echo "FAIL build-replay"; exit 1; }
 	@echo "PASS build"
 
