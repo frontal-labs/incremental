@@ -8,7 +8,7 @@ import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } f
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { test } from "node:test";
+import { after, before, test } from "node:test";
 import { discoverApps, runAdapter, type RunReport } from "../src/index.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -70,7 +70,15 @@ const TSCONFIG = JSON.stringify({
 
 const PAGE_OK = "export default function Page() {\n  return <main>hi</main>;\n}\n";
 
-function makeRepo(): { root: string; store: string } {
+interface Fixture {
+  root: string;
+  base: string;
+  // The initial commit. Each test returns the worktree to it.
+  initial: string;
+  stores: number;
+}
+
+function makeFixture(): Fixture {
   const base = mkdtempSync(path.join(os.tmpdir(), "incremental-tp-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
@@ -107,16 +115,34 @@ function makeRepo(): { root: string; store: string } {
     'export default function RootLayout({ children }: { children: React.ReactNode }) {\n  return <html lang="en"><body>{children}</body></html>;\n}\n',
   );
   write(root, `${APP}/app/page.tsx`, PAGE_OK);
+  // A symbolic link would not do: Turbopack does not compile files outside the
+  // workspace root, so the dependencies are copied, once for the whole file.
   cpSync(path.join(PACKAGE_DIR, "node_modules"), path.join(root, "node_modules"), {
     recursive: true,
     verbatimSymlinks: true,
   });
   commit(root, "init");
-  return { root, store: path.join(base, "store") };
+  return { root, base, initial: git(root, "rev-parse", "HEAD"), stores: 0 };
 }
 
-function cleanup(root: string): void {
-  rmSync(path.dirname(root), { recursive: true, force: true });
+// Copying node_modules and building the app are slow, so the fixture is shared by
+// the whole file. `fresh` returns the worktree to the initial commit, removes the
+// previous build output, and gives the test a store of its own.
+let fx: Fixture;
+before(() => {
+  fx = makeFixture();
+});
+
+after(() => {
+  rmSync(fx.base, { recursive: true, force: true });
+});
+
+function fresh(): { root: string; store: string } {
+  git(fx.root, "reset", "-q", "--hard", fx.initial);
+  git(fx.root, "clean", "-q", "-fd");
+  rmSync(path.join(fx.root, APP, ".next"), { recursive: true, force: true });
+  fx.stores += 1;
+  return { root: fx.root, store: path.join(fx.base, `store-${fx.stores}`) };
 }
 
 async function run(root: string, store: string): Promise<RunReport> {
@@ -124,104 +150,72 @@ async function run(root: string, store: string): Promise<RunReport> {
 }
 
 test("discovers each package.json that depends on next", () => {
-  const { root } = makeRepo();
-  try {
-    assert.deepEqual(discoverApps(root), [APP]);
-  } finally {
-    cleanup(root);
-  }
+  assert.deepEqual(discoverApps(fresh().root), [APP]);
 });
 
 test("first run builds every app and advances the baseline", async () => {
-  const { root, store } = makeRepo();
-  try {
-    const r = await run(root, store);
-    assert.deepEqual(r.selected, [APP]);
-    assert.deepEqual(
-      r.results.map((x) => x.outcome),
-      ["pass"],
-      JSON.stringify(r.results),
-    );
-    assert.equal(r.advanced, true, r.notAdvanced.join("; "));
-    assert.equal(r.exit, 0);
-  } finally {
-    cleanup(root);
-  }
+  const { root, store } = fresh();
+  const r = await run(root, store);
+  assert.deepEqual(r.selected, [APP]);
+  assert.deepEqual(
+    r.results.map((x) => x.outcome),
+    ["pass"],
+    JSON.stringify(r.results),
+  );
+  assert.equal(r.advanced, true, r.notAdvanced.join("; "));
+  assert.equal(r.exit, 0);
 });
 
 test("an edit to a declared input invalidates the app", async () => {
-  const { root, store } = makeRepo();
-  try {
-    await run(root, store);
-    write(root, `${APP}/next.config.mjs`, "export default { poweredByHeader: false };\n");
-    commit(root, "edit next config");
-    const r = await run(root, store);
-    assert.deepEqual(r.selected, [APP]);
-    assert.deepEqual(
-      r.results.map((x) => x.outcome),
-      ["pass"],
-    );
-    assert.equal(r.advanced, true, r.notAdvanced.join("; "));
-  } finally {
-    cleanup(root);
-  }
+  const { root, store } = fresh();
+  await run(root, store);
+  write(root, `${APP}/next.config.mjs`, "export default { poweredByHeader: false };\n");
+  commit(root, "edit next config");
+  const r = await run(root, store);
+  assert.deepEqual(r.selected, [APP]);
+  assert.deepEqual(r.results.map((x) => x.outcome), ["pass"]);
+  assert.equal(r.advanced, true, r.notAdvanced.join("; "));
 });
 
 test("a failed build is reported as fail and exits 1", async () => {
-  const { root, store } = makeRepo();
-  try {
-    await run(root, store);
-    write(
-      root,
-      `${APP}/app/page.tsx`,
-      'export default function Page() {\n  const x: number = "not a number";\n  return <main>{x}</main>;\n}\n',
-    );
-    commit(root, "break the page");
-    const r = await run(root, store);
-    assert.deepEqual(
-      r.results.map((x) => x.outcome),
-      ["fail"],
-      JSON.stringify(r.results),
-    );
-    assert.equal(r.advanced, true, "a failed build is a complete run, so the baseline advances");
-    assert.equal(r.exit, 1);
-  } finally {
-    cleanup(root);
-  }
+  const { root, store } = fresh();
+  await run(root, store);
+  write(
+    root,
+    `${APP}/app/page.tsx`,
+    'export default function Page() {\n  const x: number = "not a number";\n  return <main>{x}</main>;\n}\n',
+  );
+  commit(root, "break the page");
+  const r = await run(root, store);
+  assert.deepEqual(r.results.map((x) => x.outcome), ["fail"], JSON.stringify(r.results));
+  assert.equal(r.advanced, true, "a failed build is a complete run, so the baseline advances");
+  assert.equal(r.exit, 1);
 });
 
 test("an uncommitted change leaves the baseline in place and exits 7", async () => {
-  const { root, store } = makeRepo();
-  try {
-    await run(root, store);
-    write(
-      root,
-      `${APP}/app/page.tsx`,
-      "export default function Page() {\n  return <main>changed</main>;\n}\n",
-    );
-    const r = await run(root, store);
-    assert.equal(r.advanced, false);
-    assert.equal(r.exit, 7);
-    assert.ok(
-      r.notAdvanced.some((m) => m.includes("dirty")),
-      r.notAdvanced.join("; "),
-    );
-  } finally {
-    cleanup(root);
-  }
+  const { root, store } = fresh();
+  await run(root, store);
+  write(
+    root,
+    `${APP}/app/page.tsx`,
+    "export default function Page() {\n  return <main>changed</main>;\n}\n",
+  );
+  const r = await run(root, store);
+  assert.equal(r.advanced, false);
+  assert.equal(r.exit, 7);
+  assert.ok(
+    r.notAdvanced.some((m) => m.includes("dirty")),
+    r.notAdvanced.join("; "),
+  );
 });
 
 // Skipping: the observation is clean (no rewrite by the build, every read input
 // hashed), so an unchanged app is not built again.
 test("an unchanged app is skipped on the next run, without a second build", async () => {
-  const { root, store } = makeRepo();
-  try {
-    await run(root, store);
-    const r = await run(root, store);
-    assert.deepEqual(r.selected, [], "no app is selected, so none is built");
-    assert.equal(r.advanced, true);
-    assert.equal(r.exit, 0);
-  } finally {
-    cleanup(root);
-  }
+  const { root, store } = fresh();
+  await run(root, store);
+  const r = await run(root, store);
+  assert.deepEqual(r.selected, [], "no app is selected, so none is built");
+  assert.equal(r.advanced, true);
+  assert.equal(r.exit, 0);
 });
