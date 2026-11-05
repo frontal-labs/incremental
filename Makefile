@@ -5,13 +5,11 @@ GOOSE_DIR ?= $(CURDIR)/.toolchain/goose/goose-v2026.3-$(UNAME_S)-$(UNAME_M)
 GOOSE := $(GOOSE_DIR)/goose
 export GOOSE_HOME := $(CURDIR)/.toolchain/goose-home
 ENGINE := core/dist/incremental
-# Kill-test repository for Gate 0 (PLAN 13.1 / GATE 0). Override with the human's
-# chosen real Vitest monorepo.
 INCREMENTAL_BENCH_REPO ?= /Users/gabrielfonseca/Desktop/os
 # Every run log goes to logs/ at the project root (git-ignored).
 LOGS := logs
 $(shell mkdir -p $(LOGS))
-.PHONY: setup build test-git test-fuzz check-spec test-core test-policy test-protocol test-bindings test-vitest test-oracle test-e2e bench-smoke bench test-mcp test-python release-check all-tests status loc linux-gate
+.PHONY: setup skills build test-git test-fuzz check-spec test-core test-policy test-protocol test-bindings test-vitest test-oracle test-e2e bench-smoke bench test-mcp test-python release-check all-tests status loc linux-gate
 
 # Real targets run real commands. Targets for milestones not yet built fail
 # on purpose; they must not print PASS (PLAN.md 2.12).
@@ -19,12 +17,20 @@ define NOT_BUILT
 	@echo "$(1) is not implemented in this repository yet (see DECISIONS.md)"; echo "FAIL $(1)"; exit 1
 endef
 
-setup:
+setup: skills
 	@test -x $(GOOSE) || scripts/fetch-goose.sh || { echo "FAIL setup"; exit 1; }
 	@test -x $(GOOSE) || { echo "missing Goose toolchain at $(GOOSE_DIR)"; echo "FAIL setup"; exit 1; }
 	@$(GOOSE) toolchain >/dev/null 2>&1 || { echo "goose toolchain check failed"; echo "FAIL setup"; exit 1; }
 	@node --version >/dev/null || { echo "node missing"; echo "FAIL setup"; exit 1; }
 	@echo "PASS setup"
+
+skills:
+	@sh skills.sh >logs/skills.log 2>&1 || { tail -30 logs/skills.log; echo "FAIL skills"; exit 1; }
+	@echo "PASS skills"
+
+skills:
+	@sh skills.sh >logs/skills.log 2>&1 || { tail -30 logs/skills.log; echo "FAIL skills"; exit 1; }
+	@echo "PASS skills"
 
 build: setup
 	@mkdir -p core/dist adapters/git/dist
