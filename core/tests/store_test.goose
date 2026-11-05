@@ -16,13 +16,12 @@ fn check(cond: bool, msg: const u8[:]) {
 }
 
 fn main() {
-    var st = Store { baseline: Span { off: 0, len: 0 }, has_baseline: false,
-                     ctx_from: 0, ctx_n: 0, has_ctx: false };
+    var st = Store { baseline: Span { off: 0, len: 0 }, has_baseline: false, ctx_id: -1 };
 
     // ---- Test 1: store_reset initializes clean state ----
     store_reset(st);
     check(!st.has_baseline, "no baseline after reset");
-    check(!st.has_ctx, "no context after reset");
+    check(st.ctx_id < 0, "no context after reset");
     check(g_live == 0, "no live tasks after reset");
     write_stdout("  ok store_reset\n");
 
@@ -77,12 +76,22 @@ fn main() {
     let idx_ok = write_index(st, "/tmp/core_store_test_idx");
     check(idx_ok, "write_index succeeds");
 
-    var st2 = Store { baseline: Span { off: 0, len: 0 }, has_baseline: false,
-                      ctx_from: 0, ctx_n: 0, has_ctx: false };
+    var st2 = Store { baseline: Span { off: 0, len: 0 }, has_baseline: false, ctx_id: -1 };
     let loaded2 = load_index(st2, "/tmp/core_store_test_idx", log2);
     check(loaded2, "load_index succeeds");
     check(g_live == 1, "one live task after load_index");
     write_stdout("  ok write_index/load_index\n");
+
+    // ---- Test 7b: g_obs.len counts total observations, not just live tasks ----
+    store_reset(st);
+    var log3: u8[>..] = [];
+    format(log3, "{\"r\":\"obs\",\"task\":\"obs-a\",\"baseline\":\"b1\",\"context\":{},\"inputs\":[]}\n");
+    format(log3, "{\"r\":\"obs\",\"task\":\"obs-b\",\"baseline\":\"b1\",\"context\":{},\"inputs\":[]}\n");
+    format(log3, "{\"r\":\"forget\",\"task\":\"obs-a\"}\n");
+    load_log(st, log3);
+    check(g_live == 1, "one live task after forget");
+    check(g_obs.len == 3, "three observations recorded despite forget");
+    write_stdout("  ok g_obs.len counts total observations\n");
 
     // ---- Test 8: load_stat_cache with missing file yields empty cache ----
     load_stat_cache(st, "/tmp/core_store_test_cache_missing.json");

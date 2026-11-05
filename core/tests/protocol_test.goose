@@ -17,8 +17,7 @@ fn check(cond: bool, msg: const u8[:]) {
 }
 
 fn main() {
-    var st = Store { baseline: Span { off: 0, len: 0 }, has_baseline: false,
-                     ctx_from: 0, ctx_n: 0, has_ctx: false };
+    var st = Store { baseline: Span { off: 0, len: 0 }, has_baseline: false, ctx_id: -1 };
     var sess = Session {
         log_path: "test-log",
         lock_path: "test-lock",

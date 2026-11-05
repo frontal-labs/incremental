@@ -350,7 +350,7 @@ fn dispatch(sess: Session&, st: Store&, method: const u8[:], params: json::Node?
         body.append("{\"tasks\":");
         json::format_int(body, g_live);
         body.append(",\"observations\":");
-        json::format_int(body, g_live);
+        json::format_int(body, g_obs.len);
         body.append(",\"baseline\":");
         if st.has_baseline { json::format_string(body, text(st, st.baseline)); } else { body.append("null"); }
         body.append(",\"graph_version\":\"");

@@ -30,8 +30,7 @@ struct Inp {
 // outcome: 0 pass, 1 fail, 2 error, 3 none. line: the record as logged.
 struct Ob {
     task: i64,
-    ctx_from: i64,
-    ctx_n: i64,
+    ctx_id: i64,          // index into g_ctxs, -1 when no context
     baseline: Span,
     dirty: bool,
     outcome: i64,
@@ -55,6 +54,11 @@ struct Post { obs: i64, inp: i64, next: i64 }
 // inputs), ls dir listers, pr probers. chain links paths with the same hash.
 struct PathE { p: Span, chain: i64, rd: i64, ls: i64, pr: i64 }
 
+// A deduplicated context: points into g_kvs at [from, from + n).
+// Multiple observations can share the same ctx_id, avoiding repeated storage
+// of identical context key/value pairs (cuts g_kvs / index image by ~1/3 at scale).
+struct Ctx { from: i64, n: i64 }
+
 // The resizable collections are globals: a struct may hold at most one
 // resizable value, and it must be its last field (spec 3.4).
 var g_arena: u8[>..] = [];
@@ -66,6 +70,10 @@ var g_obs: Ob[>..] = [];
 var g_tasks: Task[>..] = [];
 // Hash of a task id -> the newest task index with that hash.
 var g_task_head: dictionary<u64, i64> = dictionary<u64, i64> {};
+// Hash of a context's combined member hash -> index into g_ctxs.
+var g_ctx_head: dictionary<u64, i64> = dictionary<u64, i64> {};
+// Deduplicated contexts: each entry points into g_kvs at [from, from + n).
+var g_ctxs: Ctx[>..] = [];
 // The whole log as read, including any truncated tail.
 var g_logbuf: u8[>..] = [];
 // Bytes of g_logbuf whose complete lines are applied to the state.
@@ -88,9 +96,7 @@ var g_stat_known: bool = false;
 struct Store {
     baseline: Span,
     has_baseline: bool,
-    ctx_from: i64,
-    ctx_n: i64,
-    has_ctx: bool,
+    ctx_id: i64,          // index into g_ctxs, -1 when no context
 }
 
 fn store_reset(st: Store&) {
@@ -102,6 +108,8 @@ fn store_reset(st: Store&) {
     g_obs.clear();
     g_tasks.clear();
     g_task_head.clear();
+    g_ctxs.clear();
+    g_ctx_head.clear();
     g_paths.clear();
     g_post.clear();
     g_path_head.clear();
@@ -111,9 +119,7 @@ fn store_reset(st: Store&) {
     g_applied = 0;
     st.baseline = Span { off: 0, len: 0 };
     st.has_baseline = false;
-    st.ctx_from = 0;
-    st.ctx_n = 0;
-    st.has_ctx = false;
+    st.ctx_id = -1;
 }
 
 fn put(st: Store&, s: const u8[:]) -> Span {
@@ -146,6 +152,77 @@ fn line_text(s: Span) -> const u8[:] {
 
 fn same(st: Store&, s: Span, t: const u8[:]) -> bool {
     return s.len == t.len && text(st, s) == t;
+}
+
+// ---- Context dedup -------------------------------------------------------
+
+// Hash a JSON object's members into a combined u64. Used to find duplicate
+// contexts without interning every Kv pair first.
+fn ctx_obj_hash(obj: json::Node?) -> u64 {
+    if !obj { return 0; }
+    var h: u64 = 0;
+    json::each(obj) { child =>
+        h = hash_combine(h, hash(child.key));
+        let s, sok = json::as_string(child);
+        if sok { h = hash_combine(h, hash(s)); }
+        else {
+            let i, iok = json::as_i64(child);
+            if iok { h = hash_combine(h, hash(i)); }
+            else {
+                let b, bok = json::as_bool(child);
+                if bok { h = hash_combine(h, hash(b)); }
+                else {
+                    let f, fok = json::as_f64(child);
+                    if fok { h = hash_combine(h, hash(f)); }
+                }
+            }
+        }
+    };
+    return h;
+}
+
+// True when two Kv ranges [a_from, a_from + a_n) and [b_from, b_from + b_n)
+// hold identical key/value pairs. Used to verify hash-collision candidates.
+fn ctx_kvs_equal(st: Store&, a_from: i64, a_n: i64, b_from: i64, b_n: i64) -> bool {
+    if a_n != b_n { return false; }
+    for i in a_n {
+        let ak = g_kvs[a_from + i].k;
+        let av = g_kvs[a_from + i].v;
+        let bk = g_kvs[b_from + i].k;
+        let bv = g_kvs[b_from + i].v;
+        if text(st, ak) != text(st, bk) || text(st, av) != text(st, bv) { return false; }
+    }
+    return true;
+}
+
+// Find an existing context matching the Kv range, or create a new one.
+// Returns the index into g_ctxs.
+fn ctx_find_or_create(st: Store&, cfrom: i64, cn: i64) -> i64 {
+    // Combine hash of all keys and values for the lookup key.
+    var h: u64 = 0;
+    for i in cn {
+        let k = g_kvs[cfrom + i].k;
+        let v = g_kvs[cfrom + i].v;
+        h = hash_combine(h, hash(text(st, k)));
+        h = hash_combine(h, hash(text(st, v)));
+    }
+    let hit = g_ctx_head.get(h);
+    if hit {
+        let meta = g_ctxs[hit];
+        if ctx_kvs_equal(st, meta.from, meta.n, cfrom, cn) {
+            return hit;
+        }
+        // Hash collision: fall through to create a new entry.
+    }
+    g_ctxs.push(Ctx { from: cfrom, n: cn });
+    g_ctx_head.insert(h, g_ctxs.len - 1);
+    return g_ctxs.len - 1;
+}
+
+// Return the (from, n) range into g_kvs for a context id.
+fn ctx_range(ctx_id: i64) -> i64, i64 {
+    let c = g_ctxs[ctx_id];
+    return c.from, c.n;
 }
 
 // A task is live when its latest observation stands and it is not forgotten.
@@ -246,6 +323,7 @@ fn add_obs(st: Store&, o: json::Node?, line: Span) -> bool {
         else if oc == "error" { outcome = 2; }
     }
     let cfrom, cn = read_pairs(st, json::member(o, "context"), false);
+    let ctx_id = ctx_find_or_create(st, cfrom, cn);
     let ti = task_index(st, tid);
     let ifrom = g_inps.len;
     var env_any = false;
@@ -284,7 +362,7 @@ fn add_obs(st: Store&, o: json::Node?, line: Span) -> bool {
     }
     let ni = g_inps.len - ifrom;
     let bs = intern(st, bl);
-    g_obs.push(Ob { task: ti, ctx_from: cfrom, ctx_n: cn, baseline: bs, dirty: dok && dirty,
+    g_obs.push(Ob { task: ti, ctx_id: ctx_id, baseline: bs, dirty: dok && dirty,
         outcome: outcome, inp_from: ifrom, inp_n: ni, line: line });
     let oi = g_obs.len - 1;
     for k in ni { index_input(st, oi, ifrom + k); }
@@ -292,9 +370,7 @@ fn add_obs(st: Store&, o: json::Node?, line: Span) -> bool {
     if !task_live(ti) { g_live += 1; }
     g_tasks[ti].latest = oi;
     g_tasks[ti].forgotten = false;
-    st.ctx_from = cfrom;
-    st.ctx_n = cn;
-    st.has_ctx = true;
+    st.ctx_id = ctx_id;
     return true;
 }
 
@@ -623,7 +699,8 @@ fn index_ok(st: Store&) -> bool {
         if o.task < 0 || o.task >= nt { return false; }
         if o.outcome < 0 || o.outcome > 3 { return false; }
         if !span_in(o.baseline, an) || !span_in(o.line, g_logbuf.len) { return false; }
-        if !range_in(o.ctx_from, o.ctx_n, nk) || !range_in(o.inp_from, o.inp_n, ni) { return false; }
+        if o.ctx_id >= 0 && (o.ctx_id >= g_ctxs.len) { return false; }
+        if !range_in(o.inp_from, o.inp_n, ni) { return false; }
     }
     for i in nt {
         let t = g_tasks[i];
@@ -647,7 +724,7 @@ fn index_ok(st: Store&) -> bool {
         if g_standing[i] < 0 || g_standing[i] >= no { return false; }
     }
     if st.has_baseline && !span_in(st.baseline, an) { return false; }
-    if st.has_ctx && !range_in(st.ctx_from, st.ctx_n, nk) { return false; }
+    if st.ctx_id >= 0 && st.ctx_id >= g_ctxs.len { return false; }
     return true;
 }
 
@@ -697,9 +774,8 @@ fn write_index(st: Store&, idx_path: const u8[:]) -> bool {
     format_uleb(img, flag_of(st.has_baseline));
     format_uleb(img, st.baseline.off);
     format_uleb(img, st.baseline.len);
-    format_uleb(img, flag_of(st.has_ctx));
-    format_uleb(img, st.ctx_from);
-    format_uleb(img, st.ctx_n);
+    format_uleb(img, flag_of(st.ctx_id >= 0));
+    format_uleb(img, if st.ctx_id >= 0 { st.ctx_id } else { 0 });
     format_uleb(img, lens.len);
     for k in lens.len { format_uleb(img, lens[k]); }
     let h = hash(body);
@@ -733,10 +809,9 @@ fn load_index(st: Store&, idx_path: const u8[:], log: const u8[:]) -> bool {
     let bo, bo_ok = take_uleb(img, pos);
     let bl, bl_ok = take_uleb(img, pos);
     let has_c, hc_ok = take_uleb(img, pos);
-    let cf, cf_ok = take_uleb(img, pos);
-    let cn, cn_ok = take_uleb(img, pos);
+    let ci, ci_ok = take_uleb(img, pos);
     let nsec, n_ok = take_uleb(img, pos);
-    if !(hb_ok && bo_ok && bl_ok && hc_ok && cf_ok && cn_ok && n_ok) { return false; }
+    if !(hb_ok && bo_ok && bl_ok && hc_ok && ci_ok && n_ok) { return false; }
     if has_b > 1 || has_c > 1 || nsec != 8 { return false; }
     var lens: i64[>..] = [];
     var total: i64 = 0;
@@ -774,9 +849,7 @@ fn load_index(st: Store&, idx_path: const u8[:], log: const u8[:]) -> bool {
     g_standing = copy(standing);
     st.baseline = Span { off: bo, len: bl };
     st.has_baseline = has_b == 1;
-    st.ctx_from = cf;
-    st.ctx_n = cn;
-    st.has_ctx = has_c == 1;
+    st.ctx_id = if has_c == 1 { ci } else { -1 };
     g_logbuf.append(log);
     if !index_ok(st) {
         store_reset(st);

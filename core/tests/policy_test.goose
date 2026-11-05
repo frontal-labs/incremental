@@ -17,8 +17,7 @@ fn check(cond: bool, msg: const u8[:]) {
 }
 
 fn main() {
-    var st = Store { baseline: Span { off: 0, len: 0 }, has_baseline: false,
-                     ctx_from: 0, ctx_n: 0, has_ctx: false };
+    var st = Store { baseline: Span { off: 0, len: 0 }, has_baseline: false, ctx_id: -1 };
     var out: u8[>..] = [];
 
     // ---- Test 1: plan with no baseline set -> fallback rank 5 (baseline_mismatch) ----

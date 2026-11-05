@@ -233,7 +233,10 @@ fn plan(st: Store&, q: Query&, root: const u8[:], out: u8[>..]&) {
             let names = ["lockfile", "tsconfig", "pkgjson", "runner", "node", "fmt", "caps"];
             for j in names.len {
                 let qi = kv_find(st, q_ctx, 0, q_ctx.len, names[j]);
-                let si = kv_find(st, g_kvs, st.ctx_from, st.ctx_n, names[j]);
+                let si = if st.ctx_id >= 0 {
+                    let cf, cn = ctx_range(st.ctx_id);
+                    kv_find(st, g_kvs, cf, cn, names[j])
+                } else { -1 };
                 if !ctx_equal(st, q, qi, si) && fb < 2 { fb = 2; }
             }
         } else {
@@ -241,7 +244,10 @@ fn plan(st: Store&, q: Query&, root: const u8[:], out: u8[>..]&) {
                 let key = text(st, q_keys[j]);
                 if is_reserved(key) { continue; }
                 let qi = kv_find(st, q_ctx, 0, q_ctx.len, key);
-                let si = kv_find(st, g_kvs, st.ctx_from, st.ctx_n, key);
+                let si = if st.ctx_id >= 0 {
+                    let cf, cn = ctx_range(st.ctx_id);
+                    kv_find(st, g_kvs, cf, cn, key)
+                } else { -1 };
                 if !ctx_equal(st, q, qi, si) && fb < 2 { fb = 2; }
             }
         }

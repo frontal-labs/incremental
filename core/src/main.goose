@@ -231,7 +231,7 @@ fn main() {
         return;
     }
 
-    var st = Store { baseline: Span { off: 0, len: 0 }, has_baseline: false, ctx_from: 0, ctx_n: 0, has_ctx: false };
+    var st = Store { baseline: Span { off: 0, len: 0 }, has_baseline: false, ctx_id: -1 };
     let sess = session();
     let opened = open_store(st, sess);
     if opened != 0 {
