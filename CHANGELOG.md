@@ -59,3 +59,10 @@ All notable changes to this project will be documented in this file.
 - **Lockfile drift.** `adapters/typescript` and `adapters/biome` declare `typescript` 5.9.3 (what the code compiles against); the `@tsc-rs` alias is gone from their manifests. `adapters/vitest/fixtures/repo` lock synced.
 - `scripts/fixture-install.sh` installs the fixtures' test dependencies and reverts the `typescript` alias pnpm writes into `package.json`.
 - Nx CLI: `nx` and `turbo` version reads use the workspace directory.
+
+### Validation run (2026-11-05, third)
+
+- `make all-tests` passes (exit 0). `make bench`, `make bench-cold`, and the three monorepo Vitest suites pass. Results and ranges in `BENCHMARKS.md`; raw output in `benchmarks/results/`.
+- Turbo adapter: the default store is `<root>/.incremental` (workspace), not a shared temp path. Found by the security review; `.incremental/` is gitignored.
+- `BENCHMARKS.md` updated to this run. The Bazel `rdeps` timed command is written as `kind(filegroup, ...)`, matching `scripts/bench-compare.mjs`. The cold end-to-end section is this run's numbers; the earlier `git status` and `git diff` timings are removed because they were not re-measured.
+- Open, found by this run: `monorepos/bazel/` has gitignored `bazel-*` symlinks. The replay copies them and Vitest picks up 22 extra test files (per-fixture replay `total_tasks=26`; `vitest run` in the fixture reports 26 files / 58 tests). Not fixed; it needs a change to the replay copy and the fixture's Vitest config.

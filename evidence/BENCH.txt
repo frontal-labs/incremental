@@ -1,3 +1,12 @@
+# VALIDATION RUN 2026-11-05 (third, after the Turbo default-store change)
+# make all-tests: exit 0 (82 PASS lines; fixture-e2e PASS)
+# make bench: PASS. replay commits_processed=7 commits_evaluated=6 total_tasks=6 false_skips=0 rule_of_three=3/6 median_skip_share=83.33%
+# warm plan 10k/100: per-query median 0.094 ms (0.091-0.114), process load 33.3 ms, tg.idx 6348249 bytes
+# comparison (bench-compare 3): incremental 0.096 ms/query; nx 688 ms; turbo 118 ms; bazel 1366 ms; all three return shared, api, web
+# make bench-cold: PASS. nx 111.3 ms, turborepo 110.1, bazel 112.7, fixture 108.6, vitest repo 110.2; all plans match the import graph
+# per-fixture replay (--commits 3): nx 4/3 tasks=4 false_skips=0; turborepo 4/3 tasks=4 false_skips=0; bazel 4/3 tasks=26 (inflated by bazel-* symlink copies) false_skips=0
+# vitest in fixtures: nx 4 files/8 tests pass; turborepo 4/8 pass; bazel 26 files/58 tests pass (includes bazel-* copies)
+
 # BENCH: Replay benchmark against a real Vitest monorepo
 # Command: INCREMENTAL_BENCH_REPO=$(CURDIR)/fixture make bench-replay (via make bench)
 # Date: 2026-11-05
