@@ -1,14 +1,62 @@
+# ---------------------------------------
+# Dependencies
+# ---------------------------------------
 node_modules/
+.pnpm/
+pnpm-store/
+
+# ---------------------------------------
+# Build outputs
+# ---------------------------------------
 dist/
-.toolchain/
-store/
-.incremental/
+build/
 *.tsbuildinfo
-__pycache__/
+
+# ---------------------------------------
+# Local state / stores (Incremental engine)
+# ---------------------------------------
+.incremental/
+store/
+.toolchain/
+
+# ---------------------------------------
+# Editor / IDE
+# ---------------------------------------
+.idea/
+*.code-workspace
+
+# ---------------------------------------
+# Operating system
+# ---------------------------------------
 .DS_Store
-# Run logs (Makefile targets)
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---------------------------------------
+# Logs
+# ---------------------------------------
 logs/
+*.log
+
+# ---------------------------------------
+# Temporary files
+# ---------------------------------------
+*.tmp
 status/*.tmp
 
+# ---------------------------------------
+# Environment
+# ---------------------------------------
+.env
+.env.local
+.env.*.local
+.env.production.local
+
+# ---------------------------------------
 # Generated demo repo for local adapter work
+# ---------------------------------------
 demo-repo/
