@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 // Warm plan latency benchmark.
 //
-//   node benchmarks/warm-plan.mjs <tasks> <queries>
+//   node benchmarks/warm-plan.mjs <tasks> <queries> [iterations]
 //
 // Builds a store holding <tasks> synthetic observations, each reading a
 // UNIQUE source file (src/task-<i>.ts). Then measures warm plan latency of
 // `incremental serve` over protocol v1 stdio by changing one file per query,
 // so only one task is invalidated per query — a realistic incremental query.
+//
+// Runs <iterations> full benchmark cycles and reports statistics (min, max,
+// median, mean) for per-query latency.
 //
 //   process_load_ms     time to spawn the engine, complete the hello handshake,
 //                        and load the store (first stats call, which triggers
@@ -17,7 +20,7 @@
 //
 // Prints one JSON object to stdout:
 //
-//   {"tasks":N,"queries":Q,"process_load_ms":x,"per_query_ms_approx":y,"log_bytes":z,"note":"..."}
+//   {"tasks":N,"queries":Q,"iterations":I,"process_load_ms":{..},"per_query_ms":{..},"log_bytes":Z,"note":"..."}
 //
 // `make bench` / `make bench-smoke` redirect stdout to
 // benchmarks/results/warm-plan.json.
@@ -63,9 +66,26 @@ function die(msg) {
 function parseArgs(argv) {
   const tasks = Number(argv[0] ?? 10000);
   const queries = Number(argv[1] ?? 100);
+  const iterations = Number(argv[2] ?? 3);
   if (!Number.isInteger(tasks) || tasks < 1) die(`invalid tasks: ${argv[0]}`);
   if (!Number.isInteger(queries) || queries < 1) die(`invalid queries: ${argv[1]}`);
-  return { tasks, queries };
+  if (!Number.isInteger(iterations) || iterations < 1) die(`invalid iterations: ${argv[2]}`);
+  return { tasks, queries, iterations };
+}
+
+function median(xs) {
+  const a = [...xs].sort((x, y) => x - y);
+  const m = a.length >> 1;
+  return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2;
+}
+
+function stats(xs) {
+  return {
+    min: Math.min(...xs),
+    max: Math.max(...xs),
+    mean: xs.reduce((a, b) => a + b, 0) / xs.length,
+    median: median(xs),
+  };
 }
 
 // One stdio protocol v1 session against a spawned `incremental serve` process.
@@ -93,7 +113,7 @@ class Session {
   }
   onLine(msg) {
     const p = this.pending && this.pending.get(msg.id);
-    if (p) { this.pending.delete(msg.id); clearTimeout(p.timer); if (msg.error) p.reject(new Error(String(msg.error))); else p.resolve(msg.result); }
+    if (p) { this.pending.delete(p.id); clearTimeout(p.timer); if (msg.error) p.reject(new Error(String(msg.error))); else p.resolve(msg.result); }
   }
   _fail(msg) {
     for (const p of this.pending.values()) { clearTimeout(p.timer); p.reject(new Error(msg)); }
@@ -113,8 +133,6 @@ class Session {
       } catch (e) { reject(e); }
     });
   }
-  // Graceful shutdown: the engine writes the index image (tg.idx) when the
-  // serve loop exits, so log_bytes can be measured afterwards.
   async close() {
     try { await this.request("shutdown", {}); } catch {}
     await this.exited;
@@ -123,7 +141,7 @@ class Session {
 }
 
 async function main() {
-  const { tasks, queries } = parseArgs(process.argv.slice(2));
+  const { tasks, queries, iterations } = parseArgs(process.argv.slice(2));
   const work = mkdtempSync(join(os.tmpdir(), "bp-bench-"));
   const store = join(work, "store");
   const baseline = "bench-baseline";
@@ -143,42 +161,47 @@ async function main() {
   await setupSess.request("advance", { to: baseline, expected: null });
   setupSess.close();
 
-  // 3. Re-open a session and measure process load (spawn + hello + store load)
-  //    via the first stats call, which triggers refresh_log over all records.
-  const proc = spawn(ENGINE, ["serve", "--store", store, "--root", process.cwd()], {
-    stdio: ["pipe", "pipe", "pipe"],
-  });
-  const sess = new Session(proc);
-  const t0 = process.hrtime.bigint();
-  await sess.request("hello", { protocol: 1, client: { name: "bench", version: "0.1.0" } });
-  await sess.request("stats", {});
-  const processLoadMs = Number(process.hrtime.bigint() - t0) / 1_000_000;
+  const processLoadSamples = [];
+  const perQuerySamples = [];
 
-  // 4. Warm per-query latency: <queries> affected calls, each changing one
-  //    unique source file so exactly one task is invalidated per query.
-  //    Cycle through tasks so we hit different postings each time.
-  const options = { baseline, context: ROOT_CTX, verify: false, policy: "balanced" };
-  const queryMs = [];
-  for (let i = 0; i < queries; i++) {
-    const taskIdx = i % tasks;
-    const changes = {
-      baseline,
-      changes: [{ path: `src/task-${taskIdx}.ts`, status: "modified" }],
-    };
-    const q0 = process.hrtime.bigint();
-    const res = await sess.request("affected", { changes, options });
-    const q1 = process.hrtime.bigint();
-    queryMs.push(Number(q1 - q0) / 1_000_000);
-    if (res.error) die(`affected error: ${JSON.stringify(res.error)}`);
-    // Verify exactly one task was invalidated.
-    const plan = res;
-    if (!plan || !Array.isArray(plan.tasks) || plan.tasks.length !== 1) {
-      die(`expected 1 invalidated task, got ${plan && plan.tasks ? plan.tasks.length : "none"}`);
+  for (let iter = 0; iter < iterations; iter++) {
+    // 3. Re-open a session and measure process load (spawn + hello + store load)
+    //    via the first stats call, which triggers refresh_log over all records.
+    const proc = spawn(ENGINE, ["serve", "--store", store, "--root", process.cwd()], {
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    const sess = new Session(proc);
+    const t0 = process.hrtime.bigint();
+    await sess.request("hello", { protocol: 1, client: { name: "bench", version: "0.1.0" } });
+    await sess.request("stats", {});
+    const processLoadMs = Number(process.hrtime.bigint() - t0) / 1_000_000;
+    processLoadSamples.push(processLoadMs);
+
+    // 4. Warm per-query latency: <queries> affected calls, each changing one
+    //    unique source file so exactly one task is invalidated per query.
+    const options = { baseline, context: ROOT_CTX, verify: false, policy: "balanced" };
+    const queryMs = [];
+    for (let i = 0; i < queries; i++) {
+      const taskIdx = i % tasks;
+      const changes = {
+        baseline,
+        changes: [{ path: `src/task-${taskIdx}.ts`, status: "modified" }],
+      };
+      const q0 = process.hrtime.bigint();
+      const res = await sess.request("affected", { changes, options });
+      const q1 = process.hrtime.bigint();
+      queryMs.push(Number(q1 - q0) / 1_000_000);
+      if (res.error) die(`affected error: ${JSON.stringify(res.error)}`);
+      // Verify exactly one task was invalidated.
+      const plan = res;
+      if (!plan || !Array.isArray(plan.tasks) || plan.tasks.length !== 1) {
+        die(`expected 1 invalidated task, got ${plan && plan.tasks ? plan.tasks.length : "none"}`);
+      }
     }
-  }
-  const perQueryMs = queryMs.reduce((a, b) => a + b, 0) / queryMs.length;
+    perQuerySamples.push(queryMs.reduce((a, b) => a + b, 0) / queryMs.length);
 
-  sess.close();
+    sess.close();
+  }
 
   // 5. log_bytes: size of the index image written by graceful shutdown.
   const idxPath = join(store, "tg.idx");
@@ -188,10 +211,11 @@ async function main() {
   const result = {
     tasks,
     queries,
-    process_load_ms: Math.round(processLoadMs * 100) / 100,
-    per_query_ms_approx: Math.round(perQueryMs * 10000) / 10000,
+    iterations,
+    process_load_ms: stats(processLoadSamples),
+    per_query_ms: stats(perQuerySamples),
     log_bytes: logBytes,
-    note: "warm plan latency over protocol v1 stdio; each query invalidates one task; process_load includes engine spawn + hello + store load",
+    note: "warm plan latency over protocol v1 stdio; each query invalidates one task; process_load includes engine spawn + hello + store load; stats over multiple iterations",
   };
   console.log(JSON.stringify(result));
   // Best-effort cleanup of the temp store dir (the engine may release file
