@@ -53,7 +53,9 @@ check-spec: build
 	@echo "PASS check-spec"
 
 test-core: build
-	@node --test core/tests/*.test.mjs || { echo "FAIL test-core"; exit 1; }
+	@$(GOOSE) --multi-test -o /tmp/gt-% --stdlib core/src -O2 core/tests/*.goose >logs/test-core.log 2>&1; \
+	fails=$$(grep -c '==== goose --multi-test: exit [1-9]' logs/test-core.log || true); \
+	if [ "$$fails" -gt 0 ]; then echo "FAIL test-core"; cat logs/test-core.log; exit 1; fi
 	@echo "PASS test-core"
 
 test-policy: build
