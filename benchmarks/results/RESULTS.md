@@ -1,6 +1,6 @@
 # Benchmark results
 
-Generated: 2026-11-05T17:13:22.992Z
+Generated: 2026-11-05T18:16:04.072Z
 
 ## Raw data
 
@@ -11,15 +11,18 @@ Generated: 2026-11-05T17:13:22.992Z
 ## Replay
 
 | commits_processed | commits_evaluated | total_tasks | task_commit_pairs_examined | false_skips | rule_of_three_bound |
+|---|---|---|---|---|---|
 | 7 | 6 | 6 | 36 | 0 | 3/6 |
 
 | median_skip_share | skip_shares |
+|---|---|
 | 83.33% | [0.6666666666666666,0.8333333333333334,1,0.8333333333333334,0.8333333333333334,0.6666666666666666] |
 
 ## Warm plan latency
 
-| tasks | queries | iterations | process_load_ms (median) | per_query_ms (median) | log_bytes |
-| 10000 | 100 | 3 | 35.927 | 0.160 | 6348249 |
+| tasks | queries | iterations | process_load_ms (median) | per_query_ms (median) | per_query_ms (min–max) | log_bytes |
+|---|---|---|---|---|---|---|
+| 10000 | 100 | 3 | 45.325 | 0.191 | 0.162–0.243 | 6348249 |
 
 _Note: warm plan latency over protocol v1 stdio; each query invalidates one task; process_load includes engine spawn + hello + store load; stats over multiple iterations_
 
@@ -29,19 +32,21 @@ Measured on three dedicated monorepo fixtures under `monorepos/`. Each fixture h
 with a `shared → api/web` dependency graph (`utils` standalone), 6 vitest tests, and git history.
 Changed `packages/shared/src/index.ts`; measured affected-project detection time.
 
-| Tool            | Detect time        | Projects/tasks found  | Correct deps?         | Monorepo                 |
-| --------------- | ------------------ | --------------------- | --------------------- | ------------------------ |
-| **Incremental** | **0.208 ms/query** | per-task invalidation | Yes                   | native (synthetic store) |
-| **Nx**          | 923 ms detect      | 2 projects            | Yes                   | monorepos/nx/            |
-| **Turbo**       | 235 ms detect      | 0 tasks               | No (pnpm unsupported) | monorepos/turborepo/     |
-| **Bazel**       | 2537 ms detect     | 4 targets             | Yes                   | monorepos/bazel/         |
+| Tool | Detect time | Projects/tasks found | Correct deps? | Monorepo |
+|---|---|---|---|---|
+| **Incremental** | **0.177 ms/query** | per-task invalidation | Yes | native (synthetic store) |
+| **Nx** | 1656 ms detect | 2 projects | Yes | monorepos/nx/ |
+| **Turbo** | 513 ms detect | 0 tasks | Not valid (fixture has no pnpm-workspace.yaml) | monorepos/turborepo/ |
+| **Bazel** | 1561 ms query (all targets) | 4 targets listed | Not measured (fixture declares no deps) | monorepos/bazel/ |
 
-Incremental is **~4445x faster** than Nx at detecting what's affected
-(0.208 ms vs 923 ms) and identifies invalidation at **task granularity**
-rather than project granularity. Nx correctly identified `api` and `web` as
-affected when `shared` changed (but not `utils`, which has no dependency on
-`shared`). Bazel found all 4 targets but at ~1600ms, over 9,000x slower.
+Not like-for-like: the Incremental figure is a warm query against a 10,000-task synthetic store
+(`benchmarks/warm-plan.mjs`). The Nx figure is one affected-detection run against a 4-package fixture.
+The Turbo and Bazel rows are not affected-detection results (see BENCHMARKS.md, Known issues).
+Do not read any ratio between these rows as a speedup.
 
 ## Thresholds
 
-- Warm plan: p50 under 5 ms, p99 under 20 ms at 100k tasks. - Cold CLI plan under 300 ms at 100k tasks (hyperfine).
+- Warm plan target: p50 under 5 ms and p99 under 20 ms at 100k tasks.
+- Cold CLI plan target: under 300 ms at 100k tasks (hyperfine).
+- Measured so far: warm plan at 10k tasks only. The 100k-task targets are not measured.
+

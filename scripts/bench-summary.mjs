@@ -26,6 +26,12 @@ function msMedian(obj) {
   return obj && obj.median != null ? obj.median.toFixed(3) : "n/a";
 }
 
+function range(obj) {
+  return obj && obj.min != null && obj.max != null
+    ? `${obj.min.toFixed(3)}–${obj.max.toFixed(3)}`
+    : "n/a";
+}
+
 function main() {
   const replay = load("replay.json");
   const warmPlan = load("warm-plan.json");
@@ -48,9 +54,11 @@ function main() {
   if (replay) {
     lines.push(
       `| commits_processed | commits_evaluated | total_tasks | task_commit_pairs_examined | false_skips | rule_of_three_bound |`,
+      `|---|---|---|---|---|---|`,
       `| ${replay.commits_processed ?? "-"} | ${replay.commits_evaluated ?? "-"} | ${replay.total_tasks ?? "-"} | ${replay.task_commit_pairs_examined ?? "-"} | ${(replay.false_skips ?? []).length} | ${replay.rule_of_three_bound ?? "-"} |`,
       "",
       `| median_skip_share | skip_shares |`,
+      `|---|---|`,
       `| ${replay.median_skip_share == null ? "n/a" : (replay.median_skip_share * 100).toFixed(2) + "%"} | ${JSON.stringify(replay.skip_shares ?? [])} |`,
       "",
     );
@@ -58,8 +66,9 @@ function main() {
   lines.push("## Warm plan latency", "");
   if (warmPlan) {
     lines.push(
-      `| tasks | queries | iterations | process_load_ms (median) | per_query_ms (median) | log_bytes |`,
-      `| ${warmPlan.tasks ?? "-"} | ${warmPlan.queries ?? "-"} | ${warmPlan.iterations ?? "-"} | ${msMedian(warmPlan.process_load_ms)} | ${msMedian(warmPlan.per_query_ms)} | ${ms(warmPlan.log_bytes)} |`,
+      `| tasks | queries | iterations | process_load_ms (median) | per_query_ms (median) | per_query_ms (min–max) | log_bytes |`,
+      `|---|---|---|---|---|---|---|`,
+      `| ${warmPlan.tasks ?? "-"} | ${warmPlan.queries ?? "-"} | ${warmPlan.iterations ?? "-"} | ${msMedian(warmPlan.process_load_ms)} | ${msMedian(warmPlan.per_query_ms)} | ${range(warmPlan.per_query_ms)} | ${ms(warmPlan.log_bytes)} |`,
       "",
       `_Note: ${warmPlan.note || ""}_`,
       "",
@@ -76,45 +85,52 @@ function main() {
   );
   if (comparison) {
     const inc = comparison.incremental;
+    const incMs = inc.per_query_ms ?? 0;
     lines.push(
-      `| **Incremental** | **${(inc.per_query_ms ?? 0).toFixed(3)} ms/query** | per-task invalidation | Yes | native (synthetic store) |`,
+      `| **Incremental** | **${incMs.toFixed(3)} ms/query** | per-task invalidation | Yes | native (synthetic store) |`,
     );
+    // Expected affected set when packages/shared/src/index.ts changes (see monorepos/README.md).
+    const EXPECTED_NX = ["api", "web"];
     if (comparison.nx) {
       const nx = comparison.nx;
+      const found = [...(nx.projects ?? [])].sort();
+      const correct = JSON.stringify(found) === JSON.stringify(EXPECTED_NX) ? "Yes" : "No";
       lines.push(
-        `| **Nx** | ${(nx.affected_detect_ms ?? 0).toFixed(0)} ms detect | ${nx.projects?.length ?? 0} projects | ${nx.projects?.length > 0 ? "Yes" : "No"} | monorepos/nx/ |`,
+        `| **Nx** | ${(nx.affected_detect_ms ?? 0).toFixed(0)} ms detect | ${found.length} projects | ${correct} | monorepos/nx/ |`,
       );
     }
+    // Turbo: the fixture has no pnpm-workspace.yaml, so turbo sees 0 packages and the
+    // number is not an affected-detection result (see "Known issues" in BENCHMARKS.md).
     if (comparison.turbo) {
       const tb = comparison.turbo;
+      const tbFound = tb.tasks_found ?? 0;
       lines.push(
-        `| **Turbo** | ${(tb.affected_detect_ms ?? 0).toFixed(0)} ms detect | ${tb.tasks_found ?? 0} tasks | No (pnpm unsupported) | monorepos/turborepo/ |`,
+        `| **Turbo** | ${(tb.affected_detect_ms ?? 0).toFixed(0)} ms detect | ${tbFound} tasks | Not valid (fixture has no pnpm-workspace.yaml) | monorepos/turborepo/ |`,
       );
     }
+    // Bazel: the timed command is \`bazel query //packages/...\`, which lists every target
+    // and ignores the change. The fixture declares no deps. Not affected detection.
     if (comparison.bazel) {
       const bz = comparison.bazel;
-      const bazelCorrect = bz.targets && bz.targets.length === 4 ? "Yes" : "No";
       lines.push(
-        `| **Bazel** | ${(bz.affected_detect_ms ?? 0).toFixed(0)} ms detect | ${bz.targets?.length ?? 0} targets | ${bazelCorrect} | monorepos/bazel/ |`,
+        `| **Bazel** | ${(bz.affected_detect_ms ?? 0).toFixed(0)} ms query (all targets) | ${bz.targets?.length ?? 0} targets listed | Not measured (fixture declares no deps) | monorepos/bazel/ |`,
       );
     }
-    const incMs = inc.per_query_ms ?? 0;
-    const nxMs = comparison.nx?.affected_detect_ms ?? 0;
-    const speedup = nxMs && incMs ? Math.round(nxMs / incMs) : 0;
     lines.push(
       "",
-      `Incremental is **~${speedup}x faster** than Nx at detecting what's affected`,
-      `(${incMs.toFixed(3)} ms vs ${nxMs.toFixed(0)} ms) and identifies invalidation at **task granularity**`,
-      "rather than project granularity. Nx correctly identified `api` and `web` as",
-      "affected when `shared` changed (but not `utils`, which has no dependency on",
-      "`shared`). Bazel found all 4 targets but at ~1600ms, over 9,000x slower.",
+      "Not like-for-like: the Incremental figure is a warm query against a 10,000-task synthetic store",
+      "(`benchmarks/warm-plan.mjs`). The Nx figure is one affected-detection run against a 4-package fixture.",
+      "The Turbo and Bazel rows are not affected-detection results (see BENCHMARKS.md, Known issues).",
+      "Do not read any ratio between these rows as a speedup.",
       "",
     );
   }
   lines.push(
     "## Thresholds",
     "",
-    "- Warm plan: p50 under 5 ms, p99 under 20 ms at 100k tasks. - Cold CLI plan under 300 ms at 100k tasks (hyperfine).",
+    "- Warm plan target: p50 under 5 ms and p99 under 20 ms at 100k tasks.",
+    "- Cold CLI plan target: under 300 ms at 100k tasks (hyperfine).",
+    "- Measured so far: warm plan at 10k tasks only. The 100k-task targets are not measured.",
     "",
   );
   writeFileSync(path.join(RESULTS, "RESULTS.md"), lines.join("\n") + "\n");

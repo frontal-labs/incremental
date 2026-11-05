@@ -1,9 +1,0 @@
-{
-  "$schema": "https://ultracite.ai/schema.json",
-  "presets": ["core", "type-aware"],
-  "presetPaths": {
-    "core": "./biome-presets/core.json",
-    "type-aware": "./biome-presets/type-aware.json"
-  },
-  "description": "Ultracite preset selection for Incremental. Consumed by biome.json via extends."
-}

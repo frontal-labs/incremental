@@ -151,6 +151,7 @@ bench-smoke: build
 bench: build
 	@node benchmarks/replay/dist/src/index.js --repo $(INCREMENTAL_BENCH_REPO) --commits 6 --out benchmarks/results/replay.json >$(LOGS)/bench-replay.log 2>&1 || { tail -30 $(LOGS)/bench-replay.log; echo "FAIL bench"; exit 1; }
 	@node benchmarks/warm-plan.mjs 10000 100 >benchmarks/results/warm-plan.json || { echo "FAIL bench"; exit 1; }
+	@node scripts/bench-compare.mjs 3 >$(LOGS)/bench-compare.log 2>&1 || { tail -20 $(LOGS)/bench-compare.log; echo "FAIL bench"; exit 1; }
 	@node scripts/bench-summary.mjs >$(LOGS)/bench-summary.log 2>&1 || { tail -20 $(LOGS)/bench-summary.log; echo "FAIL bench"; exit 1; }
 	@echo "PASS bench"
 

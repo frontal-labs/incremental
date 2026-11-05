@@ -1,13 +1,49 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "root": true,
-  "extends": ["./biome-presets/core.json", "./biome-presets/type-aware.json"],
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "suspicious": {
+        "noConsole": "off",
+        "noBiomeFirstException": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "performance": {
+        "noBarrelFile": "off"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "javascript": {
+    "formatter": {
+      "semicolons": "always",
+      "trailingCommas": "all",
+      "quoteStyle": "double"
+    }
+  },
+  "json": {
+    "formatter": {
+      "enabled": true,
+      "trailingCommas": "none"
+    }
+  },
   "files": {
     "includes": [
       "**",
       "!!**/node_modules",
       "!!**/dist",
       "!!**/build",
+      "!!**/target",
+      "!!benchmarks/results",
       "!!**/.turbo",
       "!!**/*.gen.ts",
       "!!LICENSE.md",

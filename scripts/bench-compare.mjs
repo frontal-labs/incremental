@@ -18,9 +18,10 @@
 
 import { spawnSync } from "node:child_process";
 import { statSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const GRAPH_ROOT = process.env.GRAPH_ROOT || "/Users/gabrielfonseca/Desktop/graph";
+const GRAPH_ROOT = process.env.GRAPH_ROOT || resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const MONOREPOS = {
   nx: join(GRAPH_ROOT, "monorepos", "nx"),

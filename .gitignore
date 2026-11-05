@@ -12,6 +12,12 @@ dist/
 build/
 *.tsbuildinfo
 
+# Python and Rust caches and build output
+__pycache__/
+*.pyc
+.ruff_cache/
+target/
+
 # ---------------------------------------
 # Local state / stores (Incremental engine)
 # ---------------------------------------

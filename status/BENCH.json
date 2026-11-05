@@ -2,5 +2,5 @@
   "id": "BENCH",
   "state": "done",
   "evidence": "evidence/BENCH.txt",
-  "notes": "Real repository: fixture (Vitest monorepo, suite green: 3 tests pass). INCREMENTAL_BENCH_REPO wired up in Makefile and defaults to fixture. Replay ran end to end: commits_processed=7, commits_evaluated=6, total_tasks=2, false_skips=0, rule_of_three_bound=3/6. `make bench` and `make bench-smoke` pass. Fixture STOP resolved; 0-commits-evaluable blocker fixed. E5 (strace oracle) remains Linux-only and is not run on macOS."
+  "notes": "Real repository: fixture (Vitest monorepo, 6 test files, suite green: 14 tests pass). INCREMENTAL_BENCH_REPO wired up in Makefile and defaults to fixture. Replay ran end to end: commits_processed=7, commits_evaluated=6, total_tasks=6, false_skips=0, rule_of_three_bound=3/6. `make bench` and `make bench-smoke` pass (re-verified 2026-11-05). Replay on each monorepo fixture re-verified 2026-11-05 (4 commits, 3 evaluated, 0 false skips). Fixture STOP resolved; 0-commits-evaluable blocker fixed. E5 (strace oracle) remains Linux-only and is not run on macOS. Comparison rows for Turbo and Bazel are not valid affected-detection results; see BENCHMARKS.md Known issues."
 }
