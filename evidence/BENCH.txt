@@ -76,3 +76,11 @@ Done when: replay runs end to end against a real Vitest monorepo with commits_ev
 # Lint: make lint PASS; make fmt-check PASS (biome, ruff, clang-format --Werror, rustfmt, shfmt, taplo)
 # all-tests: EXIT=0 (8m55s) after all edits in this pass
 # Linux gate: NOT RUN. Docker VM does not start (Docker.raw returns input/output error; socket refuses connections).
+
+# COLD END-TO-END 2026-11-05 (make bench-cold, 5 runs per fixture; benchmarks/results/cold-e2e.json)
+# monorepos/nx 3/3 invalid, matches graph, cold e2e median 164.8 ms (change source 157.4, spawn+hello 6.5, plan 0.5)
+# monorepos/turborepo 3/3, matches, 157.7 ms (150.1, 7.5, 0.7)
+# monorepos/bazel 3/3, matches, 144.7 ms (137.2, 6.7, 0.3)
+# fixture 2/2, matches, 149.7 ms (142.7, 6.7, 0.3)
+# adapters/vitest/fixtures/repo 2/2, matches, 146.8 ms (139.7, 6.4, 0.3)
+# incremental-git changes on monorepos/nx: ~139 ms; plain git status ~19 ms (node startup in this shell ~84 ms; machine under load)

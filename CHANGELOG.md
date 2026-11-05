@@ -38,3 +38,4 @@ All notable changes to this project will be documented in this file.
 - `examples/agent_loop/README.md`: expected-results table and layout corrected to the measured output.
 - `monorepos/README.md` rewritten: commit history, dependency wiring, and the timed commands.
 - Not done: Linux gate. The Docker VM does not start (`Docker.raw` returns `input/output error`, and the socket refuses connections after restart). Repair needs Docker's disk reset, which deletes other projects' images and volumes; awaiting approval.
+- `scripts/cold-e2e.mjs` and `make bench-cold`: cold end-to-end affected detection (git change source, new engine process, hello, one plan) on the monorepo fixtures, `fixture/` and `adapters/vitest/fixtures/repo`. Plans match the import graph on all five. The git change source is about 95% of the cold path (about 140 ms against about 7 ms for the engine).

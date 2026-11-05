@@ -126,6 +126,25 @@ Run the comparison:
 node scripts/bench-compare.mjs 3
 ```
 
+## Cold end-to-end (`make bench-cold`)
+
+`scripts/cold-e2e.mjs` times one cold run per fixture: the git change source (`incremental-git changes`), then a new `incremental serve` process, hello, and one `affected` query. Each fixture is copied to a scratch repo with a base commit and a HEAD commit that edits its most-depended-on source file. The expected invalid set is the tests whose import closure contains that file. Five runs per fixture, 2026-11-05:
+
+| Fixture                       | Tests | Expected / plan invalid | Matches import graph | Cold e2e median (min-max), ms | change source, ms | spawn + hello, ms | plan, ms |
+| ----------------------------- | ----- | ----------------------- | -------------------- | ----------------------------- | ----------------- | ----------------- | -------- |
+| monorepos/nx                  | 4     | 3 / 3                   | yes                  | 164.8 (149.0-623.0)           | 157.4             | 6.5               | 0.5      |
+| monorepos/turborepo           | 4     | 3 / 3                   | yes                  | 157.7 (145.7-224.4)           | 150.1             | 7.5               | 0.7      |
+| monorepos/bazel               | 4     | 3 / 3                   | yes                  | 144.7 (140.7-157.5)           | 137.2             | 6.7               | 0.3      |
+| fixture                       | 6     | 2 / 2                   | yes                  | 149.7 (135.5-152.5)           | 142.7             | 6.7               | 0.3      |
+| adapters/vitest/fixtures/repo | 14    | 2 / 2                   | yes                  | 146.8 (137.4-212.2)           | 139.7             | 6.4               | 0.3      |
+
+Only `adapters/vitest/fixtures/repo` is an adapter fixture. The other adapters are tools with no fixture repository, so they have no row.
+
+- **The engine is not the cost.** Spawn plus hello is about 7 ms and the plan under 1 ms. The change source is about 95% of the cold path.
+- **The change source is slow.** On `monorepos/nx`, plain `git status --porcelain` takes about 19 ms and `git diff --name-status HEAD~1` about 21 ms, while `incremental-git changes` takes about 139 ms. That is the adapter's own cost (a Goose binary that runs git several times, or its startup). It is not investigated yet.
+- **Same fixture, same scope (cold vs cold).** Against the cold CLI detection numbers in the comparison above: Nx 1930 ms vs 145 ms is about 12x; Turbo 506 ms vs 158 ms is about 3x; Bazel 1871 ms vs 145 ms is about 13x. This is closer to like-for-like than the warm-query ratios, but these are still single fixtures of 4 packages, and the Nx run may have used its daemon, which the bench did not disable.
+- The machine was under load for some runs (a node no-op took 84 ms), which accounts for the outliers in the max column.
+
 ## Known issues
 
 Resolved on 2026-11-05 (see the verification pass in `CHANGELOG.md`):
