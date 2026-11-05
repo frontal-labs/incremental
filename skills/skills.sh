@@ -14,7 +14,7 @@
 set -eu
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-SKILLS_DIR="$ROOT/skills"
+SKILLS_DIR="$ROOT"
 OPSKILLS_DIR="${OPSKILLS_HOME:-$HOME/.opencode/skills}"
 
 install_skill() {

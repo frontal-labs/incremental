@@ -92,6 +92,10 @@ var g_live: i64 = 0;
 // Size and mtime of the log as last read, see refresh_log.
 var g_log_mtime: i64 = 0;
 var g_stat_known: bool = false;
+// When true (default), the body hash of the index image is verified on load.
+// Set to false via INCREMENTAL_NO_BODY_HASH=1 to skip the 12 ms damage check
+// at large scale; the span/index checks and log tail hash still validate.
+var g_check_body_hash: bool = true;
 
 struct Store {
     baseline: Span,
@@ -120,6 +124,12 @@ fn store_reset(st: Store&) {
     st.baseline = Span { off: 0, len: 0 };
     st.has_baseline = false;
     st.ctx_id = -1;
+    var env_val: u8[>..] = [];
+    var skip_hash = false;
+    if env("INCREMENTAL_NO_BODY_HASH", env_val) {
+        skip_hash = env_val.len > 0 && env_val[0] != '0';
+    }
+    g_check_body_hash = !skip_hash;
 }
 
 fn put(st: Store&, s: const u8[:]) -> Span {
@@ -827,7 +837,7 @@ fn load_index(st: Store&, idx_path: const u8[:], log: const u8[:]) -> bool {
     pos += 8;
     if total != img.len - pos { return false; }
     let body = img[pos ..];
-    if hash(body) != stored { return false; }
+    if g_check_body_hash && hash(body) != stored { return false; }
     var at: i64 = 0;
     let arena, a_ok = from_bytes<u8[>..]>(body[at .. at + lens[0]]); at += lens[0];
     let kvs, k_ok = from_bytes<Kv[>..]>(body[at .. at + lens[1]]); at += lens[1];
