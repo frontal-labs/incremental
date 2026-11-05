@@ -187,7 +187,7 @@ const FIELDS = [
 
 const r = rng(seed);
 let compared = 0;
-let mismatches = [];
+const mismatches = [];
 const shape = {
   plans: 0,
   fallback: 0,

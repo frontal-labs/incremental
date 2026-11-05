@@ -44,6 +44,7 @@
       "!!**/build",
       "!!**/target",
       "!!benchmarks/results",
+      "!!monorepos",
       "!!**/.turbo",
       "!!**/*.gen.ts",
       "!!LICENSE.md",
