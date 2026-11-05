@@ -1,7 +1,8 @@
 # Monorepo Fixtures
 
 Three dedicated monorepo fixtures for benchmarking Incremental against other
-affected-detection tools (Nx, Turborepo, Bazel).
+affected-detection tools (Nx, Turborepo, Bazel). Each is a separate git repository
+nested under this directory.
 
 ## Structure
 
@@ -10,51 +11,67 @@ Each fixture has the same package structure:
 ```
 packages/
   shared/     → src/index.ts (add, mul, sum3, diff, div, avg)
-              → test/shared.test.ts
+              → test/shared.test.ts  (2 tests)
   api/        → src/index.ts (depends on shared)
-              → test/api.test.ts
+              → test/api.test.ts     (2 tests)
   web/        → src/index.ts (depends on shared)
-              → test/web.test.ts
+              → test/web.test.ts     (2 tests)
   utils/      → src/index.ts (standalone, no deps)
-              → test/utils.test.ts
+              → test/utils.test.ts   (2 tests)
 ```
 
 `shared` → `api` and `shared` → `web` (dependency graph). `utils` is independent.
+Each package has one Vitest file, so each fixture has 4 files and 8 tests.
 
-Each fixture has git history with two commits:
+## Git history
 
-1. Initial commit (all packages)
-2. Change to `packages/shared/src/index.ts` (add `diff` function)
+The change that a benchmark measures is always the last commit (HEAD), and it
+always touches `packages/shared/src/index.ts`, so the expected affected set is
+`shared`, `api`, `web`.
 
-This simulates a shared library change and lets us measure how each tool
-detects which downstream packages/tasks are affected.
+- `monorepos/nx/` and `monorepos/turborepo/`: `initial` → `fix relative imports`
+  (api and web) → `add diff to shared` (HEAD).
+- `monorepos/bazel/`: `initial` → `add diff to shared` (HEAD).
+
+## Dependency wiring
+
+- **Nx and Turborepo** use pnpm workspaces. The pnpm workspace file
+  (`pnpm-workspace.yaml`, `packages: ["packages/*"]`) lives in the base commit.
+  Without it, Turborepo sees 0 packages. Run `pnpm install --ignore-workspace --no-lockfile`
+  inside each fixture to install its Vitest dependency (the root workspace would
+  otherwise be picked up).
+- **Bazel** runs offline. The BUILD files are `filegroup` targets. A dependency is
+  a label in `srcs`: `//packages/api:api_pkg` lists `//packages/shared:shared_pkg`,
+  so `bazel query 'rdeps(//packages/..., //packages/shared:shared_pkg)'` returns
+  `api`, `shared` and `web`. The Bazel fixture declares no external rules.
 
 ## Fixtures
 
-| Path                   | Build Tool    | Purpose                           |
-| ---------------------- | ------------- | --------------------------------- |
-| `monorepos/nx/`        | Nx 24.x       | Nx affected-project detection     |
-| `monorepos/turborepo/` | Turborepo 2.x | Turborepo affected-task detection |
-| `monorepos/bazel/`     | Bazel 9.x     | Bazel affected-target detection   |
+| Path                   | Tool          | Affected-detection command (timed by `bench-compare.mjs`) |
+| ---------------------- | ------------- | --------------------------------------------------------- |
+| `monorepos/nx/`        | Nx            | `nx show projects --affected --base=HEAD~1`               |
+| `monorepos/turborepo/` | Turborepo 2.x | `turbo run build --filter=...[HEAD~1] --dry=json`         |
+| `monorepos/bazel/`     | Bazel         | `bazel query 'rdeps(//packages/..., set(<changed>))'`     |
 
-## Running comparisons
+`--affected=HEAD~1` is not used for Turborepo: on turbo 2.11.10 it selects no
+tasks, while the explicit `--filter=...[HEAD~1]` selects the right ones.
+
+## Running
 
 ```sh
-# Run all comparisons
-node scripts/bench-compare.mjs
+# Install each fixture's test dependencies once
+for m in nx turborepo bazel; do (cd monorepos/$m && pnpm install --ignore-workspace --no-lockfile); done
 
-# Results written to benchmarks/results/comparison.json
+# Run the fixture tests
+for m in nx turborepo bazel; do (cd monorepos/$m && ./node_modules/.bin/vitest run); done
+
+# Run the comparison (writes benchmarks/results/comparison.json)
+node scripts/bench-compare.mjs 3
 ```
 
-## Typical results
+## Results
 
-| Tool        | Detect time    | Found                    | Correct?                          |
-| ----------- | -------------- | ------------------------ | --------------------------------- |
-| Incremental | ~0.13 ms/query | per-task invalidation    | Yes                               |
-| Nx          | ~1.2–1.6 s     | 2 of 3 affected projects | Yes                               |
-| Turbo       | ~0.5–2.4 s     | 0 tasks                  | No (pnpm workspace)               |
-| Bazel       | ~1.3–3.2 s     | 0 targets                | No (registry unreachable offline) |
-
-Incremental is **~13,000x faster** than Nx at detecting what's affected
-(0.13 ms vs 1624 ms) and identifies invalidation at **task granularity**
-rather than project granularity.
+The numbers change from run to run. See `BENCHMARKS.md` for the latest run and
+its caveats. The comparison is not like-for-like: Incremental is a warm query on a
+synthetic 10k-task store, and the other tools are cold CLI runs on these 4-package
+fixtures.

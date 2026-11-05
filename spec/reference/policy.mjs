@@ -255,7 +255,7 @@ export function plan(state, q, root = ".") {
       if (o.outcome === "fail" || o.outcome === "error") addR(id, "failed_outcome");
       for (const i of o.inputs || []) {
         if (i.kind === "env") {
-          const cur = Object.prototype.hasOwnProperty.call(env, i.name) ? env[i.name] : "unset";
+          const cur = Object.hasOwn(env, i.name) ? env[i.name] : "unset";
           if (cur !== i.value_hash) addR(id, "env_changed:" + i.name);
         }
         if (i.kind === "env_all") {

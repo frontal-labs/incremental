@@ -450,3 +450,12 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - **Build artifacts excluded.** `biome.json` ignores `**/target` and `benchmarks/results`; `.gitignore` gains `__pycache__/`, `*.pyc`, `.ruff_cache/`, `target/`. Already-tracked `examples/rust_client/target/` files stay tracked (untracking changes the index; not done).
 - **Concurrent working-tree changes left alone.** During the pass, `biome-presets/core.json`, `biome-presets/type-aware.json` and `ultracite.json` were deleted from the working tree, `biome.json` was rewritten to an inline config, and commit `5ea00ac` (under the user's git identity, 17:58) landed. None of these were made by the verification commands. They were not restored or reverted.
 - **Linux gate not run.** `docker version` returns no server info. Restarting Docker Desktop needs the user's go-ahead.
+
+## Repair pass: fixtures, lint, Docker (2026-11-05, second)
+
+- **Fixture history rewritten, with backups.** Turbo: `pnpm-workspace.yaml` added to the base commit. Bazel: base amended (dependency edges, offline setup, `@bazel/rules_nodejs` removed). Nx and Turborepo: the `fix relative imports` and `add diff to shared` commits swapped, so HEAD changes `shared` in all three. Backups: `backup/pre-fixture-repair`, `backup/pre-order-fix`, `backup/pre-deps-fix`.
+- **Bazel kept offline.** The original BUILD files used `npm_package` with `rules_nodejs`, which needs network and a lockfile the fixture does not have. The dependency is now a label in `filegroup.srcs`.
+- **Turbo timed with `--filter`, not `--affected=<ref>`.** The `--affected` form selects nothing on turbo 2.11.10 in this repo. `--filter=...[HEAD~1]` selects the expected tasks.
+- **Lint and format scripts made strict.** The `|| true` suffixes were hiding failures. Fixed the underlying commands rather than restoring the suffixes.
+- **Untracking.** `examples/rust_client/target/` is staged for removal from the index, not committed.
+- **Docker not repaired.** The VM disk returns `input/output error` and the VM does not start after restart. The only documented repair (reset to factory defaults) deletes other projects' data. Requires the user's approval.

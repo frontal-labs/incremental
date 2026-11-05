@@ -95,32 +95,30 @@ Run with:
 node benchmarks/warm-plan.mjs <tasks> <queries> [iterations] > benchmarks/results/warm-plan.json
 ```
 
-**Result at 10k tasks / 100 queries / 3 iterations (`make bench`, 2026-11-05):**
+**Result at 10k tasks / 100 queries / 3 iterations (final `make bench`, 2026-11-05):**
 
-| Figure                          | Value                                       |
-| ------------------------------- | ------------------------------------------- |
-| per-query median (3 iterations) | 0.191 ms (min 0.162 ms, max 0.243 ms)       |
-| process load median             | 45.3 ms                                     |
-| `tg.idx` size                   | 6,348,249 bytes                             |
+| Figure                          | Value                                 |
+| ------------------------------- | ------------------------------------- |
+| per-query median (3 iterations) | 0.223 ms (min 0.155 ms, max 0.328 ms) |
+| process load median             | 45.4 ms                               |
+| `tg.idx` size                   | 6,348,249 bytes                       |
 
-Across the runs recorded in this repo the per-query median has ranged from 0.12 to 0.33 ms, so quote a range, not a point value. Every run is well under the 5 ms p50 target. The engine uses path-keyed reverse indexes, so a query touches only the postings of the changed path, not every task.
+Across the runs recorded in this repo the per-query median has ranged from 0.12 to 0.33 ms (about 1.3 ms in one run taken while the machine was under load), so quote a range, not a point value. Every run is well under the 5 ms p50 target. The engine uses path-keyed reverse indexes, so a query touches only the postings of the changed path, not every task.
 
 **The 100k-task target (p50 under 5 ms, p99 under 20 ms) is not measured.** Only the 10k-task point has been run. The cold CLI target (under 300 ms at 100k tasks, hyperfine) is also not measured.
 
 ## Comparison vs alternatives
 
-Last run: `node scripts/bench-compare.mjs 3` (2026-11-05). Each tool was timed on its own fixture under `monorepos/`. See Known issues before reading this table.
+Final run: `node scripts/bench-compare.mjs 3` inside `make bench`, 2026-11-05. Each tool runs its affected-detection command on its own fixture under `monorepos/`. In every fixture the change at HEAD is `packages/shared/src/index.ts`, so the correct answer is `shared`, `api`, `web`. All three tools return that set.
 
-| Tool            | Timed command                              | Result (median; samples)                                 | Valid as affected-detection? |
-| --------------- | ------------------------------------------ | -------------------------------------------------------- | ---------------------------- |
-| **Incremental** | warm `affected` query, 10k-task store      | 0.177 ms/query (0.2, 0.2, 0.3 ms)                        | Not like-for-like (synthetic) |
-| **Nx**          | `nx show projects --affected --base=HEAD~1` | 1656 ms (1656, 1736, 1598 ms); projects `api`, `web`    | Yes, for 4-package fixture   |
-| **Turbo**       | `turbo run build --affected=HEAD~1`        | 513 ms (1072, 332, 513 ms); 0 tasks                      | No (fixture defect)          |
-| **Bazel**       | `bazel query //packages/...`               | 1561 ms (2268, 1561, 1495 ms); 4 targets listed          | No (lists all targets)       |
+| Tool            | Timed command                                         | Median (samples)                     | Result                |
+| --------------- | ----------------------------------------------------- | ------------------------------------ | --------------------- |
+| **Incremental** | warm `affected` query, 10k-task synthetic store       | 0.210 ms/query (0.185, 0.210, 0.472) | per-task invalidation |
+| **Nx**          | `nx show projects --affected --base=HEAD~1`           | 1930 ms (2181, 1930, 1855)           | 3 projects, correct   |
+| **Turbo**       | `turbo run build --filter=...[HEAD~1] --dry=json`     | 506 ms (646, 506, 451)               | 3 tasks, correct      |
+| **Bazel**       | `bazel query 'rdeps(//packages/..., set(<changed>))'` | 1871 ms (1921, 1871, 1613)           | 3 targets, correct    |
 
-Nx is the only row that times what the name says on a fixture that exercises it. Its single run ranged from 923 to 1736 ms across runs, so the 1–2 s range is the honest figure.
-
-The earlier version of this document said Incremental is "~4445x faster" than Nx. **That ratio is withdrawn.** It divided a warm query on a 10k-task synthetic store by one cold CLI detection on a 4-package fixture, so it does not measure the same thing.
+The comparison is still not like-for-like. Incremental is a warm query on a 10k-task store, and the others are cold CLI runs on 4-package fixtures. Do not read any ratio between these rows as a speedup. The earlier "~4445x faster" claim is withdrawn.
 
 Run the comparison:
 
@@ -130,23 +128,32 @@ node scripts/bench-compare.mjs 3
 
 ## Known issues
 
-These were found while re-running the benchmarks on 2026-11-05. None is fixed in the fixtures, because each one changes the fixture's git history.
+Resolved on 2026-11-05 (see the verification pass in `CHANGELOG.md`):
 
-1. **Turbo fixture has no `pnpm-workspace.yaml`.** The fixture sets `"packageManager": "pnpm@9.0.0"` but has no `pnpm-workspace.yaml`, so `turbo ls` reports `0 no packages (pnpm9)`. Turbo's `--affected` then finds 0 tasks. The earlier "pnpm unsupported" explanation is wrong. A probe in a throwaway clone confirmed it: adding `pnpm-workspace.yaml` (`packages: ["packages/*"]`) makes `turbo run build --affected=HEAD~1` find `api#build`, `shared#build` and `web#build`. Fix: add that file to the fixture's base commit, and re-run.
-2. **Bazel fixture declares no dependencies.** Every `packages/*/BUILD.bazel` is a `filegroup` with `glob(["**/*"])` and no `deps`. `bazel query 'rdeps(//packages/..., //packages/shared:shared_pkg)'` returns only `shared` itself. `bench-compare.mjs` times `bazel query //packages/...`, which lists every target and ignores the change. So the Bazel row is not affected detection, and the earlier "Correct deps: Yes" was not established. Fix: add `deps` edges in the BUILD files, switch the timed command to an `rdeps` query, and re-run.
-3. **Not like-for-like.** Incremental is timed on a warm query against a synthetic 10k-task store. The other tools are timed as one cold CLI call on a 4-package fixture. No speedup ratio can be drawn between them.
-4. **Single-sample variance.** `bench-compare` takes the median of 3 runs of each tool, but the runs vary by up to about 2× (Nx ranged from 923 ms to 1736 ms across runs).
-5. **Warm-plan variance.** Per-query medians range from 0.12 to 0.33 ms across runs. Only the 10k-task point has been measured.
-6. **Replay sample size.** The replay has 6 evaluated commits. 0 false skips is consistent with a false-skip rate up to about 50%.
-7. **Machine-specific paths.** `comparison.json` stores absolute monorepo paths. `bench-compare.mjs` now derives the repo root from its own location (it previously hardcoded a user path, and still accepts `GRAPH_ROOT` as an override).
-8. **Nested fixture repos are dirty.** `monorepos/nx` and `monorepos/turborepo` have uncommitted `package.json` changes in their own git repos (`git -C <dir> status`). Those edits can change what `--affected` reports. Re-check them before any new comparison.
+- Turbo fixture had no `pnpm-workspace.yaml`, so Turbo saw 0 packages. Added to the base commit. The earlier "pnpm unsupported" explanation was wrong.
+- `--affected=HEAD~1` selects no tasks on turbo 2.11.10. The benchmark now uses `--filter=...[HEAD~1]`.
+- Bazel fixture had no dependency edges, and the timed command listed every target. The BUILD files now list dependencies as labels in `srcs`, and the benchmark times an `rdeps` query over the packages changed in HEAD~1..HEAD.
+- Nx and Turborepo had a `fix relative imports` commit at HEAD, so their timed change was not `shared`. The commits are reordered so HEAD changes `shared` in all three fixtures.
+- `@bazel/rules_nodejs` is not published on npm, so the Bazel fixture could not install. It is removed; the fixture needs no external rules.
+- The replay driver failed on fixtures whose working tree was clean, because its base commit had nothing to commit. Fixed with `--allow-empty`.
+- Nx's output format changed between runs (JSON array vs one name per line). The benchmark now parses both.
+
+Still open:
+
+1. **Not like-for-like.** See the comparison section.
+2. **Variance.** Nx ranged from 923 to 2181 ms and Turbo from 451 to 646 ms across the runs in this repo. Warm-plan medians range from 0.12 to 0.33 ms, and one run reached about 1.3 ms under machine load. Use the ranges.
+3. **Only the 10k-task warm-plan point has been measured.** The 100k-task targets are not measured.
+4. **Replay sample size.** The replay has 6 evaluated commits. 0 false skips is consistent with a false-skip rate up to about 50%.
+5. **Machine-specific paths.** `comparison.json` stores absolute monorepo paths. `bench-compare.mjs` derives the repo root from its own location and accepts `GRAPH_ROOT` as an override.
+6. **The fixtures' history was rewritten** (base commits amended, Nx and Turborepo commits reordered). The old commit hashes no longer exist. Backup branches `backup/pre-fixture-repair`, `backup/pre-order-fix` and `backup/pre-deps-fix` hold the previous tips in each nested repo.
 
 ## Status
 
-- Replay runs end to end against a real Vitest monorepo (`INCREMENTAL_BENCH_REPO`, defaults to `fixture/`). Last run: `commits_processed=7`, `commits_evaluated=6`, `false_skips=0`, `rule_of_three_bound=3/6`, all 14 fixture tests green. `make bench-replay`, `make bench-smoke` and `make bench` pass.
-- Replay on each monorepo fixture (3 commits): `commits_evaluated=3`, `false_skips=0` for Nx, Turbo and Bazel. Verified 2026-11-05.
-- Warm plan `benchmarks/warm-plan.mjs` runs at 10k tasks only. Per-query median is in the 0.12–0.33 ms range across runs.
+- Replay runs end to end against a real Vitest monorepo (`INCREMENTAL_BENCH_REPO`, defaults to `fixture/`). Final run: `commits_processed=7`, `commits_evaluated=6`, `total_tasks=6`, `false_skips=0`, `rule_of_three_bound=3/6`. The fixture's 6 files and 14 tests pass. `make bench-replay`, `make bench-smoke` and `make bench` pass.
+- Replay on each monorepo fixture (3 commits): `commits_evaluated=3`, `false_skips=0` for Nx, Turborepo and Bazel. Verified 2026-11-05 after the fixture repairs.
+- Each monorepo fixture's own Vitest suite passes: 4 files, 8 tests.
+- Warm plan `benchmarks/warm-plan.mjs` runs at 10k tasks only.
 - The strace oracle is Linux-only and does not run on macOS. It is not part of the replay or warm-plan path.
-- Comparison rows for Turbo and Bazel are not valid affected-detection results (Known issues 1 and 2).
+- All three comparison tools return the expected affected set.
 
 Evidence for each run is recorded in `evidence/BENCH.txt`. `evidence/README.md` explains the evidence format.

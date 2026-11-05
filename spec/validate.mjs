@@ -165,7 +165,9 @@ function check(value, schema, where, dir) {
     }
   }
   if (schema.items && Array.isArray(value)) {
-    value.forEach((v, i) => errs.push(...check(v, schema.items, `${where}[${i}]`, dir)));
+    value.forEach((v, i) => {
+      errs.push(...check(v, schema.items, `${where}[${i}]`, dir));
+    });
   }
   return errs;
 }
