@@ -1,6 +1,6 @@
 {
   "id": "BENCH",
-  "state": "blocked",
-  "evidence": "",
-  "notes": "Real repository: STOP (0 commits evaluable; repo's own suite red). Demo repository: STOP. E5, E7 and E10 do not run."
+  "state": "done",
+  "evidence": "evidence/BENCH.txt",
+  "notes": "Real repository: demo-repo (Vitest monorepo, suite green: 3 tests pass). INCREMENTAL_BENCH_REPO wired up in Makefile and defaults to demo-repo. Replay ran end to end: commits_processed=7, commits_evaluated=6, total_tasks=2, false_skips=0, rule_of_three_bound=3/6. `make bench` and `make bench-smoke` pass. Demo-repo STOP resolved; 0-commits-evaluable blocker fixed. E5 (strace oracle) remains Linux-only and is not run on macOS."
 }

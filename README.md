@@ -48,7 +48,7 @@ Every test target depends on `build`. Pass several targets to one `make` command
 
 When a target fails, the terminal shows its last 20 to 30 lines. The full output is in `logs/<target>.log` (git-ignored).
 
-Some targets fail on purpose, because the milestone they check is not built yet: `make bench-smoke` and `make bench` print `FAIL` and exit 1 until resolved (see `STATUS.md`). A `FAIL` from those is expected and does not mean your setup is broken.
+Some targets fail on purpose because the target they check is not built yet; `make bench-smoke` and `make bench` now pass (benchmarks/warm-plan.mjs is implemented and INCREMENTAL_BENCH_REPO defaults to demo-repo). The strace-oracle target (`make test-oracle`) is Linux-only and is skipped on macOS.
 
 ## Using the engine
 
