@@ -8,7 +8,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import type { Input } from "@incremental/client";
 import { buildScriptWatches, depInfoFor, parseDepInfo } from "./depinfo.js";
-import { type Member, type Message, type Workspace } from "./cargo.js";
+import type { Member, Message, Workspace } from "./cargo.js";
 
 // Config files cargo and clippy read from a crate's directory up to the root.
 const DECLARED_NAMES = [

@@ -150,7 +150,10 @@ export class Watcher {
   }
 
   private onEvent(name: string | null): void {
-    if (typeof name !== "string") return this.loss("event without a file name");
+    if (typeof name !== "string") {
+      this.loss("event without a file name");
+      return;
+    }
     const segments = name.split(path.sep).join("/").split("/");
     if (segments.some((s) => SKIP_DIRS.has(s))) return;
     this.generation++;

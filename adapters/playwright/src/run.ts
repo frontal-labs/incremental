@@ -189,7 +189,7 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     const observations: Observation[] = [];
     const obsBaseline = stored ?? head0.head;
     for (const [i, task] of selected.entries()) {
-      let inputs;
+      let inputs: ReturnType<typeof inputsFor>["inputs"];
       let dirty: boolean;
       try {
         ({ inputs, dirty } = inputsFor(root, task, analysis.config, analysis.live));

@@ -161,7 +161,7 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
   ensureStore(store);
   const targetDir = path.resolve(opts.targetDir ?? path.join(realpathSync(store), "clippy-target"));
 
-  let ws;
+  let ws: ReturnType<typeof workspaceOf>;
   try {
     ws = workspaceOf(root);
   } catch (e) {

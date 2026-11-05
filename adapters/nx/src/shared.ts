@@ -17,7 +17,9 @@ export function envHashes(env: NodeJS.ProcessEnv): Record<string, string> {
       !name.startsWith("NODE_OPTIONS")
     ) {
       out[name] =
-        value === undefined ? "unset" : "sha256:" + createHash("sha256").update(value).digest("hex");
+        value === undefined
+          ? "unset"
+          : "sha256:" + createHash("sha256").update(value).digest("hex");
     }
   }
   return out;
