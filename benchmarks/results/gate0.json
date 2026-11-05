@@ -3,12 +3,12 @@
   "decision": "STOP",
   "decision_basis": "PLAN 14.1 and 12.5 step 3d: the replay evaluates a commit only when the ground truth at the previous commit is green. The suite is not green at the reference point (HEAD) or at any of the 8 sampled window commits, so no commit is evaluated and K1, K2 and K4 cannot be measured.",
   "os_repo": {
-    "path": "/Users/gabrielfonseca/Desktop/os",
+    "path": "demo-repo/ (external path removed; real-repo replay was run against an external Vitest monorepo)",
     "branch": "feat/apps-ai-sdk-rebuild",
     "head": "47cd74be7b2f9f5ed5878a47ed1c6f08ea092d89",
     "first_parent_commits": 173,
     "main_branch_first_parent_commits": 128,
-    "note": "main and HEAD have diverged. The line measured is the first-parent line of HEAD, which is the checkout the lead measured (269 commits in total)."
+    "note": "main and HEAD have diverged. The line measured is the first-parent line of HEAD, which is the checkout the lead measured (269 commits in total). Local filesystem path omitted from this record."
   },
   "window": {
     "selection": "first-parent commits of HEAD, newest first, while the unit project exists and the root vitest.config.ts imports no unlinked package",
