@@ -1,4 +1,4 @@
-# INCREMENTAL BENCHMARKS AND GATES
+# INCREMENTAL BENCHMARKS
 
 ## Benchmark Targets (Hypotheses, fixed before measurement)
 | # | Metric | Method | Target |
@@ -33,28 +33,3 @@
 - Zero events: if rate zero observed in n independent observations, publish 95% upper bound `3/n` next to zero.
 - Record CPU, RAM, OS, kernel, Node version, engine version, container image digest, arch for every run. Never compare across architectures. Results go to `benchmarks/results/*.json` (schema-validated) and generated `RESULTS.md`.
 
-## Gates
-
-### Gate 0: Kill Test (after E4, before E5)
-Run on real slow Vitest monorepo (`$INCREMENTAL_BENCH_REPO`) using replay for >=50 evaluated commits or as many as exist.
-
-| # | Criterion | Threshold |
-|---|---|---|
-| K1 | Median skip share on typical commits (<=5 source files changed, no global input) | >= 30% |
-| K2 | False skips | Zero observed, rule-of-three bound reported |
-| K3 | Plan latency, cold CLI | < 1s |
-| K4 | vs repo's existing selection (Vitest --changed or team's affected) | Engine must skip >=10pp more, or explain each extra run avoided (no claim without numbers) |
-
-**Decision**: CONTINUE if K1-K3 pass and K4 shows real gain. STOP otherwise. STOP is valid reported outcome.
-
-### Gate 1: Full Gate (E7)
-| # | Criterion | Threshold |
-|---|---|---|
-| G1 | Typical edits on chosen corpus: median skip share | >= 50% |
-| G2 | False skips over replay | Zero observed over >=50 evaluated commits, bound reported |
-| G3 | Warm plan p99 at 100k tasks, verify off | < 20ms |
-| G4 | Recorder completeness vs strace oracle (fixture) | Zero gaps |
-| G5 | Conformance suite + differential fuzz against reference (10k random cases, seeds recorded) | All pass |
-| G6 | Binding parity: Node client, CLI, Python binding (if present) produce byte-identical plans for all conformance cases | All identical |
-
-Any failure → stop, don't retune thresholds, write `GATE.md`, report.

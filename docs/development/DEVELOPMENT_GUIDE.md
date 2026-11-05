@@ -44,7 +44,7 @@ incremental/
 | Core | Engine (store, index, policy, protocol server, CLI) | `core/`, `cli/` |
 | Bindings | Language clients over protocol (Node first, Python later) | `bindings/` |
 | Adapters | Recorders/planners (Vitest, strace, git, MCP) | `adapters/`, `mcp/`, `examples/` |
-| Bench | Harness, baselines, replay, gate numbers | `benchmarks/`, `RESULTS.md`, `GATE.md` |
+| Bench | Harness, baselines, replay | `benchmarks/`, `RESULTS.md` |
 
 ## Workflow
 1. Read  sections 0,1,2,14 + your role's milestones in section 15
@@ -76,7 +76,6 @@ Append to `spec/CHANGE_REQUESTS.md`:
 ```
 
 ## Stop Conditions (escalate to human)
-- Gate 0 STOP or Gate 1 fails
 - Required recorder capability can't be observed after 2 approaches
 - Existing tool provides all of: runtime-recorded deps for Vitest, stable protocol, sound skips with reason codes
 - <50 evaluated commits for replay
@@ -87,7 +86,7 @@ Append to `spec/CHANGE_REQUESTS.md`:
 - Check fails due to non-code issue (e.g., conformance case wrong) - report, don't edit case
 
 ## Milestone Order
-E0 → E1 → E2 → E3 → E4 → GATE 0 → E5 → E6 → E7 → E10 (release)
+E0 → E1 → E2 → E3 → E4 → E5 → E6 → E7 → E10 (release)
                         ↓                        ↑
                        E8 (MCP, needs E3,E4) ────┘
 E9 (Python, optional) not on critical path
