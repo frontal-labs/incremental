@@ -9,3 +9,6 @@ __pycache__/
 # Run logs (Makefile targets)
 logs/
 status/*.tmp
+
+# Generated demo repo for local Gate 0 / adapter work
+demo-repo/
