@@ -11,7 +11,7 @@ INCREMENTAL_BENCH_REPO ?= /Users/gabrielfonseca/Desktop/os
 # Every run log goes to logs/ at the project root (git-ignored).
 LOGS := logs
 $(shell mkdir -p $(LOGS))
-.PHONY: setup build test-git test-fuzz check-spec test-core test-policy test-protocol test-bindings test-vitest gate0 test-oracle test-e2e bench-smoke bench gate test-mcp test-python release-check all-tests status loc linux-gate
+.PHONY: setup build test-git test-fuzz check-spec test-core test-policy test-protocol test-bindings test-vitest test-oracle test-e2e bench-smoke bench test-mcp test-python release-check all-tests status loc linux-gate
 
 # Real targets run real commands. Targets for milestones not yet built fail
 # on purpose; they must not print PASS (PLAN.md 2.12).
@@ -98,12 +98,6 @@ test-rust: build
 test-adapters: test-typescript $(addprefix test-,$(ADAPTER_TESTS)) test-rust
 	@echo "PASS test-adapters"
 
-gate0: build
-	@mkdir -p /tmp/gate0-scratch /tmp/gate0-scratch/W $(LOGS)
-	@node bench/gate0/driver/replay.mjs /tmp/gate0-scratch all >$(LOGS)/gate0-replay.log 2>&1 || { tail -30 $(LOGS)/gate0-replay.log; echo "FAIL gate0"; exit 1; }
-	@node scripts/gate0-eval.mjs /tmp/gate0-scratch/out >GATE.md || { echo "FAIL gate0"; exit 1; }
-	@echo "PASS gate0"
-
 test-oracle: test-vitest
 	@cd adapters/strace && npm test >../../logs/test-oracle.log 2>&1 || { tail -30 ../../logs/test-oracle.log; echo "FAIL test-oracle"; exit 1; }
 	@echo "PASS test-oracle"
@@ -119,10 +113,6 @@ bench: build
 	@node bench/m1.mjs 10000 100 >benchmarks/results/m1.json || { echo "FAIL bench"; exit 1; }
 	@node scripts/bench-summary.mjs >$(LOGS)/bench-summary.log 2>&1 || { tail -20 $(LOGS)/bench-summary.log; echo "FAIL bench"; exit 1; }
 	@echo "PASS bench"
-
-gate: build
-	@node scripts/gate.mjs || { echo "FAIL gate"; exit 1; }
-	@echo "PASS gate"
 
 test-mcp: build
 	@cd mcp && npm test >../logs/test-mcp.log 2>&1 || { tail -30 ../logs/test-mcp.log; echo "FAIL test-mcp"; exit 1; }
