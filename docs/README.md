@@ -20,7 +20,6 @@ This directory contains comprehensive documentation for the Incremental project,
 
 ## Quick References
 
-- **Canonical Plan**: [plans/PLAN.md](../plans/PLAN.md) - Full specification v4
 - **Protocol Spec**: [spec/PROTOCOL.md](spec/PROTOCOL.md)
 - **Policy Spec**: [spec/POLICY.md](spec/POLICY.md)
 - **Format Spec**: [spec/FORMAT.md](spec/FORMAT.md)
