@@ -373,7 +373,7 @@ function dirtyWorktree(root: string): boolean {
 export function parseArgs(argv: string[]): RunOptions {
   const opts: RunOptions = {
     root: process.cwd(),
-    store: path.join(os.tmpdir(), "incremental-turbo-store"),
+    store: path.join(process.cwd(), ".incremental"),
     base: undefined,
     all: false,
     shadow: false,
@@ -381,12 +381,15 @@ export function parseArgs(argv: string[]): RunOptions {
     timeoutMs: 300_000,
   };
   const args = argv[0] === "run" ? argv.slice(1) : argv;
+  let storeGiven = false;
   let i = 0;
   while (i < args.length) {
     const a = args[i];
     if (a === "--root" && i + 1 < args.length) opts.root = args[++i]!;
-    else if (a === "--store" && i + 1 < args.length) opts.store = args[++i]!;
-    else if (a === "--base" && i + 1 < args.length) opts.base = args[++i]!;
+    else if (a === "--store" && i + 1 < args.length) {
+      opts.store = args[++i]!;
+      storeGiven = true;
+    } else if (a === "--base" && i + 1 < args.length) opts.base = args[++i]!;
     else if (a === "--json") {
       // The report is always JSON; the flag is accepted for the other adapters.
     } else if (a === "--all") opts.all = true;
@@ -396,6 +399,8 @@ export function parseArgs(argv: string[]): RunOptions {
     else throw new UsageError(`unknown argument: ${a}`);
     i++;
   }
+  // Without --store the store lives in the workspace, like the other adapters, not in a shared temp path.
+  if (!storeGiven) opts.store = path.join(opts.root, ".incremental");
   return opts;
 }
 
