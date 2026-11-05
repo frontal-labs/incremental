@@ -115,14 +115,21 @@ function benchNx(monorepoPath, iterations) {
     if (result.status !== 0) {
       lastError = result.stderr;
     } else {
+      // nx prints either a JSON array or one project name per line, depending on the
+      // terminal. Accept both; any other line (nx's own notices) is ignored.
       const stdout = result.stdout.trim();
-      const jsonMatch = stdout.match(/\[([^\]]+)\]/);
+      const jsonMatch = stdout.match(/\[[^\]]*\]/);
       if (jsonMatch) {
         try {
           projects = JSON.parse(jsonMatch[0]);
         } catch {
           projects = [];
         }
+      } else {
+        projects = stdout
+          .split("\n")
+          .map((l) => l.trim())
+          .filter((l) => /^[@\w./-]+$/.test(l));
       }
       samples.push(result.ms);
     }
@@ -135,27 +142,21 @@ function benchNx(monorepoPath, iterations) {
   };
 }
 
-// Turbo: measure affected task detection time
+// Turbo: measure affected task detection time. Uses the explicit git-range filter,
+// because `--affected=<ref>` selects nothing on turbo 2.11 (verified 2026-11-05).
 function benchTurbo(monorepoPath, iterations) {
   const samples = [];
   let tasksFound = 0;
   let lastError = null;
+  const args = ["run", "build", "--filter=...[HEAD~1]", "--dry=json"];
   for (let i = 0; i < iterations; i++) {
     const attempts = [
       () =>
-        timeCommand(
-          "node",
-          [
-            join(monorepoPath, "node_modules", ".bin", "turbo"),
-            "run",
-            "build",
-            "--affected=HEAD~1",
-          ],
-          { cwd: monorepoPath },
-        ),
-      () => timeCommand("turbo", ["run", "build", "--affected=HEAD~1"], { cwd: monorepoPath }),
-      () =>
-        timeCommand("npx", ["turbo", "run", "build", "--affected=HEAD~1"], { cwd: monorepoPath }),
+        timeCommand("node", [join(monorepoPath, "node_modules", ".bin", "turbo"), ...args], {
+          cwd: monorepoPath,
+        }),
+      () => timeCommand("turbo", args, { cwd: monorepoPath }),
+      () => timeCommand("npx", ["turbo", ...args], { cwd: monorepoPath }),
     ];
     let result = null;
     for (let k = 0; k < attempts.length && (result === null || result.status !== 0); k++) {
@@ -163,10 +164,13 @@ function benchTurbo(monorepoPath, iterations) {
     }
     if (result.status !== 0) {
       lastError = result.stderr;
-    } else {
-      const found = (result.stdout.match(/Tasks?:\s+(\d+)/) || [])[1];
-      tasksFound = Number(found) || 0;
+      continue;
+    }
+    try {
+      tasksFound = JSON.parse(result.stdout).tasks.length;
       samples.push(result.ms);
+    } catch {
+      lastError = "turbo --dry=json output was not JSON";
     }
   }
   return {
@@ -177,7 +181,23 @@ function benchTurbo(monorepoPath, iterations) {
   };
 }
 
-// Bazel: measure affected target detection time
+// Bazel: affected targets = rdeps of the packages whose files changed in HEAD~1..HEAD.
+// Each package p has the target //packages/p:p_pkg (see monorepos/bazel/packages/*/BUILD.bazel).
+// The timed command is the rdeps query, not a listing of all targets.
+function changedBazelTargets(monorepoPath) {
+  const diff = spawnSync("git", ["diff", "--name-only", "HEAD~1", "HEAD", "--", "packages"], {
+    cwd: monorepoPath,
+    encoding: "utf8",
+  });
+  if (diff.status !== 0) return { error: diff.stderr.trim() };
+  const pkgs = new Set();
+  for (const f of diff.stdout.split("\n")) {
+    const m = f.match(/^packages\/([^/]+)\//);
+    if (m) pkgs.add(m[1]);
+  }
+  return { labels: [...pkgs].sort().map((p) => `//packages/${p}:${p}_pkg`) };
+}
+
 function benchBazel(monorepoPath, iterations) {
   const bazelCmd =
     spawnSync("which", ["bazel"], { encoding: "utf8" }).status === 0
@@ -194,11 +214,17 @@ function benchBazel(monorepoPath, iterations) {
     };
   }
 
+  const changed = changedBazelTargets(monorepoPath);
+  if (changed.error) {
+    return { affected_detect_ms: null, targets: [], samples: [], error: changed.error };
+  }
+  const expr = `rdeps(//packages/..., set(${changed.labels.join(" ")}))`;
+
   const samples = [];
   let targets = [];
   let lastError = null;
   for (let i = 0; i < iterations; i++) {
-    const result = timeCommand(bazelCmd, ["query", "//packages/..."], {
+    const result = timeCommand(bazelCmd, ["query", expr], {
       cwd: monorepoPath,
       env: { ...process.env, BAZEL_NO_TUNE: "1" },
     });
@@ -208,7 +234,7 @@ function benchBazel(monorepoPath, iterations) {
       targets = result.stdout
         .trim()
         .split("\n")
-        .filter((l) => l.trim());
+        .filter((l) => l.startsWith("//"));
       samples.push(result.ms);
     }
   }

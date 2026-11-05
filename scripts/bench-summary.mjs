@@ -77,51 +77,51 @@ function main() {
   lines.push("## Comparison vs alternatives", "");
   lines.push(
     "Measured on three dedicated monorepo fixtures under `monorepos/`. Each fixture has 4 packages",
-    "with a `shared → api/web` dependency graph (`utils` standalone), 6 vitest tests, and git history.",
-    "Changed `packages/shared/src/index.ts`; measured affected-project detection time.",
+    "with a `shared → api/web` dependency graph (`utils` standalone), 8 vitest tests, and git history.",
+    "The change at HEAD is `packages/shared/src/index.ts`, so the expected affected set is shared, api, web.",
     "",
-    "| Tool | Detect time | Projects/tasks found | Correct deps? | Monorepo |",
+    "| Tool | Detect time | Projects/tasks found | Correct set? | Monorepo |",
     "|---|---|---|---|---|",
   );
   if (comparison) {
     const inc = comparison.incremental;
     const incMs = inc.per_query_ms ?? 0;
     lines.push(
-      `| **Incremental** | **${incMs.toFixed(3)} ms/query** | per-task invalidation | Yes | native (synthetic store) |`,
+      `| **Incremental** | **${incMs.toFixed(3)} ms/query** | per-task invalidation | n/a (synthetic store) | native (synthetic store) |`,
     );
     // Expected affected set when packages/shared/src/index.ts changes (see monorepos/README.md).
-    const EXPECTED_NX = ["api", "web"];
+    const EXPECTED = ["api", "shared", "web"];
+    const sameSet = (found) =>
+      JSON.stringify([...found].sort()) === JSON.stringify(EXPECTED) ? "Yes" : "No";
     if (comparison.nx) {
       const nx = comparison.nx;
-      const found = [...(nx.projects ?? [])].sort();
-      const correct = JSON.stringify(found) === JSON.stringify(EXPECTED_NX) ? "Yes" : "No";
+      const found = nx.projects ?? [];
       lines.push(
-        `| **Nx** | ${(nx.affected_detect_ms ?? 0).toFixed(0)} ms detect | ${found.length} projects | ${correct} | monorepos/nx/ |`,
+        `| **Nx** | ${(nx.affected_detect_ms ?? 0).toFixed(0)} ms detect | ${found.length} projects | ${sameSet(found)} | monorepos/nx/ |`,
       );
     }
-    // Turbo: the fixture has no pnpm-workspace.yaml, so turbo sees 0 packages and the
-    // number is not an affected-detection result (see "Known issues" in BENCHMARKS.md).
     if (comparison.turbo) {
       const tb = comparison.turbo;
       const tbFound = tb.tasks_found ?? 0;
+      // Turbo reports build tasks, one per package in the affected set.
       lines.push(
-        `| **Turbo** | ${(tb.affected_detect_ms ?? 0).toFixed(0)} ms detect | ${tbFound} tasks | Not valid (fixture has no pnpm-workspace.yaml) | monorepos/turborepo/ |`,
+        `| **Turbo** | ${(tb.affected_detect_ms ?? 0).toFixed(0)} ms detect | ${tbFound} tasks (\`--filter=...[HEAD~1]\`) | ${tbFound === EXPECTED.length ? "Yes" : "No"} | monorepos/turborepo/ |`,
       );
     }
-    // Bazel: the timed command is \`bazel query //packages/...\`, which lists every target
-    // and ignores the change. The fixture declares no deps. Not affected detection.
     if (comparison.bazel) {
       const bz = comparison.bazel;
+      const labels = (bz.targets ?? []).map((t) =>
+        t.replace(/^\/\/packages\//, "").replace(/:.*$/, ""),
+      );
       lines.push(
-        `| **Bazel** | ${(bz.affected_detect_ms ?? 0).toFixed(0)} ms query (all targets) | ${bz.targets?.length ?? 0} targets listed | Not measured (fixture declares no deps) | monorepos/bazel/ |`,
+        `| **Bazel** | ${(bz.affected_detect_ms ?? 0).toFixed(0)} ms rdeps query | ${bz.targets?.length ?? 0} targets | ${sameSet(labels)} | monorepos/bazel/ |`,
       );
     }
     lines.push(
       "",
       "Not like-for-like: the Incremental figure is a warm query against a 10,000-task synthetic store",
-      "(`benchmarks/warm-plan.mjs`). The Nx figure is one affected-detection run against a 4-package fixture.",
-      "The Turbo and Bazel rows are not affected-detection results (see BENCHMARKS.md, Known issues).",
-      "Do not read any ratio between these rows as a speedup.",
+      "(`benchmarks/warm-plan.mjs`). The Nx, Turbo and Bazel figures are each one affected-detection run",
+      "against a 4-package fixture, with a cold tool process. Do not read any ratio between these rows as a speedup.",
       "",
     );
   }
