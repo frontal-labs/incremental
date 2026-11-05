@@ -1,6 +1,6 @@
 # Benchmark results
 
-Generated: 2026-11-05T19:20:00.569Z
+Generated: 2026-11-05T23:04:31.379Z
 
 ## Raw data
 
@@ -22,7 +22,7 @@ Generated: 2026-11-05T19:20:00.569Z
 
 | tasks | queries | iterations | process_load_ms (median) | per_query_ms (median) | per_query_ms (min–max) | log_bytes |
 |---|---|---|---|---|---|---|
-| 10000 | 100 | 3 | 45.445 | 0.223 | 0.155–0.328 | 6348249 |
+| 10000 | 100 | 3 | 37.179 | 0.154 | 0.120–0.195 | 6348249 |
 
 _Note: warm plan latency over protocol v1 stdio; each query invalidates one task; process_load includes engine spawn + hello + store load; stats over multiple iterations_
 
@@ -34,10 +34,10 @@ The change at HEAD is `packages/shared/src/index.ts`, so the expected affected s
 
 | Tool | Detect time | Projects/tasks found | Correct set? | Monorepo |
 |---|---|---|---|---|
-| **Incremental** | **0.210 ms/query** | per-task invalidation | n/a (synthetic store) | native (synthetic store) |
-| **Nx** | 1930 ms detect | 3 projects | Yes | monorepos/nx/ |
-| **Turbo** | 506 ms detect | 3 tasks (`--filter=...[HEAD~1]`) | Yes | monorepos/turborepo/ |
-| **Bazel** | 1871 ms rdeps query | 3 targets | Yes | monorepos/bazel/ |
+| **Incremental** | **0.117 ms/query** | per-task invalidation | n/a (synthetic store) | native (synthetic store) |
+| **Nx** | 839 ms detect | 3 projects | Yes | monorepos/nx/ |
+| **Turbo** | 112 ms detect | 3 tasks (`--filter=...[HEAD~1]`) | Yes | monorepos/turborepo/ |
+| **Bazel** | 1232 ms rdeps query | 3 targets | Yes | monorepos/bazel/ |
 
 Not like-for-like: the Incremental figure is a warm query against a 10,000-task synthetic store
 (`benchmarks/warm-plan.mjs`). The Nx, Turbo and Bazel figures are each one affected-detection run

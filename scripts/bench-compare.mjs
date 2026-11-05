@@ -218,7 +218,8 @@ function benchBazel(monorepoPath, iterations) {
   if (changed.error) {
     return { affected_detect_ms: null, targets: [], samples: [], error: changed.error };
   }
-  const expr = `rdeps(//packages/..., set(${changed.labels.join(" ")}))`;
+  // kind(filegroup, ...) keeps the package targets and drops the test targets, which also depend on shared.
+  const expr = `kind(filegroup, rdeps(//packages/..., set(${changed.labels.join(" ")})))`;
 
   const samples = [];
   let targets = [];

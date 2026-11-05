@@ -12,14 +12,14 @@ INCREMENTAL_BENCH_REPO ?= $(CURDIR)/fixture
 # Every run log goes to logs/ at the project root (git-ignored).
 LOGS := logs
 $(shell mkdir -p $(LOGS))
-.PHONY: setup skills build test-git test-fuzz check-spec test-core test-policy test-protocol test-bindings test-vitest test-oracle test-e2e bench-smoke bench bench-cold test-mcp test-python release-check all-tests status loc linux-gate test-adapters test-typescript test-rust format lint fmt-check
+.PHONY: fixture-e2e setup skills build test-git test-fuzz check-spec test-core test-policy test-protocol test-bindings test-vitest test-oracle test-e2e bench-smoke bench bench-cold test-mcp test-python release-check all-tests status loc linux-gate test-adapters test-typescript test-rust format lint fmt-check
 
 # Platform-specific test lists.
 IS_LINUX := $(filter linux,$(UNAME_S))
 # Linux-only tests (strace oracle requires /proc).
 LINUX_TESTS := test-oracle
 # All non-Linux tests exclude Linux-only ones.
-ALL_TESTS_NON_LINUX := check-spec test-core test-policy test-protocol test-bindings test-vitest test-e2e test-mcp test-python test-git test-fuzz
+ALL_TESTS_NON_LINUX := check-spec test-core test-policy test-protocol test-bindings test-vitest test-e2e test-mcp test-python test-git test-fuzz fixture-e2e
 ALL_TESTS_LINUX := $(ALL_TESTS_NON_LINUX) test-oracle
 
 # Real targets run real commands. Targets not yet built fail
@@ -103,7 +103,7 @@ test-typescript: build
 # git, vitest, typescript, strace have their own explicit targets above.
 # bazel and turbopack are excluded: they invoke heavy external tools (bazel,
 # next.js) that are inherently slow and not suitable for the release gate.
-ADAPTER_TESTS := biome clippy config env fs playwright pnpm process protobuf ruff watcher
+ADAPTER_TESTS := biome clippy config env fs nx playwright pnpm process protobuf ruff turbo watcher
 
 $(addprefix test-,$(ADAPTER_TESTS)): test-%: build
 	@if [ -f adapters/$*/package.json ]; then \
@@ -155,6 +155,12 @@ bench: build
 	@node scripts/bench-summary.mjs >$(LOGS)/bench-summary.log 2>&1 || { tail -20 $(LOGS)/bench-summary.log; echo "FAIL bench"; exit 1; }
 	@echo "PASS bench"
 
+# Adapters on the benchmark fixtures: Nx and Bazel each prime, edit a leaf, edit shared,
+# and must select the tests the import graph says they should.
+fixture-e2e: build
+	@sh scripts/fixture-e2e.sh >$(LOGS)/fixture-e2e.log 2>&1 || { tail -40 $(LOGS)/fixture-e2e.log; echo "FAIL fixture-e2e"; exit 1; }
+	@echo "PASS fixture-e2e"
+
 bench-cold: build
 	@node scripts/cold-e2e.mjs 5 >$(LOGS)/bench-cold.log 2>&1 || { tail -20 $(LOGS)/bench-cold.log; echo "FAIL bench-cold"; exit 1; }
 	@echo "PASS bench-cold"
@@ -170,9 +176,9 @@ test-python: build
 # all-tests runs everything available on this platform.
 # test-oracle (strace) is Linux-only; skipped on macOS/Windows.
 ifeq ($(UNAME_S),linux)
-all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-oracle test-e2e test-adapters test-mcp test-python test-git test-fuzz
+all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-oracle test-e2e test-adapters test-mcp test-python test-git test-fuzz fixture-e2e
 else
-all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-e2e test-adapters test-mcp test-python test-git test-fuzz
+all-tests: check-spec test-core test-policy test-protocol test-bindings test-vitest test-e2e test-adapters test-mcp test-python test-git test-fuzz fixture-e2e
 endif
 	@echo "PASS all-tests"
 

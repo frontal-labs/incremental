@@ -173,7 +173,10 @@ test("an edit to a declared input invalidates the app", async () => {
   commit(root, "edit next config");
   const r = await run(root, store);
   assert.deepEqual(r.selected, [APP]);
-  assert.deepEqual(r.results.map((x) => x.outcome), ["pass"]);
+  assert.deepEqual(
+    r.results.map((x) => x.outcome),
+    ["pass"],
+  );
   assert.equal(r.advanced, true, r.notAdvanced.join("; "));
 });
 
@@ -187,7 +190,11 @@ test("a failed build is reported as fail and exits 1", async () => {
   );
   commit(root, "break the page");
   const r = await run(root, store);
-  assert.deepEqual(r.results.map((x) => x.outcome), ["fail"], JSON.stringify(r.results));
+  assert.deepEqual(
+    r.results.map((x) => x.outcome),
+    ["fail"],
+    JSON.stringify(r.results),
+  );
   assert.equal(r.advanced, true, "a failed build is a complete run, so the baseline advances");
   assert.equal(r.exit, 1);
 });

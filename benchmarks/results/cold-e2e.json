@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-05T19:41:34.148Z",
+  "timestamp": "2026-11-05T19:42:08.892Z",
   "runs": 5,
   "engine": "core/dist/incremental serve (new process per run)",
   "change_source": "adapters/git/dist/incremental-git changes",
@@ -16,13 +16,13 @@
       "missing": [],
       "extra": [],
       "cold_e2e_ms": {
-        "median": 157.893959,
-        "min": 130.6125,
-        "max": 440.048042
+        "median": 154.9475,
+        "min": 123.202917,
+        "max": 377.859792
       },
-      "changes_ms_median": 149.135709,
-      "spawn_hello_ms_median": 6.766292,
-      "plan_ms_median": 0.477375,
+      "changes_ms_median": 147.646708,
+      "spawn_hello_ms_median": 6.04025,
+      "plan_ms_median": 0.487417,
       "runs": 5
     },
     {
@@ -37,13 +37,13 @@
       "missing": [],
       "extra": [],
       "cold_e2e_ms": {
-        "median": 138.0095,
-        "min": 127.793667,
-        "max": 145.961
+        "median": 146.959125,
+        "min": 133.774416,
+        "max": 232.143958
       },
-      "changes_ms_median": 131.829583,
-      "spawn_hello_ms_median": 5.726458,
-      "plan_ms_median": 0.39625,
+      "changes_ms_median": 138.053875,
+      "spawn_hello_ms_median": 7.063917,
+      "plan_ms_median": 0.5205,
       "runs": 5
     },
     {
@@ -58,13 +58,13 @@
       "missing": [],
       "extra": [],
       "cold_e2e_ms": {
-        "median": 152.912917,
-        "min": 136.3445,
-        "max": 219.058958
+        "median": 156.212917,
+        "min": 133.997042,
+        "max": 201.326167
       },
-      "changes_ms_median": 144.792542,
-      "spawn_hello_ms_median": 7.854542,
-      "plan_ms_median": 0.247584,
+      "changes_ms_median": 149.091667,
+      "spawn_hello_ms_median": 7.260542,
+      "plan_ms_median": 0.640792,
       "runs": 5
     },
     {
@@ -79,13 +79,13 @@
       "missing": [],
       "extra": [],
       "cold_e2e_ms": {
-        "median": 145.112458,
-        "min": 132.866083,
-        "max": 226.271708
+        "median": 157.664458,
+        "min": 136.984125,
+        "max": 227.1305
       },
-      "changes_ms_median": 138.912041,
-      "spawn_hello_ms_median": 5.905084,
-      "plan_ms_median": 0.393958,
+      "changes_ms_median": 148.164417,
+      "spawn_hello_ms_median": 6.956875,
+      "plan_ms_median": 0.900083,
       "runs": 5
     },
     {
@@ -100,13 +100,13 @@
       "missing": [],
       "extra": [],
       "cold_e2e_ms": {
-        "median": 172.981625,
-        "min": 149.941375,
-        "max": 221.382583
+        "median": 148.818958,
+        "min": 139.552708,
+        "max": 187.186209
       },
-      "changes_ms_median": 166.568916,
-      "spawn_hello_ms_median": 6.189459,
-      "plan_ms_median": 0.375625,
+      "changes_ms_median": 137.321458,
+      "spawn_hello_ms_median": 7.191542,
+      "plan_ms_median": 0.385292,
       "runs": 5
     }
   ]

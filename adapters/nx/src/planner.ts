@@ -4,38 +4,7 @@
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { repoRoot, type ChangeSet, type Config, type Context } from "@incremental/client";
-import { envHashes } from "./shared.js";
-
-export function discoverProjects(root: string): string[] {
-  const out: string[] = [];
-  const visit = (dir: string): void => {
-    for (const entry of require("node:fs").readdirSync(dir, { withFileTypes: true })) {
-      if (!entry.isSymbolicLink()) {
-        const abs = path.join(dir, entry.name);
-        if (entry.isDirectory()) {
-          const name = entry.name;
-          if (
-            name !== "node_modules" &&
-            name !== ".git" &&
-            name !== ".incremental" &&
-            name !== ".nx" &&
-            name !== "dist"
-          ) {
-            visit(abs);
-          }
-        } else if (entry.isFile()) {
-          if (entry.name === "project.json" || entry.name === "project.ts") {
-            const rel = path.relative(root, abs).split(path.sep).join("/");
-            const projectDir = path.dirname(rel);
-            if (!out.includes(projectDir)) out.push(projectDir);
-          }
-        }
-      }
-    }
-  };
-  visit(root);
-  return out.sort();
-}
+import { ABSENT, hashOrAbsent } from "./shared.js";
 
 // Runs `nx show projects --affected --base=` and returns the affected
 // project names, sorted.
@@ -113,17 +82,29 @@ export function gitChangeSet(root: string, ref: string): GitChangeSet {
   return JSON.parse(r.stdout) as GitChangeSet;
 }
 
-// The context (PLAN 8.4, 9.5): the environment the runner gave the Nx CLI,
-// before Nx writes MODE, DEV, PROD, TEST, BASE_URL and FORCE_TTY.
-// Reads of names Nx injected count as unset.
-export function contextFor(): Context {
+// The context (PLAN 8.4, 9.5): the files the runner's result depends on. A change to any of
+// them makes the plan fall back to running every project.
+export function contextFor(root: string): Context {
+  const lock = ["pnpm-lock.yaml", "package-lock.json", "yarn.lock"]
+    .map((f) => path.join(root, f))
+    .find((f) => hashOrAbsent(f) !== ABSENT);
   return {
-    lockfile: "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-    tsconfig: "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-    pkgjson: "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-    runner: "nx@unknown",
+    lockfile: lock ? hashOrAbsent(lock) : ABSENT,
+    tsconfig: hashOrAbsent(path.join(root, "tsconfig.json")),
+    pkgjson: hashOrAbsent(path.join(root, "package.json")),
+    runner: `nx@${nxVersion(root)}`,
     node: process.version,
     fmt: 1,
     caps: { probes: true, dirs: true, env: true },
   };
+}
+
+// `nx --version` names the local or the global install, depending on the directory it runs in,
+// so it runs in the workspace.
+function nxVersion(root: string): string {
+  const r = spawnSync(process.env.INCREMENTAL_NX || "nx", ["--version"], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  return r.status === 0 ? (r.stdout.match(/Local:\s*v?(\S+)/)?.[1] ?? "unknown") : "unknown";
 }

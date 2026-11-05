@@ -1,0 +1,27 @@
+{
+  "name": "@incremental/turbo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "bin": {
+    "incremental-turbo": "dist/src/run.js"
+  },
+  "scripts": {
+    "build": "tsc-rs -b",
+    "test": "npm --prefix ../../bindings/node run build && tsc-rs -b && node --test dist/tests/*.test.js"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@incremental/client": "file:../../bindings/node",
+    "@incremental/vitest": "file:../vitest"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "tsc-rs": "0.8.0"
+  }
+}

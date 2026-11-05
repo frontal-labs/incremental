@@ -65,7 +65,7 @@ test("affected projects from nx are passed to incremental as declared tasks", as
   try {
     await withClient(f, async (c) => {
       await c.advance(BASE, null);
-      const context = contextFor();
+      const context = contextFor(f.root);
       // app and web both depend on shared/src/index.ts
       await recordTask(c, "projects/app", BASE, context, [
         { kind: "file", path: "projects/shared/src/index.ts", hash: "sha256:" + "0".repeat(64) },
@@ -104,7 +104,7 @@ test("unaffected projects are not invalidated", async () => {
   try {
     await withClient(f, async (c) => {
       await c.advance(BASE, null);
-      const context = contextFor();
+      const context = contextFor(f.root);
       // app depends on shared, utils does not
       await recordTask(c, "projects/app", BASE, context, [
         { kind: "file", path: "projects/shared/src/index.ts", hash: "sha256:" + "0".repeat(64) },

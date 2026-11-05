@@ -84,3 +84,11 @@ Done when: replay runs end to end against a real Vitest monorepo with commits_ev
 # fixture 2/2, matches, 149.7 ms (142.7, 6.7, 0.3)
 # adapters/vitest/fixtures/repo 2/2, matches, 146.8 ms (139.7, 6.4, 0.3)
 # incremental-git changes on monorepos/nx: ~139 ms; plain git status ~19 ms (node startup in this shell ~84 ms; machine under load)
+# COLD END-TO-END, latest stored run (make bench-cold, 5 runs; supersedes the medians above, which came from an earlier run of the same script)
+# nx 154.9 ms (change source 147.6, spawn+hello 6.0, plan 0.5); turborepo 147.0 ms; bazel 156.2 ms; fixture 157.7 ms; vitest repo 148.8 ms. All plans match the import graph.
+
+# ADAPTERS ON THE FIXTURES, 2026-11-05 (make fixture-e2e; make all-tests EXIT=0 without it)
+# nx adapter, monorepos/nx: prime 4/4 selected, edit utils -> [utils], edit shared -> [api, shared, web]; all advanced
+# bazel adapter, monorepos/bazel: prime 4/4 selected, edit utils -> [utils_test], edit shared -> [api, shared, web]; all advanced
+# Bazel test runner: intermittent "Segmentation fault" in vitest_test targets (about 1 run in 10 on clones; not reproduced when
+#   the generated test script runs outside Bazel). This run passed; earlier runs in this session failed at the prime step.

@@ -33,7 +33,7 @@ before(() => {
   assert.equal(prime.status, 0, `prime run failed: ${prime.stderr} ${JSON.stringify(prime.out)}`);
   assert.equal(prime.out?.["advanced"], true, "the prime run must advance the baseline");
   assert.equal(
-    (prime.out?.["results"] as unknown[]).length,
+    (prime.out?.["results"] as unknown[] | undefined)?.length,
     14,
     "the prime run must run all 14 tests",
   );
