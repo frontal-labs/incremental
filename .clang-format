@@ -11,11 +11,11 @@ UseTab: Never
 
 # Braces
 BreakBeforeBraces: Attach
-AllowShortBlocksOnASingleLine: Never
+AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
 AllowShortLambdasOnASingleLine: false
-AllowShortIfStatementsOnASingleLine: Never
+AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 
 # Pointers and references
@@ -36,23 +36,17 @@ SpacesBeforeTrailingComments: 1
 SpacesInAngles: Never
 SpacesInContainerLiterals: true
 SpacesInCStyleCastParentheses: false
-SpacesInLineCommentPrefix: Minimum
 SpacesInParens: Never
 
 # Line breaking
 BreakBeforeBinaryOperators: None
 BreakBeforeTernaryOperators: false
 BreakConstructorInitializers: BeforeComma
-BreakAfterJavaFieldAnnotations: false
 BreakStringLiterals: true
 
 # Other
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowAllConstructorInitializersOnNextLine: true
-AllowBreakBeforeNestedExpr: true
-AllowBreakAfterOpenBrace: true
-AllowBreakBeforeCloseBrace: true
-AlignAfterOpenBrace: Align
 AlignConsecutiveAssignments: false
 AlignConsecutiveBitFields: false
 AlignConsecutiveDeclarations: false
@@ -68,9 +62,6 @@ NamespaceIndentation: None
 
 # Macros
 IndentPPDirectives: None
-
-# Comments
-CommentPragmas: '^ IWYU pragma:'
 
 # Derive pointer alignment
 DerivePointerAlignment: false

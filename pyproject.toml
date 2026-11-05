@@ -24,31 +24,30 @@ exclude = [
 
 [tool.ruff.lint]
 select = [
-    "E",    # pycodestyle errors
-    "F",    # pyflakes
-    "I",    # isort (import sorting)
-    "UP",   # pyupgrade
-    "B",    # flake8-bugbear
-    "C4",   # flake8-comprehensions
-    "D",    # pydocstyle
-    "P",    # flake8-pytest-style
-    "RET",  # flake8-return
-    "SIM",  # flake8-simplify
-    "TID",  # flake8-tidy-imports
-    "TRY",  # tryceratops
-    "W",    # pycodestyle warnings
+    "E",
+    "F",
+    "I",
+    "UP",
+    "B",
+    "C4",
+    "D",
+    "RET",
+    "SIM",
+    "TID",
+    "TRY",
+    "W",
 ]
 ignore = [
-    "E501",  # line too long (handled by formatter)
-    "D100",  # missing docstring in public module
-    "D101",  # missing docstring in public class
-    "D102",  # missing docstring in public method
-    "D103",  # missing docstring in public function
-    "D104",  # missing docstring in public package
-    "D205",  # 1 blank line required between summary line and description
-    "D401",  # first line of docstring should be in imperative mood
-    "PLR2004",  # magic value used in comparison
-    "TRY300",  # raise without from inside except
+    "E501",
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D205",
+    "D401",
+    "PLR2004",
+    "TRY300",
 ]
 
 [tool.ruff.lint.isort]
