@@ -11,7 +11,7 @@ import unittest
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY_ROOT = os.path.dirname(HERE)                       # bindings/python
 REPO = os.path.abspath(os.path.join(PY_ROOT, "..", ".."))
-SRC = os.path.join(PY_ROOT, "src")
+SRC = PY_ROOT
 CASES_DIR = os.path.join(REPO, "conformance", "cases")
 SEED_DEFAULT = os.path.join(REPO, "conformance", "stores", "base.jsonl")
 FAKE_ENGINE = os.path.join(HERE, "fake_engine.py")

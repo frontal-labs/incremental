@@ -1,12 +1,12 @@
 # incremental Python binding (spec, E9)
 
-Status: v1, written before the implementation (PLAN.md E9). Package `incremental`, located in `bindings/python/src/incremental/`. It implements protocol v1 (`spec/PROTOCOL.md`) and nothing else.
+Status: v1, written before the implementation . Package `incremental`, located in `bindings/python/incremental/`. It implements protocol v1 (`spec/PROTOCOL.md`) and nothing else.
 
 ## 1. Scope and runtime rules
 
 - Python 3.10 or newer. Standard library only at runtime. No third-party packages.
 - The package does not implement the policy. It spawns the engine (`incremental serve`) and sends protocol requests. Every answer comes from the engine.
-- Build: `bindings/python/pyproject.toml` with the `setuptools` build backend. Tests do not install the package. They put `bindings/python/src` on `sys.path`.
+- Build: `bindings/python/pyproject.toml` with the `setuptools` build backend. Tests do not install the package. They put `bindings/python` on `sys.path`.
 
 ## 2. Engine, store and root
 
