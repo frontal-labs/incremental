@@ -4,7 +4,7 @@
 
 mod common;
 
-use backplane::Backplane;
+use incremental::Incremental;
 use common::*;
 use serde_json::{json, Value};
 use std::fs::{self, OpenOptions};
@@ -245,7 +245,7 @@ fn run_concurrency(case: &Value) -> Vec<String> {
 
 fn writer(case: &Value, store: &Path, w: u64, per: u64) -> Vec<String> {
     let mut errors = Vec::new();
-    let mut client = match Backplane::connect(config(case, store)) {
+    let mut client = match Incremental::connect(config(case, store)) {
         Ok(client) => client,
         Err(err) => return vec![format!("writer {w}: {err}")],
     };

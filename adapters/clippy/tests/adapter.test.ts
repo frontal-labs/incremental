@@ -1,5 +1,5 @@
 // Integration tests: a scratch Cargo workspace in a scratch git repository, run
-// through the real engine, backplane-git and cargo clippy (spec/adapters/clippy.md).
+// through the real engine, incremental-git and cargo clippy (spec/adapters/clippy.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
@@ -42,7 +42,7 @@ function crate(root: string, name: string, lib: string, extra = ""): void {
 // generated (no registry dependencies, so no network) and committed, so the
 // worktree stays clean.
 function makeRepo(): { root: string; store: string } {
-  const base = realpathSync(mkdtempSync(path.join(os.tmpdir(), "backplane-clippy-")));
+  const base = realpathSync(mkdtempSync(path.join(os.tmpdir(), "incremental-clippy-")));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");

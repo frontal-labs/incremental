@@ -1,4 +1,4 @@
-# BACKPLANE DEVELOPMENT GUIDE
+# INCREMENTAL DEVELOPMENT GUIDE
 
 ## Quick Start
 ```bash
@@ -9,10 +9,10 @@ Read PLAN.md sections 0,1,2,14 first. Follow the start protocol for every sessio
 
 ## Project Structure
 ```
-backplane/
+incremental/
 ├── core/           # Engine core (store, index, policy, protocol server)
 ├── cli/            # CLI binary (thin binding)
-├── bindings/node/  # Node/TS client (@backplane/client)
+├── bindings/node/  # Node/TS client (@incremental/client)
 ├── adapters/       # Vitest, git, strace adapters
 ├── mcp/            # MCP server
 ├── conformance/    # Conformance suite (cases, stores, runner)

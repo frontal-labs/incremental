@@ -2,7 +2,7 @@
 // the worktree, with renames, deletions and untracked files. A separate
 // binary, so the core never runs git (PLAN D-7).
 //
-//   backplane-git changes --base REF [--root DIR]
+//   incremental-git changes --base REF [--root DIR]
 //
 // Prints {"baseline", "head", "dirty", "changes": [...]} on stdout. Fails with
 // invalid_params (exit 2) when REF is not in the history, for example in a
@@ -59,7 +59,7 @@ fn main() {
         if dir[k] == '\'' { quoted = true; }
     }
     if av.len < 2 || av[1] != "changes" || !have_base || !safe_arg(base) || quoted {
-        write_stderr("usage: backplane-git changes --base REF [--root DIR]\n");
+        write_stderr("usage: incremental-git changes --base REF [--root DIR]\n");
         exit(2);
     }
 

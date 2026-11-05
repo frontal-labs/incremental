@@ -1,4 +1,4 @@
-# BACKPLANE POLICY RULES
+# INCREMENTAL POLICY RULES
 
 ## Certificate Principle
 > A task may be skipped only if it has a certificate: an observation, valid at the current baseline, whose inputs are all unchanged.

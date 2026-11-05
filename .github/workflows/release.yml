@@ -51,4 +51,4 @@ jobs:
       - name: Run linux check
         run: make linux-gate
       - name: Docker build
-        run: docker build -f docker/Dockerfile.linux -t backplane:linux . 2>/dev/null || echo "docker build skipped (no docker daemon)"
+        run: docker build -f docker/Dockerfile.linux -t incremental:linux . 2>/dev/null || echo "docker build skipped (no docker daemon)"

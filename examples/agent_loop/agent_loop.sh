@@ -4,17 +4,17 @@
 # Copies the fixture to a scratch worktree, initialises a store, primes it with
 # a full run, then for 1, 5 and 20 agents:
 #   1. simulate agent work by editing a fixture file and committing it,
-#   2. ask the engine for the affected plan (git ChangeSet + backplane serve),
+#   2. ask the engine for the affected plan (git ChangeSet + incremental serve),
 #   3. run only the invalid tests under Vitest with the recorder (forks pool),
 #   4. advance the baseline when the worktree is clean (adapter loop, PLAN 10.4),
 #   5. print total/invalid/skipped/skip_share/elapsed_ms.
 set -euo pipefail
 
-ENGINE="${BACKPLANE_ENGINE:-core/dist/backplane}"
-VITEST_RUN="${BACKPLANE_VITEST_RUN:-adapters/vitest/dist/src/run.js}"
+ENGINE="${INCREMENTAL_ENGINE:-core/dist/incremental}"
+VITEST_RUN="${INCREMENTAL_VITEST_RUN:-adapters/vitest/dist/src/run.js}"
 ROOT="$(pwd)"
 FIXTURE="$ROOT/examples/agent_loop/fixture"
-STORE="${BACKPLANE_STORE:-$TMPDIR/backplane-agent-loop-store}"
+STORE="${INCREMENTAL_STORE:-$TMPDIR/incremental-agent-loop-store}"
 
 mkdir -p "$(dirname "$STORE")"
 WORK="$(mktemp -d -t bp-agent-loop)"
@@ -56,7 +56,7 @@ for agents in 1 5 20; do
   git -C "$REPO" -c user.name=agent -c user.email=agent@example.com commit -q -m "agent edit" || true
 
   # One adapter loop iteration: plan from the store baseline, run the invalid
-  # tests with the recorder, observe, advance (backplane vitest run, PLAN 10.4).
+  # tests with the recorder, observe, advance (incremental vitest run, PLAN 10.4).
   # The adapter exits 7 ("ran, not advanced") on any errored or dirty run; that
   # is a legitimate outcome to record, not a reason to abort the loop.
   report=$(SHLVL=0 node "$VITEST_RUN" run --root "$REPO" --store "$STORE" --json) || true

@@ -1,0 +1,6 @@
+{
+  "id": "E10",
+  "state": "blocked",
+  "evidence": "GATE.md",
+  "notes": "Release: BLOCKED. PLAN 14.1 stops the project on Gate 0 STOP (GATE.md Decision: STOP; demo STOP on K4), so E5, E7 and E10 do not run. `make release-check` cannot pass (depends on all-tests, which includes Linux-only test-oracle and unverified test-adapters drafts). LICENSE resolved (LICENSE added as copy of LICENSE.md); no release cut until Gate 0 is resolved."
+}

@@ -12,8 +12,8 @@ import subprocess
 import threading
 
 from . import _support as S
-from backplane._transport import Engine
-from backplane import BackplaneError
+from incremental._transport import Engine
+from incremental import IncrementalError
 
 HELLO_PARAMS = {"protocol": 1, "client": {"name": "conformance", "version": "0.0.0"}}
 CONTEXT_OK = {"lockfile": "sha256:l1", "tsconfig": "sha256:t1", "pkgjson": "sha256:p1",
@@ -111,7 +111,7 @@ def _run_hello_action(case: dict) -> list:
         try:
             eng.request(case["action"]["method"], case["action"]["params"])
             return ["hello with protocol 2 was accepted"]
-        except BackplaneError as err:
+        except IncrementalError as err:
             diffs = []
             if err.code != case["expect"]["error"]:
                 diffs.append(f"error: want {case['expect']['error']} got {err.code}")
@@ -135,7 +135,7 @@ def _run_action(case: dict) -> list:
             try:
                 getattr(client, act["method"])(**act["params"])
                 diffs.append(f"error: want {case['expect']['error']} got no error")
-            except BackplaneError as err:
+            except IncrementalError as err:
                 if err.code != case["expect"]["error"]:
                     diffs.append(f"error: want {case['expect']['error']} got {err.code}")
             if "baseline_after" in case["expect"]:

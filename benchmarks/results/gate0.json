@@ -42,7 +42,7 @@
       "median_ms": 40,
       "threshold": "< 1000 ms",
       "result": "pass for a 122-task store at HEAD only. Not measured per commit (no evaluated commits). The 100k-task target is not measured here.",
-      "note": "The store was seeded by an all-tests adapter run at HEAD, then advanced with `core/dist/backplane advance --expected null`, because the 2 error outcomes block advance (PLAN 11.6). The CLI runs without env, so the plan carries env_changed reasons. The number is a latency figure only."
+      "note": "The store was seeded by an all-tests adapter run at HEAD, then advanced with `core/dist/incremental advance --expected null`, because the 2 error outcomes block advance (PLAN 11.6). The CLI runs without env, so the plan carries env_changed reasons. The number is a latency figure only."
     },
     "K4": {
       "value": null,
@@ -193,7 +193,7 @@
     ]
   },
   "environment": [
-    "The replay tree W is a scratch git repo, not the Os repo. Each Os commit is materialised with git archive. The tree is checked against the Os tree (write-tree equals the Os commit's tree), and a synthetic commit is made so that backplane-git can compute the ChangeSet. backplane-git diffs a ref against the worktree only, and the Os worktree is dirty (8 uncommitted changes).",
+    "The replay tree W is a scratch git repo, not the Os repo. Each Os commit is materialised with git archive. The tree is checked against the Os tree (write-tree equals the Os commit's tree), and a synthetic commit is made so that incremental-git can compute the ChangeSet. incremental-git diffs a ref against the worktree only, and the Os worktree is dirty (8 uncommitted changes).",
     "node_modules: the 90 node_modules directories of the Os checkout were cloned into W with APFS copy-on-write (cp -c). A symlink to the Os node_modules would resolve workspace packages into the dirty Os checkout. One absolute symlink (packages/llm/node_modules/@types) was rewritten to a relative link.",
     "The installed node_modules are HEAD's install. Every window commit has a different lockfile from HEAD. Some workspace packages are absent or unlinked at older commits (for example adapters/r2 and packages/airbyte), and their tests fail to resolve.",
     "Build outputs (dist/ directories, git-ignored, 26 of them, about 3 MB) are pinned to the Os HEAD copies and are not per commit. A test that consumes a dist file would not see source changes in its package, which biases the replay toward fewer detected changes for those tests.",

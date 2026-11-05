@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/request.json",
+  "$id": "https://incremental.dev/schemas/request.json",
   "title": "Request",
   "description": "One JSON Lines request sent to the engine over stdio.",
   "type": "object",

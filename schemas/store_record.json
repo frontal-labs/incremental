@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/store_record.json",
+  "$id": "https://incremental.dev/schemas/store_record.json",
   "title": "Store Record",
   "description": "One line of tg.log, the append-only JSON Lines log that is the source of truth for the store.",
   "type": "object",

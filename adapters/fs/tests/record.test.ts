@@ -1,4 +1,4 @@
-// Wiring tests: a scratch repository, the real engine through @backplane/client.
+// Wiring tests: a scratch repository, the real engine through @incremental/client.
 // The macOS path only: declared inputs, and dirty when undeclared reads are not
 // protected. No strace path exists (see README.md).
 import assert from "node:assert/strict";
@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { connect, defaultEngine, type backplane } from "@backplane/client";
+import { connect, defaultEngine, type incremental } from "@incremental/client";
 import { contextFor, declaredInputs, oracleContext, recordFiles, recordOracle, type CheckResult, type OracleFileTask, type OracleResult, type OracleRun } from "../src/index.js";
 
 const ok: CheckResult = { outcome: "pass", durationMs: 1, problem: null };
@@ -15,13 +15,13 @@ const ok: CheckResult = { outcome: "pass", durationMs: 1, problem: null };
 interface Fixture {
   base: string;
   root: string;
-  client: backplane;
+  client: incremental;
   baseline: string;
 }
 
 // A repo with a commit (its HEAD is the baseline) and an initialized store.
 async function fixture(): Promise<Fixture> {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-fs-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-fs-"));
   const root = path.join(base, "repo");
   const store = path.join(base, "store");
   mkdirSync(root);
@@ -46,7 +46,7 @@ async function done(f: Fixture): Promise<void> {
 }
 
 test("declared inputs are recorded as declared kind with content hashes", () => {
-  const root = mkdtempSync(path.join(os.tmpdir(), "backplane-fs-decl-"));
+  const root = mkdtempSync(path.join(os.tmpdir(), "incremental-fs-decl-"));
   try {
     writeFileSync(path.join(root, "a.txt"), "a\n");
     const inputs = declaredInputs(root, ["a.txt", "missing.txt"]);

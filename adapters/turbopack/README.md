@@ -1,8 +1,8 @@
-# @backplane/turbopack
+# @incremental/turbopack
 
-The Turbopack app adapter, drafted in `spec/adapters/turbopack.md`. It is the honest version: entries are tasks, their declared inputs are recorded, and no module graph is claimed. An app is skipped when nothing in the repository changed. The inputs are every file under the repository root, except `node_modules`, `.git`, `.next`, `.backplane` and `.toolchain`, plus the lockfile and the `next` version in the context.
+The Turbopack app adapter, drafted in `spec/adapters/turbopack.md`. It is the honest version: entries are tasks, their declared inputs are recorded, and no module graph is claimed. An app is skipped when nothing in the repository changed. The inputs are every file under the repository root, except `node_modules`, `.git`, `.next`, `.incremental` and `.toolchain`, plus the lockfile and the `next` version in the context.
 
-Run: `backplane-turbopack run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]`. Exit codes match the TypeScript adapter: 0 advanced and all pass, 1 advanced with a failed build, 2 usage, 4 engine or setup error, 7 ran but not advanced.
+Run: `incremental-turbopack run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]`. Exit codes match the TypeScript adapter: 0 advanced and all pass, 1 advanced with a failed build, 2 usage, 4 engine or setup error, 7 ran but not advanced.
 
 ## Open questions and their answers
 
@@ -42,7 +42,7 @@ Context: lockfile, root `tsconfig.json`, hash of all `package.json` files, `runn
 
 - `graph: false`. No module graph is recorded.
 - `caps.probes`, `caps.dirs` and `caps.env` are false. Environment reads at build time (for example `NEXT_PUBLIC_*`) are not observed. Use the env adapter's allowlist to make them declared.
-- Inputs are every file under the repository root (minus the skipped directories), hashed before and after each build. The build may write files: `next-env.d.ts` is excluded because its content follows the `next` version, and any other file the build changes makes the observation dirty, because the build did not read the state it recorded.
+- Inputs are every file under the repository root, minus the skipped directories and minus the directories of the other apps (an app does not import from another app's directory: this is an assumption, not checked). Shared code under `libs/` and the root files are inputs for every app, so an edit there reruns every app. Inputs are hashed before and after each build. The build may write files: `next-env.d.ts` is excluded because its content follows the `next` version, and any other file the build changes makes the observation dirty, because the build did not read the state it recorded.
 - Tracked environment: `NEXT_*` variables and `NODE_ENV`, recorded as env inputs. Other variables are not observed.
 - Not observed: variables outside the tracked set, files outside the repository root, and the `.next` build cache, which can change how a build behaves without changing any input. A build with an unobserved cache can therefore produce a different result for the same inputs.
 - Build outputs (`.next`) are not stored (PLAN 4.3). Remote build caches are not consulted. A `next build` that hits a cache is still recorded as a pass, and the cache is not trusted as proof.

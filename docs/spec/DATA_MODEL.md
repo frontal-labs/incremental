@@ -1,4 +1,4 @@
-# BACKPLANE DATA MODEL
+# INCREMENTAL DATA MODEL
 
 ## Core Concepts
 | Term | Definition |

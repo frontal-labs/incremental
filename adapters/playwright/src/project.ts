@@ -9,10 +9,10 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
-import type { Context, Outcome } from "@backplane/client";
+import type { Context, Outcome } from "@incremental/client";
 
 // Directories the walk never enters. Matches the TypeScript and Vitest walkers.
-const SKIP_DIRS = new Set(["node_modules", ".git", "dist", ".backplane", ".toolchain", "test-results", "playwright-report"]);
+const SKIP_DIRS = new Set(["node_modules", ".git", "dist", ".incremental", ".toolchain", "test-results", "playwright-report"]);
 
 // Playwright's default testMatch: **/*.@(spec|test).?(c|m)[jt]s?(x)
 export const TEST_FILE = /\.(spec|test)\.[cm]?[jt]sx?$/;

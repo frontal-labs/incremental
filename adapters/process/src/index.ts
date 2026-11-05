@@ -1,12 +1,12 @@
-// @backplane/process: runs named commands as tasks and records their outcome
+// @incremental/process: runs named commands as tasks and records their outcome
 // (spec/adapters/process.md, PLAN 10.4). Declared inputs are recorded by
-// @backplane/fs. The outcome is pass (exit 0), fail (non-zero exit) or error
+// @incremental/fs. The outcome is pass (exit 0), fail (non-zero exit) or error
 // (the command could not run, was killed, or timed out).
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { connect, defaultEngine, type backplane, type Outcome } from "@backplane/client";
-import { recordFiles, recordOracle, type CheckResult, type FileTask, type OracleFileTask, type OracleRun } from "@backplane/fs";
+import { connect, defaultEngine, type incremental, type Outcome } from "@incremental/client";
+import { recordFiles, recordOracle, type CheckResult, type FileTask, type OracleFileTask, type OracleRun } from "@incremental/fs";
 
 export interface TaskConfig {
   // argv, not a shell line. The first entry is the program.
@@ -15,11 +15,11 @@ export interface TaskConfig {
   cwd?: string;
   // Repo-relative input paths the command is known to read.
   declared?: string[];
-  // The caller asserts that `declared` is complete (see @backplane/fs).
+  // The caller asserts that `declared` is complete (see @incremental/fs).
   complete?: boolean;
   // Run the command under the strace oracle and record its observed files,
   // dirs and probes instead of relying on declared inputs. Linux only;
-  // ignored on other platforms (see @backplane/fs oracleContext).
+  // ignored on other platforms (see @incremental/fs oracleContext).
   oracle?: boolean;
 }
 
@@ -35,9 +35,9 @@ export interface TaskRun {
   dirty: boolean;
 }
 
-export const CONFIG_FILE = "backplane-process.json";
+export const CONFIG_FILE = "incremental-process.json";
 
-// Reads `<root>/backplane-process.json`. Throws with a message on bad shape.
+// Reads `<root>/incremental-process.json`. Throws with a message on bad shape.
 export function loadConfig(root: string): ProcessConfig {
   const file = path.join(root, CONFIG_FILE);
   let raw: unknown;
@@ -82,7 +82,7 @@ export function runCommand(command: readonly string[], cwd: string, timeoutMs: n
 // Runs one task and observes it. Throws when a declared path cannot be hashed
 // or lies outside the root. No observation is recorded in that case.
 export async function runTask(
-  client: backplane,
+  client: incremental,
   root: string,
   name: string,
   cfg: TaskConfig,

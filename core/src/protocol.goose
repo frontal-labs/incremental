@@ -445,8 +445,8 @@ fn handle(sess: Session&, st: Store&, line: const u8[:], out: u8[>..]&) -> i64 {
             reply(id, has_id, out, body, true);
             return 2;
         }
-        body.append("{\"protocol\":1,\"engine\":{\"name\":\"backplane-core-goose\",\"version\":\"0.1.0\"},");
-        body.append("\"capabilities\":[\"probes\",\"dirs\",\"env\",\"verify\"],\"store\":\".backplane\"}");
+        body.append("{\"protocol\":1,\"engine\":{\"name\":\"incremental-core-goose\",\"version\":\"0.1.0\"},");
+        body.append("\"capabilities\":[\"probes\",\"dirs\",\"env\",\"verify\"],\"store\":\".incremental\"}");
         reply(id, has_id, out, body, false);
         return 0;
     }

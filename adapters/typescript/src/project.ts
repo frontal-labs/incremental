@@ -10,7 +10,7 @@ import path from "node:path";
 import ts from "typescript";
 
 // Directories the walk never enters. Matches the Vitest walker's intent.
-const SKIP_DIRS = new Set(["node_modules", ".git", "dist", ".backplane", ".toolchain"]);
+const SKIP_DIRS = new Set(["node_modules", ".git", "dist", ".incremental", ".toolchain"]);
 
 export class ProjectError extends Error {
   constructor(message: string) {

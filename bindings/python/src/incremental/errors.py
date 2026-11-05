@@ -1,9 +1,9 @@
-"""Errors raised by the backplane client."""
+"""Errors raised by the incremental client."""
 
 from typing import Any
 
 
-class BackplaneError(Exception):
+class IncrementalError(Exception):
     """A protocol error from the engine, or a client-side failure.
 
     code: a protocol error code (docs/spec/PROTOCOL.md) or one of the client codes
@@ -19,4 +19,4 @@ class BackplaneError(Exception):
         self.data = data
 
     def __reduce__(self):
-        return (BackplaneError, (self.code, self.message, self.data))
+        return (IncrementalError, (self.code, self.message, self.data))

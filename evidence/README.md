@@ -1,6 +1,6 @@
-# Backplane Evidence
+# Incremental Evidence
 
-Evidence records for backplane verification milestones (E1–E10 per the plan). Each evidence file records the command run, the date, the commit, and the tail of the command output, so verification outcomes are reproducible and auditable.
+Evidence records for incremental verification milestones (E1–E10 per the plan). Each evidence file records the command run, the date, the commit, and the tail of the command output, so verification outcomes are reproducible and auditable.
 
 ## Contents
 

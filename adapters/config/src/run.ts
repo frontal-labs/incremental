@@ -1,7 +1,7 @@
 // The config adapter runner (spec/adapters/config.md). Records one observation per task
 // with the declared inputs of globalInputs plus the paths the task declares, and queries
-// the plan with the config from backplane.config.json. A test drives it through connect().
-import type { backplane, Change, Context, Observation, Outcome, Plan } from "@backplane/client";
+// the plan with the config from incremental.config.json. A test drives it through connect().
+import type { incremental, Change, Context, Observation, Outcome, Plan } from "@incremental/client";
 import { affectedConfig, declaredInputs, globalInputFiles, loadConfig } from "./config.js";
 
 export interface TaskSpec {
@@ -34,7 +34,7 @@ export function observationsFor(opts: RecordOptions): Observation[] {
   }));
 }
 
-export async function recordTasks(client: backplane, opts: RecordOptions): Promise<number> {
+export async function recordTasks(client: incremental, opts: RecordOptions): Promise<number> {
   const observations = observationsFor(opts);
   if (observations.length === 0) return 0;
   return (await client.observeMany(observations)).accepted;
@@ -50,8 +50,8 @@ export interface PlanOptions {
 }
 
 // The affected query, with the config the engine must compare (globalInputs, ignore,
-// fallbackContextKeys) read from backplane.config.json.
-export async function planChanges(client: backplane, opts: PlanOptions): Promise<Plan> {
+// fallbackContextKeys) read from incremental.config.json.
+export async function planChanges(client: incremental, opts: PlanOptions): Promise<Plan> {
   const config = affectedConfig(loadConfig(opts.root));
   return client.affected(
     { baseline: opts.baseline, ...(opts.head !== undefined ? { head: opts.head } : {}), changes: opts.changes },

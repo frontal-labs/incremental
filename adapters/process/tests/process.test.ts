@@ -1,4 +1,4 @@
-// Wiring tests: a scratch repository with backplane-process.json and the real
+// Wiring tests: a scratch repository with incremental-process.json and the real
 // engine. No child-process tracing is tested (none on macOS; see README.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -7,8 +7,8 @@ import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { createRequire } from "node:module";
-import { connect, defaultEngine, type backplane } from "@backplane/client";
-import { contextFor } from "@backplane/fs";
+import { connect, defaultEngine, type incremental } from "@incremental/client";
+import { contextFor } from "@incremental/fs";
 import { main } from "../src/cli.js";
 import { runTasks, type TaskConfig } from "../src/index.js";
 
@@ -26,12 +26,12 @@ interface Fixture {
 
 // A repo with one commit, an advanced store, and the given task config.
 async function fixture(tasks: Record<string, TaskConfig>): Promise<Fixture> {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-proc-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-proc-"));
   const root = path.join(base, "repo");
   const store = path.join(base, "store");
   mkdirSync(root);
   writeFileSync(path.join(root, "a.txt"), "a\n");
-  writeFileSync(path.join(root, "backplane-process.json"), JSON.stringify({ tasks }));
+  writeFileSync(path.join(root, "incremental-process.json"), JSON.stringify({ tasks }));
   const env = { ...process.env, GIT_AUTHOR_NAME: "t", GIT_AUTHOR_EMAIL: "t@e", GIT_COMMITTER_NAME: "t", GIT_COMMITTER_EMAIL: "t@e" };
   const git = (...args: string[]) => spawnSync("git", args, { cwd: root, encoding: "utf8", env });
   git("init", "-q", "-b", "main");
@@ -51,7 +51,7 @@ function cleanup(f: Fixture): void {
 }
 
 // A separate client, to read what the run observed.
-async function withClient<T>(f: Fixture, fn: (c: backplane) => Promise<T>): Promise<T> {
+async function withClient<T>(f: Fixture, fn: (c: incremental) => Promise<T>): Promise<T> {
   const c = await connect({ store: f.store, root: f.root, command: [defaultEngine(), "serve"], timeoutMs: 60_000 });
   try {
     return await fn(c);
@@ -92,7 +92,7 @@ test("a non-zero exit is a fail, and the engine invalidates the task (failed_out
 });
 
 test("a command that cannot start is an error and is not observed", async () => {
-  const f = await fixture({ missing: { command: ["backplane-no-such-program-xyz"], complete: true } });
+  const f = await fixture({ missing: { command: ["incremental-no-such-program-xyz"], complete: true } });
   try {
     const [r] = await runTasks({ root: f.root, store: f.store, timeoutMs: 60_000 });
     assert.equal(r?.outcome, "error");
@@ -169,7 +169,7 @@ test("the CLI exits 0 when every task passes and 1 when one fails", async () => 
 });
 
 linux("oracle: a strace-traced command records its file reads as inputs", async () => {
-  const { runOracle } = requireStrace("@backplane/strace") as {
+  const { runOracle } = requireStrace("@incremental/strace") as {
     runOracle: (command: string[], opts: unknown) => Promise<unknown>;
   };
   const f = await fixture({

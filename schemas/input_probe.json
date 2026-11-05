@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/input_probe.json",
+  "$id": "https://incremental.dev/schemas/input_probe.json",
   "title": "Input Probe",
   "type": "object",
   "required": ["kind", "path"],

@@ -1,8 +1,8 @@
-# @backplane/playwright
+# @incremental/playwright
 
 Playwright test adapter (spec/adapters/playwright.md, draft). One task is one Playwright test file, repo-relative. The loop follows PLAN 10.4: baseline, change set, affected, forget deleted files, run each selected file, advance only on a clean, complete run, else exit 7.
 
-    backplane-playwright run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS] [--playwright CLI]
+    incremental-playwright run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS] [--playwright CLI]
 
 Exit codes: 0 advanced and all passed; 1 advanced and a test failed; 2 usage; 4 engine or setup error; 7 ran but not advanced.
 
@@ -35,4 +35,4 @@ Exit codes: 0 advanced and all passed; 1 advanced and a test failed; 2 usage; 4 
 
 - `@playwright/test` 1.64.1 (exact; released 2026-10-14, before the 2-week cutoff of 2026-10-20 for 2026-11-03).
 - `typescript` 5.9.3, `@types/node` 22.20.5 (as the other adapters).
-- `@backplane/client` as `file:../../bindings/node`.
+- `@incremental/client` as `file:../../bindings/node`.

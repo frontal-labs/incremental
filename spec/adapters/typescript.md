@@ -1,6 +1,6 @@
-# typescript adapter (built, `adapters/typescript`)
+# typescript adapter
 
-Status: built and tested (`make test-typescript`, 6 integration tests against the real engine). Chosen by the lead from the drafts because PLAN §4.3 names `tsc, bundler inputs` as a later adapter. Decision recorded in DECISIONS.md, "TypeScript adapter (built)".
+Status: built (`adapters/typescript`, `make test-typescript`; 6 integration tests against the real engine). Spec sign-off: not recorded in DECISIONS.md. Matched to adapters/typescript/README.md on 2026-11-04. Chosen by the lead from the drafts because PLAN §4.3 names `tsc, bundler inputs` as a later adapter. Build recorded in DECISIONS.md, "TypeScript adapter (built)".
 
 ## As built
 
@@ -34,7 +34,7 @@ A TypeScript project: a `tsconfig.json`, or a project reference in a `tsc -b` bu
 ## Declared inputs
 - `tsconfig*.json`, `package.json`, the lockfile, `typescript` version in the context.
 
-## Conformance cases (to write)
+## Conformance cases (to write as adapter tests; adapters are not in the conformance suite, PLAN §12)
 - Changing a source file in the program invalidates the project.
 - Changing a file that is not in the program does not invalidate it.
 - Changing a `typescript` version invalidates every project (context change).

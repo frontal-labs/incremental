@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "backplane"
+name = "incremental"
 version = "0.1.0"
 dependencies = [
  "serde_json",

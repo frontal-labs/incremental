@@ -8,8 +8,8 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const engine = path.join(root, 'core/dist/backplane');
-const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'backplane-cli-'));
+const engine = path.join(root, 'core/dist/incremental');
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'incremental-cli-'));
 after(() => fs.rmSync(dir, { recursive: true, force: true }));
 
 const CTX = { lockfile: 'sha256:l1', tsconfig: 'sha256:t1', pkgjson: 'sha256:p1', runner: 'vitest@4.1.12', node: '22.11.0', fmt: 1, caps: { probes: true, dirs: true, env: true } };

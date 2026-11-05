@@ -1,6 +1,6 @@
-# backplane: Incremental Dependency Engine. Agent Build Spec v4.1
+# incremental: Incremental Dependency Engine. Agent Build Spec v4.1
 
-Spec v4.1 · 2026-11-03 (CR-001 to CR-003 applied) · engine name: **backplane** (working name, see 1.4) · core: TypeScript (default, see D-14) · protocol: backplane Protocol v1 · first adapter: Vitest · platforms: Linux (gate, arm64 container), macOS and Linux (development)
+Spec v4.1 · 2026-11-03 (CR-001 to CR-003 applied) · engine name: **incremental** (working name, see 1.4) · core: TypeScript (default, see D-14) · protocol: incremental Protocol v1 · first adapter: Vitest · platforms: Linux (gate, arm64 container), macOS and Linux (development)
 
 ---
 
@@ -36,9 +36,9 @@ In single-agent mode one agent plays them in order. The conformance cases are co
 
 ## 1. Mission, scope, name
 
-### 1.1 What backplane is
+### 1.1 What incremental is
 
-backplane is an **incremental dependency engine**. It records what each task reads, lists, probes and writes, stores those observations as content-hashed records, and answers one question: *given these changes since the last known-good baseline, which tasks are invalid, and why?*
+incremental is an **incremental dependency engine**. It records what each task reads, lists, probes and writes, stores those observations as content-hashed records, and answers one question: *given these changes since the last known-good baseline, which tasks are invalid, and why?*
 
 The engine has no opinion about tests, builds or CI. Those are **adapters**. The engine exposes a stable protocol, so any language, runner or agent can use it.
 
@@ -61,14 +61,14 @@ The engine has no opinion about tests, builds or CI. Those are **adapters**. The
 **Non-goals for v1:**
 
 - Running tasks as a product. Adapters run them, and the engine only decides what needs running.
-- Build caching and artifact storage. Turborepo and Nx own that. backplane may later provide build-input observations to them (section 4.3), but not outputs.
+- Build caching and artifact storage. Turborepo and Nx own that. incremental may later provide build-input observations to them (section 4.3), but not outputs.
 - Production observability, distributed execution, Windows, a GUI.
 - Remote or shared stores beyond the per-worktree default (D-11).
 - Non-file inputs such as time, network and randomness, which are recorded as a stated limit (section 9.6).
 
 ### 1.4 Name
 
-**backplane** is the working name. As of 2026-11-03, npm has no package named `backplane`, and the scope `@backplane` was not checked. Trademark, GitHub organization and domain availability were **not** checked; that is milestone E0 step 1. All package names and CLI names are defined in one place (section 10.5), so a rename changes one file.
+**incremental** is the working name. As of 2026-11-03, npm has no package named `incremental`, and the scope `@incremental` was not checked. Trademark, GitHub organization and domain availability were **not** checked; that is milestone E0 step 1. All package names and CLI names are defined in one place (section 10.5), so a rename changes one file.
 
 ---
 
@@ -146,10 +146,10 @@ Consequences the design enforces:
   ─────────                    ────────                       ────────
   CI scripts                   vitest  (recorder + planner)   Node client  (typed)
   MCP agents  ─────────┐       strace  (native recorder)      Python      (later)
-  humans (CLI)         │       git     (change source)        CLI  backplane
+  humans (CLI)         │       git     (change source)        CLI  incremental
                        ▼           │                              │
                ┌──────────────────────────────────────────────────────┐
-               │   backplane Protocol v1  (JSON Lines over stdio)      │
+               │   incremental Protocol v1  (JSON Lines over stdio)      │
                └──────────────────────────────────────────────────────┘
                                        │
                ┌──────────────────────────────────────────────────────┐
@@ -178,7 +178,7 @@ Changing one needs a `DECISIONS.md` entry and Spec/Conformance approval.
 - **D-8 Negative dependencies are first-class.** Probes and directory listings are recorded, so additions can be handled without re-running everything.
 - **D-9 Baseline invariant** (section 3.4) is the soundness basis for every skip.
 - **D-10 Dirty state.** Observations recorded from a worktree with uncommitted changes are `dirty` and are never trusted for skips (rule P8).
-- **D-11 Stores are per worktree by default** (`<repo>/.backplane`). Sharing one store across worktrees is supported; baseline mismatches then fall back, so sharing is safe but often falls back. Documented in the README.
+- **D-11 Stores are per worktree by default** (`<repo>/.incremental`). Sharing one store across worktrees is supported; baseline mismatches then fall back, so sharing is safe but often falls back. Documented in the README.
 - **D-12 Vitest pool.** Recording requires the Vitest `forks` pool so test code runs in child processes that inherit `NODE_OPTIONS`. Confirmed in Vitest's docs (2026-11-03) as `vitest --pool=forks` and `test: { pool: 'forks' }`. The forks worker starts each file with `child_process.fork()` and passes an explicit `env`, so E4 MUST prove that `NODE_OPTIONS` reaches it.
 - **D-13 Protocol versioning.** Protocol v1 is the first. Any breaking change bumps the major version. The client and server negotiate in the `hello` handshake (section 9.2).
 - **D-14 Core language (default: TypeScript).** The v1 core is TypeScript on Node LTS, because it runs next to the recorders, ships through npm, and has no compiler risk on the critical path. A Goose core is an optional track (Appendix D). It is accepted only if it passes the same conformance suite and the parity gate (G6). Choosing a different default needs a `DECISIONS.md` entry and a human decision.
@@ -296,12 +296,12 @@ Query cost is the sum of the posting-list lengths touched by the changes, plus t
 
 ### 6.7 Configuration
 
-`backplane.config.json` at the repo root. Shape:
+`incremental.config.json` at the repo root. Shape:
 
 ```json
 {
   "roots": ["."],
-  "exclude": ["**/node_modules/**", ".git/**", ".backplane/**"],
+  "exclude": ["**/node_modules/**", ".git/**", ".incremental/**"],
   "ignore": [],
   "globalInputs": ["pnpm-lock.yaml", "package-lock.json", "yarn.lock", "package.json",
                    "tsconfig*.json", "vitest.config.*", "vite.config.*"],
@@ -321,7 +321,7 @@ Query cost is the sum of the posting-list lengths touched by the changes, plus t
 
 ### 7.1 First use
 
-`backplane init` creates `<store>/tg.log` with a header and no baseline. The first run of an adapter has no baseline and runs every task (fallback `baseline_mismatch`, because `B` is null). It then advances the baseline.
+`incremental init` creates `<store>/tg.log` with a header and no baseline. The first run of an adapter has no baseline and runs every task (fallback `baseline_mismatch`, because `B` is null). It then advances the baseline.
 
 ### 7.2 Steady state
 
@@ -333,7 +333,7 @@ Tasks whose definition disappeared are forgotten by the adapter after a query re
 
 ### 7.4 Compaction
 
-`backplane compact` rewrites the log keeping live observations, the latest baseline, and the context records still referenced. It writes to a temp file and renames it. Any index built from the old log is invalidated by the tail hash (section 6.4).
+`incremental compact` rewrites the log keeping live observations, the latest baseline, and the context records still referenced. It writes to a temp file and renames it. Any index built from the old log is invalidated by the tail hash (section 6.4).
 
 ### 7.5 Corruption
 
@@ -450,8 +450,8 @@ Default queries run without verify, so default output is `medium` unless the ada
 One JSON object per line in each direction, flushed per line. Requests carry an integer `id` that the response echoes.
 
 ```
--> {"id":1,"method":"hello","params":{"protocol":1,"client":{"name":"backplane-node","version":"0.1.0"}}}
-<- {"id":1,"result":{"protocol":1,"engine":{"name":"backplane-core-ts","version":"0.1.0"},"capabilities":["probes","dirs","env","verify"],"store":".backplane"}}
+-> {"id":1,"method":"hello","params":{"protocol":1,"client":{"name":"incremental-node","version":"0.1.0"}}}
+<- {"id":1,"result":{"protocol":1,"engine":{"name":"incremental-core-ts","version":"0.1.0"},"capabilities":["probes","dirs","env","verify"],"store":".incremental"}}
 -> {"id":2,"method":"affected","params":{...}}
 <- {"id":2,"result":{...Plan...}}
 <- {"id":3,"error":{"code":"baseline_conflict","message":"expected baseline 9f2c, store has 3e8d","data":{"expected":"9f2c","actual":"3e8d"}}}
@@ -583,10 +583,10 @@ Each request has a 10-second server-side budget. Exceeding it returns `timeout` 
 
 ### 10.1 Node/TypeScript (first-class binding)
 
-Package `@backplane/client` (name per section 1.4). It spawns `backplane serve`, or connects to a given command, and exposes:
+Package `@incremental/client` (name per section 1.4). It spawns `incremental serve`, or connects to a given command, and exposes:
 
 ```ts
-export interface backplane {
+export interface incremental {
   readonly protocol: 1;
   hello(): Promise<Hello>;
   observe(obs: Observation): Promise<{ accepted: true }>;
@@ -601,11 +601,11 @@ export interface backplane {
   close(): Promise<void>;
 }
 
-export function connect(opts?: ConnectOptions): Promise<backplane>;
+export function connect(opts?: ConnectOptions): Promise<incremental>;
 
 export interface ConnectOptions {
-  store?: string;                 // default: $BACKPLANE_STORE, then <repo>/.backplane
-  command?: string[];             // default: ["backplane", "serve"]
+  store?: string;                 // default: $INCREMENTAL_STORE, then <repo>/.incremental
+  command?: string[];             // default: ["incremental", "serve"]
   timeoutMs?: number;             // per request, default 10000
   restart?: boolean;              // restart the server if it dies, default true
 }
@@ -621,45 +621,45 @@ export interface AffectedOptions {
 Behavior the client MUST implement:
 
 - Matches responses by `id`, enforces timeouts, and restarts the server if it dies (with `restart: true`). A restart re-runs `hello`.
-- Rejects with a typed `backplaneError` carrying `code` and `data`. It never resolves to a partial plan.
+- Rejects with a typed `incrementalError` carrying `code` and `data`. It never resolves to a partial plan.
 - Serializes writes to the server. Concurrent calls are queued in order.
 
 ### 10.2 CLI
 
-Binary `backplane`:
+Binary `incremental`:
 
 ```
-backplane init     [--store PATH]
-backplane observe  --file FILE|-                        # one observation as JSON
-backplane affected --changes FILE|- --baseline SHA --context FILE
+incremental init     [--store PATH]
+incremental observe  --file FILE|-                        # one observation as JSON
+incremental affected --changes FILE|- --baseline SHA --context FILE
                   [--verify] [--policy balanced|conservative]
-backplane advance  --to SHA --expected SHA|null
-backplane explain  --task ID
-backplane forget   --task ID
-backplane stats    [--json]
-backplane compact
-backplane serve    [--store PATH]                       # protocol over stdio
-backplane version
+incremental advance  --to SHA --expected SHA|null
+incremental explain  --task ID
+incremental forget   --task ID
+incremental stats    [--json]
+incremental compact
+incremental serve    [--store PATH]                       # protocol over stdio
+incremental version
 ```
 
-The CLI is a thin binding: every command maps to one protocol method. `--store` defaults to `$BACKPLANE_STORE`, then `<repo>/.backplane`. Exit codes follow section 9.7. Errors print `{"ok": false, "error": {"code": "...", "message": "..."}}` on stdout and a one-line message on stderr.
+The CLI is a thin binding: every command maps to one protocol method. `--store` defaults to `$INCREMENTAL_STORE`, then `<repo>/.incremental`. Exit codes follow section 9.7. Errors print `{"ok": false, "error": {"code": "...", "message": "..."}}` on stdout and a one-line message on stderr.
 
 ### 10.3 Python binding (later, E9)
 
-Package `backplane` on PyPI, same protocol and method names in snake_case (`observe_many`, `advance`, `affected`). Uses the same conformance cases. Its API is specified in `spec/bindings-python.md` when E9 starts, not before.
+Package `incremental` on PyPI, same protocol and method names in snake_case (`observe_many`, `advance`, `affected`). Uses the same conformance cases. Its API is specified in `spec/bindings-python.md` when E9 starts, not before.
 
 ### 10.4 Adapter loop contract
 
 Any adapter that runs tasks MUST follow this loop, and the conformance suite checks it with the Vitest adapter (E4):
 
 ```
-B   = backplane baseline
+B   = incremental baseline
 ch  = changes from B to the worktree (git change source, 11.7)
-plan = backplane affected --baseline B --changes ch --context ctx
-for each task in plan.deleted_tasks:  backplane forget
+plan = incremental affected --baseline B --changes ch --context ctx
+for each task in plan.deleted_tasks:  incremental forget
 run each task in plan.tasks while recording an observation
 if every task in plan.tasks ran and the worktree is clean and HEAD is unchanged:
-    backplane advance --to HEAD --expected B
+    incremental advance --to HEAD --expected B
 else:
     do not advance; report why; exit with code 7
 ```
@@ -670,16 +670,16 @@ Exit code 7 means "ran, but the baseline was not advanced". It is distinct from 
 
 | Thing | Name |
 |---|---|
-| Engine | backplane |
-| Protocol | backplane Protocol v1 |
-| CLI | `backplane` |
-| Node package | `@backplane/client` |
-| Python package | `backplane` |
-| Vitest adapter | `@backplane/vitest` (CLI subcommand `backplane vitest run`) |
-| MCP server | `@backplane/mcp` |
-| Store directory | `.backplane/` |
-| Config file | `backplane.config.json` |
-| Environment | `BACKPLANE_STORE`, `BACKPLANE_TRACE_OUT` |
+| Engine | incremental |
+| Protocol | incremental Protocol v1 |
+| CLI | `incremental` |
+| Node package | `@incremental/client` |
+| Python package | `incremental` |
+| Vitest adapter | `@incremental/vitest` (CLI subcommand `incremental vitest run`) |
+| MCP server | `@incremental/mcp` |
+| Store directory | `.incremental/` |
+| Config file | `incremental.config.json` |
+| Environment | `INCREMENTAL_STORE`, `INCREMENTAL_TRACE_OUT` |
 | Engine core folder | `core/` |
 
 Rename rule: a rename changes this table, the README, and nothing else. Spec sections refer to the table, not the literal names.
@@ -709,7 +709,7 @@ Any recorder, whatever the tool, produces observations that pass the schema in 9
 
 ### 11.2 Vitest recorder (`adapters/vitest`)
 
-Mechanism, in short. A preload loaded through `NODE_OPTIONS` (`--import` for ESM, `--require` for CJS) wraps the `fs` API in its sync, callback, promise and stream forms: read, open, stat, lstat, access, exists, readdir, realpath, readFile and createReadStream. It also wraps module loading. For environment access it replaces `process.env` with a Proxy recording `get`, `has` and `ownKeys`. Each test file runs in its own forked process (D-12), so the preload's observations belong to exactly one task. The preload writes its observations to `BACKPLANE_TRACE_OUT` at exit.
+Mechanism, in short. A preload loaded through `NODE_OPTIONS` (`--import` for ESM, `--require` for CJS) wraps the `fs` API in its sync, callback, promise and stream forms: read, open, stat, lstat, access, exists, readdir, realpath, readFile and createReadStream. It also wraps module loading. For environment access it replaces `process.env` with a Proxy recording `get`, `has` and `ownKeys`. Each test file runs in its own forked process (D-12), so the preload's observations belong to exactly one task. The preload writes its observations to `INCREMENTAL_TRACE_OUT` at exit.
 
 Specific rules:
 
@@ -724,7 +724,7 @@ Maps a plan to Vitest work:
 
 - Task ids are repo-relative test file paths.
 - A plan with a fallback runs every known test file.
-- `backplane vitest run [--base REF] [--json] [--all] [--jobs N]` computes the plan, runs the invalid test files with the recorder (in parallel, `N` = CPU count by default), writes JSON results when asked, and then follows the loop in 10.4.
+- `incremental vitest run [--base REF] [--json] [--all] [--jobs N]` computes the plan, runs the invalid test files with the recorder (in parallel, `N` = CPU count by default), writes JSON results when asked, and then follows the loop in 10.4.
 - `--shadow` runs everything, reports what the plan would have skipped, and never advances the baseline on its own. It is for measuring before trusting.
 
 ### 11.4 Canonical paths and symlinks
@@ -1106,7 +1106,7 @@ Each milestone has **Owner**, **Depends**, **Outputs** (exact paths), **Steps**,
 
 **Steps**
 
-1. Implement section 10.1: `connect`, all methods, `backplaneError`.
+1. Implement section 10.1: `connect`, all methods, `incrementalError`.
 2. Process supervision: spawn, `hello`, restart on death (with `restart: true`), request timeouts, request queue.
 3. Run the conformance suite through the Node client as well as the CLI, with the results compared byte for byte.
 
@@ -1120,16 +1120,16 @@ Each milestone has **Owner**, **Depends**, **Outputs** (exact paths), **Steps**,
 
 **Owner:** Adapters. **Depends:** E3.
 
-**Outputs:** `adapters/vitest/src/preload.ts`, `adapters/vitest/src/record.ts`, `adapters/vitest/src/planner.ts`, `adapters/vitest/src/run.ts` (the `backplane vitest run` command), `adapters/git/src/changeset.ts`, `adapters/vitest/fixtures/` (section 14.1), `adapters/vitest/test/`.
+**Outputs:** `adapters/vitest/src/preload.ts`, `adapters/vitest/src/record.ts`, `adapters/vitest/src/planner.ts`, `adapters/vitest/src/run.ts` (the `incremental vitest run` command), `adapters/git/src/changeset.ts`, `adapters/vitest/fixtures/` (section 14.1), `adapters/vitest/test/`.
 
 **Steps**
 
 0. Pin Vitest 4.1.12. Confirm the pool flag (D-12) against the pinned docs, and prove with a probe test that `NODE_OPTIONS` reaches the forked worker. Record the result in `DECISIONS.md`.
 1. Preload: `fs` wrappers, the env Proxy, module loading, realpath canonicalization (11.2).
-2. Recording: one forked process per test file, observation written to `BACKPLANE_TRACE_OUT`, then sent with `observe`.
+2. Recording: one forked process per test file, observation written to `INCREMENTAL_TRACE_OUT`, then sent with `observe`.
 3. Capability proof on the fixture: `probes`, `dirs`, `env`. A capability that cannot be captured is set false and logged.
 4. Git source (11.7): committed and staged changes, untracked files, renames. Tests run in a scratch repository built under `adapters/git/testdata/`.
-5. Planner and `backplane vitest run` (11.3) and the adapter loop (10.4), including exit code 7.
+5. Planner and `incremental vitest run` (11.3) and the adapter loop (10.4), including exit code 7.
 6. Adapter cases V01 to V16 (12.3) pass through the whole loop.
 
 **Verify:** `make test-vitest`
@@ -1144,7 +1144,7 @@ Each milestone has **Owner**, **Depends**, **Outputs** (exact paths), **Steps**,
 
 **Steps**
 
-1. The human provides or confirms one real, slow Vitest monorepo (`$BACKPLANE_BENCH_REPO`).
+1. The human provides or confirms one real, slow Vitest monorepo (`$INCREMENTAL_BENCH_REPO`).
 2. Run the replay (12.5) on at least 50 evaluated commits, or as many as exist. If fewer than 50 exist, stop (14.1).
 3. Compute K1 to K4 (13.1). Write `GATE.md` with the Gate 0 table.
 4. Report the decision. CONTINUE or STOP.
@@ -1249,7 +1249,7 @@ Each milestone has **Owner**, **Depends**, **Outputs** (exact paths), **Steps**,
 1. `README.md`: quickstart executed in CI; the non-file-input limit (9.6); the sharing behavior (D-11); the name and its status.
 2. `LICENSE` (Apache-2.0 unless the human says otherwise).
 3. `.github/workflows/ci.yml`: builds the core, runs `make all-tests`, runs the Vitest adapter on the fixture.
-4. Packages: `backplane` (CLI), `@backplane/client`, `@backplane/vitest`, `@backplane/mcp`, with versions and a changelog.
+4. Packages: `incremental` (CLI), `@incremental/client`, `@incremental/vitest`, `@incremental/mcp`, with versions and a changelog.
 5. Stretch: C ABI (10.6). Only if G6 passes for 20 queries. Otherwise record the skip in `DECISIONS.md`.
 6. `GOOSE_REPORT.md` only if the optional Goose track ran (Appendix D).
 
@@ -1396,7 +1396,7 @@ Canonical file: `plans/PLAN.md`. Run section 0.2 first.
 **Single agent (plays all roles in order):**
 
 ```
-You are building backplane, an incremental dependency engine, from plans/PLAN.md (spec v4).
+You are building incremental, an incremental dependency engine, from plans/PLAN.md (spec v4).
 Read sections 0, 1, 2, 3, 14 fully. Then run E0 (repo setup, name check, pins, competitor recon),
 then milestones E1 to E4 in order, then stop at GATE 0 and report its result before continuing.
 Rules: a milestone is done only when its verify command passes, output is saved to
@@ -1409,7 +1409,7 @@ format exactly. Do not start E5 without a Gate 0 CONTINUE from the human.
 **Spec/Conformance agent:**
 
 ```
-You are the Spec/Conformance agent for backplane (plans/PLAN.md v4). You own spec/, conformance/,
+You are the Spec/Conformance agent for incremental (plans/PLAN.md v4). You own spec/, conformance/,
 Makefile, Dockerfile.linux and sign-offs. Do E0 steps 1 and 3 (name check, competitor recon), then
 E1 in the order given in section 15.4: protocol and schemas, conformance cases C01 to C40 written by
 hand, reference policy, runner, validate.mjs. Commit cases before any other role starts code. After
@@ -1420,7 +1420,7 @@ command, and write evidence/<id>.signoff.txt. Never accept a result you have not
 **Core agent:**
 
 ```
-You are the Core agent for backplane (plans/PLAN.md v4). You own core/ and cli/. Do E2 against the
+You are the Core agent for incremental (plans/PLAN.md v4). You own core/ and cli/. Do E2 against the
 frozen protocol and conformance cases. Implement section 8 exactly, rules P0 to P11. Do not edit spec/
 or conformance/cases/; file change requests. Every skip decision must have a certificate (3.3).
 Stop per section 14 rather than changing the core language.
@@ -1429,15 +1429,15 @@ Stop per section 14 rather than changing the core language.
 **Bindings agent:**
 
 ```
-You are the Bindings agent for backplane (plans/PLAN.md v4). You own bindings/. Do E3 (Node client)
+You are the Bindings agent for incremental (plans/PLAN.md v4). You own bindings/. Do E3 (Node client)
 against the protocol and the conformance suite. The client never resolves to a partial plan; it
-rejects with backplaneError. Byte-identical plans with the CLI are required. Python (E9) comes later.
+rejects with incrementalError. Byte-identical plans with the CLI are required. Python (E9) comes later.
 ```
 
 **Adapters agent:**
 
 ```
-You are the Adapters agent for backplane (plans/PLAN.md v4). You own adapters/, mcp/, examples/. Do E4
+You are the Adapters agent for incremental (plans/PLAN.md v4). You own adapters/, mcp/, examples/. Do E4
 (Vitest recorder, planner, git source) and, after GATE 0 passes, E5 (strace oracle), E6 and E8. Read
 the pinned Vitest docs for the pool flag and prove NODE_OPTIONS reaches the forked worker before
 recording anything. The recorder MUST contain every path the strace oracle sees; oracle gaps cannot be
@@ -1447,7 +1447,7 @@ waived.
 **Benchmarks agent:**
 
 ```
-You are the Benchmarks agent for backplane (plans/PLAN.md v4). You own benchmarks/. Do the Gate 0 replay first
+You are the Benchmarks agent for incremental (plans/PLAN.md v4). You own benchmarks/. Do the Gate 0 replay first
 (E4 must be done): the replay driver (12.5), the rule-of-three bound, and the Gate 0 table in GATE.md.
 Then E7 after the human approves continuing. Targets are hypotheses and must not be edited after you see
 results. Publish losses.
@@ -1475,26 +1475,26 @@ results. Publish losses.
 | MCP SDK pin | **1.32.0**, published 2026-10-02, eligible. The `latest` tag is 1.32.2 (published 2026-10-23), eligible on 2026-11-06. The 2.x line is not the `latest` tag | `npm view @modelcontextprotocol/sdk dist-tags` and `time` |
 | Container runtime | Docker Desktop 28.1.1 running, server `linux` / `aarch64`. The Linux gate runs in a linux/arm64 container | `docker info` |
 | Goose release platforms (optional track) | v2026.3 (published 2026-10-21): `linux-x64`, `macos-arm64`, `macos-x64`, `windows-x64`. No linux-arm64 | GitHub releases API for `aardappel/goose` |
-| npm name availability | `backplane` free. Scope `@backplane` not checked. Trademark, GitHub and domain not checked | `npm view`; E0 step 1 for the rest |
+| npm name availability | `incremental` free. Scope `@incremental` not checked. Trademark, GitHub and domain not checked | `npm view`; E0 step 1 for the rest |
 | Competitor search results | Captured in the conversation (Turborepo `--affected` and `--filter`, Nx `affected`, Vitest `--changed` and `--since-last-run`, Jest `--onlyChanged`, Playwright `--only-changed` (v1.46+), pytest-testmon, Ekstazi, STARTS, bazel-diff, Develocity PTS, Launchable, Datadog TIA, DiffCI) | Verify each row in E0 step 3 from the tool's own docs |
 
 ---
 
 ## Appendix B. Changes from the test-only spec (v3.1)
 
-| Area | v3.1 (tg) | v4 (backplane) |
+| Area | v3.1 (tg) | v4 (incremental) |
 |---|---|---|
 | Scope | Test selection for Vitest | Generic engine; Vitest is the first adapter |
 | Unit | Test file | Task (adapter-defined id) |
 | Observed things | Files, dirs, probes, env | Same, as typed inputs (`file`, `dir`, `probe`, `env`, `env_all`, `declared`) plus outputs |
 | Soundness | Graph commit invariant | Certificate principle (3.3) and baseline invariant (3.4) |
-| Interface | `tg` CLI, `tg serve`, MCP tools | backplane Protocol v1 with handshake, versioning and error codes; Node client; CLI; Python later |
+| Interface | `tg` CLI, `tg serve`, MCP tools | incremental Protocol v1 with handshake, versioning and error codes; Node client; CLI; Python later |
 | Core language | Goose (default) | TypeScript (default, D-14); Goose is an optional track gated by the same conformance suite |
 | Conformance | 37 scenarios for tg | 40 generic cases plus 16 Vitest adapter cases |
 | Gates | G1 to G5 | Gate 0 (kill test, before the strace oracle) and Gate 1 (G1 to G6, including binding parity) |
 | Reason codes | `reads`, `test_changed`, `no_trace`, `dirty_trace`, `recent_failure`, `stale_trace`, `env_changed`, `env_all_changed` | `reads`, `self_changed`, `no_observation`, `dirty_observation`, `failed_outcome`, `stale`, `env_changed`, `env_all_changed`, `declared`; fallback codes renamed (`unobserved_input`, `context_changed`, `baseline_mismatch`, `context_missing`) |
 | Platform | Linux gate, arm64 container | Same; now stated as a gate prerequisite with a stop rule |
-| Naming | `tg`, `.tg/`, `tg.config.json` | backplane (working name), section 10.5 |
+| Naming | `tg`, `.tg/`, `tg.config.json` | incremental (working name), section 10.5 |
 
 ---
 
@@ -1504,7 +1504,7 @@ results. Publish losses.
 |---|---|---|---|
 | 1 | Name check (trademark, GitHub, domain) | Spec/Conformance (E0 step 1) | Publishing packages |
 | 2 | Core language confirmation (D-14 default is TypeScript) | Human | E2 |
-| 3 | Kill-test repository (`BACKPLANE_BENCH_REPO`) | Human | GATE 0 |
+| 3 | Kill-test repository (`INCREMENTAL_BENCH_REPO`) | Human | GATE 0 |
 | 4 | Python binding: whether to build it at all | Human | E9 |
 | 5 | Competitor rows are unverified until E0 step 3 | Spec/Conformance | GATE 0 interpretation (K4) |
 | 6 | Vitest 5.x and MCP 1.32.2 eligibility dates (2026-11-16 and 2026-11-06) | Adapters | None now |

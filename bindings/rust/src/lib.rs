@@ -1,6 +1,6 @@
-//! Rust client for backplane Protocol v1 (docs/spec/PROTOCOL.md, spec/adapters/rust.md).
+//! Rust client for incremental Protocol v1 (docs/spec/PROTOCOL.md, spec/adapters/rust.md).
 //!
-//! The client spawns `backplane serve`, sends one JSON object per line and
+//! The client spawns `incremental serve`, sends one JSON object per line and
 //! matches each answer by id. It never plans: every answer comes from the engine.
 //! Methods take `&mut self`, so requests run one at a time in call order.
 
@@ -16,7 +16,7 @@ use std::thread;
 use std::time::{Duration, Instant};
 
 const PROTOCOL: u64 = 1;
-const CLIENT_NAME: &str = "backplane-rust";
+const CLIENT_NAME: &str = "incremental-rust";
 const CLIENT_VERSION: &str = env!("CARGO_PKG_VERSION");
 const STARTUP_TIMEOUT: Duration = Duration::from_secs(10);
 const STDERR_LINES: usize = 20;
@@ -48,7 +48,7 @@ impl std::error::Error for Error {}
 pub type Result<T> = std::result::Result<T, Error>;
 
 /// Engine command, store, root and timing. `Config::default()` reads
-/// `BACKPLANE_ENGINE` and `BACKPLANE_STORE`, and uses the enclosing git repository.
+/// `INCREMENTAL_ENGINE` and `INCREMENTAL_STORE`, and uses the enclosing git repository.
 #[derive(Debug, Clone)]
 pub struct Config {
     /// Command prefix. The client runs `<engine...> serve --store <store> --root <root>`.
@@ -65,9 +65,9 @@ impl Default for Config {
     fn default() -> Self {
         let root = repo_root();
         Config {
-            engine: vec![env::var("BACKPLANE_ENGINE")
-                .unwrap_or_else(|_| root.join("core/dist/backplane").display().to_string())],
-            store: env::var_os("BACKPLANE_STORE").map_or_else(|| root.join(".backplane"), PathBuf::from),
+            engine: vec![env::var("INCREMENTAL_ENGINE")
+                .unwrap_or_else(|_| root.join("core/dist/incremental").display().to_string())],
+            store: env::var_os("INCREMENTAL_STORE").map_or_else(|| root.join(".incremental"), PathBuf::from),
             timeout: Duration::from_secs(10),
             restart: true,
             root,
@@ -141,17 +141,17 @@ struct Run {
 /// A client for one engine process. The process is started by `connect` and
 /// restarted on the next call if it died (when `Config::restart` is set).
 #[derive(Debug)]
-pub struct Backplane {
+pub struct Incremental {
     cfg: Config,
     run: Option<Run>,
     started: bool,
     next_id: u64,
 }
 
-impl Backplane {
+impl Incremental {
     /// Starts the engine and runs the `hello` handshake.
     pub fn connect(cfg: Config) -> Result<Self> {
-        let mut client = Backplane { cfg, run: None, started: false, next_id: 1 };
+        let mut client = Incremental { cfg, run: None, started: false, next_id: 1 };
         client.ensure()?;
         Ok(client)
     }
@@ -294,7 +294,7 @@ impl Backplane {
     }
 }
 
-impl Drop for Backplane {
+impl Drop for Incremental {
     fn drop(&mut self) {
         self.stop();
     }

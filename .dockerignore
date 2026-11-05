@@ -3,6 +3,6 @@
 !adapters/vitest/fixtures/repo/packages/app/node_modules
 **/dist
 .git
-.backplane
+.incremental
 bench/results
 .DS_Store

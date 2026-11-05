@@ -1,5 +1,5 @@
 // Integration tests: a scratch Bazel workspace in a git repository, run through
-// the real engine, backplane-git and bazel (spec/adapters/bazel.md).
+// the real engine, incremental-git and bazel (spec/adapters/bazel.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -37,7 +37,7 @@ function commit(root: string, message: string): void {
 // Three shell tests in one package: a and b pass, c fails. The rule is defined in
 // the repository, so the fixture reads no external repository of its own.
 function makeRepo(): { root: string; store: string; base: string } {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-bazel-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-bazel-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");

@@ -1,5 +1,5 @@
 [package]
-name = "backplane-rust-example"
+name = "incremental-rust-example"
 version = "0.1.0"
 edition = "2021"
 

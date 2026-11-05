@@ -11,9 +11,9 @@ import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
-const engine = path.resolve(process.argv[2] ?? path.join(root, 'core/dist/backplane'));
+const engine = path.resolve(process.argv[2] ?? path.join(root, 'core/dist/incremental'));
 const casesDir = path.join(here, 'cases');
-const work = fs.mkdtempSync(path.join(os.tmpdir(), 'backplane-conf-'));
+const work = fs.mkdtempSync(path.join(os.tmpdir(), 'incremental-conf-'));
 
 const HELLO = { id: 1, method: 'hello', params: { protocol: 1, client: { name: 'conformance', version: '0.0.0' } } };
 

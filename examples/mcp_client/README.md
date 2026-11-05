@@ -1,6 +1,6 @@
 # MCP Client Example
 
-Demonstrates an MCP client driving `backplane-mcp` from an AI agent. Per `docs/adapters/ADAPTERS.md` section E8 and `docs/spec/PROTOCOL.md`, the MCP server exposes three tools over MCP stdio:
+Demonstrates an MCP client driving `incremental-mcp` from an AI agent. Per `docs/adapters/ADAPTERS.md` section E8 and `docs/spec/PROTOCOL.md`, the MCP server exposes three tools over MCP stdio:
 
 | Tool | Input | Output |
 |------|-------|--------|
@@ -24,11 +24,11 @@ examples/mcp_client/
 ```json
 {
   "mcpServers": {
-    "backplane": {
-      "command": "backplane-mcp",
-      "args": ["--store", ".backplane"],
+    "incremental": {
+      "command": "incremental-mcp",
+      "args": ["--store", ".incremental"],
       "env": {
-        "BACKPLANE_STORE": ".backplane"
+        "INCREMENTAL_STORE": ".incremental"
       }
     }
   }
@@ -38,7 +38,7 @@ examples/mcp_client/
 ## mcp_client.py
 
 ```python
-"""Example MCP client that queries backplane for affected tasks."""
+"""Example MCP client that queries incremental for affected tasks."""
 
 import asyncio
 import json
@@ -48,9 +48,9 @@ from typing import Any
 
 
 async def run_affected_tasks(store: str, verify: bool = False) -> dict[str, Any]:
-    """Call the backplane MCP server's affected_tasks tool."""
+    """Call the incremental MCP server's affected_tasks tool."""
     proc = await asyncio.create_subprocess_exec(
-        "backplane-mcp",
+        "incremental-mcp",
         "--store", store,
         stdin=asyncio.subprocess.PIPE,
         stdout=asyncio.subprocess.PIPE,
@@ -65,7 +65,7 @@ async def run_affected_tasks(store: str, verify: bool = False) -> dict[str, Any]
         "params": {
             "protocolVersion": "2024-11-05",
             "capabilities": {},
-            "clientInfo": {"name": "backplane-mcp-client", "version": "0.1.0"},
+            "clientInfo": {"name": "incremental-mcp-client", "version": "0.1.0"},
         },
     }
     assert proc.stdin
@@ -106,7 +106,7 @@ async def run_affected_tasks(store: str, verify: bool = False) -> dict[str, Any]
 
 
 if __name__ == "__main__":
-    store = sys.argv[1] if len(sys.argv) > 1 else ".backplane"
+    store = sys.argv[1] if len(sys.argv) > 1 else ".incremental"
     verify = "--verify" in sys.argv
     result = asyncio.run(run_affected_tasks(store, verify))
     print(json.dumps(result, indent=2))
@@ -119,14 +119,14 @@ if __name__ == "__main__":
 
 User: "Which tests are affected by my recent changes?"
 
-MCP Client → backplane-mcp: `affected_tasks({verify: true})`
+MCP Client → incremental-mcp: `affected_tasks({verify: true})`
 
-backplane-mcp → backplane engine (via @backplane/client):
-  1. `hello` handshake → `{protocol: 1, engine: {...}, capabilities: [...], store: ".backplane"}`
+incremental-mcp → incremental engine (via @incremental/client):
+  1. `hello` handshake → `{protocol: 1, engine: {...}, capabilities: [...], store: ".incremental"}`
   2. Build ChangeSet from git (baseline → HEAD)
   3. `affected({changes, options: {baseline, context, verify: true}})`
 
-backplane engine → backplane-mcp: Plan
+incremental engine → incremental-mcp: Plan
   - `tasks: [{id: "src/math.test.ts", reasons: ["reads:src/math.ts"]}]`
   - `skipped: 99`
   - `confidence: "medium"`
@@ -139,4 +139,4 @@ MCP Client → User:
 
 - `docs/adapters/ADAPTERS.md` — MCP server (E8) tools and behavior.
 - `docs/spec/PROTOCOL.md` — Protocol v1 methods the MCP server forwards.
-- `mcp/` — the actual MCP server implementation (`@backplane/mcp`).
+- `mcp/` — the actual MCP server implementation (`@incremental/mcp`).

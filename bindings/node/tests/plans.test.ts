@@ -1,6 +1,6 @@
 // Byte-identical plans: for each query case, the plan the client returns,
 // serialized with JSON.stringify, must equal the stdout of the CLI
-// `backplane affected` for the same inputs (plans/PLAN.md 15.4 E3).
+// `incremental affected` for the same inputs (plans/PLAN.md 15.4 E3).
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -25,13 +25,13 @@ for (const c of cases) {
   }
   test(`${c.id} plan byte-identical to CLI`, async () => {
     const store = initStore(`plan-${c.id}`);
-    // Config cases: the CLI reads backplane.config.json from --root, so the
+    // Config cases: the CLI reads incremental.config.json from --root, so the
     // worktree is copied and the config written there (same values as the client).
     let root = worktreeOf(c);
     if (c.config !== undefined) {
       root = path.join(tempDir(`root-${c.id}`), "root");
       fs.cpSync(worktreeOf(c), root, { recursive: true });
-      fs.writeFileSync(path.join(root, "backplane.config.json"), JSON.stringify(c.config));
+      fs.writeFileSync(path.join(root, "incremental.config.json"), JSON.stringify(c.config));
     }
     // Build the store through the client, with the case's post-write log bytes.
     await once(store, root, (k) => replay(k, seedsOf(c)));

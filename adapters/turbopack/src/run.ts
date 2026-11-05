@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// `backplane-turbopack run`: the Turbopack adapter loop (PLAN 10.4).
+// `incremental-turbopack run`: the Turbopack adapter loop (PLAN 10.4).
 //
 //   B    = store baseline
-//   ch   = ChangeSet from B to the worktree (backplane-git)
+//   ch   = ChangeSet from B to the worktree (incremental-git)
 //   plan = affected(ch, context, declared apps)
 //   forget the apps whose package.json was deleted
 //   build each selected app with `next build --turbopack` and observe it
@@ -22,7 +22,7 @@ import { pathToFileURL } from "node:url";
 import {
   connect,
   defaultEngine,
-  isBackplaneError,
+  isIncrementalError,
   repoRoot,
   type Change,
   type Context,
@@ -31,7 +31,7 @@ import {
   type Observation,
   type Outcome,
   type Plan,
-} from "@backplane/client";
+} from "@incremental/client";
 import {
   allPackageJsons,
   buildApp,
@@ -96,7 +96,7 @@ interface GitChangeSet {
 
 // The git change source (PLAN 11.7). Throws on failure.
 function gitSourcePath(): string {
-  return process.env.BACKPLANE_GIT || path.join(repoRoot(), "adapters", "git", "dist", "backplane-git");
+  return process.env.INCREMENTAL_GIT || path.join(repoRoot(), "adapters", "git", "dist", "incremental-git");
 }
 
 function gitChangeSet(root: string, ref: string): GitChangeSet {
@@ -117,6 +117,18 @@ function hashOrAbsent(file: string): string {
 // to a tracked variable invalidates the apps that recorded it.
 function envInputs(): Input[] {
   return Object.entries(envHashes(process.env)).map(([name, value_hash]) => ({ kind: "env" as const, name, value_hash }));
+}
+
+// The directories of the other apps, for the app `task`. An app that contains
+// `task` (the root app contains every app) is not excluded.
+export function excludedFor(task: string, apps: readonly string[]): Set<string> {
+  const out = new Set<string>();
+  for (const other of apps) {
+    if (other === task) continue;
+    const containsTask = other === "." || task.startsWith(`${other}/`);
+    if (!containsTask) out.add(other);
+  }
+  return out;
 }
 
 function sameInputs(a: readonly DeclaredInput[], b: readonly DeclaredInput[]): boolean {
@@ -230,7 +242,7 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       let before: DeclaredInput[];
       try {
         nextDir = nextPackage(appAbs).dir;
-        before = repoInputs(root);
+        before = repoInputs(root, excludedFor(task, discovered));
       } catch (e) {
         const problem = e instanceof Error ? e.message : String(e);
         results.push({ task, outcome: "error", durationMs: 0, problem });
@@ -241,7 +253,7 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       // The inputs are read after the build, because the build may write some of
       // them (next-env.d.ts, a rewritten tsconfig.json). If it changed any file,
       // this build did not read the state it records, so the observation is dirty.
-      const after = repoInputs(root);
+      const after = repoInputs(root, excludedFor(task, discovered));
       const rewritten = !sameInputs(before, after);
       const inputs = [...after, ...envInputs()];
       observations.push({
@@ -310,7 +322,7 @@ interface ParsedArgs {
 
 export function parseArgs(argv: string[]): ParsedArgs {
   const [cmd, ...rest] = argv;
-  if (cmd !== "run") throw new UsageError("usage: backplane-turbopack run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]");
+  if (cmd !== "run") throw new UsageError("usage: incremental-turbopack run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]");
   const opts: RunOptions = { root: process.cwd(), store: "", all: false, timeoutMs: 1_200_000 };
   let json = false;
   let storeGiven = false;
@@ -337,7 +349,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
     }
   }
   opts.root = path.resolve(opts.root);
-  if (!storeGiven) opts.store = process.env.BACKPLANE_STORE || path.join(opts.root, ".backplane");
+  if (!storeGiven) opts.store = process.env.INCREMENTAL_STORE || path.join(opts.root, ".incremental");
   return { opts, json };
 }
 
@@ -345,7 +357,7 @@ function printText(r: RunReport): void {
   const counts: Record<Outcome, number> = { pass: 0, fail: 0, error: 0, none: 0 };
   for (const t of r.results) counts[t.outcome]++;
   const lines = [
-    `backplane turbopack ${r.mode}: stored ${r.stored ?? "none"}, query ${r.base ?? "none"}, head ${r.headEnd}${r.dirty ? " (dirty)" : ""}`,
+    `incremental turbopack ${r.mode}: stored ${r.stored ?? "none"}, query ${r.base ?? "none"}, head ${r.headEnd}${r.dirty ? " (dirty)" : ""}`,
   ];
   if (r.fallback !== null) lines.push(`fallback: ${r.fallback.reason}`);
   else if (r.plan !== null) lines.push(`plan: ${r.plan.tasks.length} invalid of ${r.plan.total_tasks}, confidence ${r.plan.confidence}`);
@@ -370,10 +382,10 @@ export async function main(argv: string[]): Promise<number> {
     else printText(report);
     return report.exit;
   } catch (e) {
-    const code = e instanceof UsageError ? "invalid_params" : isBackplaneError(e) ? e.code : "internal";
+    const code = e instanceof UsageError ? "invalid_params" : isIncrementalError(e) ? e.code : "internal";
     const message = e instanceof Error ? e.message : String(e);
     if (parsed.json) process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
-    process.stderr.write(`backplane turbopack: ${message}\n`);
+    process.stderr.write(`incremental turbopack: ${message}\n`);
     return e instanceof UsageError ? 2 : 4;
   }
 }

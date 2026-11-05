@@ -1,12 +1,12 @@
 // Integration tests: a scratch git repository with two tasks, run through the real
-// engine and backplane-git (spec/adapters/watcher.md).
+// engine and incremental-git (spec/adapters/watcher.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { connect, defaultEngine } from "@backplane/client";
+import { connect, defaultEngine } from "@incremental/client";
 import { ConfigError, inputsOf, Session, type TaskDef } from "../src/index.js";
 import { Watcher } from "../src/watch.js";
 
@@ -43,7 +43,7 @@ const TASKS: TaskDef[] = ["a", "b"].map((p) => ({
 
 // A repository, an initialised store, and the stored baseline set to HEAD.
 async function fixture(): Promise<{ root: string; store: string; base: string }> {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-watcher-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-watcher-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");
@@ -216,7 +216,7 @@ test("no advance when the watcher was not running since the baseline", async () 
 });
 
 test("a task input under an ignored directory is refused, not silently skipped", () => {
-  const { root } = { root: mkdtempSync(path.join(os.tmpdir(), "backplane-watcher-cfg-")) };
+  const { root } = { root: mkdtempSync(path.join(os.tmpdir(), "incremental-watcher-cfg-")) };
   try {
     write(root, "node_modules/dep/index.js", "x\n");
     assert.throws(() => inputsOf(root, { id: "t", command: ["true"], inputs: ["node_modules/dep"] }), ConfigError);
@@ -229,7 +229,7 @@ test("a task input under an ignored directory is refused, not silently skipped",
 // edit. The state must still report it, because it is read from a stat walk
 // against the snapshot, never from the event stream.
 test("an edit with no event delivered is still reported, and a rebase clears it", async () => {
-  const dir = mkdtempSync(path.join(os.tmpdir(), "backplane-watch-silent-"));
+  const dir = mkdtempSync(path.join(os.tmpdir(), "incremental-watch-silent-"));
   try {
     writeFileSync(path.join(dir, "a.ts"), "export const a = 1;\n");
     writeFileSync(path.join(dir, "b.ts"), "export const b = 1;\n");

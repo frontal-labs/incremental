@@ -12,7 +12,7 @@ import path from "node:path";
 // Directories the input walk never enters. node_modules is covered by the
 // lockfile in the context. dist is not skipped: a dependent app reads its
 // workspace dependency's build output. .next is the app's own build output.
-const SKIP_DIRS = new Set(["node_modules", ".git", ".next", ".backplane", ".toolchain"]);
+const SKIP_DIRS = new Set(["node_modules", ".git", ".next", ".incremental", ".toolchain"]);
 export const NEXT_CONFIGS = ["next.config.js", "next.config.mjs", "next.config.cjs", "next.config.ts", "next.config.mts", "next.config.cts"];
 // Env files `next build` reads in production mode (from the app directory).
 export const ENV_FILES = [".env", ".env.local", ".env.production", ".env.production.local"];
@@ -93,18 +93,20 @@ export function nextPackage(appAbs: string): { dir: string; version: string } {
 // the context, so they are not inputs (recording them would make the first build dirty).
 export const GENERATED = new Set(["next-env.d.ts"]);
 
-// Every file under root that a build can read, hashed now (spec/adapters/turbopack.md).
-// `next build` reads source modules anywhere in the repository, and no module
-// graph is recorded, so the inputs are the whole repository minus SKIP_DIRS.
+// Every file under root that a build of one app can read, hashed now
+// (spec/adapters/turbopack.md). `next build` reads source modules anywhere in the
+// repository, and no module graph is recorded, so the inputs are the repository
+// minus SKIP_DIRS and minus `excluded`: the directories of the other apps. An app
+// is a leaf: it does not import from another app's directory (see README).
 // Paths are repo-relative and sorted. Symbolic links are not followed.
-export function repoInputs(root: string): DeclaredInput[] {
+export function repoInputs(root: string, excluded: ReadonlySet<string> = new Set()): DeclaredInput[] {
   const out: DeclaredInput[] = [];
   const visit = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       if (entry.isSymbolicLink()) continue;
       const abs = path.join(dir, entry.name);
       if (entry.isDirectory()) {
-        if (!SKIP_DIRS.has(entry.name)) visit(abs);
+        if (!SKIP_DIRS.has(entry.name) && !excluded.has(relPath(root, abs))) visit(abs);
       } else if (entry.isFile() && !GENERATED.has(entry.name)) {
         out.push({ kind: "declared", path: relPath(root, abs), hash: sha256(readFileSync(abs)) });
       }

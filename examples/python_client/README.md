@@ -1,32 +1,32 @@
 # Python Client Example
 
-Demonstrates the Python binding (`bindings/python`, package `backplane`) speaking backplane Protocol v1 over stdio. Per `docs/spec/bindings-python.md` and PLAN §10.3.
+Demonstrates the Python binding (`bindings/python`, package `incremental`) speaking incremental Protocol v1 over stdio. Per `docs/spec/bindings-python.md` and PLAN §10.3.
 
 ## Layout
 
 ```
 examples/python_client/
 ├── README.md           # this file
-├── client_example.py   # Python client using @backplane/python bindings
+├── client_example.py   # Python client using @incremental/python bindings
 ├── requirements.txt    # Python dependencies
-└── backplane_config.json
+└── incremental_config.json
 ```
 
 ## client_example.py
 
 ```python
-"""Example Python client for backplane Protocol v1.
+"""Example Python client for incremental Protocol v1.
 
-Uses the `backplane` package from bindings/python. Spawns `backplane serve`
+Uses the `incremental` package from bindings/python. Spawns `incremental serve`
 and communicates over JSON Lines on stdio.
 """
 
 from typing import Any
-from backplane import Backplane, BackplaneError, connect
+from incremental import Incremental, IncrementalError, connect
 
 
 async def main() -> None:
-    store = ".backplane"
+    store = ".incremental"
     client = await connect(store=store)
 
     try:
@@ -76,8 +76,8 @@ async def main() -> None:
         if plan["fallback"]:
             print(f"Fallback: {plan['fallback']['reason']}")
 
-    except BackplaneError as e:
-        print(f"Backplane error: {e.code}: {e.message}", file=sys.stderr)
+    except IncrementalError as e:
+        print(f"Incremental error: {e.code}: {e.message}", file=sys.stderr)
         sys.exit(1)
     finally:
         await client.close()
@@ -92,16 +92,16 @@ if __name__ == "__main__":
 ## requirements.txt
 
 ```
-# Standard library only — backplane uses no external dependencies
+# Standard library only — incremental uses no external dependencies
 # per PLAN.md §9 rule 2 (Bindings: stdlib + protocol).
 ```
 
-## backplane_config.json
+## incremental_config.json
 
 ```json
 {
   "roots": ["."],
-  "exclude": ["**/node_modules/**", ".git/**", ".backplane/**"],
+  "exclude": ["**/node_modules/**", ".git/**", ".incremental/**"],
   "policy": "balanced"
 }
 ```

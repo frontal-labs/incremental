@@ -1,4 +1,4 @@
-# BACKPLANE PROTOCOL V1
+# INCREMENTAL PROTOCOL V1
 
 ## Transport
 - JSON Lines over stdio (one JSON object per line, flushed per line)
@@ -14,7 +14,7 @@ First request must be `hello`:
 ```
 Response:
 ```json
-{"protocol":1,"engine":{"name":"backplane-core-ts","version":"0.1.0"},"capabilities":["probes","dirs","env","verify"],"store":".backplane"}
+{"protocol":1,"engine":{"name":"incremental-core-ts","version":"0.1.0"},"capabilities":["probes","dirs","env","verify"],"store":".incremental"}
 ```
 If protocol not supported, returns `protocol_mismatch` with `data.supported=[1]` and closes stream.
 

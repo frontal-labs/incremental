@@ -1,10 +1,10 @@
 {
   "mcpServers": {
-    "backplane": {
-      "command": "backplane-mcp",
-      "args": ["--store", ".backplane"],
+    "incremental": {
+      "command": "incremental-mcp",
+      "args": ["--store", ".incremental"],
       "env": {
-        "BACKPLANE_STORE": ".backplane"
+        "INCREMENTAL_STORE": ".incremental"
       }
     }
   }

@@ -1,36 +1,36 @@
 {
   "spec": "PLAN 12.5 replay",
   "milestone": "E6",
-  "engine": "/Users/gabrielfonseca/Desktop/graph/core/dist/backplane",
-  "repo": "/var/folders/kz/jgdz_yyx49qbmqh3l1txy9dw0000gn/T/bp-replay-j3kaBD/repo",
+  "engine": "/Users/gabrielfonseca/Desktop/graph/core/dist/incremental",
+  "repo": "/var/folders/kz/jgdz_yyx49qbmqh3l1txy9dw0000gn/T/bp-replay-HZk4br/repo",
   "commits": [
     {
       "index": 0,
-      "id": "d41823c99675d6b72dd92658940438aaf5e16bb6"
+      "id": "4cd4301817a6a6d187a52c6f170596405695da1d"
     },
     {
       "index": 1,
-      "id": "ba210c24e3f057db8ac2bfdf0c696b6506bb0fb5"
+      "id": "143cd21e243d258b96c19c6ffdbf42f3626113a3"
     },
     {
       "index": 2,
-      "id": "ce0fc6102c19448206440b1607da340741bb041e"
+      "id": "24d8c1523895b6fa31b08ac554e71f96db8ef99b"
     },
     {
       "index": 3,
-      "id": "92b7fecf09e6d7afb3eea0ad09784633de457e90"
+      "id": "0dc265e43177937660324d3ba57c5e1af9b5c23e"
     },
     {
       "index": 4,
-      "id": "38b439008c0d62a351e5b82aaa18db40b5a61b63"
+      "id": "b4a43e9d90c5659b18e9afec1319f201bb211aa4"
     },
     {
       "index": 5,
-      "id": "589ceab51630539508aad0425c6472b5713d5bf9"
+      "id": "0fa6d5a838864a183c75f8ad8307794b76e0a027"
     },
     {
       "index": 6,
-      "id": "c007a99c6098db4d8b4dded755f113c80d9740b3"
+      "id": "4f8897c2e2a1b164c9906be584cc48727ddaec2a"
     }
   ],
   "commits_processed": 7,

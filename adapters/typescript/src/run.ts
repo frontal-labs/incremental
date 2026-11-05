@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// `backplane-typescript run`: the TypeScript adapter loop (PLAN 10.4).
+// `incremental-typescript run`: the TypeScript adapter loop (PLAN 10.4).
 //
 //   B    = store baseline
-//   ch   = ChangeSet from B to the worktree (backplane-git)
+//   ch   = ChangeSet from B to the worktree (incremental-git)
 //   plan = affected(ch, context, declared projects)
 //   forget the projects whose tsconfig was deleted
 //   check each selected project with tsc --noEmit and observe it
@@ -18,7 +18,7 @@ import { pathToFileURL } from "node:url";
 import {
   connect,
   defaultEngine,
-  isBackplaneError,
+  isIncrementalError,
   repoRoot,
   type Change,
   type Context,
@@ -27,7 +27,7 @@ import {
   type Observation,
   type Outcome,
   type Plan,
-} from "@backplane/client";
+} from "@incremental/client";
 import {
   allPackageJsons,
   checkProject,
@@ -92,7 +92,7 @@ interface GitChangeSet {
 
 // The git change source (PLAN 11.7). Throws UsageError-compatible Error on failure.
 function gitSourcePath(): string {
-  return process.env.BACKPLANE_GIT || path.join(repoRoot(), "adapters", "git", "dist", "backplane-git");
+  return process.env.INCREMENTAL_GIT || path.join(repoRoot(), "adapters", "git", "dist", "incremental-git");
 }
 
 function gitChangeSet(root: string, ref: string): GitChangeSet {
@@ -292,7 +292,7 @@ interface ParsedArgs {
 
 export function parseArgs(argv: string[]): ParsedArgs {
   const [cmd, ...rest] = argv;
-  if (cmd !== "run") throw new UsageError("usage: backplane-typescript run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]");
+  if (cmd !== "run") throw new UsageError("usage: incremental-typescript run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]");
   const opts: RunOptions = { root: process.cwd(), store: "", all: false, timeoutMs: 600_000 };
   let json = false;
   let storeGiven = false;
@@ -319,7 +319,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
     }
   }
   opts.root = path.resolve(opts.root);
-  if (!storeGiven) opts.store = process.env.BACKPLANE_STORE || path.join(opts.root, ".backplane");
+  if (!storeGiven) opts.store = process.env.INCREMENTAL_STORE || path.join(opts.root, ".incremental");
   return { opts, json };
 }
 
@@ -327,7 +327,7 @@ function printText(r: RunReport): void {
   const counts: Record<Outcome, number> = { pass: 0, fail: 0, error: 0, none: 0 };
   for (const t of r.results) counts[t.outcome]++;
   const lines = [
-    `backplane typescript ${r.mode}: stored ${r.stored ?? "none"}, query ${r.base ?? "none"}, head ${r.headEnd}${r.dirty ? " (dirty)" : ""}`,
+    `incremental typescript ${r.mode}: stored ${r.stored ?? "none"}, query ${r.base ?? "none"}, head ${r.headEnd}${r.dirty ? " (dirty)" : ""}`,
   ];
   if (r.fallback !== null) lines.push(`fallback: ${r.fallback.reason}`);
   else if (r.plan !== null) lines.push(`plan: ${r.plan.tasks.length} invalid of ${r.plan.total_tasks}, confidence ${r.plan.confidence}`);
@@ -352,10 +352,10 @@ export async function main(argv: string[]): Promise<number> {
     else printText(report);
     return report.exit;
   } catch (e) {
-    const code = e instanceof UsageError ? "invalid_params" : isBackplaneError(e) ? e.code : "internal";
+    const code = e instanceof UsageError ? "invalid_params" : isIncrementalError(e) ? e.code : "internal";
     const message = e instanceof Error ? e.message : String(e);
     if (parsed.json) process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
-    process.stderr.write(`backplane typescript: ${message}\n`);
+    process.stderr.write(`incremental typescript: ${message}\n`);
     return e instanceof UsageError ? 2 : 4;
   }
 }

@@ -1,6 +1,6 @@
-# Backplane Core
+# Incremental Core
 
-The backplane engine core, written in **Goose** (a Go-like systems language, see DECISIONS.md D-14-GOOSE). The core is generic: it knows nothing about Vitest, git, or tests — those are adapters. It records observations as content-hashed records in an append-only log and answers one question: given the changes since the last known-good baseline, which tasks are invalid, and why.
+The incremental engine core, written in **Goose** (a Go-like systems language, see DECISIONS.md D-14-GOOSE). The core is generic: it knows nothing about Vitest, git, or tests — those are adapters. It records observations as content-hashed records in an append-only log and answers one question: given the changes since the last known-good baseline, which tasks are invalid, and why.
 
 ## Contents
 
@@ -13,22 +13,22 @@ The backplane engine core, written in **Goose** (a Go-like systems language, see
 | `core/src/native.c` / `core/src/native.goose` | Native bindings for the engine. |
 | `core/src/main.build` | Goose build descriptor. |
 | `core/tests/` | Smoke and CLI tests (`node --test core/tests/*.test.mjs`). |
-| `core/dist/` | Build output: `backplane` engine binary and build logs. |
+| `core/dist/` | Build output: `incremental` engine binary and build logs. |
 
 ## Building
 
 Requires the Goose toolchain at `.toolchain/goose/goose-v2026.3-macos-arm64/` (Node 22 and Python 3.10+ also needed for the surrounding tooling):
 
 ```sh
-make build   # builds core/dist/backplane and adapters/git/dist/backplane-git
+make build   # builds core/dist/incremental and adapters/git/dist/incremental-git
 ```
 
 Store operations, through the CLI:
 
 ```sh
-core/dist/backplane init --store .backplane
-core/dist/backplane stats --store .backplane
-core/dist/backplane serve --store .backplane   # protocol v1 over stdio
+core/dist/incremental init --store .incremental
+core/dist/incremental stats --store .incremental
+core/dist/incremental serve --store .incremental   # protocol v1 over stdio
 ```
 
 ## Testing
@@ -40,11 +40,11 @@ make loc         # lines of code in core/src (Goose + C)
 
 ## Protocol
 
-Clients speak backplane Protocol v1 (`hello`, `observe`, `observe_many`, `baseline`, `advance`, `affected`, `explain`, `forget`, `stats`, `compact`, `ping`, `shutdown`) over JSON Lines on stdio. See `docs/spec/PROTOCOL.md` and `docs/spec/PROTOCOL.md`.
+Clients speak incremental Protocol v1 (`hello`, `observe`, `observe_many`, `baseline`, `advance`, `affected`, `explain`, `forget`, `stats`, `compact`, `ping`, `shutdown`) over JSON Lines on stdio. See `docs/spec/PROTOCOL.md` and `docs/spec/PROTOCOL.md`.
 
 ## Store
 
-Default store: `<repo>/.backplane/` (configurable via `BACKPLANE_STORE` or `--store`). Files: `tg.log` (source of truth), `tg.lock` (exclusive lock), `stat.cache` (verify-mode cache), `tg.idx` (index image, not implemented in this milestone). See `docs/spec/FORMAT.md` and `docs/spec/FORMAT.md`.
+Default store: `<repo>/.incremental/` (configurable via `INCREMENTAL_STORE` or `--store`). Files: `tg.log` (source of truth), `tg.lock` (exclusive lock), `stat.cache` (verify-mode cache), `tg.idx` (index image, not implemented in this milestone). See `docs/spec/FORMAT.md` and `docs/spec/FORMAT.md`.
 
 ## Status
 

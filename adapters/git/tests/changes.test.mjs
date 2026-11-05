@@ -8,8 +8,8 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
-const bin = path.join(root, 'adapters/git/dist/backplane-git');
-const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'backplane-git-'));
+const bin = path.join(root, 'adapters/git/dist/incremental-git');
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'incremental-git-'));
 after(() => fs.rmSync(dir, { recursive: true, force: true }));
 const git = (...a) => spawnSync('git', ['-C', dir, ...a], { encoding: 'utf8' });
 

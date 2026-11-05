@@ -1,6 +1,6 @@
 {
-  "id": "E6",
-  "state": "verify",
-  "evidence": "evidence/E6.txt",
-  "notes": "E6 outputs complete: V01-V16 pass end to end (make test-e2e), benchmarks/replay replay driver runs with expected shape and zero false skips (make bench-replay), examples/agent_loop/ is a real adapter-loop run (edit -> plan -> run invalid -> advance, skip share 50% on leaf edits). Blocked by E5 (strace oracle) per PLAN 15.1; E5 is Linux-only and GATE 0 is blocked, so E6 verify runs on this branch's changes."
+  "id": "E4",
+  "state": "done",
+  "evidence": "evidence/E4.txt",
+  "notes": "Signed off by user's instruction. CR-001 to CR-003 applied; PLAN v4.1 sections 8.7, 11.2, 12.3 V16 reworded. V01-V16 pass; capabilities true."
 }

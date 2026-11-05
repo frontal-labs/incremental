@@ -1,6 +1,6 @@
-# Backplane Friction
+# Incremental Friction
 
-Friction log for backplane: notes on developer experience, rough edges, and open friction encountered while adopting, extending, or contributing to backplane. Append-only — each entry starts with `## F-NNN <title> (Role, Milestone)`.
+Friction log for incremental: notes on developer experience, rough edges, and open friction encountered while adopting, extending, or contributing to incremental. Append-only — each entry starts with `## F-NNN <title> (Role, Milestone)`.
 
 ## Contents
 

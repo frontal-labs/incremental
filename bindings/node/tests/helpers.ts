@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { connect, defaultEngine, type backplane, type Change, type Context, type Plan } from "../src/index.js";
+import { connect, defaultEngine, type incremental, type Change, type Context, type Plan } from "../src/index.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 // dist/test -> repository root (four levels up).
@@ -74,7 +74,7 @@ export function seedsOf(c: CaseFile): SeedMsg[] {
 }
 
 // Applies protocol messages through the client, in order.
-export async function replay(client: backplane, msgs: SeedMsg[]): Promise<void> {
+export async function replay(client: incremental, msgs: SeedMsg[]): Promise<void> {
   for (const m of msgs) {
     const p = m.params;
     if (m.method === "observe") {
@@ -88,7 +88,7 @@ export async function replay(client: backplane, msgs: SeedMsg[]): Promise<void> 
 }
 
 export function tempDir(label: string): string {
-  return fs.mkdtempSync(path.join(os.tmpdir(), `backplane-${label}-`));
+  return fs.mkdtempSync(path.join(os.tmpdir(), `incremental-${label}-`));
 }
 
 // A new store directory created by the engine's `init` command.
@@ -100,7 +100,7 @@ export function initStore(label: string): string {
 }
 
 // Runs fn on a fresh connection and closes it afterwards.
-export async function once<T>(store: string, root: string, fn: (c: backplane) => Promise<T>): Promise<T> {
+export async function once<T>(store: string, root: string, fn: (c: incremental) => Promise<T>): Promise<T> {
   const c = await connect({ store, root });
   try {
     return await fn(c);

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// `backplane-process run [NAME...]`: runs tasks from backplane-process.json.
+// `incremental-process run [NAME...]`: runs tasks from incremental-process.json.
 //
 // Exit codes: 0 every task passed; 1 a task failed; 2 usage error;
 // 4 engine or setup error, or a task could not run (outcome error).
@@ -8,23 +8,23 @@ import { createRequire } from "node:module";
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { defaultEngine } from "@backplane/client";
-import type { OracleRun } from "@backplane/fs";
+import { defaultEngine } from "@incremental/client";
+import type { OracleRun } from "@incremental/fs";
 import { loadConfig, runTasks, type TaskRun } from "./index.js";
 
 const requireStrace = createRequire(import.meta.url);
 
-// @backplane/strace is Linux-only and wired dynamically: it is loaded only
+// @incremental/strace is Linux-only and wired dynamically: it is loaded only
 // when a task opts into `oracle: true`, and only on Linux. `require` is used
 // instead of `import()` so typecheck does not depend on the strace package
-// being built (its types are structural via @backplane/fs's OracleRun).
+// being built (its types are structural via @incremental/fs's OracleRun).
 async function loadOracleRunner(): Promise<OracleRun> {
   if (process.platform !== "linux") throw new Error("the strace oracle is Linux-only");
-  const mod = requireStrace("@backplane/strace") as { runOracle: unknown };
+  const mod = requireStrace("@incremental/strace") as { runOracle: unknown };
   return mod.runOracle as OracleRun;
 }
 
-const USAGE = "usage: backplane-process run [NAME...] [--root DIR] [--store DIR] [--timeout MS]";
+const USAGE = "usage: incremental-process run [NAME...] [--root DIR] [--store DIR] [--timeout MS]";
 
 export async function main(argv: string[]): Promise<number> {
   const [cmd, ...rest] = argv;
@@ -62,7 +62,7 @@ export async function main(argv: string[]): Promise<number> {
       names.push(a);
     }
   }
-  if (store === "") store = process.env.BACKPLANE_STORE || path.join(root, ".backplane");
+  if (store === "") store = process.env.INCREMENTAL_STORE || path.join(root, ".incremental");
   try {
     if (!existsSync(store)) {
       mkdirSync(path.dirname(store), { recursive: true });
@@ -80,7 +80,7 @@ export async function main(argv: string[]): Promise<number> {
     if (results.some((r) => r.outcome === "fail")) return 1;
     return 0;
   } catch (e) {
-    process.stderr.write(`backplane-process: ${e instanceof Error ? e.message : String(e)}\n`);
+    process.stderr.write(`incremental-process: ${e instanceof Error ? e.message : String(e)}\n`);
     return 4;
   }
 }

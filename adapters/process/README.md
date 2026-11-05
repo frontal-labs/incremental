@@ -1,6 +1,6 @@
-# @backplane/process
+# @incremental/process
 
-Generic task runner (spec/adapters/process.md, PLAN 10.4). It runs a named command from `backplane-process.json`, records its outcome, and records its declared inputs through `@backplane/fs`.
+Generic task runner (spec/adapters/process.md, PLAN 10.4). It runs a named command from `incremental-process.json`, records its outcome, and records its declared inputs through `@incremental/fs`.
 
 ## Config
 
@@ -20,7 +20,7 @@ Generic task runner (spec/adapters/process.md, PLAN 10.4). It runs a named comma
 ## What is observed
 
 - The outcome above and the duration.
-- Declared inputs, hashed before and after the command (see `@backplane/fs`). A declared input that changes while the command runs makes the observation `dirty`.
+- Declared inputs, hashed before and after the command (see `@incremental/fs`). A declared input that changes while the command runs makes the observation `dirty`.
 
 ## What is not observed (gaps)
 
@@ -32,7 +32,7 @@ Generic task runner (spec/adapters/process.md, PLAN 10.4). It runs a named comma
 
 ## CLI
 
-`backplane-process run [NAME...] [--root DIR] [--store DIR] [--timeout MS]`. Exit codes: 0 every task passed, 1 a task failed, 2 usage error, 4 engine or setup error, or a task that could not run.
+`incremental-process run [NAME...] [--root DIR] [--store DIR] [--timeout MS]`. Exit codes: 0 every task passed, 1 a task failed, 2 usage error, 4 engine or setup error, or a task that could not run.
 
 ## Tests
 

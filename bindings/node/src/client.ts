@@ -1,12 +1,12 @@
-// @backplane/client: process supervision and the protocol v1 methods
-// (plans/PLAN.md 10.1, 9.3, 9.8). The client spawns `backplane serve`, speaks
+// @incremental/client: process supervision and the protocol v1 methods
+// (plans/PLAN.md 10.1, 9.3, 9.8). The client spawns `incremental serve`, speaks
 // one JSON object per line, matches answers by id, and runs requests one at a
 // time in arrival order.
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { backplaneError } from "./errors.js";
+import { incrementalError } from "./errors.js";
 import type {
   AffectedOptions,
   ChangeSet,
@@ -29,7 +29,7 @@ const CLOSE_GRACE_MS = 2_000;
 // server dies mid-request; a write may or may not have happened.
 const READ_ONLY = new Set(["hello", "baseline", "affected", "explain", "stats", "ping"]);
 
-export interface backplane {
+export interface incremental {
   readonly protocol: 1;
   // Process id of the current server, or undefined while none is running.
   // Extra to PLAN 10.1; used by supervision tests.
@@ -60,17 +60,17 @@ export function repoRoot(): string {
 }
 
 export function defaultEngine(): string {
-  return process.env.BACKPLANE_ENGINE || path.join(repoRoot(), "core", "dist", "backplane");
+  return process.env.INCREMENTAL_ENGINE || path.join(repoRoot(), "core", "dist", "incremental");
 }
 
 export function defaultStore(): string {
-  return path.resolve(process.env.BACKPLANE_STORE || path.join(repoRoot(), ".backplane"));
+  return path.resolve(process.env.INCREMENTAL_STORE || path.join(repoRoot(), ".incremental"));
 }
 
 interface Pending {
   method: string;
   resolve: (value: unknown) => void;
-  reject: (err: backplaneError) => void;
+  reject: (err: incrementalError) => void;
   timer: NodeJS.Timeout;
 }
 
@@ -92,7 +92,7 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 }
 
 function isExitedError(e: unknown): boolean {
-  return e instanceof backplaneError && isRecord(e.data) && e.data.reason === "exited";
+  return e instanceof incrementalError && isRecord(e.data) && e.data.reason === "exited";
 }
 
 // A plan is never returned partially: all fields of PLAN 9.6 must be present.
@@ -107,14 +107,14 @@ function checkPlan(v: unknown): Plan {
     "confidence" in v &&
     "graph_version" in v;
   if (!complete) {
-    throw new backplaneError("internal", "the server answered affected with an incomplete plan", {
+    throw new incrementalError("internal", "the server answered affected with an incomplete plan", {
       reason: "partial_plan",
     });
   }
   return v as unknown as Plan;
 }
 
-class BackplaneClient implements backplane {
+class IncrementalClient implements incremental {
   readonly protocol = 1 as const;
   private readonly command: string[];
   private readonly store: string;
@@ -152,7 +152,7 @@ class BackplaneClient implements backplane {
   hello(): Promise<Hello> {
     return this.enqueue(async () => {
       const run = await this.ensure();
-      if (run.hello === null) throw new backplaneError("internal", "no handshake", { reason: "bad_handshake" });
+      if (run.hello === null) throw new incrementalError("internal", "no handshake", { reason: "bad_handshake" });
       return run.hello;
     });
   }
@@ -247,10 +247,10 @@ class BackplaneClient implements backplane {
 
   // The running server, starting one (with hello) when there is none.
   private async ensure(): Promise<Run> {
-    if (this.closed) throw new backplaneError("internal", "the client is closed", { reason: "closed" });
+    if (this.closed) throw new incrementalError("internal", "the client is closed", { reason: "closed" });
     if (this.current !== null) return this.current;
     if (this.started && !this.restart) {
-      throw new backplaneError("internal", "the server exited and restart is disabled", { reason: "exited" });
+      throw new incrementalError("internal", "the server exited and restart is disabled", { reason: "exited" });
     }
     return this.start();
   }
@@ -264,7 +264,7 @@ class BackplaneClient implements backplane {
       hello = await this.send(
         run,
         "hello",
-        { protocol: 1, client: { name: "backplane-node", version: CLIENT_VERSION } },
+        { protocol: 1, client: { name: "incremental-node", version: CLIENT_VERSION } },
         STARTUP_TIMEOUT_MS,
       );
     } catch (e) {
@@ -273,11 +273,11 @@ class BackplaneClient implements backplane {
     }
     if (!isRecord(hello) || typeof hello.protocol !== "number") {
       this.kill(run);
-      throw new backplaneError("internal", "the server answered hello with no protocol", { reason: "bad_handshake" });
+      throw new incrementalError("internal", "the server answered hello with no protocol", { reason: "bad_handshake" });
     }
     if (hello.protocol !== 1) {
       this.kill(run);
-      throw new backplaneError("protocol_mismatch", "the server does not speak protocol 1", hello);
+      throw new incrementalError("protocol_mismatch", "the server does not speak protocol 1", hello);
     }
     run.hello = hello as unknown as Hello;
     return run;
@@ -345,7 +345,7 @@ class BackplaneClient implements backplane {
       run.pending.delete(msg.id);
       clearTimeout(p.timer);
       if (isRecord(msg.error)) {
-        p.reject(new backplaneError(String(msg.error.code), String(msg.error.message), msg.error.data));
+        p.reject(new incrementalError(String(msg.error.code), String(msg.error.message), msg.error.data));
       } else {
         p.resolve(msg.result);
       }
@@ -365,7 +365,7 @@ class BackplaneClient implements backplane {
       const id = this.nextId++;
       const timer = setTimeout(() => {
         run.pending.delete(id);
-        reject(new backplaneError("timeout", `${method} did not answer within ${timeoutMs} ms`, {
+        reject(new incrementalError("timeout", `${method} did not answer within ${timeoutMs} ms`, {
           partial: false,
           timeoutMs,
           method,
@@ -393,8 +393,8 @@ class BackplaneClient implements backplane {
       clearTimeout(p.timer);
       p.reject(
         run.fatal !== null
-          ? new backplaneError(run.fatal.code, run.fatal.message, run.fatal.data)
-          : new backplaneError("internal", `the server exited before answering ${p.method}`, {
+          ? new incrementalError(run.fatal.code, run.fatal.message, run.fatal.data)
+          : new incrementalError("internal", `the server exited before answering ${p.method}`, {
               reason: "exited",
               exitCode: code,
               signal,
@@ -408,13 +408,13 @@ class BackplaneClient implements backplane {
 }
 
 // Starts a server for the store and completes the handshake. Rejects with a
-// backplaneError (for example store_missing) when the server cannot start.
-export async function connect(opts: ConnectOptions = {}): Promise<backplane> {
+// incrementalError (for example store_missing) when the server cannot start.
+export async function connect(opts: ConnectOptions = {}): Promise<incremental> {
   const command = opts.command ?? [defaultEngine(), "serve"];
   if (command.length === 0) {
-    throw new backplaneError("invalid_params", "command must name the server executable");
+    throw new incrementalError("invalid_params", "command must name the server executable");
   }
-  const client = new BackplaneClient(
+  const client = new IncrementalClient(
     command,
     path.resolve(opts.store || defaultStore()),
     path.resolve(opts.root ?? process.cwd()),

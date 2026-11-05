@@ -1,6 +1,6 @@
 # CI Recipe Example
 
-CI recipes for backplane: how to run the engine, tests, conformance, and gates in CI.
+CI recipes for incremental: how to run the engine, tests, conformance, and gates in CI.
 
 Per `docs/development/DEVELOPMENT_GUIDE.md` workflow and PLAN §17 (make targets print `PASS`/`FAIL`).
 

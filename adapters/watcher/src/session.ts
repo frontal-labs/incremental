@@ -12,14 +12,14 @@ import {
   connect,
   defaultEngine,
   repoRoot,
-  type backplane,
+  type incremental,
   type Change,
   type Context,
   type Input,
   type Observation,
   type Outcome,
   type Plan,
-} from "@backplane/client";
+} from "@incremental/client";
 import { relOf, SKIP_DIRS, Watcher, walk } from "./watch.js";
 
 export class ConfigError extends Error {
@@ -65,10 +65,10 @@ export interface CycleReport {
 }
 
 const require_ = createRequire(import.meta.url);
-const WATCHER_RUNNER = `backplane-watcher@${(require_("../../package.json") as { version: string }).version}`;
+const WATCHER_RUNNER = `incremental-watcher@${(require_("../../package.json") as { version: string }).version}`;
 
 function gitSourcePath(): string {
-  return process.env.BACKPLANE_GIT || path.join(repoRoot(), "adapters", "git", "dist", "backplane-git");
+  return process.env.INCREMENTAL_GIT || path.join(repoRoot(), "adapters", "git", "dist", "incremental-git");
 }
 
 // The git change source (PLAN 11.7), used only for the baseline check and for
@@ -133,7 +133,7 @@ export function inputsOf(root: string, task: TaskDef): FileInput[] {
 }
 
 export class Session {
-  private client: backplane | null = null;
+  private client: incremental | null = null;
   private readonly watcher: Watcher;
   // The baseline the event history is complete since, or null.
   private base: string | null = null;
@@ -159,6 +159,11 @@ export class Session {
     this.watcher.stop();
     await this.client?.close();
     this.client = null;
+  }
+
+  // Duration of the last full check of the tree, in milliseconds.
+  lastCheckMs(): number {
+    return this.watcher.lastWalkMs;
   }
 
   // Events the watcher has recorded since the window started, for callers that
@@ -189,7 +194,7 @@ export class Session {
     if (cs.baseline === stored && cs.changes.length === 0 && !cs.dirty) this.base = stored;
   }
 
-  private need(): backplane {
+  private need(): incremental {
     if (this.client === null) throw new Error("the session is not open");
     return this.client;
   }

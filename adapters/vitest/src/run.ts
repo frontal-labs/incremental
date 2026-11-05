@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// `backplane-vitest run`: the Vitest adapter loop (PLAN 10.4, 11.3).
+// `incremental-vitest run`: the Vitest adapter loop (PLAN 10.4, 11.3).
 //
 //   B    = store baseline
-//   ch   = ChangeSet from B to the worktree (backplane-git)
+//   ch   = ChangeSet from B to the worktree (incremental-git)
 //   plan = affected(ch, context, env, declared tests)
 //   forget the deleted test tasks
 //   run the selected test files under the recorder, observe each one
@@ -20,13 +20,13 @@ import { pathToFileURL, fileURLToPath } from "node:url";
 import {
   connect,
   defaultEngine,
-  isBackplaneError,
+  isIncrementalError,
   type Change,
   type Fallback,
   type Observation,
   type Outcome,
   type Plan,
-} from "@backplane/client";
+} from "@incremental/client";
 import { buildObservation, runFile, type FileResult } from "./record.js";
 import {
   contextFor,
@@ -182,7 +182,7 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     const selected = runAll ? discovered : [...planned].filter((t) => discovered.includes(t)).sort();
     const wouldSkip = plan === null ? [] : discovered.filter((t) => !planned.has(t));
 
-    const workDir = mkdtempSync(path.join(os.tmpdir(), "backplane-vitest-"));
+    const workDir = mkdtempSync(path.join(os.tmpdir(), "incremental-vitest-"));
     const preloadPath = fileURLToPath(new URL("./preload.js", import.meta.url));
     const files: FileResult[] = await mapPool(selected, opts.jobs, (task, i) =>
       runFile({
@@ -268,7 +268,7 @@ interface ParsedArgs {
 
 export function parseArgs(argv: string[]): ParsedArgs {
   const [cmd, ...rest] = argv;
-  if (cmd !== "run") throw new UsageError("usage: backplane-vitest run [--base REF] [--json] [--all] [--jobs N] [--shadow] [--store DIR] [--root DIR] [--include GLOB]... [--exclude GLOB]... [--vitest-arg ARG]... [--vitest FILE]");
+  if (cmd !== "run") throw new UsageError("usage: incremental-vitest run [--base REF] [--json] [--all] [--jobs N] [--shadow] [--store DIR] [--root DIR] [--include GLOB]... [--exclude GLOB]... [--vitest-arg ARG]... [--vitest FILE]");
   const opts: RunOptions = {
     root: process.cwd(),
     store: "",
@@ -310,7 +310,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
     }
   }
   opts.root = path.resolve(opts.root);
-  if (!storeGiven) opts.store = process.env.BACKPLANE_STORE || path.join(opts.root, ".backplane");
+  if (!storeGiven) opts.store = process.env.INCREMENTAL_STORE || path.join(opts.root, ".incremental");
   return { opts, json };
 }
 
@@ -318,7 +318,7 @@ function printText(r: RunReport): void {
   const counts: Record<Outcome, number> = { pass: 0, fail: 0, error: 0, none: 0 };
   for (const t of r.results) counts[t.outcome]++;
   const lines = [
-    `backplane vitest ${r.mode}: stored ${r.stored ?? "none"}, query ${r.base ?? "none"}, head ${r.headEnd}${r.dirty ? " (dirty)" : ""}`,
+    `incremental vitest ${r.mode}: stored ${r.stored ?? "none"}, query ${r.base ?? "none"}, head ${r.headEnd}${r.dirty ? " (dirty)" : ""}`,
   ];
   if (r.fallback !== null) lines.push(`fallback: ${r.fallback.reason}`);
   else if (r.plan !== null) lines.push(`plan: ${r.plan.tasks.length} invalid of ${r.plan.total_tasks}, confidence ${r.plan.confidence}`);
@@ -345,10 +345,10 @@ export async function main(argv: string[]): Promise<number> {
     else printText(report);
     return report.exit;
   } catch (e) {
-    const code = e instanceof UsageError ? "invalid_params" : isBackplaneError(e) ? e.code : "internal";
+    const code = e instanceof UsageError ? "invalid_params" : isIncrementalError(e) ? e.code : "internal";
     const message = e instanceof Error ? e.message : String(e);
     if (parsed.json) process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
-    process.stderr.write(`backplane vitest: ${message}\n`);
+    process.stderr.write(`incremental vitest: ${message}\n`);
     return e instanceof UsageError ? 2 : 4;
   }
 }

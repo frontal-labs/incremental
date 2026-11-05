@@ -19,10 +19,10 @@ FAKE_ENGINE = os.path.join(HERE, "fake_engine.py")
 if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
-import backplane  # noqa: E402  (needs the sys.path entry above)
-from backplane import BackplaneError, connect  # noqa: E402,F401
+import incremental  # noqa: E402  (needs the sys.path entry above)
+from incremental import IncrementalError, connect  # noqa: E402,F401
 
-ENGINE = os.environ.get("BACKPLANE_ENGINE", os.path.join(REPO, "core", "dist", "backplane"))
+ENGINE = os.environ.get("INCREMENTAL_ENGINE", os.path.join(REPO, "core", "dist", "incremental"))
 
 COMPARED = ("tasks", "unobserved", "ignored", "deleted_tasks", "fallback", "confidence")
 

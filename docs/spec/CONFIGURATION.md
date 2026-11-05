@@ -1,12 +1,12 @@
-# BACKPLANE CONFIGURATION
+# INCREMENTAL CONFIGURATION
 
 ## Config File
-`backplane.config.json` at repo root (shape defined in PLAN.md 6.7):
+`incremental.config.json` at repo root (shape defined in PLAN.md 6.7):
 
 ```json
 {
   "roots": ["."],
-  "exclude": ["**/node_modules/**", ".git/**", ".backplane/**"],
+  "exclude": ["**/node_modules/**", ".git/**", ".incremental/**"],
   "ignore": [],
   "globalInputs": ["pnpm-lock.yaml", "package-lock.json", "yarn.lock", "package.json",
                    "tsconfig*.json", "vitest.config.*", "vite.config.*"],
@@ -32,25 +32,25 @@ Glob support: `*`, `**`, `?`. `policy` affects behavior of unobserved adds/modif
 ## Environment Variables
 | Variable | Purpose | Default |
 |---|---|---|
-| `BACKPLANE_STORE` | Override store directory | `<repo>/.backplane` |
-| `BACKPLANE_TRACE_OUT` | Path for adapter trace output (preload writes here) | - |
+| `INCREMENTAL_STORE` | Override store directory | `<repo>/.incremental` |
+| `INCREMENTAL_TRACE_OUT` | Path for adapter trace output (preload writes here) | - |
 
 ## CLI Options
 ```bash
-backplane init     [--store PATH]
-backplane observe  --file FILE|-                        # one observation as JSON
-backplane affected --changes FILE|- --baseline SHA --context FILE
+incremental init     [--store PATH]
+incremental observe  --file FILE|-                        # one observation as JSON
+incremental affected --changes FILE|- --baseline SHA --context FILE
                    [--verify] [--policy balanced|conservative]
-backplane advance  --to SHA --expected SHA|null
-backplane explain  --task ID
-backplane forget   --task ID
-backplane stats    [--json]
-backplane compact
-backplane serve    [--store PATH]                       # protocol over stdio
-backplane version
+incremental advance  --to SHA --expected SHA|null
+incremental explain  --task ID
+incremental forget   --task ID
+incremental stats    [--json]
+incremental compact
+incremental serve    [--store PATH]                       # protocol over stdio
+incremental version
 ```
-Store defaults to `$BACKPLANE_STORE`, then `<repo>/.backplane`. Errors print JSON to stdout and message to stderr. Exit codes per protocol error mapping.
+Store defaults to `$INCREMENTAL_STORE`, then `<repo>/.incremental`. Errors print JSON to stdout and message to stderr. Exit codes per protocol error mapping.
 
 ## Defaults
 - `affected` options: `verify=false`, `policy="balanced"`
-- Node client `connect()`: store from env/default, command `["backplane","serve"]`, timeout 10000ms, `restart=true`
+- Node client `connect()`: store from env/default, command `["incremental","serve"]`, timeout 10000ms, `restart=true`

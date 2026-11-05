@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/friction_entry.json",
+  "$id": "https://incremental.dev/schemas/friction_entry.json",
   "title": "Friction Entry",
   "description": "A friction entry recorded in friction/FRICTION.md or friction/fNNN/. Append-only.",
   "type": "object",

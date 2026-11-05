@@ -1,0 +1,6 @@
+{
+  "id": "E0",
+  "state": "done",
+  "evidence": "",
+  "notes": "Setup complete: Goose toolchain fetches and passes goose toolchain; fresh-clone verification passed (make setup, npm install, make all-tests test-python test-git test-fuzz exit 0). VERSIONS.md complete (D-E0-04). D-14 confirmed as Goose (D-E0-03). Competitor rows verified (D-E0-02). Name check NOT clear (D-E0-01): incremental conflicts on npm/PyPI/GitHub org/domains; human name decision pending before publishing."
+}

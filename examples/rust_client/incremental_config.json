@@ -1,0 +1,5 @@
+{
+  "roots": ["."],
+  "exclude": ["**/node_modules/**", ".git/**", ".incremental/**"],
+  "policy": "balanced"
+}

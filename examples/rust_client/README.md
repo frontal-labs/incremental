@@ -1,6 +1,6 @@
 # Rust Client Example
 
-Demonstrates the Rust binding (`bindings/rust`, crate `backplane-rust`) speaking backplane Protocol v1 over stdio. Per `docs/spec/adapters/rust.md` and PLAN §10.6.
+Demonstrates the Rust binding (`bindings/rust`, crate `incremental-rust`) speaking incremental Protocol v1 over stdio. Per `docs/spec/adapters/rust.md` and PLAN §10.6.
 
 ## Layout
 
@@ -10,14 +10,14 @@ examples/rust_client/
 ├── Cargo.toml          # Rust project manifest
 ├── src/
 │   └── main.rs         # Rust client example
-└── backplane_config.json
+└── incremental_config.json
 ```
 
 ## Cargo.toml
 
 ```toml
 [package]
-name = "backplane-rust-example"
+name = "incremental-rust-example"
 version = "0.1.0"
 edition = "2021"
 
@@ -28,16 +28,16 @@ serde_json = "1"
 ## src/main.rs
 
 ```rust
-//! Example Rust client for backplane Protocol v1.
-//! Spawns `backplane serve` and communicates over JSON Lines on stdio.
+//! Example Rust client for incremental Protocol v1.
+//! Spawns `incremental serve` and communicates over JSON Lines on stdio.
 
 use serde_json::{json, Value};
 use std::process::{Command, Stdio};
 use std::io::{BufRead, BufReader, Write};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut child = Command::new("backplane")
-        .args(["serve", "--store", ".backplane", "--root", "."])
+    let mut child = Command::new("incremental")
+        .args(["serve", "--store", ".incremental", "--root", "."])
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
@@ -53,7 +53,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "method": "hello",
         "params": {
             "protocol": 1,
-            "client": {"name": "backplane-rust-example", "version": "0.1.0"}
+            "client": {"name": "incremental-rust-example", "version": "0.1.0"}
         }
     });
     writeln!(stdin_lock, "{}", hello_req)?;
@@ -124,12 +124,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-## backplane_config.json
+## incremental_config.json
 
 ```json
 {
   "roots": ["."],
-  "exclude": ["**/node_modules/**", ".git/**", ".backplane/**"],
+  "exclude": ["**/node_modules/**", ".git/**", ".incremental/**"],
   "policy": "balanced"
 }
 ```

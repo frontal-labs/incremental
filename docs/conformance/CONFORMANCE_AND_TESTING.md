@@ -1,4 +1,4 @@
-# BACKPLANE CONFORMANCE AND TESTING
+# INCREMENTAL CONFORMANCE AND TESTING
 
 ## Conformance Suite (Language-Neutral)
 `conformance/cases/*.json` - data, not code. Any core can run it.

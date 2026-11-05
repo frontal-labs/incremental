@@ -2,9 +2,10 @@ node_modules/
 dist/
 .toolchain/
 store/
-.backplane/
+.incremental/
 *.tsbuildinfo
 __pycache__/
 .DS_Store
 # Run logs (Makefile targets)
 logs/
+status/*.tmp

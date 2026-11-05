@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/input_env.json",
+  "$id": "https://incremental.dev/schemas/input_env.json",
   "title": "Input Env",
   "type": "object",
   "required": ["kind", "name", "value_hash"],

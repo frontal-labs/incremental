@@ -1,4 +1,4 @@
-"""The backplane client: one engine process, protocol v1, snake_case methods."""
+"""The incremental client: one engine process, protocol v1, snake_case methods."""
 
 from __future__ import annotations
 
@@ -6,10 +6,10 @@ import os
 from typing import Any, Sequence
 
 from ._transport import Engine, _FifoLock, default_engine, default_store, find_repo_root
-from .errors import BackplaneError
+from .errors import IncrementalError
 
 PROTOCOL = 1
-CLIENT_NAME = "backplane-python"
+CLIENT_NAME = "incremental-python"
 CLIENT_VERSION = "0.1.0"
 
 # Methods that do not change the store. A call to one of these is retried once
@@ -17,7 +17,7 @@ CLIENT_VERSION = "0.1.0"
 _READ_ONLY = frozenset({"baseline", "stats", "explain", "affected", "ping"})
 
 
-class Backplane:
+class Incremental:
     """A connection to one engine serving one store. Calls are serialized."""
 
     protocol = PROTOCOL
@@ -50,7 +50,7 @@ class Backplane:
             "hello", {"protocol": PROTOCOL, "client": {"name": CLIENT_NAME, "version": CLIENT_VERSION}})
         if self._hello.get("protocol") != PROTOCOL:
             self._engine.kill()
-            raise BackplaneError("protocol_mismatch", "engine speaks another protocol",
+            raise IncrementalError("protocol_mismatch", "engine speaks another protocol",
                                  {"supported": [self._hello.get("protocol")]})
 
     @property
@@ -62,18 +62,18 @@ class Backplane:
         if self._engine.is_running():
             return
         if not self._restart:
-            raise BackplaneError("engine_exited", "engine is not running and restart is off")
+            raise IncrementalError("engine_exited", "engine is not running and restart is off")
         self._start_engine()
 
     def _call(self, method: str, params: dict | None = None) -> Any:
         params = {} if params is None else params
         with self._lock:
             if self._closed:
-                raise BackplaneError("closed", "client is closed")
+                raise IncrementalError("closed", "client is closed")
             self._ensure_running()
             try:
                 return self._engine.request(method, params)
-            except BackplaneError as err:
+            except IncrementalError as err:
                 if err.code != "engine_exited" or not self._restart:
                     raise
                 if method not in _READ_ONLY:
@@ -89,7 +89,7 @@ class Backplane:
             self._closed = True
             self._engine.stop(graceful=True, wait=self._timeout)
 
-    def __enter__(self) -> "Backplane":
+    def __enter__(self) -> "Incremental":
         return self
 
     def __exit__(self, *exc) -> None:
@@ -145,12 +145,12 @@ class Backplane:
 
 
 def connect(store: str | None = None, *, engine: str | Sequence[str] | None = None,
-            root: str | None = None, timeout: float = 10.0, restart: bool = True) -> Backplane:
+            root: str | None = None, timeout: float = 10.0, restart: bool = True) -> Incremental:
     """Start the engine for a store and return a connected client.
 
-    store: store directory. Default: $BACKPLANE_STORE, else <repo>/.backplane.
-    engine: engine binary, or a command prefix. Default: $BACKPLANE_ENGINE,
-            else <repo>/core/dist/backplane.
+    store: store directory. Default: $INCREMENTAL_STORE, else <repo>/.incremental.
+    engine: engine binary, or a command prefix. Default: $INCREMENTAL_ENGINE,
+            else <repo>/core/dist/incremental.
     root: worktree root for verify. Default: <repo>.
     timeout: seconds per request. Default 10.
     restart: restart the engine when it dies. Default True.
@@ -164,4 +164,4 @@ def connect(store: str | None = None, *, engine: str | Sequence[str] | None = No
     else:
         prefix = list(engine)
     root_dir = os.path.abspath(root) if root is not None else repo
-    return Backplane(prefix, store_dir, root_dir, timeout, restart)
+    return Incremental(prefix, store_dir, root_dir, timeout, restart)

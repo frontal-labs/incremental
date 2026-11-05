@@ -1,11 +1,11 @@
 // Planner inputs (PLAN 11.3, 10.4, 11.7, 9.5): test discovery, the ChangeSet
 // from the git change source, the context, the environment map and the
-// optional backplane.config.json.
+// optional incremental.config.json.
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
-import { repoRoot, type ChangeSet, type Config, type Context } from "@backplane/client";
+import { repoRoot, type ChangeSet, type Config, type Context } from "@incremental/client";
 import { EXCLUDED_DIRS, TEST_FILE, VITEST_VERSION, isTrackedEnv, sha256 } from "./shared.js";
 
 // Repo-relative paths of the files under root that satisfy the predicate,
@@ -45,9 +45,9 @@ export function selectTests(files: readonly string[], include: readonly string[]
   );
 }
 
-// The git change source (PLAN 11.7): backplane-git changes --base REF --root DIR.
+// The git change source (PLAN 11.7): incremental-git changes --base REF --root DIR.
 export function gitSourcePath(): string {
-  return process.env.BACKPLANE_GIT || path.join(repoRoot(), "adapters", "git", "dist", "backplane-git");
+  return process.env.INCREMENTAL_GIT || path.join(repoRoot(), "adapters", "git", "dist", "incremental-git");
 }
 
 export interface GitChangeSet extends ChangeSet {
@@ -117,10 +117,10 @@ export function envHashes(env: NodeJS.ProcessEnv): Record<string, string> {
   return out;
 }
 
-// backplane.config.json at the repo root (PLAN 6.7). Missing fields take the
+// incremental.config.json at the repo root (PLAN 6.7). Missing fields take the
 // engine defaults, so only the fields the file sets are passed on.
 export function loadConfig(root: string): Config | undefined {
-  const file = path.join(root, "backplane.config.json");
+  const file = path.join(root, "incremental.config.json");
   if (!existsSync(file)) return undefined;
   const raw = JSON.parse(readFileSync(file, "utf8")) as Config;
   const out: Config = {};

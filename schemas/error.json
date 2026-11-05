@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/error.json",
+  "$id": "https://incremental.dev/schemas/error.json",
   "title": "Error",
   "description": "Protocol error object returned by the engine.",
   "type": "object",

@@ -1,5 +1,5 @@
 // Integration tests: a scratch git repository with two TypeScript projects, run
-// through the real engine and backplane-git (spec/adapters/typescript.md).
+// through the real engine and incremental-git (spec/adapters/typescript.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -34,7 +34,7 @@ function commit(root: string, message: string): void {
 }
 
 function makeRepo(): { root: string; store: string } {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-ts-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-ts-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");

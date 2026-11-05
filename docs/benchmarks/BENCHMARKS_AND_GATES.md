@@ -1,4 +1,4 @@
-# BACKPLANE BENCHMARKS AND GATES
+# INCREMENTAL BENCHMARKS AND GATES
 
 ## Benchmark Targets (Hypotheses, fixed before measurement)
 | # | Metric | Method | Target |
@@ -36,7 +36,7 @@
 ## Gates
 
 ### Gate 0: Kill Test (after E4, before E5)
-Run on real slow Vitest monorepo (`$BACKPLANE_BENCH_REPO`) using replay for >=50 evaluated commits or as many as exist.
+Run on real slow Vitest monorepo (`$INCREMENTAL_BENCH_REPO`) using replay for >=50 evaluated commits or as many as exist.
 
 | # | Criterion | Threshold |
 |---|---|---|

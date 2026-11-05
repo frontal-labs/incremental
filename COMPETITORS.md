@@ -1,17 +1,17 @@
 # Competitors
 
-| Tool | Mechanism | Granularity | Agent interface | License | Source URL |
-|------|-----------|-------------|-----------------|---------|-----------|
-| Turborepo `--affected` | git diff + task graph | task/package | no | MIT | https://turbo.build/repo/docs/reference/command-line-reference/affected |
-| Nx `affected` | git diff + dependency graph | project/task | partial | MIT | https://nx.dev/ci/features/affected |
-| Vitest `--changed` | git diff | test files | no | MIT | https://vitest.dev/guide/features.html#running-tests-by-file-changes |
-| Jest `--onlyChanged` | git diff | test files | no | MIT | https://jestjs.io/docs/cli#--onlychanged |
-| Playwright `--only-changed` | git diff | tests | no | Apache-2.0 | https://playwright.dev/docs/test-cli#--only-changed |
-| pytest-testmon | runtime trace | tests | no | MIT | https://github.com/tarpas/pytest-testmon |
-| Ekstazi | runtime trace (bytecode) | tests | no | Apache-2.0 | https://www.ekstazi.org/ |
-| STARTS | static analysis + dependencies | tests | no | MIT | https://github.com/TestingResearchIllinois/starts |
-| bazel-diff | build graph diff | targets | no | Apache-2.0 | https://github.com/bazel-contrib/bazel-diff |
-| Develocity Predictive Test Selection | ML + trace | tests | yes | proprietary | https://gradle.com/develocity/ |
-| Launchable | ML + trace | tests | yes | proprietary | https://www.launchableinc.com/ |
-| Datadog Test Impact Analysis | trace + cloud | tests | yes | proprietary | https://docs.datadoghq.com/tests/ |
-| DiffCI | git diff + rules | jobs/tests | no | various | https://diff.ci/ |
+| Tool | Mechanism | Granularity | Agent interface | License | Source URL | Verified |
+|------|-----------|-------------|-----------------|---------|------------|----------|
+| Turborepo `--affected` | git diff + task graph | task/package | no | MIT | https://turborepo.dev/docs/reference/run#--affected | 2026-11-04: verified `turbo run --affected` (git-based branch comparison; package-level by default, task-level via `futureFlags.affectedUsingTaskInputs`) on turborepo.dev. Old URL https://turbo.build/repo/docs/reference/command-line-reference/affected returns 404. |
+| Nx `affected` | git diff + dependency graph | project/task | partial | MIT | https://nx.dev/ci/features/affected | 2026-11-04: verified on nx.dev — `nx affected` selects tasks by changed inputs via git; Nx 24 uses task-based affected by default. |
+| Vitest `--changed` | git diff | test files | no | MIT | https://v4.vitest.dev/guide/cli.html#changed | 2026-11-04: verified in v4.1.12 docs — `--changed` runs tests against uncommitted changes or a commit/branch; `experimental.vcsProvider` defaults to `git`. Old URL https://vitest.dev/guide/features.html#running-tests-by-file-changes not found. |
+| Jest `--onlyChanged` | git diff | test files | no | MIT | https://jestjs.io/docs/cli#--onlychanged | 2026-11-04: verified on jestjs.io — identifies tests from changed files in a git/hg repo with a static dependency graph. |
+| Playwright `--only-changed` | git diff | tests | no | Apache-2.0 | https://playwright.dev/docs/test-cli#--only-changed | 2026-11-04: verified on playwright.dev — runs test files changed between HEAD and a ref; Git only. |
+| pytest-testmon | runtime trace | tests | no | MIT | https://github.com/tarpas/pytest-testmon | 2026-11-04: verified license MIT via GitHub API (tarpas/pytest-testmon). |
+| Ekstazi | runtime trace (bytecode) | tests | no | Apache-2.0 | https://www.ekstazi.org/ | 2026-11-04: verified Apache-2.0 (github.com/gliga/ekstazi shows "Apache-2.0 license"); bytecode instrumentation, no VCS integration. |
+| STARTS | static analysis + dependencies | tests | no | MIT | https://github.com/TestingResearchIllinois/starts | 2026-11-04: verified repo exists and shows MIT license. |
+| bazel-diff | build graph diff | targets | no | BSD-3-Clause | https://github.com/Tinder/bazel-diff | 2026-11-04: corrected — license is BSD-3-Clause (Match Group/Tinder), not Apache-2.0; https://github.com/bazel-contrib/bazel-diff returns 404 (repo moved). Mechanism verified on bazel-diff docs/README: affected targets between two Git revisions. |
+| Develocity Predictive Test Selection | ML + trace | tests | yes | proprietary | https://develocity.ai/product/predictive-test-selection | 2026-11-04: verified product exists (Gradle, Inc., proprietary); "agent interface yes" supported by Develocity MCP Servers product listing. Old URL gradle.com/develocity/ redirects to develocity.ai. |
+| Launchable | ML + trace | tests | yes | proprietary | https://www.cloudbees.com/capabilities/cloudbees-smart-tests | 2026-11-04: verified — Launchable is now CloudBees Smart Tests (AI test selection, proprietary); www.launchableinc.com redirects. |
+| Datadog Test Impact Analysis | trace + cloud | tests | yes | proprietary | https://docs.datadoghq.com/tests/test_impact_analysis.md | 2026-11-04: verified on docs.datadoghq.com — TIA intelligently skips tests based on code coverage and git metadata. Old URL https://docs.datadoghq.com/tests/ still valid. |
+| DiffCI | git deltas + dependency graph | checks/tests | yes | MIT | https://github.com/DiffCI/core | 2026-11-04: corrected — agent interface is YES (Claude Code, Codex, Cursor plugins; MCP server at diffci.com/mcp-server), license MIT; https://diff.ci/ was unreachable from this network at check time. |

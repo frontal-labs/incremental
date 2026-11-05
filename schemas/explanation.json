@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/explanation.json",
+  "$id": "https://incremental.dev/schemas/explanation.json",
   "title": "Explanation",
   "description": "Latest observation summary and certificate status for a task.",
   "type": "object",

@@ -8,7 +8,7 @@ import os from "node:os";
 import path from "node:path";
 
 // Directories the walk never enters. Matches the TypeScript adapter.
-const SKIP_DIRS = new Set(["node_modules", ".git", "dist", ".backplane", ".toolchain"]);
+const SKIP_DIRS = new Set(["node_modules", ".git", "dist", ".incremental", ".toolchain"]);
 const MAX_BUFFER = 256 * 1024 * 1024;
 
 export type Outcome = "pass" | "fail" | "error";
@@ -56,10 +56,16 @@ export function discoverTargets(root: string): Targets {
 
 // The absolute path of an executable on PATH (or of a path given with a separator),
 // symlinks resolved. Null when it is absent.
+// Version-manager shims (mise, asdf) are skipped: they resolve the real tool per
+// directory and fail when the directory has no tool configuration, which is the
+// case for a module inside a repository. INCREMENTAL_BUF or INCREMENTAL_PROTOC name a
+// binary explicitly.
+const SHIM_DIR = /[\\/](mise|asdf)[\\/]shims([\\/]|$)/;
+
 export function resolveTool(name: string): string | null {
   if (name.includes(path.sep)) return existsSync(name) ? realpathSync(name) : null;
   for (const dir of (process.env.PATH ?? "").split(path.delimiter)) {
-    if (dir === "") continue;
+    if (dir === "" || SHIM_DIR.test(dir)) continue;
     const abs = path.join(dir, name);
     if (existsSync(abs)) return realpathSync(abs);
   }
@@ -76,8 +82,8 @@ function firstLine(text: string | null | undefined): string {
 }
 
 export function protocBin(): string {
-  const bin = resolveTool(process.env.BACKPLANE_PROTOC || "protoc");
-  if (bin === null) throw new Error("protoc is not installed or not on PATH (set BACKPLANE_PROTOC)");
+  const bin = resolveTool(process.env.INCREMENTAL_PROTOC || "protoc");
+  if (bin === null) throw new Error("protoc is not installed or not on PATH (set INCREMENTAL_PROTOC)");
   return bin;
 }
 
@@ -105,7 +111,7 @@ export function wellKnownDigest(): string {
 
 // The buf version, or null when buf is not installed.
 export function bufVersion(): string | null {
-  const bin = resolveTool(process.env.BACKPLANE_BUF || "buf");
+  const bin = resolveTool(process.env.INCREMENTAL_BUF || "buf");
   return bin === null ? null : toolOutput(bin, ["--version"]);
 }
 
@@ -146,7 +152,7 @@ export interface Compile {
 // discarded: generated code is not stored (spec 'What it cannot observe').
 export function compileProto(root: string, rel: string, timeoutMs: number): Compile {
   const protoRoot = protoRootFor(root, rel);
-  const scratch = mkdtempSync(path.join(os.tmpdir(), "backplane-protoc-"));
+  const scratch = mkdtempSync(path.join(os.tmpdir(), "incremental-protoc-"));
   const depFile = path.join(scratch, "deps.d");
   const started = Date.now();
   try {
@@ -207,9 +213,9 @@ export interface BufCheck {
 export function checkBuf(root: string, bufRel: string, timeoutMs: number): BufCheck {
   const dir = path.dirname(path.join(root, bufRel));
   const started = Date.now();
-  const bin = resolveTool(process.env.BACKPLANE_BUF || "buf");
+  const bin = resolveTool(process.env.INCREMENTAL_BUF || "buf");
   if (bin === null) {
-    return { outcome: "error", files: [], durationMs: 0, problem: "buf is not installed or not on PATH (set BACKPLANE_BUF)" };
+    return { outcome: "error", files: [], durationMs: 0, problem: "buf is not installed or not on PATH (set INCREMENTAL_BUF)" };
   }
   const opts = { cwd: dir, encoding: "utf8" as const, timeout: timeoutMs, maxBuffer: MAX_BUFFER };
   const list = spawnSync(bin, ["ls-files", "."], opts);

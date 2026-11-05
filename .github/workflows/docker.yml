@@ -40,9 +40,9 @@ jobs:
           context: .
           file: docker/Dockerfile.linux
           push: false
-          tags: backplane:latest
+          tags: incremental:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Test Docker image
         run: |
-          docker run --rm backplane:latest node -e "console.log('docker smoke test passed')"
+          docker run --rm incremental:latest node -e "console.log('docker smoke test passed')"

@@ -1,4 +1,4 @@
-# backplane
+# Incremental
 
 ![Frontal Banner](./banner.jpg)
 
@@ -8,36 +8,69 @@ An incremental dependency engine. It records what each task reads, lists, probes
 
 The engine is written in Goose (`core/`). Protocol clients are TypeScript (`bindings/node`, `adapters/vitest`, `mcp`) and Python (`bindings/python`). The specification is in `spec/`, and the conformance suite (40 cases) is in `conformance/`.
 
-**Name status:** "backplane" is a working name. The trademark, GitHub and domain checks are not done (PLAN E0 step 1).
+**Name status:** the project is named Incremental (renamed from its former name on 2026-11-04; the binary, packages and store follow the new name). The earlier trademark, GitHub and domain checks (DECISIONS.md D-E0-01) covered the former name only. The checks for "Incremental" are not done (PLAN E0 step 1).
 
 ## Quickstart
 
-Requirements: the Goose toolchain at `.toolchain/goose/goose-v2026.3-macos-arm64/` (see DECISIONS.md D-14-GOOSE), Node 22, Python 3.10 or later.
+### Requirements
+
+- Node 22 and pnpm 9.0.0 (the `packageManager` field in `package.json`).
+- Python 3.10 or later, for `make test-python`.
+- `cargo`, for `make test-rust` (the Rust binding in `bindings/rust`).
+- Docker, for `make linux-gate` only.
+- The Goose toolchain is not installed by hand. `make setup` runs first and fetches it into `.toolchain/goose/` through `scripts/fetch-goose.sh` when it is missing. This needs network access once.
+
+### Install
 
 ```sh
-make build              # engine (core/dist/backplane), git source (adapters/git/dist/backplane-git)
-make check-spec         # schemas, reference policy, coverage matrix
-make test-policy        # 40 conformance cases through the engine
-make test-core          # smoke and CLI tests
-make test-fuzz          # differential fuzz against the reference (3 seeds)
-make test-bindings      # TypeScript client
-make test-python        # Python client
-make test-vitest        # Vitest recorder and planner, V01-V16
-make test-mcp           # MCP server
+pnpm install                       # root devDependencies (tsc-rs) and the pnpm workspace packages
+for d in $(git ls-files '*package.json' | grep -v -e '^package.json$' -e fixture -e '^examples/' | xargs -n1 dirname | sort -u); do (cd "$d" && npm install); done
 ```
 
-Store operations, through the CLI:
+The adapters are not in the pnpm workspace. Each one runs its tests with `npm test` in its own folder, so each needs its own `npm install`. The loop above covers every such folder.
+
+### Build and test
 
 ```sh
-core/dist/backplane init --store .backplane
-core/dist/backplane stats --store .backplane
-core/dist/backplane serve --store .backplane     # protocol v1 over stdio
+make build        # engine (core/dist/incremental) and git source (adapters/git/dist/incremental-git)
+make all-tests    # check-spec, core, policy, protocol, bindings, vitest, oracle, e2e, adapters, mcp
 ```
+
+`make all-tests` does not run everything. Also run:
+
+```sh
+make test-fuzz test-python test-git
+```
+
+The adapter targets run inside `test-adapters`, and each one can be run alone: `make test-bazel`, `test-biome`, `test-clippy`, `test-config`, `test-env`, `test-fs`, `test-playwright`, `test-pnpm`, `test-process`, `test-protobuf`, `test-ruff`, `test-turbopack`, `test-watcher`, plus `test-typescript` and `test-rust`.
+
+Every test target depends on `build`. Pass several targets to one `make` command, such as `make test-core test-policy`, so the engine is built once. Separate `make` commands rebuild it each time.
+
+When a target fails, the terminal shows its last 20 to 30 lines. The full output is in `logs/<target>.log` (git-ignored).
+
+Some targets fail on purpose, because the milestone they check is not built yet: `make gate0`, `make bench-smoke`, `make bench` and `make gate` print `FAIL` and exit 1 until Gate 0 is resolved (see `STATUS.md`). A `FAIL` from those is expected and does not mean your setup is broken.
+
+## Using the engine
+
+Record an observation for a task, set the baseline, then ask which tasks are invalid after a change. This uses the example files in `examples/cli_workflow/`. The task `src/math.test.ts` reads `src/math.ts`.
+
+```sh
+STORE=.incremental
+core/dist/incremental init --store $STORE
+core/dist/incremental observe --store $STORE --file examples/cli_workflow/observation.json
+core/dist/incremental advance --store $STORE --to abc123 --expected null
+
+# changes.json: {"baseline":"abc123","head":"def456","changes":[{"path":"src/math.ts","status":"modified"}]}
+core/dist/incremental affected --store $STORE --changes changes.json --baseline abc123 \
+  --context examples/cli_workflow/context.json
+```
+
+The last command prints a plan. It lists `src/math.test.ts` with the reason `reads:src/math.ts`, and `skipped` is 0. Two other commands are `stats` (store summary) and `serve` (protocol v1 over stdio). See `examples/cli_workflow/README.md` for the full walkthrough and `spec/PROTOCOL.md` for the protocol.
 
 ## Limits (PLAN 9.6, D-11)
 
 - Non-file inputs (time, network, randomness) are not observed. A task that depends on them is not protected by the engine; re-run it when they matter.
-- A store is per worktree by default (`<repo>/.backplane`). A store shared between worktrees is safe, but a baseline mismatch falls back to running everything.
+- A store is per worktree by default (`<repo>/.incremental`). A store shared between worktrees is safe, but a baseline mismatch falls back to running everything.
 - Verify mode hashes every recorded file. It is for audits and shared stores, not the warm path.
 - The engine answers from the observations it has. A query on a store with no baseline is a fallback, not a plan.
 

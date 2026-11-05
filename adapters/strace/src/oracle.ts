@@ -1,4 +1,4 @@
-// @backplane/strace: native strace oracle (PLAN §11.5, E5). Linux only.
+// @incremental/strace: native strace oracle (PLAN §11.5, E5). Linux only.
 //
 // `runOracle` runs a command under
 //
@@ -28,7 +28,7 @@ import os from "node:os";
 import path from "node:path";
 
 // Directories that are never recorded or discovered (PLAN 6.7 default exclude).
-export const EXCLUDED_DIRS: readonly string[] = ["node_modules", ".git", ".backplane"];
+export const EXCLUDED_DIRS: readonly string[] = ["node_modules", ".git", ".incremental"];
 
 // The syscall set from PLAN §11.5.
 export const STRACE_TRACE = "openat,open,openat2,stat,newfstatat,statx,access,faccessat,faccessat2,getdents64,readlink,readlinkat,execve";
@@ -471,7 +471,7 @@ export async function runOracle(
   if (process.platform !== "linux") {
     throw new StraceUnavailableError("the strace oracle is Linux-only; strace is not available on this platform");
   }
-  const log = path.join(os.tmpdir(), `backplane-strace-${process.pid}-${Date.now()}.log`);
+  const log = path.join(os.tmpdir(), `incremental-strace-${process.pid}-${Date.now()}.log`);
   const child = spawn(
     "strace",
     ["-f", "-e", `trace=${STRACE_TRACE}`, "-o", log, "--", ...command],

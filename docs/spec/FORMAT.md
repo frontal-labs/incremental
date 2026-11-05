@@ -1,7 +1,7 @@
-# BACKPLANE STORE FORMAT
+# INCREMENTAL STORE FORMAT
 
 ## Store Directory
-Default: `<repo>/.backplane/` (configurable via `BACKPLANE_STORE` or `--store`)
+Default: `<repo>/.incremental/` (configurable via `INCREMENTAL_STORE` or `--store`)
 
 | File | Kind | Notes |
 |---|---|---|
@@ -51,4 +51,4 @@ Reuse: if `size` and `mtime_ns` match file, use cached hash without reading. Oth
 Stale if PID dead or PID alive but start time differs (PID reuse). Retry up to 5s, then `lock_busy`. Each write takes lock, appends, releases.
 
 ## Compaction
-`backplane compact` rewrites log keeping live contexts/paths, latest obs per task, latest baseline. Writes to temp then renames. Not implemented yet.
+`incremental compact` rewrites log keeping live contexts/paths, latest obs per task, latest baseline. Writes to temp then renames. Not implemented yet.

@@ -1,13 +1,13 @@
-//! Example Rust client for backplane Protocol v1.
-//! Spawns `backplane serve` and communicates over JSON Lines on stdio.
+//! Example Rust client for incremental Protocol v1.
+//! Spawns `incremental serve` and communicates over JSON Lines on stdio.
 
 use serde_json::{json, Value};
 use std::process::{Command, Stdio};
 use std::io::{BufRead, BufReader, Write};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut child = Command::new("backplane")
-        .args(["serve", "--store", ".backplane", "--root", "."])
+    let mut child = Command::new("incremental")
+        .args(["serve", "--store", ".incremental", "--root", "."])
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
@@ -23,7 +23,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "method": "hello",
         "params": {
             "protocol": 1,
-            "client": {"name": "backplane-rust-example", "version": "0.1.0"}
+            "client": {"name": "incremental-rust-example", "version": "0.1.0"}
         }
     });
     writeln!(stdin_lock, "{}", hello_req)?;

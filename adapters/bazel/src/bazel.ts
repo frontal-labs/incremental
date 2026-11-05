@@ -23,7 +23,7 @@ export function hashOrAbsent(file: string): string {
 }
 
 export function bazelBin(): string {
-  return process.env.BACKPLANE_BAZEL || "bazel";
+  return process.env.INCREMENTAL_BAZEL || "bazel";
 }
 
 function bazel(root: string, args: string[], timeoutMs: number): SpawnSyncReturns<string> {

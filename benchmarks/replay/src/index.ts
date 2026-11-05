@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Replay driver (PLAN 12.5, E6): replays a sequence of commits through the
 // engine and measures false skips against ground truth, using the real adapter
-// (git change source + @backplane/client over core/dist/backplane serve +
-// backplane-vitest run) plus plain vitest runs for ground truth.
+// (git change source + @incremental/client over core/dist/incremental serve +
+// incremental-vitest run) plus plain vitest runs for ground truth.
 //
 //   commits_processed        commits walked, oldest -> newest
 //   commits_evaluated        commits whose predecessor's ground truth was green
@@ -19,11 +19,11 @@ import { cpSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, wri
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { connect, type Plan } from "@backplane/client";
+import { connect, type Plan } from "@incremental/client";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url)); // .../benchmarks/replay/dist/src
 const ROOT = path.resolve(HERE, "../../../..");            // graph root
-const ENGINE = path.join(ROOT, "core", "dist", "backplane");
+const ENGINE = path.join(ROOT, "core", "dist", "incremental");
 const VITEST_RUN = path.join(ROOT, "adapters", "vitest", "dist", "src", "run.js");
 const VITEST_BIN = path.join(ROOT, "adapters", "vitest", "node_modules", "vitest", "vitest.mjs");
 const FIXTURE = path.join(ROOT, "adapters", "vitest", "fixtures", "repo");
@@ -171,7 +171,7 @@ function runRecorded(repo: string, store: string): RunReport {
     [VITEST_RUN, "run", "--root", repo, "--store", store, "--json", "--jobs", "2"],
     { cwd: repo, encoding: "utf8", timeout: 900_000, maxBuffer: 64 * 1024 * 1024, env: { ...process.env, NODE_ENV: "test" } },
   );
-  if (r.status !== 0 && r.status !== 1 && r.status !== 7) throw new Error(`backplane-vitest run failed (exit ${r.status}): ${r.stderr.slice(-1000)}`);
+  if (r.status !== 0 && r.status !== 1 && r.status !== 7) throw new Error(`incremental-vitest run failed (exit ${r.status}): ${r.stderr.slice(-1000)}`);
   const parsed = JSON.parse(r.stdout) as RunReport & { total_tasks?: number };
   return {
     plan: parsed.plan ?? null,

@@ -7,7 +7,7 @@ import path from "node:path";
 import { test } from "node:test";
 import { parseStraceLog, type OracleResult, type StraceEvent } from "../src/oracle.js";
 
-const O_EXCLUDED = ["node_modules", ".git", ".backplane"];
+const O_EXCLUDED = ["node_modules", ".git", ".incremental"];
 
 function line(pid: number, sys: string, args: string, result: string): string {
   return `${pid} ${sys}(${args}) = ${result}`;
@@ -267,15 +267,15 @@ test("excluded directory parts are dropped", () => {
   try {
     mkdirSync(path.join(root, "node_modules", "pkg"), { recursive: true });
     mkdirSync(path.join(root, ".git"), { recursive: true });
-    mkdirSync(path.join(root, ".backplane"), { recursive: true });
+    mkdirSync(path.join(root, ".incremental"), { recursive: true });
     writeFileSync(path.join(root, "node_modules", "pkg", "index.js"), "x");
     writeFileSync(path.join(root, ".git", "config"), "x");
-    writeFileSync(path.join(root, ".backplane", "log"), "x");
+    writeFileSync(path.join(root, ".incremental", "log"), "x");
     writeFileSync(path.join(root, "keep.ts"), "x");
     const s = summaryOf([
       openRead(1, path.join(root, "node_modules", "pkg", "index.js"), 3),
       openRead(1, path.join(root, ".git", "config"), 4),
-      openRead(1, path.join(root, ".backplane", "log"), 5),
+      openRead(1, path.join(root, ".incremental", "log"), 5),
       openRead(1, path.join(root, "keep.ts"), 6),
     ], root);
     assert.deepEqual(s.files, ["keep.ts"]);

@@ -1,9 +1,9 @@
 # TypeScript adapter (`adapters/typescript`)
 
-`backplane-typescript run` checks each `tsconfig.json` in the repo with `tsc --noEmit`, one task per project (PLAN 10.4). Its inputs come from `tsc --listFilesOnly`, the `extends` chain, and the `package.json` files on each project's paths. Every input is hashed when the project is observed.
+`incremental-typescript run` checks each `tsconfig.json` in the repo with `tsc --noEmit`, one task per project (PLAN 10.4). Its inputs come from `tsc --listFilesOnly`, the `extends` chain, and the `package.json` files on each project's paths. Every input is hashed when the project is observed.
 
 ```sh
-backplane-typescript run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]
+incremental-typescript run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]
 ```
 
 Exit codes: 0 ok and advanced; 1 a project failed to type check; 2 usage; 4 engine error; 7 ran, baseline not advanced.

@@ -1,4 +1,4 @@
-# backplane Protocol v1 (from plans/PLAN.md section 9)
+# incremental Protocol v1 (from plans/PLAN.md section 9)
 
 ## Transport (9.1)
 
@@ -11,7 +11,7 @@
 
 `hello` must be the first request. Request: `{"id":1,"method":"hello","params":{"protocol":1,"client":{"name":"...","version":"..."}}}`.
 
-Result: `{"protocol":1,"engine":{"name":"backplane-core-ts","version":"0.1.0"},"capabilities":["probes","dirs","env","verify"],"store":".backplane"}`.
+Result: `{"protocol":1,"engine":{"name":"incremental-core-ts","version":"0.1.0"},"capabilities":["probes","dirs","env","verify"],"store":".incremental"}`.
 
 If `params.protocol` is not 1, reply with `protocol_mismatch` and `data: {"supported": [1]}`, then close the stream.
 

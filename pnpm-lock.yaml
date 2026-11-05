@@ -26,7 +26,7 @@ importers:
 
   mcp:
     dependencies:
-      '@backplane/client':
+      '@incremental/client':
         specifier: file:../bindings/node
         version: link:../bindings/node
       '@modelcontextprotocol/sdk':

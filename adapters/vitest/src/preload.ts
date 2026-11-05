@@ -1,13 +1,13 @@
 // Recorder preload (PLAN 11.2). Loaded into the test processes with
 // NODE_OPTIONS=--import <this file>. The runner starts one Vitest process per
-// test file, so every process with BACKPLANE_TRACE_OUT belongs to that task.
+// test file, so every process with INCREMENTAL_TRACE_OUT belongs to that task.
 // Vitest does the module transforms in its main process and sends the code to
 // the forked worker over IPC, so the main process must record too: that is how
 // imported source files become inputs. Its directory listings are the test
 // discovery glob, which is not an input of any task, so the main process does
 // not record directories (see isTaskProcess below).
 //
-// Every observed access is appended to BACKPLANE_TRACE_OUT as one JSON line
+// Every observed access is appended to INCREMENTAL_TRACE_OUT as one JSON line
 // at the moment it happens (synchronously), so a crashing test keeps the
 // reads it made before the crash (PLAN 11.6).
 import fs from "node:fs";
@@ -21,7 +21,7 @@ import { EXCLUDED_DIRS, isTrackedEnv, sha256 } from "./shared.js";
 
 type Kind = "read" | "stat" | "list";
 
-const OUT = process.env.BACKPLANE_TRACE_OUT;
+const OUT = process.env.INCREMENTAL_TRACE_OUT;
 const RECORD = OUT !== undefined && OUT !== "";
 // Worker processes and worker threads run the task's own code. Only they
 // count directory listings and subprocesses as inputs of the task.
@@ -51,7 +51,7 @@ function install(out: string): void {
   const realReadText = (file: string, enc: BufferEncoding): string => realRead(file, enc);
   const realAppend = fs.appendFileSync;
 
-  const root = realRealpath(process.env.BACKPLANE_TRACE_ROOT ?? process.cwd());
+  const root = realRealpath(process.env.INCREMENTAL_TRACE_ROOT ?? process.cwd());
   const tid = wt.threadId;
   const seen = new Set<string>();
 
@@ -68,7 +68,7 @@ function install(out: string): void {
     try {
       realAppend(out, JSON.stringify({ ...rec, pid: process.pid, tid }) + "\n");
     } catch (err) {
-      process.stderr.write(`backplane recorder: cannot write trace: ${String(err)}\n`);
+      process.stderr.write(`incremental recorder: cannot write trace: ${String(err)}\n`);
     } finally {
       busy = outer;
     }
@@ -240,7 +240,7 @@ function install(out: string): void {
   } else {
     emit("env_base", { k: "env_base", s: initial });
   }
-  process.env.BACKPLANE_RECORDER = "1";
+  process.env.INCREMENTAL_RECORDER = "1";
   const written = new Set<string>();
   function noteEnv(name: string): void {
     if (!isTrackedEnv(name) || written.has(name)) return;

@@ -8,8 +8,8 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const engine = path.join(root, 'core/dist/backplane');
-const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'backplane-smoke-'));
+const engine = path.join(root, 'core/dist/incremental');
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'incremental-smoke-'));
 const store = path.join(dir, 'store');
 
 const run = (args, input = '') => spawnSync(engine, args, { input, encoding: 'utf8' });

@@ -1,4 +1,4 @@
-# @backplane/env
+# @incremental/env
 
 Environment variables as observation inputs (spec/adapters/env.md, PLAN 8.4, D-E1-02).
 Not a task runner. For each allowlisted variable a task records an `env` input with

@@ -1,5 +1,5 @@
 // Integration tests: a scratch git repository with a biome.json and three files,
-// run through the real engine, backplane-git and the real Biome binary
+// run through the real engine, incremental-git and the real Biome binary
 // (spec/adapters/biome.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -37,7 +37,7 @@ function commit(root: string, message: string): void {
 const CLEAN = "export const value = 1;\n";
 
 function makeRepo(): { root: string; store: string } {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-biome-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-biome-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");
@@ -62,7 +62,7 @@ const outcomeOf = (r: RunReport, rel: string): string | undefined => r.results.f
 test("biome's file list is the task set, repo-relative and without the store", () => {
   const { root } = makeRepo();
   try {
-    write(root, ".backplane/x.js", "var x = 1;\n");
+    write(root, ".incremental/x.js", "var x = 1;\n");
     const files = processedFiles(root, ["."], 120_000);
     assert.deepEqual(files, ["biome.json", "src/a.ts", "src/b.ts", "src/sub/c.ts"]);
   } finally {

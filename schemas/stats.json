@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/stats.json",
+  "$id": "https://incremental.dev/schemas/stats.json",
   "title": "Stats",
   "description": "Store statistics returned by the stats method.",
   "type": "object",

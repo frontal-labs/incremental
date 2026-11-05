@@ -1,6 +1,6 @@
-# vitest adapter (built, v1)
+# vitest adapter
 
-Status: built and tested (E4, `make test-vitest`). This draft only records the rules that the built adapter follows, as the comparison point for the others.
+Status: built (`adapters/vitest`, `make test-vitest`; E4). Spec sign-off: recorded in DECISIONS.md (E4). Matched to adapters/vitest/README.md on 2026-11-04. This spec only records the rules that the built adapter follows, as the comparison point for the others.
 
 ## Task
 A Vitest test file, repo-relative (D-2). Built: `adapters/vitest/src/`.

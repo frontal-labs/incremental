@@ -1,12 +1,12 @@
 {
-  "name": "@backplane/clippy",
+  "name": "@incremental/clippy",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "bin": {
-    "backplane-clippy": "dist/src/run.js"
+    "incremental-clippy": "dist/src/run.js"
   },
   "scripts": {
     "build": "tsc-rs -b",
@@ -17,7 +17,7 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@backplane/client": "file:../../bindings/node"
+    "@incremental/client": "file:../../bindings/node"
   },
   "devDependencies": {
     "@types/node": "22.20.5",

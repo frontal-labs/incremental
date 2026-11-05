@@ -4,10 +4,10 @@ UNAME_M := $(shell uname -m)
 GOOSE_DIR ?= $(CURDIR)/.toolchain/goose/goose-v2026.3-$(UNAME_S)-$(UNAME_M)
 GOOSE := $(GOOSE_DIR)/goose
 export GOOSE_HOME := $(CURDIR)/.toolchain/goose-home
-ENGINE := core/dist/backplane
+ENGINE := core/dist/incremental
 # Kill-test repository for Gate 0 (PLAN 13.1 / GATE 0). Override with the human's
 # chosen real Vitest monorepo.
-BACKPLANE_BENCH_REPO ?= /Users/gabrielfonseca/Desktop/os
+INCREMENTAL_BENCH_REPO ?= /Users/gabrielfonseca/Desktop/os
 # Every run log goes to logs/ at the project root (git-ignored).
 LOGS := logs
 $(shell mkdir -p $(LOGS))
@@ -29,7 +29,7 @@ setup:
 build: setup
 	@mkdir -p core/dist adapters/git/dist
 	@$(GOOSE) build core/src/main.goose -o $(ENGINE) >logs/build.log 2>&1 || { tail -20 logs/build.log; echo "FAIL build"; exit 1; }
-	@$(GOOSE) build adapters/git/src/changes.goose -o adapters/git/dist/backplane-git >logs/build-git.log 2>&1 || { tail -20 logs/build-git.log; echo "FAIL build"; exit 1; }
+	@$(GOOSE) build adapters/git/src/changes.goose -o adapters/git/dist/incremental-git >logs/build-git.log 2>&1 || { tail -20 logs/build-git.log; echo "FAIL build"; exit 1; }
 	@cd benchmarks/replay && $(CURDIR)/node_modules/.bin/tsc-rs -b >../../logs/build-replay.log 2>&1 || { tail -20 ../../logs/build-replay.log; echo "FAIL build-replay"; exit 1; }
 	@echo "PASS build"
 
@@ -98,7 +98,7 @@ test-adapters: test-typescript $(addprefix test-,$(ADAPTER_TESTS)) test-rust
 	@echo "PASS test-adapters"
 
 gate0: build
-	@mkdir -p /tmp/gate0-scratch $(LOGS)
+	@mkdir -p /tmp/gate0-scratch /tmp/gate0-scratch/W $(LOGS)
 	@node bench/gate0/driver/replay.mjs /tmp/gate0-scratch all >$(LOGS)/gate0-replay.log 2>&1 || { tail -30 $(LOGS)/gate0-replay.log; echo "FAIL gate0"; exit 1; }
 	@node scripts/gate0-eval.mjs /tmp/gate0-scratch/out >GATE.md || { echo "FAIL gate0"; exit 1; }
 	@echo "PASS gate0"
@@ -147,6 +147,6 @@ loc:
 	@echo "PASS loc"
 
 linux-gate:
-	@docker build --no-cache --platform linux/amd64 -f docker/Dockerfile.linux -t backplane:linux . >logs/linux-gate.log 2>&1 || { tail -20 logs/linux-gate.log; echo "FAIL linux-gate"; exit 1; }
-	@docker run --rm --platform linux/amd64 backplane:linux >>logs/linux-gate.log 2>&1 || { tail -30 logs/linux-gate.log; echo "FAIL linux-gate"; exit 1; }
+	@docker build --no-cache --platform linux/amd64 -f docker/Dockerfile.linux -t incremental:linux . >logs/linux-gate.log 2>&1 || { tail -20 logs/linux-gate.log; echo "FAIL linux-gate"; exit 1; }
+	@docker run --rm --platform linux/amd64 incremental:linux >>logs/linux-gate.log 2>&1 || { tail -30 logs/linux-gate.log; echo "FAIL linux-gate"; exit 1; }
 	@echo "PASS linux-gate"

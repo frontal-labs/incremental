@@ -1,16 +1,16 @@
-// Example TypeScript MCP client that queries backplane for affected tasks.
+// Example TypeScript MCP client that queries incremental for affected tasks.
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
 async function main() {
   const transport = new StdioClientTransport({
-    command: 'backplane-mcp',
-    args: ['--store', '.backplane'],
-    env: { BACKPLANE_STORE: '.backplane' },
+    command: 'incremental-mcp',
+    args: ['--store', '.incremental'],
+    env: { INCREMENTAL_STORE: '.incremental' },
   });
 
   const client = new Client({
-    name: 'backplane-mcp-client',
+    name: 'incremental-mcp-client',
     version: '0.1.0',
   });
 

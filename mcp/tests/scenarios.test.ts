@@ -6,7 +6,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { sha256 } from "../src/context.js";
-import type { Plan } from "@backplane/client";
+import type { Plan } from "@incremental/client";
 import {
   affectedTasks,
   contextOf,

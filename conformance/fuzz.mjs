@@ -15,7 +15,7 @@ const root = path.resolve(here, '..');
 const seed = Number(process.argv[2] ?? 20261103) >>> 0;
 const nStores = Number(process.argv[3] ?? 100);
 const perStore = Number(process.argv[4] ?? 100);
-const engine = path.resolve(process.argv[5] ?? path.join(root, 'core/dist/backplane'));
+const engine = path.resolve(process.argv[5] ?? path.join(root, 'core/dist/incremental'));
 const worktree = path.join(root, 'conformance/worktrees/base');
 
 // mulberry32: small, seeded, reproducible.
@@ -119,7 +119,7 @@ const r = rng(seed);
 let compared = 0;
 let mismatches = [];
 const shape = { plans: 0, fallback: 0, withTasks: 0, unobserved: 0, ignored: 0, deleted: 0, high: 0, reasons: new Map() };
-const work = fs.mkdtempSync(path.join(os.tmpdir(), 'backplane-fuzz-'));
+const work = fs.mkdtempSync(path.join(os.tmpdir(), 'incremental-fuzz-'));
 for (let s = 0; s < nStores; s++) {
   const store = path.join(work, `s${s}`);
   spawnSync(engine, ['init', '--store', store]);

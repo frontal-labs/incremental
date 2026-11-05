@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/status.json",
+  "$id": "https://incremental.dev/schemas/status.json",
   "title": "Role Status",
   "description": "Role status JSON tracked in status/<ROLE>.json. States: todo, doing, verify, done, blocked, skipped.",
   "type": "object",

@@ -3,7 +3,7 @@
 import path from "node:path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { backplaneError, connect, isBackplaneError, type AffectedOptions, type Observation, type backplane } from "../src/index.js";
+import { incrementalError, connect, isIncrementalError, type AffectedOptions, type Observation, type incremental } from "../src/index.js";
 import {
   SILENT_ENGINE,
   comparePlan,
@@ -52,7 +52,7 @@ function observation(task: string): Observation {
 }
 
 // Waits until the client has noticed that its server exited (pid goes undefined).
-async function waitForExit(c: backplane): Promise<void> {
+async function waitForExit(c: incremental): Promise<void> {
   const deadline = Date.now() + 5000;
   while (c.pid !== undefined) {
     if (Date.now() > deadline) throw new Error("server did not exit");
@@ -106,7 +106,7 @@ test("restart: false: after the server dies, requests reject with internal inste
     process.kill(c.pid!, "SIGKILL");
     await waitForExit(c);
     await assert.rejects(c.affected(changes, options), (e: unknown) => {
-      assert.ok(isBackplaneError(e));
+      assert.ok(isIncrementalError(e));
       assert.equal(e.code, "internal");
       return true;
     });
@@ -121,7 +121,7 @@ test("timeout: a request that the server does not answer rejects with code timeo
   try {
     // The silent engine answers hello only; affected is never answered.
     await assert.rejects(c.affected(changes, options), (e: unknown) => {
-      assert.ok(e instanceof backplaneError);
+      assert.ok(e instanceof incrementalError);
       assert.equal(e.code, "timeout");
       assert.deepEqual(e.data, { partial: false, timeoutMs: 1, method: "affected" });
       return true;
@@ -182,7 +182,7 @@ test("API: observe, baseline, advance, explain, forget, stats, compact, close", 
     await c.close();
   }
   await assert.rejects(c.stats(), (e: unknown) => {
-    assert.ok(isBackplaneError(e));
+    assert.ok(isIncrementalError(e));
     return true;
   });
 });
@@ -190,19 +190,19 @@ test("API: observe, baseline, advance, explain, forget, stats, compact, close", 
 test("connect: a missing store rejects with store_missing", async () => {
   const missing = path.join(tempDir("missing"), "nope");
   await assert.rejects(connect({ store: missing, root: tempDir("mroot") }), (e: unknown) => {
-    assert.ok(e instanceof backplaneError);
+    assert.ok(e instanceof incrementalError);
     assert.equal(e.code, "store_missing");
     return true;
   });
 });
 
-test("backplaneError: carries code and data; an unknown engine code becomes internal", () => {
-  const e = new backplaneError("baseline_conflict", "expected b0", { expected: "b0", actual: "b1" });
+test("incrementalError: carries code and data; an unknown engine code becomes internal", () => {
+  const e = new incrementalError("baseline_conflict", "expected b0", { expected: "b0", actual: "b1" });
   assert.ok(e instanceof Error);
-  assert.equal(e.name, "backplaneError");
+  assert.equal(e.name, "incrementalError");
   assert.equal(e.code, "baseline_conflict");
   assert.deepEqual(e.data, { expected: "b0", actual: "b1" });
-  const u = new backplaneError("made_up", "msg");
+  const u = new incrementalError("made_up", "msg");
   assert.equal(u.code, "internal");
   assert.deepEqual(u.data, { engineCode: "made_up" });
 });

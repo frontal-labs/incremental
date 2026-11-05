@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/config.json",
-  "title": "backplane.config.json",
-  "description": "Repository configuration file for backplane, located at the repo root.",
+  "$id": "https://incremental.dev/schemas/config.json",
+  "title": "incremental.config.json",
+  "description": "Repository configuration file for incremental, located at the repo root.",
   "type": "object",
   "additionalProperties": false,
   "properties": {

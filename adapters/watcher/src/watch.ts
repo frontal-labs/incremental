@@ -8,14 +8,14 @@
 import { createHash } from "node:crypto";
 import { lstatSync, readdirSync, readFileSync, realpathSync, watch, type FSWatcher } from "node:fs";
 import path from "node:path";
-import type { Change } from "@backplane/client";
+import type { Change } from "@incremental/client";
 
 function sha256(data: Buffer): string {
   return createHash("sha256").update(data).digest("hex");
 }
 
 // Directories the watcher never enters or reports. Task inputs must not lie under them.
-export const SKIP_DIRS = new Set(["node_modules", ".git", "dist", ".backplane", ".toolchain"]);
+export const SKIP_DIRS = new Set(["node_modules", ".git", "dist", ".incremental", ".toolchain"]);
 
 type Kind = "file" | "dir" | "other";
 
@@ -92,6 +92,8 @@ export class Watcher {
   // The tree at the start of the current window (the baseline view).
   private base = new Map<string, Entry>();
   private baseTime = 0;
+  // Duration of the last state() walk, in milliseconds.
+  lastWalkMs = 0;
   private lostReason: string | null = null;
   // Incremented on every event or loss. A caller compares it to detect events
   // that happened during a run. It is a wake-up signal only, never a change list.
@@ -147,7 +149,9 @@ export class Watcher {
   // signature (or by the racy rule). A removed or replaced directory, or a
   // symbolic link, is lost: it cannot be compared entry by entry.
   state(): WatchState {
+    const started = performance.now();
     const fresh = statWalk(this.root, this.root);
+    this.lastWalkMs = performance.now() - started;
     const changes: Change[] = [];
     let lost = this.lostReason;
     for (const [rel, now] of fresh) {

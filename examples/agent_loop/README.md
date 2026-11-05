@@ -52,4 +52,4 @@ Round 1 has no baseline yet, so the plan falls back (`baseline_mismatch`) and ru
 
 - `plans/PLAN.md` section 10.4 (adapter loop), 12.4 (M8) and 15.4 (E6).
 - `docs/benchmarks/BENCHMARKS_AND_GATES.md` — benchmark targets and methodology.
-- `adapters/vitest/README.md` — Vitest adapter loop (`backplane vitest run`).
+- `adapters/vitest/README.md` — Vitest adapter loop (`incremental vitest run`).

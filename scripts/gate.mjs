@@ -109,8 +109,8 @@ async function main() {
   {
     const checks = [
       ["node --test core/tests/*.test.mjs", "test-core"],
-      ["node conformance/run.mjs core/dist/backplane", "test-policy"],
-      ["CONF_ONLY=C26,C34,C35,C40 node conformance/run.mjs core/dist/backplane", "test-protocol"],
+      ["node conformance/run.mjs core/dist/incremental", "test-policy"],
+      ["CONF_ONLY=C26,C34,C35,C40 node conformance/run.mjs core/dist/incremental", "test-protocol"],
       ["node conformance/fuzz.mjs 20261103 100 100 && node conformance/fuzz.mjs 1 100 100 && node conformance/fuzz.mjs 2 100 100", "test-fuzz"],
     ];
     let allOk = true; let detail = "";

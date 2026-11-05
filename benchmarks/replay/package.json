@@ -1,5 +1,5 @@
 {
-  "name": "backplane-replay",
+  "name": "incremental-replay",
   "private": true,
   "type": "module",
   "version": "0.1.0",
@@ -7,10 +7,10 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "bin": {
-    "backplane-replay": "dist/src/index.js"
+    "incremental-replay": "dist/src/index.js"
   },
   "dependencies": {
-    "@backplane/client": "file:../../bindings/node"
+    "@incremental/client": "file:../../bindings/node"
   },
   "devDependencies": {
     "@types/node": "22.20.5",

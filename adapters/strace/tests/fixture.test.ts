@@ -97,7 +97,7 @@ async function recordTask(dir: string, task: string, work: string, index: number
     "--reporter=json",
     `--outputFile=${report}`,
   ];
-  const childEnv: NodeJS.ProcessEnv = { ...env, NODE_OPTIONS: nodeOptions, BACKPLANE_TRACE_OUT: trace, BACKPLANE_TRACE_ROOT: dir };
+  const childEnv: NodeJS.ProcessEnv = { ...env, NODE_OPTIONS: nodeOptions, INCREMENTAL_TRACE_OUT: trace, INCREMENTAL_TRACE_ROOT: dir };
   return new Promise<TraceEvent[]>((resolve) => {
     const child = spawn(process.execPath, args, { cwd: dir, env: childEnv, stdio: ["ignore", "pipe", "pipe"] });
     let done = false;
@@ -158,7 +158,7 @@ m10(
           // directory listings (test discovery) are deliberately not task
           // inputs (PLAN 11.2), so dirs from that pid are excluded. Files and
           // probes from it are inputs, as are all events from forked workers.
-          // `exec` events are process observations (for @backplane/process),
+          // `exec` events are process observations (for @incremental/process),
           // not file reads: the Node recorder deliberately does not intercept
           // execve, so they are not part of the recorder-completeness comparison.
           const first = events[0];

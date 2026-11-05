@@ -13,7 +13,7 @@ import ts from "typescript";
 
 // The engine store lives under the repo. Biome checks it (it is not ignored), but it
 // is not a task.
-const STORE_DIR = ".backplane";
+const STORE_DIR = ".incremental";
 
 export class BiomeError extends Error {
   constructor(message: string) {

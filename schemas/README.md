@@ -1,6 +1,6 @@
-# Backplane Schemas
+# Incremental Schemas
 
-JSON schemas for backplane: observations, changesets, plans, explanations, errors, requests, responses, stats, store records, config, change requests, conformance cases, status JSON, store layout, and friction entries. Schemas are the machine-readable counterpart to `docs/spec/PROTOCOL.md`, `docs/spec/POLICY.md`, `docs/spec/FORMAT.md`, and `plans/PLAN.md`.
+JSON schemas for incremental: observations, changesets, plans, explanations, errors, requests, responses, stats, store records, config, change requests, conformance cases, status JSON, store layout, and friction entries. Schemas are the machine-readable counterpart to `docs/spec/PROTOCOL.md`, `docs/spec/POLICY.md`, `docs/spec/FORMAT.md`, and `plans/PLAN.md`.
 
 The authoritative schema artifacts checked by `spec/validate.mjs` live in `spec/schemas/`. This directory (`schemas/`) mirrors those schemas with full `$id` URIs, discriminators, and additional schema domains (store layout, config, change requests, conformance cases, role status, friction entries).
 
@@ -24,13 +24,13 @@ The authoritative schema artifacts checked by `spec/validate.mjs` live in `spec/
 | [response.json](response.json) | JSON Lines response from the engine (exactly one of result or error). |
 | [stats.json](stats.json) | Stats: store statistics (tasks, observations, baseline, graph_version). |
 | [store_record.json](store_record.json) | Store log record (hdr, obs, forget, baseline) — one line of tg.log. |
-| [config.json](config.json) | backplane.config.json: repository configuration file. |
+| [config.json](config.json) | incremental.config.json: repository configuration file. |
 | [change_request.json](change_request.json) | Change request format for spec/CHANGE_REQUESTS.md. |
 | [conformance_case.json](conformance_case.json) | Data-driven conformance case format (conformance/cases/*.json). |
 | [status.json](status.json) | Role status JSON format (status/<ROLE>.json). |
 | [store_layout.json](store_layout.json) | Store directory layout (tg.log, tg.lock, stat.cache, tg.idx). |
 | [friction_entry.json](friction_entry.json) | Friction entry format for friction/FRICTION.md and friction/fNNN/. |
-| [index.json](index.json) | Index of all backplane JSON schemas. |
+| [index.json](index.json) | Index of all incremental JSON schemas. |
 
 ## Related
 
@@ -50,4 +50,4 @@ From the repo root:
 make check-spec   # schemas, reference policy, coverage matrix (PASS validate.mjs, PASS check-spec)
 ```
 
-Schemas in this directory use JSON Schema draft-07 and carry `$id` URIs under `https://backplane.dev/schemas/`.
+Schemas in this directory use JSON Schema draft-07 and carry `$id` URIs under `https://incremental.dev/schemas/`.

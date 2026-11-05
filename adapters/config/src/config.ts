@@ -1,16 +1,16 @@
-// The config adapter (spec/adapters/config.md). Config files that backplane.config.json
+// The config adapter (spec/adapters/config.md). Config files that incremental.config.json
 // lists under globalInputs are recorded as `declared` inputs with content hashes (PLAN 9.5).
 // The adapter runs no task: it supplies inputs and the config the engine compares.
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
-import type { Config, Context, Input } from "@backplane/client";
+import type { Config, Context, Input } from "@incremental/client";
 
-export const CONFIG_FILE = "backplane.config.json";
+export const CONFIG_FILE = "incremental.config.json";
 export const CONFIG_RUNNER = "config@0.1.0";
 
 // Directories the walk never enters (PLAN 6.7 default exclude).
-const SKIP_DIRS = new Set(["node_modules", ".git", ".backplane"]);
+const SKIP_DIRS = new Set(["node_modules", ".git", ".incremental"]);
 
 export class ConfigError extends Error {
   constructor(message: string) {
@@ -23,7 +23,7 @@ export function sha256(data: Buffer | string): string {
   return "sha256:" + createHash("sha256").update(data).digest("hex");
 }
 
-// backplane.config.json at the root (PLAN 6.7). A missing file is an empty config.
+// incremental.config.json at the root (PLAN 6.7). A missing file is an empty config.
 export function loadConfig(root: string): Config {
   const file = path.join(root, CONFIG_FILE);
   if (!existsSync(file)) return {};

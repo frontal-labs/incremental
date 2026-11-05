@@ -1,5 +1,5 @@
 // Integration tests: a scratch git repository with three Python files, run
-// through the real engine, backplane-git and ruff (spec/adapters/ruff.md).
+// through the real engine, incremental-git and ruff (spec/adapters/ruff.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -37,7 +37,7 @@ function commit(root: string, message: string): void {
 }
 
 function makeRepo(): { root: string; store: string } {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-ruff-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-ruff-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");

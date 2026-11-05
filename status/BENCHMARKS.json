@@ -2,5 +2,5 @@
   "id": "GATE0",
   "state": "blocked",
   "evidence": "evidence/invalid/GATE0.txt",
-  "notes": "Matches BENCH.json. Needs a real Vitest monorepo (BACKPLANE_BENCH_REPO) and a human decision."
+  "notes": "Matches BENCH.json. Needs a real Vitest monorepo (INCREMENTAL_BENCH_REPO) and a human decision."
 }

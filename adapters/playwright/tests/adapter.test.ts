@@ -1,5 +1,5 @@
 // Integration tests: a scratch git repository with Playwright test files, run
-// through the real engine, backplane-git and the pinned Playwright CLI
+// through the real engine, incremental-git and the pinned Playwright CLI
 // (spec/adapters/playwright.md). No browser is launched: the test files use no
 // browser fixture. The live test uses the request fixture against a local server,
 // which is recorded dirty.
@@ -66,7 +66,7 @@ test("live", async ({ request }) => {
 `;
 
 function makeRepo(): { root: string; store: string; base: string } {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-pw-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-pw-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");

@@ -1,4 +1,4 @@
-// @backplane/fs: the generic file-read recorder (spec/adapters/fs.md, PLAN 11.1).
+// @incremental/fs: the generic file-read recorder (spec/adapters/fs.md, PLAN 11.1).
 //
 // There is no syscall tracer on macOS, so this recorder observes only the
 // declared inputs of a task. Reads that are not declared are not observed. The
@@ -8,7 +8,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, realpathSync } from "node:fs";
 import path from "node:path";
-import type { backplane, Context, Input, Observation, Outcome } from "@backplane/client";
+import type { incremental, Context, Input, Observation, Outcome } from "@incremental/client";
 
 export const FS_VERSION = "0.1.0";
 
@@ -39,7 +39,7 @@ export interface Recorded {
 }
 
 // The signature of a strace oracle runner, injected by the caller so that
-// @backplane/fs has no hard dependency on @backplane/strace (the oracle is
+// @incremental/fs has no hard dependency on @incremental/strace (the oracle is
 // Linux-only). The runner observes one command and returns the paths it
 // touched under the configured roots (PLAN §11.5).
 export interface OracleRunOptions {
@@ -72,7 +72,7 @@ export function oracleContext(): Context {
     lockfile: "none",
     tsconfig: "none",
     pkgjson: "none",
-    runner: `backplane-fs@${FS_VERSION}`,
+    runner: `incremental-fs@${FS_VERSION}`,
     node: process.version,
     fmt: 1,
     caps: { probes: true, dirs: true, env: false },
@@ -91,7 +91,7 @@ export function contextFor(): Context {
     lockfile: "none",
     tsconfig: "none",
     pkgjson: "none",
-    runner: `backplane-fs@${FS_VERSION}`,
+    runner: `incremental-fs@${FS_VERSION}`,
     node: process.version,
     fmt: 1,
     caps: { probes: false, dirs: false, env: false },
@@ -120,7 +120,7 @@ export function declaredInputs(root: string, declared: readonly string[]): Decla
 // any declared input changed while the check ran, or the caller did not assert
 // completeness, the observation is dirty. Observes it through the client.
 export async function recordFiles(
-  client: backplane,
+  client: incremental,
   spec: FileTask,
   baseline: string,
   check: () => CheckResult,
@@ -151,7 +151,7 @@ export async function recordFiles(
 // observation. The observation is not dirty: the filesystem was fully
 // observed; environment reads are not observable, hence caps.env false.
 export async function recordOracle(
-  client: backplane,
+  client: incremental,
   spec: OracleFileTask,
   baseline: string,
   runOracle: OracleRun,

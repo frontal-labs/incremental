@@ -1,11 +1,11 @@
-# @backplane/clippy
+# @incremental/clippy
 
 The Cargo/Clippy adapter, built from `spec/adapters/clippy.md`. It runs
 `cargo clippy -p <crate> --all-targets` for each workspace member, observes the
-run, and drives the engine through `@backplane/client`.
+run, and drives the engine through `@incremental/client`.
 
 ```
-backplane-clippy run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--target-dir DIR] [--timeout MS]
+incremental-clippy run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--target-dir DIR] [--timeout MS]
 ```
 
 Exit codes follow the TypeScript adapter: 0 advanced and clean, 1 advanced with a
@@ -70,7 +70,7 @@ Gaps that are not marked dirty, because they are declared rather than observed:
 
 `npm test` in this directory builds `bindings/node` and the adapter, then runs
 `node --test` against a scratch workspace in a scratch git repository, with the
-real engine and `backplane-git`. Each test has its own store, and the cargo target
+real engine and `incremental-git`. Each test has its own store, and the cargo target
 directory is inside that store.
 
 Cases: discovery of members; dep-info parsing; first run advances; an edit to one

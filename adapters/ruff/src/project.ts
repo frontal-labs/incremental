@@ -17,7 +17,7 @@ export class ProjectError extends Error {
 }
 
 export function ruffBinary(): string {
-  return process.env.BACKPLANE_RUFF || "ruff";
+  return process.env.INCREMENTAL_RUFF || "ruff";
 }
 
 // The ruff version is part of the context (PLAN 8.4). Plugin rules are not

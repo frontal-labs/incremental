@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/change_request.json",
+  "$id": "https://incremental.dev/schemas/change_request.json",
   "title": "Change Request",
   "description": "A change request appended to spec/CHANGE_REQUESTS.md. Format: ## CR-NNNN <title> followed by fields.",
   "type": "object",

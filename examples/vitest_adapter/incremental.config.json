@@ -1,6 +1,6 @@
 {
   "roots": ["."],
-  "exclude": ["**/node_modules/**", ".git/**", ".backplane/**"],
+  "exclude": ["**/node_modules/**", ".git/**", ".incremental/**"],
   "ignore": [],
   "globalInputs": ["pnpm-lock.yaml", "package-lock.json", "yarn.lock", "package.json",
                    "tsconfig*.json", "vitest.config.*", "vite.config.*"],

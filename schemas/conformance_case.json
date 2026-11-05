@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/conformance_case.json",
+  "$id": "https://incremental.dev/schemas/conformance_case.json",
   "title": "Conformance Case",
   "description": "A data-driven conformance case (language-neutral). Cases live in conformance/cases/*.json.",
   "type": "object",

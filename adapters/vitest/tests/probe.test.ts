@@ -21,7 +21,7 @@ test("NODE_OPTIONS reaches the forked worker: the preload runs there", async () 
       path.join(dir, PROBE_TASK),
       [
         "it('probe', () => {",
-        "  expect(process.env.BACKPLANE_RECORDER).toBe('1');",
+        "  expect(process.env.INCREMENTAL_RECORDER).toBe('1');",
         "  expect(typeof process.send).toBe('function');",
         "  expect(process.ppid).not.toBe(process.pid);",
         "  expect(process.env.NODE_OPTIONS).toContain('--import');",

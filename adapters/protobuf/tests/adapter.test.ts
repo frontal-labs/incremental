@@ -1,6 +1,6 @@
 // Integration tests: a scratch git repository with protoc targets (one importing
 // another, one unrelated, one importing a well-known type) and a buf module, run
-// through the real engine and backplane-git (spec/adapters/protobuf.md).
+// through the real engine and incremental-git (spec/adapters/protobuf.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -41,7 +41,7 @@ message A { int32 x = 1; google.protobuf.Timestamp t = 2; }
 `;
 
 function makeRepo(): { root: string; store: string } {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-pb-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-pb-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");

@@ -6,7 +6,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { connect, defaultEngine, type backplane, type Context, type Plan } from "@backplane/client";
+import { connect, defaultEngine, type incremental, type Context, type Plan } from "@incremental/client";
 import { contextFor, planEnv, recordTasks, type Env, type EnvTask } from "../src/index.js";
 
 interface Fixture {
@@ -15,14 +15,14 @@ interface Fixture {
 }
 
 function fixture(): Fixture {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-env-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-env-"));
   const store = path.join(base, "store");
   const r = spawnSync(defaultEngine(), ["init", "--store", store], { encoding: "utf8" });
   if (r.status !== 0) throw new Error(`init failed: ${r.stderr}`);
   return { root: base, store };
 }
 
-async function withClient<T>(f: Fixture, fn: (c: backplane) => Promise<T>): Promise<T> {
+async function withClient<T>(f: Fixture, fn: (c: incremental) => Promise<T>): Promise<T> {
   const c = await connect({ store: f.store, root: f.root, timeoutMs: 60_000 });
   try {
     return await fn(c);
@@ -34,13 +34,13 @@ async function withClient<T>(f: Fixture, fn: (c: backplane) => Promise<T>): Prom
 const BASE = "b1";
 
 // Records the tasks at BASE in env, then returns the context they were recorded with.
-async function record(c: backplane, env: Env, tasks: EnvTask[]): Promise<Context> {
+async function record(c: incremental, env: Env, tasks: EnvTask[]): Promise<Context> {
   const context = contextFor(tasks.some((t) => t.envAll === true));
   await recordTasks(c, { baseline: BASE, context, env, tasks });
   return context;
 }
 
-async function plan(c: backplane, context: Context, env: Env, tasks: EnvTask[]): Promise<Plan> {
+async function plan(c: incremental, context: Context, env: Env, tasks: EnvTask[]): Promise<Plan> {
   return planEnv(c, { baseline: BASE, context, env, tasks });
 }
 

@@ -1,10 +1,10 @@
 # GATE.md: Gate 1 (PLAN 13.2, E7)
 
-Generated: 2026-11-04T18:49:36.194Z
+Generated: 2026-11-04T23:31:58.037Z
 
 | Criterion | Measured | Threshold | Result | Raw data |
 |-----------|----------|-----------|--------|----------|
-| G3 | per-query ~-0.02 ms (load 29 ms) | < 20 ms (warm plan at 100k tasks) | pass | benchmarks/results/m1.json |
+| G3 | m1 run failed | < 20 ms (warm plan at 100k tasks) | fail | benchmarks/results/m1.json |
 | G2 | 0 false skips over 5 evaluated commits (bound 3/5) | zero observed over >= 50 evaluated commits | fail | benchmarks/results/replay.json |
 | G1 | median skip share 78.6% over 5 evaluated commits | >= 50% | pass | benchmarks/results/replay.json |
 | G4 | not runnable on this host (strace is Linux-only) | zero gaps | fail | logs/test-oracle.log (via make linux-gate) |

@@ -1,4 +1,4 @@
-/* Native helpers for the backplane core. Each function is an extern fn in
+/* Native helpers for the incremental core. Each function is an extern fn in
    core/src/native.goose. Slices arrive as { data, len }, the layout of
    Goose's u8[:] (spec 7.10). Builders are appended through goose.h. */
 #include <errno.h>

@@ -1,4 +1,4 @@
-"""Engine process and line protocol. Internal: use backplane.connect instead."""
+"""Engine process and line protocol. Internal: use incremental.connect instead."""
 
 import json
 import os
@@ -7,7 +7,7 @@ import subprocess
 import threading
 from typing import Any, Sequence
 
-from .errors import BackplaneError
+from .errors import IncrementalError
 
 _EOF = object()
 
@@ -90,13 +90,20 @@ class Engine:
         try:
             for raw in iter(proc.stdout.readline, b""):
                 q.put(raw)
+        except (OSError, ValueError):
+            # stop() or kill() closed the stream while this thread was reading.
+            pass
         finally:
             q.put(_EOF)
 
     def _drain_stderr(self, proc):
-        for raw in iter(proc.stderr.readline, b""):
-            self._stderr_tail.append(raw)
-            del self._stderr_tail[:-20]
+        try:
+            for raw in iter(proc.stderr.readline, b""):
+                self._stderr_tail.append(raw)
+                del self._stderr_tail[:-20]
+        except (OSError, ValueError):
+            # The stream was closed by stop() or kill(); the tail so far is kept.
+            pass
 
     def stop(self, graceful: bool, wait: float) -> None:
         proc = self._proc
@@ -105,7 +112,7 @@ class Engine:
         if graceful and proc.poll() is None:
             try:
                 self.request("shutdown", {}, timeout=wait)
-            except BackplaneError:
+            except IncrementalError:
                 pass
             # The engine writes its index image before it exits. Let it finish.
             self.wait_exit(max(wait, 1.0))
@@ -142,7 +149,7 @@ class Engine:
     # ----- requests ----------------------------------------------------------
 
     def request(self, method: str, params: dict, timeout: float | None = None) -> Any:
-        """Send one request and return its result. Raises BackplaneError."""
+        """Send one request and return its result. Raises IncrementalError."""
         req_id = self._next_id
         self._next_id += 1
         body = {"id": req_id, "method": method, "params": params}
@@ -160,7 +167,7 @@ class Engine:
     def _send_line(self, data: bytes) -> None:
         proc = self._proc
         if proc is None:
-            raise BackplaneError("engine_exited", "engine is not running")
+            raise IncrementalError("engine_exited", "engine is not running")
         try:
             proc.stdin.write(data)
             proc.stdin.flush()
@@ -175,13 +182,13 @@ class Engine:
             if msg.get("id") == req_id:
                 if "error" in msg:
                     err = msg["error"]
-                    raise BackplaneError(err.get("code", "internal"), err.get("message", ""), err.get("data"))
+                    raise IncrementalError(err.get("code", "internal"), err.get("message", ""), err.get("data"))
                 if "result" not in msg:
-                    raise BackplaneError("bad_response", f"response has neither result nor error: {msg!r}")
+                    raise IncrementalError("bad_response", f"response has neither result nor error: {msg!r}")
                 return msg["result"]
             if msg.get("id") is None and msg.get("ok") is False and "error" in msg:
                 err = msg["error"]
-                raise BackplaneError(err.get("code", "internal"), err.get("message", ""), err.get("data"))
+                raise IncrementalError(err.get("code", "internal"), err.get("message", ""), err.get("data"))
             # Any other line belongs to an earlier request and is dropped.
 
     def _read_one(self, timeout: float) -> dict:
@@ -189,16 +196,16 @@ class Engine:
             raw = self._lines.get(timeout=timeout)
         except queue.Empty:
             self.kill()
-            raise BackplaneError("timeout", f"no response within {timeout} s", {"partial": False})
+            raise IncrementalError("timeout", f"no response within {timeout} s", {"partial": False})
         if raw is _EOF:
             code = self._wait_exit()
-            raise BackplaneError("engine_exited", f"engine exited (status {code})", self._stderr_text() or None)
+            raise IncrementalError("engine_exited", f"engine exited (status {code})", self._stderr_text() or None)
         try:
             msg = json.loads(raw)
         except ValueError:
-            raise BackplaneError("bad_response", f"engine wrote a line that is not JSON: {raw[:200]!r}")
+            raise IncrementalError("bad_response", f"engine wrote a line that is not JSON: {raw[:200]!r}")
         if not isinstance(msg, dict):
-            raise BackplaneError("bad_response", f"engine wrote a non-object line: {raw[:200]!r}")
+            raise IncrementalError("bad_response", f"engine wrote a non-object line: {raw[:200]!r}")
         return msg
 
     def _wait_exit(self):
@@ -214,17 +221,17 @@ class Engine:
 
 
 def default_engine() -> str:
-    env = os.environ.get("BACKPLANE_ENGINE")
+    env = os.environ.get("INCREMENTAL_ENGINE")
     if env:
         return env
-    return os.path.join(find_repo_root(), "core", "dist", "backplane")
+    return os.path.join(find_repo_root(), "core", "dist", "incremental")
 
 
 def default_store() -> str:
-    env = os.environ.get("BACKPLANE_STORE")
+    env = os.environ.get("INCREMENTAL_STORE")
     if env:
         return env
-    return os.path.join(find_repo_root(), ".backplane")
+    return os.path.join(find_repo_root(), ".incremental")
 
 
 def find_repo_root(start: str | None = None) -> str:

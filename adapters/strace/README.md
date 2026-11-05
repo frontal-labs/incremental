@@ -1,4 +1,4 @@
-# @backplane/strace: native strace oracle (Linux)
+# @incremental/strace: native strace oracle (Linux)
 
 Native recorder for Linux: runs a command under `strace` and reports the paths
 it touches, as `file`, `dir`, `probe` and `exec` inputs. It is the oracle that
@@ -19,7 +19,7 @@ strace -f -e trace=openat,open,openat2,stat,newfstatat,statx,access,faccessat,fa
 - **execs** — programs executed with `execve`
 
 Paths are `realpath`'d, confined to the configured `roots`, excluded of
-`node_modules`, `.git` and `.backplane`, and returned repo-relative with `/`
+`node_modules`, `.git` and `.incremental`, and returned repo-relative with `/`
 separators — the same canonicalization as the Vitest recorder (PLAN 11.4).
 strace cannot see environment reads (PLAN 11.5).
 
@@ -48,8 +48,8 @@ It runs inside `make linux-gate` (Docker, `docker/Dockerfile.linux` installs
 
 ## Consumers
 
-- `@backplane/fs` — `recordOracle` runs a command under the strace oracle on
+- `@incremental/fs` — `recordOracle` runs a command under the strace oracle on
   Linux and records the observed files, dirs and probes (caps: probes/dirs
   true, env false). On macOS only declared inputs are available.
-- `@backplane/process` — `runTask` with `oracle: true` runs the command under
+- `@incremental/process` — `runTask` with `oracle: true` runs the command under
   the strace oracle on Linux (child-process executions visible via `execve`).

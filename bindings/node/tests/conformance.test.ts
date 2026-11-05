@@ -9,7 +9,7 @@ import path from "node:path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  backplaneError,
+  incrementalError,
   connect,
   type AffectedOptions,
   type ChangeSet,
@@ -114,7 +114,7 @@ async function runAdvanceCase(c: CaseFile): Promise<string[]> {
       await k.advance(act.params.to as string, act.params.expected as string | null);
       diffs.push("error: advance succeeded");
     } catch (e) {
-      const code = e instanceof backplaneError ? e.code : String(e);
+      const code = e instanceof incrementalError ? e.code : String(e);
       if (code !== c.expect.error) diffs.push(`error: want ${String(c.expect.error)} got ${code}`);
     }
     const after = await k.baseline();

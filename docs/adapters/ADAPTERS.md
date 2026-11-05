@@ -1,4 +1,4 @@
-# BACKPLANE ADAPTERS
+# INCREMENTAL ADAPTERS
 
 ## Adapter Types
 | Adapter | Status | Role |
@@ -27,7 +27,7 @@ Any recorder must:
 - Wraps module loading
 - Replaces `process.env` with Proxy recording `get`, `has`, `ownKeys`
 - Each test file runs in own forked process (Vitest `forks` pool, D-12) - observations belong to exactly one task
-- Writes observations to `BACKPLANE_TRACE_OUT` at exit, then sent via `observe`
+- Writes observations to `INCREMENTAL_TRACE_OUT` at exit, then sent via `observe`
 - Canonicalize paths with `realpath` before exclude matching and interning
 - Worker threads: if test starts `worker_threads`, observation gets `caps.probes` and `caps.dirs` false for that task
 - Dynamic imports/require with computed paths observed by wrappers (not guessed)
@@ -36,7 +36,7 @@ Any recorder must:
 ### Planner
 - Task IDs are repo-relative test file paths
 - Fallback plan runs every known test file
-- Command: `backplane vitest run [--base REF] [--json] [--all] [--jobs N]`
+- Command: `incremental vitest run [--base REF] [--json] [--all] [--jobs N]`
   - Computes plan, runs invalid test files with recorder in parallel (N = CPU count default)
   - Writes JSON results if requested
   - Follows adapter loop (10.4)
@@ -52,29 +52,29 @@ Any recorder must:
 ### Canonical Paths & Symlinks
 Workspace packages reached via `node_modules` symlinks resolve to real location. Recorder records real path; `exclude` applied to real paths. Fixture includes workspace-symlink shape (conformance V07).
 
-## Strace Oracle (Linux) — `adapters/strace`, package `@backplane/strace`
+## Strace Oracle (Linux) — `adapters/strace`, package `@incremental/strace`
 
 ```bash
 strace -f -e trace=openat,open,openat2,stat,newfstatat,statx,access,faccessat,faccessat2,getdents64,readlink,readlinkat,execve -o <file> -- <cmd>
 ```
 
-`src/oracle.ts` runs that command and parses the log: `runOracle(command, opts)` spawns strace (Linux only), `parseStraceLog(text, opts)` parses strace output text on any platform. Reports `files` (successful read opens and stats of regular files), `dirs` (`getdents64` on directory fds), `probes` (failed lookups) and `execs` (`execve` targets), all realpath'd, confined to `roots`, excluded of `node_modules`/`.git`/`.backplane`, repo-relative with `/` separators — the same canonicalization as the Vitest recorder (PLAN 11.4). strace cannot see env reads (PLAN 11.5).
+`src/oracle.ts` runs that command and parses the log: `runOracle(command, opts)` spawns strace (Linux only), `parseStraceLog(text, opts)` parses strace output text on any platform. Reports `files` (successful read opens and stats of regular files), `dirs` (`getdents64` on directory fds), `probes` (failed lookups) and `execs` (`execve` targets), all realpath'd, confined to `roots`, excluded of `node_modules`/`.git`/`.incremental`, repo-relative with `/` separators — the same canonicalization as the Vitest recorder (PLAN 11.4). strace cannot see env reads (PLAN 11.5).
 
 **Rule**: the Node recorder must contain every path the strace oracle sees (after exclude/realpath). M10: zero gaps. Gaps are recorder bugs and can never be waived.
 
 Consumers:
-- `@backplane/fs` — `recordOracle(client, spec, baseline, runOracle)` runs a command under the oracle on Linux and records observed files/dirs/probes (`caps: {probes: true, dirs: true, env: false}`).
-- `@backplane/process` — `runTask` with `oracle: true` runs the command under the oracle on Linux (child processes visible via `execve`).
+- `@incremental/fs` — `recordOracle(client, spec, baseline, runOracle)` runs a command under the oracle on Linux and records observed files/dirs/probes (`caps: {probes: true, dirs: true, env: false}`).
+- `@incremental/process` — `runTask` with `oracle: true` runs the command under the oracle on Linux (child processes visible via `execve`).
 
 ## Adapter Loop Contract
 ```bash
-B   = backplane baseline
+B   = incremental baseline
 ch  = changes from B to worktree (git change source)
-plan = backplane affected --baseline B --changes ch --context ctx
-for each task in plan.deleted_tasks:  backplane forget
+plan = incremental affected --baseline B --changes ch --context ctx
+for each task in plan.deleted_tasks:  incremental forget
 run each task in plan.tasks while recording observation
 if every task in plan.tasks ran and worktree clean and HEAD unchanged:
-    backplane advance --to HEAD --expected B
+    incremental advance --to HEAD --expected B
 else:
     do not advance; report why; exit with code 7
 ```

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/input_declared.json",
+  "$id": "https://incremental.dev/schemas/input_declared.json",
   "title": "Input Declared",
   "type": "object",
   "required": ["kind", "path", "hash"],

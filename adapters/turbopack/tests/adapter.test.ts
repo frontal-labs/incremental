@@ -1,5 +1,5 @@
 // Integration tests: a scratch git repository with one Next.js app, built by the
-// real `next build --turbopack` and run through the real engine and backplane-git
+// real `next build --turbopack` and run through the real engine and incremental-git
 // (spec/adapters/turbopack.md). The fixture's node_modules is a copy of this
 // package's pinned next, react and typescript, so it builds offline.
 import assert from "node:assert/strict";
@@ -65,11 +65,11 @@ const TSCONFIG = JSON.stringify({
 const PAGE_OK = "export default function Page() {\n  return <main>hi</main>;\n}\n";
 
 function makeRepo(): { root: string; store: string } {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-tp-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-tp-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");
-  write(root, ".gitignore", "node_modules/\n.next/\nnext-env.d.ts\n.backplane/\n");
+  write(root, ".gitignore", "node_modules/\n.next/\nnext-env.d.ts\n.incremental/\n");
   write(root, "package.json", JSON.stringify({ name: "fixture", private: true }));
   write(root, "package-lock.json", readFileSync(path.join(PACKAGE_DIR, "package-lock.json"), "utf8"));
   write(root, "libs/util/package.json", JSON.stringify({ name: "util", private: true }));

@@ -1,7 +1,7 @@
-# @backplane/config
+# @incremental/config
 
 Config files as declared inputs (spec/adapters/config.md). Not a task runner: it records
-the global config files that `backplane.config.json` lists under `globalInputs`, and any
+the global config files that `incremental.config.json` lists under `globalInputs`, and any
 config a task declares, as `declared` inputs with content hashes (PLAN 9.5).
 
 ## Use
@@ -10,7 +10,7 @@ config a task declares, as `declared` inputs with content hashes (PLAN 9.5).
 - `recordTasks(client, { root, baseline, context, tasks })`: one observation per task. Each
   task declares every global input plus its own `declares` list.
 - `planChanges(client, { root, baseline, context, changes })`: the affected query, with
-  `config` (`ignore`, `globalInputs`, `fallbackContextKeys`) read from `backplane.config.json`.
+  `config` (`ignore`, `globalInputs`, `fallbackContextKeys`) read from `incremental.config.json`.
 
 Test: `npm test` (builds `bindings/node`, then runs `node --test`). Wiring tests are in
 `test/config.test.ts`, through the real engine.
@@ -33,6 +33,6 @@ Test: `npm test` (builds `bindings/node`, then runs `node --test`). Wiring tests
   invalidated. That is only correct if the task's recorder records probes and dirs and the
   task does not read the file. The test "documented gap" checks this case.
 - Glob matches are computed by walking the repo at observation time (excluding `node_modules`,
-  `.git`, `.backplane`). A file that matches a glob only after the observation is seen as a
+  `.git`, `.incremental`). A file that matches a glob only after the observation is seen as a
   changed path that matches `globalInputs`, which falls back.
-- `backplane.config.json` itself is not an input of any task unless a task declares it.
+- `incremental.config.json` itself is not an input of any task unless a task declares it.

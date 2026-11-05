@@ -6,7 +6,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { connect, defaultEngine, type backplane, type Context, type Plan } from "@backplane/client";
+import { connect, defaultEngine, type incremental, type Context, type Plan } from "@incremental/client";
 import { contextFor, loadConfig, planChanges, recordTasks, type TaskSpec } from "../src/index.js";
 
 interface Fixture {
@@ -16,11 +16,11 @@ interface Fixture {
 
 // A repo with one global config file (config/shared.json) and two non-global configs.
 function fixture(): Fixture {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-config-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-config-"));
   const root = path.join(base, "repo");
   const store = path.join(base, "store");
   mkdirSync(path.join(root, "config"), { recursive: true });
-  writeFileSync(path.join(root, "backplane.config.json"), JSON.stringify({ globalInputs: ["config/shared.json"] }));
+  writeFileSync(path.join(root, "incremental.config.json"), JSON.stringify({ globalInputs: ["config/shared.json"] }));
   writeFileSync(path.join(root, "config/shared.json"), '{"v":1}\n');
   writeFileSync(path.join(root, "config/app.json"), '{"v":1}\n');
   writeFileSync(path.join(root, "config/other.json"), '{"v":1}\n');
@@ -33,7 +33,7 @@ function cleanup(f: Fixture): void {
   rmSync(path.dirname(f.root), { recursive: true, force: true });
 }
 
-async function withClient<T>(f: Fixture, fn: (c: backplane) => Promise<T>): Promise<T> {
+async function withClient<T>(f: Fixture, fn: (c: incremental) => Promise<T>): Promise<T> {
   const c = await connect({ store: f.store, root: f.root, timeoutMs: 60_000 });
   try {
     return await fn(c);
@@ -45,7 +45,7 @@ async function withClient<T>(f: Fixture, fn: (c: backplane) => Promise<T>): Prom
 const BASE = "b1";
 
 // Records the tasks at BASE with the given caps, as the task's own recorder would.
-async function record(c: backplane, f: Fixture, tasks: TaskSpec[], caps?: Context["caps"]): Promise<Context> {
+async function record(c: incremental, f: Fixture, tasks: TaskSpec[], caps?: Context["caps"]): Promise<Context> {
   const context = contextFor(f.root, caps);
   await recordTasks(c, { root: f.root, baseline: BASE, context, tasks });
   return context;
@@ -60,7 +60,7 @@ const TASKS: TaskSpec[] = [
   { id: "tasks/b" },
 ];
 
-test("the config file of backplane.config.json is read as globalInputs", () => {
+test("the config file of incremental.config.json is read as globalInputs", () => {
   const f = fixture();
   try {
     assert.deepEqual(loadConfig(f.root).globalInputs, ["config/shared.json"]);

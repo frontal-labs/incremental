@@ -1,7 +1,7 @@
-// The three MCP tools of PLAN 11.8, over the Node client (@backplane/client).
+// The three MCP tools of PLAN 11.8, over the Node client (@incremental/client).
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { isBackplaneError, type backplane, type Observation } from "@backplane/client";
+import { isIncrementalError, type incremental, type Observation } from "@incremental/client";
 import { buildContext, envHashes } from "./context.js";
 import { changeSet } from "./git.js";
 
@@ -17,7 +17,7 @@ export const TOOL_DESCRIPTIONS = {
 // Runtime the tools need: the client (started lazily), the repo root, the git
 // source binary, and the environment whose hash map is sent with each query.
 export interface Runtime {
-  client(): Promise<backplane>;
+  client(): Promise<incremental>;
   root: string;
   gitBinary: string;
   env: NodeJS.ProcessEnv;
@@ -65,7 +65,7 @@ function text(value: unknown): { content: Array<{ type: "text"; text: string }> 
 
 // A tool failure is an MCP tool error result, never a crash of the server.
 function failure(e: unknown): { isError: true; content: Array<{ type: "text"; text: string }> } {
-  const message = isBackplaneError(e)
+  const message = isIncrementalError(e)
     ? `${e.code}: ${e.message}`
     : e instanceof Error
       ? e.message

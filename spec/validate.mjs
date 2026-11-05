@@ -16,7 +16,7 @@ import { buildState, plan } from './reference/policy.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const casesDir = path.join(root, 'conformance/cases');
 const schemasDir = path.join(root, 'spec/schemas');
-const engine = path.join(root, 'core/dist/backplane');
+const engine = path.join(root, 'core/dist/incremental');
 const files = fs.readdirSync(casesDir).filter((f) => f.endsWith('.json')).sort();
 let bad = 0;
 const fail = (msg) => { console.log('FAIL ' + msg); bad++; };
@@ -103,7 +103,7 @@ for (const f of fs.readdirSync(schemasDir).filter((x) => x.endsWith('.json'))) {
 if (!fs.existsSync(engine)) {
   fail(`engine not found at ${engine}; run make build`);
 } else {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'backplane-schema-'));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'incremental-schema-'));
   const store = path.join(dir, 'store');
   spawnSync(engine, ['init', '--store', store]);
   const ctx = { lockfile: 'sha256:l1', tsconfig: 'sha256:t1', pkgjson: 'sha256:p1', runner: 'vitest@4.1.12', node: '22.11.0', fmt: 1, caps: { probes: true, dirs: true, env: true } };
