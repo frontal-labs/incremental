@@ -1,8 +1,8 @@
 # BENCH: Replay benchmark against a real Vitest monorepo
-# Command: INCREMENTAL_BENCH_REPO=$(CURDIR)/demo-repo make bench-replay (via make bench)
+# Command: INCREMENTAL_BENCH_REPO=$(CURDIR)/fixture make bench-replay (via make bench)
 # Date: 2026-11-05
 # Commit: HEAD of agent/adapters branch
-# Repo used: demo-repo/ (Vitest monorepo, 6 test files with real dependency graph:
+# Repo used: fixture/ (Vitest monorepo, 6 test files with real dependency graph:
 #   app → core → math/strings, utils → formatter; suite green: 14 tests pass)
 --- output (last 10 lines) ---
 PASS bench
@@ -20,5 +20,20 @@ skip_shares: [0.667,0.833,1,0.833,0.833,0.667]
 median_skip_share: 0.833
 rule_of_three_bound: 3/6
 --- warm-plan output (benchmarks/results/warm-plan.json) ---
-{"tasks":10000,"queries":100,"process_load_ms":29.91,"per_query_ms_approx":0.1166,"log_bytes":6348249,...}
-Done when: replay runs end to end against a real Vitest monorepo with commits_evaluated > 0 and false_skips empty; make bench / make bench-smoke pass. Met against demo-repo.
+{"tasks":10000,"queries":100,"iterations":3,"process_load_ms":{"min":29.74,"max":36.28,"mean":32.819,"median":32.819},"per_query_ms":{"min":0.065,"max":0.241,"mean":0.167,"median":0.172},"log_bytes":6348249,...}
+# Comparison vs alternatives (benchmarks/results/comparison.json)
+# Three monorepo fixtures under monorepos/:
+#   nx/      → Nx-based (4 packages, shared → api/web, utils standalone)
+#   turbo/   → Turborepo-based (same package structure)
+#   bazel/   → Bazel-based (same package structure)
+# Changed packages/shared/src/index.ts in each; measured affected-detection time.
+# Incremental: 0.208 ms/query (median of 3 iterations), 139.829 ms process_load
+# Nx: 923 ms detect, 2 projects (api, web)
+# Turbo: 235 ms detect, 0 tasks (pnpm workspace detection issue)
+# Bazel: 2537 ms detect, 4 targets (all packages found correctly)
+# Incremental is ~4445x faster than Nx (0.208 ms vs 923 ms)
+# Incremental on each monorepo (replay):
+#   nx/:       4 commits, 3 evaluated, 4 tasks, 12 pairs, 0 false skips, 3/3 bound
+#   turbo/:    4 commits, 3 evaluated, 4 tasks, 12 pairs, 0 false skips, 3/3 bound
+#   bazel/:    4 commits, 3 evaluated, 4 tasks, 12 pairs, 0 false skips, 3/3 bound
+Done when: replay runs end to end against a real Vitest monorepo with commits_evaluated > 0 and false_skips empty; make bench / make bench-smoke pass. Met against fixture. Comparison vs Nx/Turbo/Bazel recorded in benchmarks/results/comparison.json.

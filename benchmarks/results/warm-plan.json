@@ -1,1 +1,19 @@
-{"tasks":10000,"queries":100,"process_load_ms":27.76,"per_query_ms_approx":0.1224,"log_bytes":6348249,"note":"warm plan latency over protocol v1 stdio; each query invalidates one task; process_load includes engine spawn + hello + store load"}
+{
+  "tasks": 10000,
+  "queries": 100,
+  "iterations": 3,
+  "process_load_ms": {
+    "min": 35.855083,
+    "max": 38.229958,
+    "mean": 36.67055533333334,
+    "median": 35.926625
+  },
+  "per_query_ms": {
+    "min": 0.09548505,
+    "max": 0.21418086999999997,
+    "mean": 0.1565282333333333,
+    "median": 0.1599187799999999
+  },
+  "log_bytes": 6348249,
+  "note": "warm plan latency over protocol v1 stdio; each query invalidates one task; process_load includes engine spawn + hello + store load; stats over multiple iterations"
+}
