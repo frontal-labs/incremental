@@ -1,0 +1,113 @@
+{
+  "timestamp": "2026-11-05T19:40:28.236Z",
+  "runs": 5,
+  "engine": "core/dist/incremental serve (new process per run)",
+  "change_source": "adapters/git/dist/incremental-git changes",
+  "results": [
+    {
+      "target": "monorepos/nx",
+      "changed_file": "packages/shared/src/index.ts",
+      "tests": 4,
+      "expected_invalid": 3,
+      "plan_invalid": 3,
+      "plan_skipped": 1,
+      "plan_fallback": null,
+      "matches_import_graph": true,
+      "missing": [],
+      "extra": [],
+      "cold_e2e_ms": {
+        "median": 164.846291,
+        "min": 149.001833,
+        "max": 622.95825
+      },
+      "changes_ms_median": 157.435541,
+      "spawn_hello_ms_median": 6.521834,
+      "plan_ms_median": 0.525042,
+      "runs": 5
+    },
+    {
+      "target": "monorepos/turborepo",
+      "changed_file": "packages/shared/src/index.ts",
+      "tests": 4,
+      "expected_invalid": 3,
+      "plan_invalid": 3,
+      "plan_skipped": 1,
+      "plan_fallback": null,
+      "matches_import_graph": true,
+      "missing": [],
+      "extra": [],
+      "cold_e2e_ms": {
+        "median": 157.702375,
+        "min": 145.698041,
+        "max": 224.400917
+      },
+      "changes_ms_median": 150.118125,
+      "spawn_hello_ms_median": 7.482458,
+      "plan_ms_median": 0.723125,
+      "runs": 5
+    },
+    {
+      "target": "monorepos/bazel",
+      "changed_file": "packages/shared/src/index.ts",
+      "tests": 4,
+      "expected_invalid": 3,
+      "plan_invalid": 3,
+      "plan_skipped": 1,
+      "plan_fallback": null,
+      "matches_import_graph": true,
+      "missing": [],
+      "extra": [],
+      "cold_e2e_ms": {
+        "median": 144.686583,
+        "min": 140.659333,
+        "max": 157.480667
+      },
+      "changes_ms_median": 137.181708,
+      "spawn_hello_ms_median": 6.715667,
+      "plan_ms_median": 0.343042,
+      "runs": 5
+    },
+    {
+      "target": "fixture",
+      "changed_file": "packages/core/src/math.ts",
+      "tests": 6,
+      "expected_invalid": 2,
+      "plan_invalid": 2,
+      "plan_skipped": 4,
+      "plan_fallback": null,
+      "matches_import_graph": true,
+      "missing": [],
+      "extra": [],
+      "cold_e2e_ms": {
+        "median": 149.6705,
+        "min": 135.541209,
+        "max": 152.494667
+      },
+      "changes_ms_median": 142.739333,
+      "spawn_hello_ms_median": 6.698042,
+      "plan_ms_median": 0.287625,
+      "runs": 5
+    },
+    {
+      "target": "adapters/vitest/fixtures/repo",
+      "changed_file": "packages/core/src/leaf.ts",
+      "tests": 14,
+      "expected_invalid": 2,
+      "plan_invalid": 2,
+      "plan_skipped": 12,
+      "plan_fallback": null,
+      "matches_import_graph": true,
+      "missing": [],
+      "extra": [],
+      "cold_e2e_ms": {
+        "median": 146.763583,
+        "min": 137.350667,
+        "max": 212.188125
+      },
+      "changes_ms_median": 139.700167,
+      "spawn_hello_ms_median": 6.358083,
+      "plan_ms_median": 0.311209,
+      "runs": 5
+    }
+  ]
+}

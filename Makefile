@@ -12,7 +12,7 @@ INCREMENTAL_BENCH_REPO ?= $(CURDIR)/fixture
 # Every run log goes to logs/ at the project root (git-ignored).
 LOGS := logs
 $(shell mkdir -p $(LOGS))
-.PHONY: setup skills build test-git test-fuzz check-spec test-core test-policy test-protocol test-bindings test-vitest test-oracle test-e2e bench-smoke bench test-mcp test-python release-check all-tests status loc linux-gate test-adapters test-typescript test-rust format lint fmt-check
+.PHONY: setup skills build test-git test-fuzz check-spec test-core test-policy test-protocol test-bindings test-vitest test-oracle test-e2e bench-smoke bench bench-cold test-mcp test-python release-check all-tests status loc linux-gate test-adapters test-typescript test-rust format lint fmt-check
 
 # Platform-specific test lists.
 IS_LINUX := $(filter linux,$(UNAME_S))
@@ -154,6 +154,10 @@ bench: build
 	@node scripts/bench-compare.mjs 3 >$(LOGS)/bench-compare.log 2>&1 || { tail -20 $(LOGS)/bench-compare.log; echo "FAIL bench"; exit 1; }
 	@node scripts/bench-summary.mjs >$(LOGS)/bench-summary.log 2>&1 || { tail -20 $(LOGS)/bench-summary.log; echo "FAIL bench"; exit 1; }
 	@echo "PASS bench"
+
+bench-cold: build
+	@node scripts/cold-e2e.mjs 5 >$(LOGS)/bench-cold.log 2>&1 || { tail -20 $(LOGS)/bench-cold.log; echo "FAIL bench-cold"; exit 1; }
+	@echo "PASS bench-cold"
 
 test-mcp: build
 	@cd mcp && npm test >../logs/test-mcp.log 2>&1 || { tail -30 ../logs/test-mcp.log; echo "FAIL test-mcp"; exit 1; }
