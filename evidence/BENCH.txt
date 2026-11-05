@@ -1,0 +1,24 @@
+# BENCH: Replay benchmark against a real Vitest monorepo
+# Command: INCREMENTAL_BENCH_REPO=$(CURDIR)/demo-repo make bench-replay (via make bench)
+# Date: 2026-11-05
+# Commit: HEAD of agent/adapters branch
+# Repo used: demo-repo/ (Vitest monorepo, 6 test files with real dependency graph:
+#   app → core → math/strings, utils → formatter; suite green: 14 tests pass)
+--- output (last 10 lines) ---
+PASS bench
+--- replay output (benchmarks/results/replay.json) ---
+spec: replay
+benchmark: bench
+engine: /Users/gabrielfonseca/Desktop/graph/core/dist/incremental
+commits_processed: 7
+commits_evaluated: 6
+total_tasks: 6
+task_commit_pairs_examined: 36
+false_skips: 0
+flaky: 0
+skip_shares: [0.667,0.833,1,0.833,0.833,0.667]
+median_skip_share: 0.833
+rule_of_three_bound: 3/6
+--- warm-plan output (benchmarks/results/warm-plan.json) ---
+{"tasks":10000,"queries":100,"process_load_ms":29.91,"per_query_ms_approx":0.1166,"log_bytes":6348249,...}
+Done when: replay runs end to end against a real Vitest monorepo with commits_evaluated > 0 and false_skips empty; make bench / make bench-smoke pass. Met against demo-repo.

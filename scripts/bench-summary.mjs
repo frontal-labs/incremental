@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Generates benchmarks/results/RESULTS.md from the raw benchmark outputs
-// (PLAN 12.7: results go to benchmarks/results/*.json and a generated RESULTS.md).
+// (results go to benchmarks/results/*.json and a generated RESULTS.md).
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -18,19 +18,19 @@ function ms(x) { return x == null ? "n/a" : x.toString(); }
 
 function main() {
   const replay = load("replay.json");
-  const m1 = load("m1.json");
+  const warmPlan = load("warm-plan.json");
   const now = new Date().toISOString();
   const lines = [
-    "# Benchmark results (PLAN 12.4 / 12.5)",
+    "# Benchmark results",
     "",
     `Generated: ${now}`,
     "",
     "## Raw data",
     "",
     `- benchmarks/results/replay.json: ${replay ? "present" : "missing"}`,
-    `- benchmarks/results/m1.json: ${m1 ? "present" : "missing"}`,
+    `- benchmarks/results/warm-plan.json: ${warmPlan ? "present" : "missing"}`,
     "",
-    "## Replay (PLAN 12.5, E6)",
+    "## Replay",
     "",
   ];
   if (replay) {
@@ -43,17 +43,17 @@ function main() {
       "",
     );
   }
-  lines.push("## M1 warm plan latency (PLAN 12.4)", "");
-  if (m1) {
+  lines.push("## Warm plan latency", "");
+  if (warmPlan) {
     lines.push(
       `| tasks | queries | process_load_ms | per_query_ms_approx | log_bytes |`,
-      `| ${m1.tasks ?? "-"} | ${m1.queries ?? "-"} | ${ms(m1.process_load_ms)} | ${ms(m1.per_query_ms_approx)} | ${ms(m1.log_bytes)} |`,
+      `| ${warmPlan.tasks ?? "-"} | ${warmPlan.queries ?? "-"} | ${ms(warmPlan.process_load_ms)} | ${ms(warmPlan.per_query_ms_approx)} | ${ms(warmPlan.log_bytes)} |`,
       "",
-      `_Note: ${m1.note || ""}_`,
+      `_Note: ${warmPlan.note || ""}_`,
       "",
     );
   }
-  lines.push("## Thresholds (PLAN 12.4)", "", "- M1: p50 under 5 ms, p99 under 20 ms at 100k tasks. - M2: cold CLI under 300 ms at 100k tasks (hyperfine).", "");
+  lines.push("## Thresholds", "", "- Warm plan: p50 under 5 ms, p99 under 20 ms at 100k tasks. - Cold CLI plan under 300 ms at 100k tasks (hyperfine).", "");
   writeFileSync(path.join(RESULTS, "RESULTS.md"), lines.join("\n") + "\n");
   console.log("wrote benchmarks/results/RESULTS.md");
 }

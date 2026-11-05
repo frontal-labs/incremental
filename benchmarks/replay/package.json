@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "version": "0.1.0",
-  "description": "Replay driver (PLAN 12.5): replays commits through the engine and measures false skips against ground truth, using the Node client.",
+  "description": "Replay driver: replays commits through the engine and measures false skips against ground truth, using the Node client.",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "bin": {

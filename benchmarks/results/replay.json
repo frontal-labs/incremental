@@ -1,51 +1,52 @@
 {
-  "spec": "PLAN 12.5 replay",
-  "milestone": "E6",
+  "spec": "replay",
+  "benchmark": "bench",
   "engine": "/Users/gabrielfonseca/Desktop/graph/core/dist/incremental",
-  "repo": "/var/folders/kz/jgdz_yyx49qbmqh3l1txy9dw0000gn/T/bp-replay-HZk4br/repo",
+  "repo": "/var/folders/kz/jgdz_yyx49qbmqh3l1txy9dw0000gn/T/bp-replay-EjEcw8/repo",
   "commits": [
     {
       "index": 0,
-      "id": "4cd4301817a6a6d187a52c6f170596405695da1d"
+      "id": "553d88d304ee6b6bfdf663fbb50f89014d4c4cd6"
     },
     {
       "index": 1,
-      "id": "143cd21e243d258b96c19c6ffdbf42f3626113a3"
+      "id": "9f2f73cc6972ed9c7f1ba6d31fa482067fc35efa"
     },
     {
       "index": 2,
-      "id": "24d8c1523895b6fa31b08ac554e71f96db8ef99b"
+      "id": "13bfb1bc531f4e103994cb4259885cf8b0ee3750"
     },
     {
       "index": 3,
-      "id": "0dc265e43177937660324d3ba57c5e1af9b5c23e"
+      "id": "3410fe3477c57445055852a46a6ddab6d7f33e12"
     },
     {
       "index": 4,
-      "id": "b4a43e9d90c5659b18e9afec1319f201bb211aa4"
+      "id": "96b62d0cd9e80cf64c87cd2f1f3a7ff674f60c46"
     },
     {
       "index": 5,
-      "id": "0fa6d5a838864a183c75f8ad8307794b76e0a027"
+      "id": "d07d2410dfe1d968f7c84cc206c9ee532eb685f6"
     },
     {
       "index": 6,
-      "id": "4f8897c2e2a1b164c9906be584cc48727ddaec2a"
+      "id": "c7e16d5d929fed752e89e89a370e0ed97ce9c6f1"
     }
   ],
   "commits_processed": 7,
-  "commits_evaluated": 5,
-  "total_tasks": 14,
-  "task_commit_pairs_examined": 70,
+  "commits_evaluated": 6,
+  "total_tasks": 6,
+  "task_commit_pairs_examined": 36,
   "false_skips": [],
   "flaky": [],
   "skip_shares": [
-    0.7857142857142857,
-    0.8571428571428571,
-    0.8571428571428571,
-    0,
-    0.7857142857142857
+    0.6666666666666666,
+    0.8333333333333334,
+    1,
+    0.8333333333333334,
+    0.8333333333333334,
+    0.6666666666666666
   ],
-  "median_skip_share": 0.7857142857142857,
-  "rule_of_three_bound": "3/5"
+  "median_skip_share": 0.8333333333333334,
+  "rule_of_three_bound": "3/6"
 }

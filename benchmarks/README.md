@@ -6,21 +6,23 @@ Benchmark harnesses and results for incremental. Benchmarks measure whether the 
 
 | Path | Description |
 |---|---|
-| `benchmarks/m1.mjs` | Milestone M1 benchmark script. |
-| `benchmarks/results/` | Benchmark outputs. |
+| `benchmarks/replay/` | Replay driver: replays commits through the engine and measures false skips against ground truth. Built by `make build`. |
+| `benchmarks/warm-plan.mjs` | Warm plan latency benchmark script. |
+| `benchmarks/results/` | Benchmark outputs: `replay.json`, `warm-plan.json`, and generated `RESULTS.md`. |
+| `scripts/bench-summary.mjs` | Generates `benchmarks/results/RESULTS.md` from the raw outputs. |
 
 ## Running
 
-Benchmarks require the built engine (`make build`) and, for replay, a real Vitest monorepo (`INCREMENTAL_BENCH_REPO`) plus a human decision.
+Benchmarks require the built engine (`make build`).
 
 ```sh
-make bench-smoke   # not implemented yet (fails on purpose per  2.12)
-make bench         # not implemented yet (fails on purpose per  2.12)
+make bench-replay   # replay driver: writes benchmarks/results/replay.json
+make bench-smoke    # replay with 3 commits + warm-plan timing
+make bench          # full replay + warm-plan timing + benchmarks/results/RESULTS.md
 ```
 
 ## Status
 
-- Replay (real-repo) requires a real Vitest monorepo and a human decision. Use the workspace `demo-repo/` for runnable demo work; `INCREMENTAL_BENCH_REPO` may point at `demo-repo/` or another Vitest monorepo. Raw data: `benchmarks/results/replay.json`. See `status/BENCH.json` and `status/BENCHMARKS.json`.
-- Full benchmarks are blocked: they need a real Vitest monorepo and a human decision. See `status/BENCHMARKS.json` and `STATUS.md`.
-
-Evidence for benchmarks is not yet recorded; see `evidence/` for E1/E2.
+- Replay runs end to end against a real Vitest monorepo (`INCREMENTAL_BENCH_REPO`, defaults to the in-repo `demo-repo/` which is runnable out of the box). Raw data: `benchmarks/results/replay.json`. See `status/BENCH.json` and `status/BENCHMARKS.json` (both `done`).
+- Full benchmarks run: `make bench-smoke` (3 commits + warm-plan timing) and `make bench` (6 commits + warm-plan timing + `benchmarks/results/RESULTS.md`) both pass.
+- Evidence is recorded in `evidence/BENCH.txt`; see `evidence/` for E1/E2.

@@ -1,0 +1,1 @@
+{"tasks":10000,"queries":100,"process_load_ms":27.76,"per_query_ms_approx":0.1224,"log_bytes":6348249,"note":"warm plan latency over protocol v1 stdio; each query invalidates one task; process_load includes engine spawn + hello + store load"}

@@ -1,196 +1,35 @@
 #!/usr/bin/env node
-// Replay driver (PLAN 12.5, E6): replays a sequence of commits through the
-// engine and measures false skips against ground truth, using the real adapter
-// (git change source + @incremental/client over core/dist/incremental serve +
-// incremental-vitest run) plus plain vitest runs for ground truth.
+// Replay driver: replays a sequence of commits through the engine and measures
+// false skips against ground truth, using the real adapter (git change source
+// + @incremental/client over core/dist/incremental serve + incremental-vitest
+// run) plus plain vitest runs for ground truth.
 //
 //   commits_processed        commits walked, oldest -> newest
 //   commits_evaluated        commits whose predecessor's ground truth was green
-//   task_commit_pairs_examined (task, commit) pairs compared plan vs ground truth
-//   false_skips              task fails in ground truth, is not invalidated by
-//                             the plan, and fails again on two reruns
-//   rule_of_three_bound      3 / commits_evaluated (PLAN 12.6)
+//   task_commit_pairs_examined (task, commit) pairs compared vs ground truth
+//   false_skips              task fails in ground truth, is not invalidated,
+//                             and fails again on two reruns
+//   rule_of_three_bound      3 / commits_evaluated
 //
 // Report is written to --out (default benchmarks/results/replay.json) and
 // printed to stdout.
+//
+// Entry point. Orchestration lives here; see ./cli.ts, ./git.ts, ./edits.ts,
+// ./vitest.ts, ./report.ts, ./paths.ts, ./types.ts.
 
+import { cpSync, mkdtempSync } from "node:fs";
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { connect, type Plan } from "@incremental/client";
+import { connect } from "@incremental/client";
 
-const HERE = path.dirname(fileURLToPath(import.meta.url)); // .../benchmarks/replay/dist/src
-const ROOT = path.resolve(HERE, "../../../..");            // graph root
-const ENGINE = path.join(ROOT, "core", "dist", "incremental");
-const VITEST_RUN = path.join(ROOT, "adapters", "vitest", "dist", "src", "run.js");
-const VITEST_BIN = path.join(ROOT, "adapters", "vitest", "node_modules", "vitest", "vitest.mjs");
-const FIXTURE = path.join(ROOT, "adapters", "vitest", "fixtures", "repo");
-
-interface CliArgs {
-  repo?: string;
-  commits?: number;
-  store?: string;
-  out?: string;
-}
-
-function parseArgs(argv: string[]): CliArgs {
-  const out: CliArgs = {};
-  for (let i = 0; i < argv.length; i++) {
-    const a = argv[i];
-    const value = (): string => {
-      const x = argv[++i];
-      if (x === undefined) throw new Error(`${a} needs a value`);
-      return x;
-    };
-    switch (a) {
-      case "--repo": out.repo = value(); break;
-      case "--commits": {
-        out.commits = Number(value());
-        if (!Number.isInteger(out.commits) || out.commits < 1) throw new Error("--commits needs a positive integer");
-        break;
-      }
-      case "--store": out.store = value(); break;
-      case "--out": out.out = value(); break;
-      default: throw new Error(`unknown option ${a}`);
-    }
-  }
-  return out;
-}
-
-function git(repo: string, args: string[]): string {
-  const r = spawnSync("git", ["-C", repo, "-c", "user.name=replay", "-c", "user.email=replay@example", ...args], {
-    encoding: "utf8",
-  });
-  if (r.status !== 0) throw new Error(`git ${args.join(" ")} failed: ${r.stderr}`);
-  return r.stdout.trim();
-}
-
-function headOf(repo: string): string {
-  return git(repo, ["rev-parse", "HEAD"]);
-}
-
-interface GtResult {
-  task: string;
-  outcome: "pass" | "fail";
-}
-
-// Ground truth at the current worktree state: a plain vitest run with no
-// recorder, so it never touches the store.
-function groundTruth(repo: string): { results: GtResult[]; allPassed: boolean } {
-  const repoReal = realpathSync(repo);
-  const dir = mkdtempSync(path.join(os.tmpdir(), "bp-replay-gt-"));
-  const report = path.join(dir, "report.json");
-  const r = spawnSync(
-    process.execPath,
-    [VITEST_BIN, "run", "--root", repo, "--pool=forks", "--reporter=json", `--outputFile=${report}`],
-    { encoding: "utf8", timeout: 900_000 },
-  );
-  if (r.error !== undefined) throw new Error(`ground-truth vitest failed to start: ${r.error.message}`);
-  // vitest exits non-zero when tests fail: that is ground-truth data, not a harness error.
-  const json = JSON.parse(readFileSync(report, "utf8")) as { testResults?: Array<{ name: string; status: string }> };
-  const results: GtResult[] = [];
-  for (const tr of json.testResults ?? []) {
-    const rel = path.relative(repoReal, realpathSync(tr.name)).split(path.sep).join("/");
-    results.push({ task: rel, outcome: tr.status === "passed" ? "pass" : "fail" });
-  }
-  results.sort((a, b) => (a.task < b.task ? -1 : a.task > b.task ? 1 : 0));
-  return { results, allPassed: results.every((t) => t.outcome === "pass") };
-}
-
-// Re-run one test file twice (plain vitest, no recorder) to confirm a
-// suspected false skip (PLAN 12.5 step 4).
-function runOnce(repo: string, task: string): "pass" | "fail" | "error" {
-  const dir = mkdtempSync(path.join(os.tmpdir(), "bp-replay-rerun-"));
-  const report = path.join(dir, "report.json");
-  const r = spawnSync(
-    process.execPath,
-    [VITEST_BIN, "run", task, "--root", repo, "--pool=forks", "--reporter=json", `--outputFile=${report}`],
-    { cwd: repo, encoding: "utf8", timeout: 300_000 },
-  );
-  if (r.error !== undefined) return "error";
-  try {
-    const json = JSON.parse(readFileSync(report, "utf8")) as { testResults?: Array<{ status?: string }> };
-    const status = json.testResults?.[0]?.status;
-    return status === "passed" ? "pass" : status === "failed" ? "fail" : "error";
-  } catch {
-    return "error";
-  }
-}
-
-// One deterministic edit per replayed commit, exercising different input kinds
-// (file read, dir listing, probe, global input, broken read, deletion).
-const EDIT_SEQUENCE: Array<{ op: "write" | "delete"; path: string; content?: string }> = [
-  { op: "write", path: "packages/core/src/leaf.ts", content: "export const LEAF: number = 3;\n" },
-  { op: "write", path: "packages/app/plugins/p2.ts", content: "export default function other(): string { return 'p2';\n" },
-  { op: "write", path: "packages/core/src/shadow.ts", content: "export const SHADOW: boolean = true;\n" },
-  {
-    op: "write",
-    path: "package-lock.json",
-    content: '{\n  "name": "fixture-root",\n  "lockfileVersion": 3,\n  "requires": true,\n  "packages": { "": { "name": "fixture-root", "version": "0.0.1" } }\n}\n',
-  },
-  {
-    op: "write",
-    path: "packages/core/src/util.ts",
-    content: "export function double(n: number): number { throw new Error('broken util'); }\n",
-  },
-  { op: "delete", path: "packages/app/test/disposable.test.ts" },
-];
-
-function applyEdit(repo: string, edit: { op: "write" | "delete"; path: string; content?: string }): void {
-  const full = path.join(repo, edit.path);
-  if (edit.op === "write") {
-    mkdirSync(path.dirname(full), { recursive: true });
-    writeFileSync(full, edit.content!);
-  } else {
-    rmSync(full, { force: true });
-  }
-  git(repo, ["add", "-A"]);
-  const staged = git(repo, ["diff", "--cached", "--name-only"]);
-  if (staged.length > 0) git(repo, ["commit", "-q", "-m", `replay ${edit.path}`]);
-}
-
-// One adapter loop iteration at the current worktree state: plan from the
-// store baseline, run the invalid tasks with the recorder, observe, advance.
-// Returns the report the adapter CLI emits with --json.
-interface RunReport {
-  plan: Plan | null;
-  results: Array<{ task: string; outcome: string }>;
-  advanced: boolean;
-  exit: number;
-  total_tasks: number;
-  discovered: string[];
-  wouldSkip: string[];
-  selected: string[];
-}
-
-function runRecorded(repo: string, store: string): RunReport {
-  const r = spawnSync(
-    process.execPath,
-    [VITEST_RUN, "run", "--root", repo, "--store", store, "--json", "--jobs", "2"],
-    { cwd: repo, encoding: "utf8", timeout: 900_000, maxBuffer: 64 * 1024 * 1024, env: { ...process.env, NODE_ENV: "test" } },
-  );
-  if (r.status !== 0 && r.status !== 1 && r.status !== 7) throw new Error(`incremental-vitest run failed (exit ${r.status}): ${r.stderr.slice(-1000)}`);
-  const parsed = JSON.parse(r.stdout) as RunReport & { total_tasks?: number };
-  return {
-    plan: parsed.plan ?? null,
-    results: parsed.results ?? [],
-    advanced: Boolean(parsed.advanced),
-    exit: r.status ?? -1,
-    total_tasks: parsed.total_tasks ?? 0,
-    discovered: parsed.discovered ?? [],
-    wouldSkip: parsed.wouldSkip ?? [],
-    selected: parsed.selected ?? [],
-  };
-}
-
-function median(xs: number[]): number | null {
-  const a = [...xs].sort((x, y) => x - y);
-  if (!a.length) return null;
-  const m = a.length >> 1;
-  return a.length % 2 ? a[m]! : (a[m - 1]! + a[m]!) / 2;
-}
+import { EDIT_SEQUENCE, applyEdit } from "./edits.js";
+import { ENGINE, FIXTURE, ROOT } from "./paths.js";
+import { groundTruth, runOnce, runRecorded } from "./vitest.js";
+import { git, headOf } from "./git.js";
+import { buildReport, writeReport } from "./report.js";
+import { parseArgs } from "./cli.js";
+import type { FalseSkip, Flaky } from "./types.js";
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
@@ -215,12 +54,8 @@ async function main(): Promise<void> {
 
     let commitsEvaluated = 0;
     let taskCommitPairs = 0;
-    const falseSkips: Array<{
-      commit: string;
-      task: string;
-      query: Array<{ id: string; reasons: string[] }>;
-    }> = [];
-    const flaky: Array<{ commit: string; task: string }> = [];
+    const falseSkips: FalseSkip[] = [];
+    const flaky: Flaky[] = [];
     let total_tasks = 0;
     let prevAllPassed = true;
     const skipShares: number[] = [];
@@ -278,26 +113,19 @@ async function main(): Promise<void> {
       prevAllPassed = gt.allPassed;
     }
 
-    const report = {
-      spec: "PLAN 12.5 replay",
-      milestone: "E6",
+    const report = buildReport({
       engine: ENGINE,
       repo,
       commits: walked,
-      commits_processed: walked.length,
-      commits_evaluated: commitsEvaluated,
-      total_tasks,
-      task_commit_pairs_examined: taskCommitPairs,
-      false_skips: falseSkips,
+      commitsEvaluated,
+      totalTasks: total_tasks,
+      taskCommitPairs,
+      falseSkips,
       flaky,
-      skip_shares: skipShares,
-      median_skip_share: median(skipShares),
-      rule_of_three_bound: commitsEvaluated > 0 ? `3/${commitsEvaluated}` : "n/a",
-    };
+      skipShares,
+    });
     const out = args.out ?? path.join(ROOT, "benchmarks", "results", "replay.json");
-    mkdirSync(path.dirname(out), { recursive: true });
-    writeFileSync(out, JSON.stringify(report, null, 2) + "\n");
-    console.log(JSON.stringify(report, null, 2));
+    writeReport(report, out);
   } finally {
     await client.close();
   }
