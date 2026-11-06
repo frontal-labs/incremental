@@ -137,6 +137,29 @@ Only `adapters/vitest/fixtures/repo` is an adapter fixture. The other adapters a
 - **The change source is the cost.** `incremental-git changes` takes about 135–150 ms here. The split between git calls and the adapter's own startup is not measured.
 - **Cold vs cold, same fixture.** The cold Incremental run (about 145 ms) is faster than the cold Nx run (897 ms) and Bazel (1147 ms), and about the same as Turbo (151 ms). These are single fixtures of 4 packages. Treat them as rough, not as a speedup claim.
 
+### End to end: raw vs affected-test selection (`scripts/e2e-compare.mjs`)
+
+One change to `packages/shared/src/index.ts` in each monorepo fixture, then a test run. Wall-clock of the whole command (tool start-up and selection included), 5 timed runs after one warm-up, load about 50 on the machine. Results: `benchmarks/results/e2e-compare.json`.
+
+| Fixture | Method | Median ms (min–max) | Packages tested |
+| --- | --- | --- | --- |
+| nx | raw (no selection) | 7390 (5004–8236) | all affected, plus extra (api, shared, utils, web) |
+| nx | Nx affected | 11285 (7588–12954) | exact (shared, api, web) |
+| nx | Incremental | 2682 (2434–2906) | exact (shared, api, web) |
+| turborepo | raw (no selection) | 4420 (3267–5379) | all affected, plus extra (api, shared, utils, web) |
+| turborepo | Turbo --filter | 5883 (4266–6987) | exact (shared, api, web) |
+| turborepo | Incremental | 2665 (2392–2934) | exact (shared, api, web) |
+| bazel | raw (no selection) | 2666 (1970–3235) | all affected, plus extra (api, shared, utils, web) |
+| bazel | Bazel rdeps query | 4423 (3974–4803) | misses shared (api, web) |
+| bazel | Incremental | 4287 (3642–6078) | exact (shared, api, web) |
+
+Read these with care:
+
+- **The fixtures are tiny.** Each has four test files and about 1 s of test work, so start-up overhead dominates every method. Differences of a second or two are inside the run-to-run spread here (up to about 50% for one method). Do not read them as a speedup. The point is what each method runs, not how long it takes.
+- **Bazel as documented misses a test.** Its query returns `api` and `web`, not `shared`, because `shared_test` reads its sources with `glob` and does not depend on `shared_pkg`. The run skips the test of the package that changed. The fixture README said the query returns all three; that was wrong.
+- **Raw runs everything** (utils too). It is always correct and never selective.
+- **Incremental** runs exactly the affected three, from a store warmed at the base. Its run includes the Vitest recorder, which adds cost per test file.
+
 ## Known issues
 
 Resolved on 2026-11-05:
@@ -156,7 +179,7 @@ Resolved on 2026-11-05:
 
 Still open:
 
-1. **Cold CLI target at 100k tasks is not met.** Store load (spawn, hello, load 100k observations) takes about 394 ms median, against a 300 ms target. The query path is well under target. Reducing store load is an engine change.
+1. **Cold CLI at 100k tasks: root cause fixed, wall-clock not yet re-measured.** The 394 ms store load was a full log replay: `tg.idx` was rejected whenever observations carried a context (see DECISIONS.md, index load fix). With the fix and the copy removal, a cold `stats` on the same 100k store takes 99 ms wall and 84 ms CPU (hyperfine median, 30 runs, machine load about 55), against 400 ms wall, 237 ms CPU and 2.66 G instructions before. Wall-clock is still load-sensitive; re-measure on an idle machine before quoting it as a final figure.
 2. **Not like-for-like.** See the comparison section. The warm Incremental query and the cold tool runs measure different things.
 3. **Variance.** Across the runs recorded in this repo: Nx 837 to 2181 ms, Turbo 107 to 646 ms, Bazel 984 to 1912 ms, warm-plan per-query 0.09 to 0.33 ms (about 1.3 ms in one run under machine load). Each figure uses 10 samples, and the ranges are the honest number.
 4. **Replay sample size is still small.** Each replay evaluates 10 commits, so zero false skips is consistent with a false-skip rate up to about 30%.

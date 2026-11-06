@@ -48,7 +48,7 @@ example a README) do not change which commit is measured, so they are allowed.
 - **Bazel** runs offline. The BUILD files are `filegroup` targets. A dependency is a label in
   `srcs`: `//packages/api:api_pkg` lists `//packages/shared:shared_pkg`, so
   `bazel query 'rdeps(//packages/..., //packages/shared:shared_pkg)'` returns `api`, `shared`,
-  `web` and their test targets. The benchmark filters with `kind(filegroup, ...)`.
+  `web` as packages. Their test targets are not all returned: `shared_test` reads its sources with `glob` and does not depend on `shared_pkg`, so `kind(test, rdeps(...))` returns only `api_test` and `web_test` (checked 2026-11-06). The benchmark filters with `kind(filegroup, ...)`.
 - **Bazel tests**: `defs.bzl` defines `vitest_test`, a `test = True` rule that runs one Vitest
   file from the workspace's `node_modules`. Native `sh_test` needs `rules_shell`, which is
   fetched from the network, so it is not used. The rule has Vitest write the JUnit XML itself

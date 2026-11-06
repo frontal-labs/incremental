@@ -190,7 +190,7 @@ async function main() {
   await setupSess.request("hello", { protocol: 1, client: { name: "setup", version: "0.1.0" } });
   await setupSess.request("observe_many", {
     observations: Array.from({ length: tasks }, (_, i) => synthObs(i, baseline)),
-  });
+  }, 600000);
   await setupSess.request("advance", { to: baseline, expected: null });
   setupSess.close();
 
