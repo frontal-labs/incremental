@@ -1,3 +1,10 @@
+# BENCH FIXES 2026-11-05 (fourth): monorepo edit sequence, bazel-* copy filter, shared-commit base, set check, 100k warm plan
+# make bench: PASS. replay fixture 10/10 false_skips=0; monorepo replays nx/turborepo/bazel 10/10 total_tasks=4 false_skips=0 median_skip_share=0.75
+# warm plan 10k 1000x3: p50 0.100 p99 0.650 ms; 100k 1000x3: p50 0.093 p99 0.661 ms (target met); process load 100k median 393.6 ms (cold CLI target 300 ms: NOT met)
+# comparison 10 iterations: incremental 0.148 ms/query; nx 897 ms (api/shared/web); turbo 151 ms (api/shared/web); bazel 1147 ms (api/shared/web)
+# make bench-cold: PASS (rerun, numbers in BENCHMARKS.md)
+# fixture repos nx/turborepo gained README commits at 23:29 2026-11-05 (not by this run); base is now the parent of the last commit touching packages/shared/src/index.ts
+#
 # VALIDATION RUN 2026-11-05 (third, after the Turbo default-store change)
 # make all-tests: exit 0 (82 PASS lines; fixture-e2e PASS)
 # make bench: PASS. replay commits_processed=7 commits_evaluated=6 total_tasks=6 false_skips=0 rule_of_three=3/6 median_skip_share=83.33%

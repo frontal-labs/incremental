@@ -1,54 +1,87 @@
 {
-  "timestamp": "2026-11-05T23:24:56.874Z",
-  "iterations": 3,
+  "timestamp": "2026-11-05T23:45:24.983Z",
+  "iterations": 10,
   "incremental": {
     "process_load_ms": null,
-    "per_query_ms": 0.09597912999999998,
+    "per_query_ms": 0.147712895,
     "samples": [
-      0.09408455999999997,
-      0.10652248999999994,
-      0.09597912999999998
+      0.15454993,
+      0.16663244000000005,
+      0.14883670000000004,
+      0.12872579,
+      0.2023524899999999,
+      0.14658908999999995,
+      0.12987881,
+      0.12572506999999997,
+      0.14222005000000001,
+      0.22720289999999999
     ]
   },
   "nx": {
-    "affected_detect_ms": 687.631708,
+    "affected_detect_ms": 896.9987705000001,
     "projects": [
       "shared",
       "api",
       "web"
     ],
     "samples": [
-      1068.696708,
-      687.631708,
-      687.527625
+      928.981042,
+      871.925209,
+      905.304958,
+      1231.397375,
+      1155.4945,
+      884.490625,
+      842.2865,
+      847.666458,
+      888.692583,
+      920.885
     ],
     "error": null,
-    "monorepo": "/Users/gabrielfonseca/Desktop/graph/monorepos/nx"
+    "monorepo": "monorepos/nx"
   },
   "turbo": {
-    "affected_detect_ms": 117.575167,
+    "affected_detect_ms": 150.488854,
     "tasks_found": 3,
+    "packages": [
+      "api",
+      "shared",
+      "web"
+    ],
     "samples": [
-      225.423417,
-      106.754667,
-      117.575167
+      130.857,
+      181.806958,
+      137.841375,
+      131.658833,
+      154.584041,
+      146.393667,
+      157.01375,
+      141.776083,
+      352.6775,
+      262.685875
     ],
     "error": null,
-    "monorepo": "/Users/gabrielfonseca/Desktop/graph/monorepos/turborepo"
+    "monorepo": "monorepos/turborepo"
   },
   "bazel": {
-    "affected_detect_ms": 1365.5165,
+    "affected_detect_ms": 1146.5099165000001,
     "targets": [
       "//packages/api:api_pkg",
       "//packages/shared:shared_pkg",
       "//packages/web:web_pkg"
     ],
     "samples": [
-      1365.5165,
-      1469.564541,
-      983.751875
+      1290.816167,
+      1912.492959,
+      1425.395625,
+      1035.212625,
+      1020.584709,
+      1112.4085,
+      1354.93775,
+      1086.199417,
+      1180.611333,
+      1076.324
     ],
     "error": null,
-    "monorepo": "/Users/gabrielfonseca/Desktop/graph/monorepos/bazel"
+    "monorepo": "monorepos/bazel"
   }
 }
