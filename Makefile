@@ -90,7 +90,7 @@ test-e2e: test-vitest
 	@echo "PASS test-e2e (V01-V16 ran end to end with real recordings through the engine)"
 
 bench-replay: build
-	@node benchmarks/replay/dist/src/index.js --repo $(INCREMENTAL_BENCH_REPO) --commits 6 --out benchmarks/results/replay.json >logs/bench-replay.log 2>&1 || { tail -30 logs/bench-replay.log; echo "FAIL bench-replay"; exit 1; }; \
+	@node benchmarks/replay/dist/src/index.js --repo $(INCREMENTAL_BENCH_REPO) --commits 10 --out benchmarks/results/replay.json >logs/bench-replay.log 2>&1 || { tail -30 logs/bench-replay.log; echo "FAIL bench-replay"; exit 1; }; \
 	 false_skips=$$(node -e 'console.log(JSON.parse(require("fs").readFileSync("benchmarks/results/replay.json","utf8")).false_skips.length)'); \
 	 echo "replay: false_skips=$$false_skips"; \
 	 echo "PASS bench-replay"
@@ -149,9 +149,11 @@ bench-smoke: build
 	@echo "PASS bench-smoke"
 
 bench: build
-	@node benchmarks/replay/dist/src/index.js --repo $(INCREMENTAL_BENCH_REPO) --commits 6 --out benchmarks/results/replay.json >$(LOGS)/bench-replay.log 2>&1 || { tail -30 $(LOGS)/bench-replay.log; echo "FAIL bench"; exit 1; }
-	@node benchmarks/warm-plan.mjs 10000 100 >benchmarks/results/warm-plan.json || { echo "FAIL bench"; exit 1; }
-	@node scripts/bench-compare.mjs 3 >$(LOGS)/bench-compare.log 2>&1 || { tail -20 $(LOGS)/bench-compare.log; echo "FAIL bench"; exit 1; }
+	@node benchmarks/replay/dist/src/index.js --repo $(INCREMENTAL_BENCH_REPO) --commits 10 --out benchmarks/results/replay.json >$(LOGS)/bench-replay.log 2>&1 || { tail -30 $(LOGS)/bench-replay.log; echo "FAIL bench"; exit 1; }
+	@for m in nx turborepo bazel; do node benchmarks/replay/dist/src/index.js --repo monorepos/$$m --commits 10 --out benchmarks/results/replay-$$m.json >$(LOGS)/bench-replay-$$m.log 2>&1 || { tail -30 $(LOGS)/bench-replay-$$m.log; echo "FAIL bench"; exit 1; }; done
+	@node benchmarks/warm-plan.mjs 10000 1000 >benchmarks/results/warm-plan.json || { echo "FAIL bench"; exit 1; }
+	@node benchmarks/warm-plan.mjs 100000 1000 >benchmarks/results/warm-plan-100k.json || { echo "FAIL bench"; exit 1; }
+	@node scripts/bench-compare.mjs 10 >$(LOGS)/bench-compare.log 2>&1 || { tail -20 $(LOGS)/bench-compare.log; echo "FAIL bench"; exit 1; }
 	@node scripts/bench-summary.mjs >$(LOGS)/bench-summary.log 2>&1 || { tail -20 $(LOGS)/bench-summary.log; echo "FAIL bench"; exit 1; }
 	@echo "PASS bench"
 

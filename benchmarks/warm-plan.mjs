@@ -79,6 +79,11 @@ function median(xs) {
   return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2;
 }
 
+function percentile(xs, p) {
+  const a = [...xs].sort((x, y) => x - y);
+  return a[Math.min(a.length - 1, Math.ceil((p / 100) * a.length) - 1)];
+}
+
 function stats(xs) {
   return {
     min: Math.min(...xs),
@@ -191,6 +196,8 @@ async function main() {
 
   const processLoadSamples = [];
   const perQuerySamples = [];
+  // Every individual query latency across all iterations, for the percentiles below.
+  const allQueryMs = [];
 
   for (let iter = 0; iter < iterations; iter++) {
     // 3. Re-open a session and measure process load (spawn + hello + store load)
@@ -227,6 +234,7 @@ async function main() {
       }
     }
     perQuerySamples.push(queryMs.reduce((a, b) => a + b, 0) / queryMs.length);
+    allQueryMs.push(...queryMs);
 
     sess.close();
   }
@@ -244,6 +252,12 @@ async function main() {
     iterations,
     process_load_ms: stats(processLoadSamples),
     per_query_ms: stats(perQuerySamples),
+    // Nearest-rank percentiles over every query (iterations x queries samples).
+    per_query_percentiles_ms: {
+      p50: percentile(allQueryMs, 50),
+      p99: percentile(allQueryMs, 99),
+      samples: allQueryMs.length,
+    },
     log_bytes: logBytes,
     note: "warm plan latency over protocol v1 stdio; each query invalidates one task; process_load includes engine spawn + hello + store load; stats over multiple iterations",
   };
