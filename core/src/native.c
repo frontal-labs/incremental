@@ -201,6 +201,13 @@ int64_t native_getpid(void) {
     return (int64_t)getpid();
 }
 
+/* Process CPU time in nanoseconds, for the phase trace (INCREMENTAL_TRACE), so machine load does not skew it. */
+int64_t native_cpu_ns(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts);
+    return (int64_t)ts.tv_sec * 1000000000LL + (int64_t)ts.tv_nsec;
+}
+
 /* 1 if a process with this pid exists. */
 int64_t native_pid_alive(int64_t pid) {
     if (pid <= 0)

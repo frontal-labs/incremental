@@ -205,10 +205,8 @@ fn ctx_kvs_equal(st: Store&, a_from: i64, a_n: i64, b_from: i64, b_n: i64) -> bo
     return true;
 }
 
-// Find an existing context matching the Kv range, or create a new one.
-// Returns the index into g_ctxs.
-fn ctx_find_or_create(st: Store&, cfrom: i64, cn: i64) -> i64 {
-    // Combine hash of all keys and values for the lookup key.
+// The lookup key of a context: the combined hash of all its keys and values.
+fn ctx_hash(st: Store&, cfrom: i64, cn: i64) -> u64 {
     var h: u64 = 0;
     for i in cn {
         let k = g_kvs[cfrom + i].k;
@@ -216,6 +214,13 @@ fn ctx_find_or_create(st: Store&, cfrom: i64, cn: i64) -> i64 {
         h = hash_combine(h, hash(text(st, k)));
         h = hash_combine(h, hash(text(st, v)));
     }
+    return h;
+}
+
+// Find an existing context matching the Kv range, or create a new one.
+// Returns the index into g_ctxs.
+fn ctx_find_or_create(st: Store&, cfrom: i64, cn: i64) -> i64 {
+    let h = ctx_hash(st, cfrom, cn);
     let hit = g_ctx_head.get(h);
     if hit {
         let meta = g_ctxs[hit];
@@ -595,22 +600,47 @@ fn append_lines(st: Store&, log_path: const u8[:], recs: const u8[:]) -> bool {
     return ok;
 }
 
+// ---- phase trace -------------------------------------------------------------
+// With INCREMENTAL_TRACE set to a non-zero value, each load phase prints its
+// CPU time in microseconds to stderr. Off by default: the only cost is a clock
+// read per phase.
+fn trace_on() -> bool {
+    var v: u8[>..] = [];
+    return env("INCREMENTAL_TRACE", v) && v.len > 0 && v[0] != '0';
+}
+
+// Prints the time since t0 for one phase, and returns the time now.
+fn trace_phase(on: bool, name: const u8[:], t0: i64) -> i64 {
+    let t1 = native_cpu_ns();
+    if on {
+        var line: u8[>..] = [];
+        line.append("trace ");
+        line.append(name);
+        line.append(" ");
+        json::format_int(line, (t1 - t0) / 1000);
+        line.append(" us\n");
+        write_stderr(line);
+    }
+    return t1;
+}
+
 // ---- index image (spec 6.4) ------------------------------------------------
-// tg.idx, format 2: a binary image of the state's arrays, written with Goose's
+// tg.idx, format 3: a binary image of the state's arrays, written with Goose's
 // serialization (to_bytes / from_bytes, reference section 23). Layout:
 //   "BPIX"                         magic
-//   uleb fmt (2)
+//   uleb fmt (3)
 //   uleb base_log_len
 //   uleb n, n bytes                base_tail_sha: "sha256:<hex>" of the 1,024
 //                                  log bytes ending at base_log_len
 //   uleb has_baseline, uleb baseline.off, uleb baseline.len
 //   uleb has_ctx, uleb ctx_from, uleb ctx_n
-//   uleb 8                         number of sections
-//   uleb len[k] for k in 0..8      byte length of each section
+//   uleb 9                         number of sections
+//   uleb len[k] for k in 0..9      byte length of each section
 //   8 bytes, little endian         hash() of the body (damage check)
 //   body: to_bytes of, in order, the arena (u8), the kvs, the inputs, the
-//         observations, the tasks, the path table and the postings, then the
-//         standing list (i64). Each section is a framed image of one array.
+//         observations, the tasks, the path table and the postings, the
+//         standing list (i64), then the contexts (Ctx). Each section is a
+//         framed image of one array.
 // The observation lines are not stored: each is a span of the log, which the
 // load reads anyway, and the tail hash ties the image to that log.
 // Not stored: the dictionaries (rebuilt from the tasks and paths in one pass),
@@ -700,6 +730,9 @@ fn index_ok(st: Store&) -> bool {
     for i in nk {
         if !span_in(g_kvs[i].k, an) || !span_in(g_kvs[i].v, an) { return false; }
     }
+    for i in g_ctxs.len {
+        if !range_in(g_ctxs[i].from, g_ctxs[i].n, nk) { return false; }
+    }
     for i in ni {
         let x = g_inps[i];
         if x.kind < 0 || x.kind > 5 { return false; }
@@ -746,8 +779,10 @@ fn index_ok(st: Store&) -> bool {
 fn rebuild_dicts(st: Store&) {
     g_task_head.clear();
     g_path_head.clear();
+    g_ctx_head.clear();
     for i in g_tasks.len { g_task_head.insert(hash(text(st, g_tasks[i].id)), i); }
     for i in g_paths.len { g_path_head.insert(hash(text(st, g_paths[i].p)), i); }
+    for i in g_ctxs.len { g_ctx_head.insert(ctx_hash(st, g_ctxs[i].from, g_ctxs[i].n), i); }
 }
 
 // Writes tg.idx for the applied prefix of the log. A no-op when the file on
@@ -776,10 +811,12 @@ fn write_index(st: Store&, idx_path: const u8[:]) -> bool {
     to_bytes(g_post, body);
     lens.push(body.len - mark); mark = body.len;
     to_bytes(g_standing, body);
+    lens.push(body.len - mark); mark = body.len;
+    to_bytes(g_ctxs, body);
     lens.push(body.len - mark);
     var img: u8[>..] = [];
     img.append("BPIX");
-    format_uleb(img, 2);
+    format_uleb(img, 3);
     format_uleb(img, base);
     format_uleb(img, sha.len);
     img.append(sha);
@@ -798,15 +835,25 @@ fn write_index(st: Store&, idx_path: const u8[:]) -> bool {
     return ok;
 }
 
+// One verified section of an image. A failed check clears ok and gives an empty array.
+fn section<T>(b: u8[:], ok: bool&) -> T[>..] {
+    let arr, good = from_bytes<T[>..]>(b);
+    if !good { ok = false; }
+    return arr;
+}
+
 // Loads tg.idx when it describes a prefix of the log. False (with the state
 // cleared) when it does not, and the caller replays the log instead.
 fn load_index(st: Store&, idx_path: const u8[:], log: const u8[:]) -> bool {
+    let tr = trace_on();
+    var tp = native_cpu_ns();
     var img: u8[>..] = [];
     if !read_file(idx_path, img) { return false; }
+    tp = trace_phase(tr, "idx_read", tp);
     if img.len < 4 || img[..4] != "BPIX" { return false; }
     var pos: i64 = 4;
     let fmt, f_ok = take_uleb(img, pos);
-    if !f_ok || fmt != 2 { return false; }
+    if !f_ok || fmt != 3 { return false; }
     let base, b_ok = take_uleb(img, pos);
     if !b_ok || base < 0 || base > log.len { return false; }
     let sl, s_ok = take_uleb(img, pos);
@@ -817,6 +864,7 @@ fn load_index(st: Store&, idx_path: const u8[:], log: const u8[:]) -> bool {
     var want: u8[>..] = [];
     sha_text(log[tail..base], want);
     if want != sha { return false; }
+    tp = trace_phase(tr, "idx_tail_sha", tp);
     let has_b, hb_ok = take_uleb(img, pos);
     let bo, bo_ok = take_uleb(img, pos);
     let bl, bl_ok = take_uleb(img, pos);
@@ -824,10 +872,10 @@ fn load_index(st: Store&, idx_path: const u8[:], log: const u8[:]) -> bool {
     let ci, ci_ok = take_uleb(img, pos);
     let nsec, n_ok = take_uleb(img, pos);
     if !(hb_ok && bo_ok && bl_ok && hc_ok && ci_ok && n_ok) { return false; }
-    if has_b > 1 || has_c > 1 || nsec != 8 { return false; }
+    if has_b > 1 || has_c > 1 || nsec != 9 { return false; }
     var lens: i64[>..] = [];
     var total: i64 = 0;
-    for k in 8 {
+    for k in 9 {
         let len, ok = take_uleb(img, pos);
         if !ok || len < 0 || len > img.len { return false; }
         lens.push(len);
@@ -840,37 +888,39 @@ fn load_index(st: Store&, idx_path: const u8[:], log: const u8[:]) -> bool {
     if total != img.len - pos { return false; }
     let body = img[pos ..];
     if g_check_body_hash && hash(body) != stored { return false; }
-    var at: i64 = 0;
-    let arena, a_ok = from_bytes<u8[>..]>(body[at .. at + lens[0]]); at += lens[0];
-    let kvs, k_ok = from_bytes<Kv[>..]>(body[at .. at + lens[1]]); at += lens[1];
-    let inps, i_ok = from_bytes<Inp[>..]>(body[at .. at + lens[2]]); at += lens[2];
-    let obs, o_ok = from_bytes<Ob[>..]>(body[at .. at + lens[3]]); at += lens[3];
-    let tasks, t_ok = from_bytes<Task[>..]>(body[at .. at + lens[4]]); at += lens[4];
-    let paths, p_ok = from_bytes<PathE[>..]>(body[at .. at + lens[5]]); at += lens[5];
-    let posts, q_ok = from_bytes<Post[>..]>(body[at .. at + lens[6]]); at += lens[6];
-    let standing, s2_ok = from_bytes<i64[>..]>(body[at .. at + lens[7]]);
-    if !(a_ok && k_ok && i_ok && o_ok && t_ok && p_ok && q_ok && s2_ok) { return false; }
+    tp = trace_phase(tr, "idx_body_hash", tp);
+    // Each section is decoded straight into its global: from_bytes returns a
+    // fresh array, so the assignment moves it and no second copy is made.
     store_reset(st);
-    g_arena = copy(arena);
-    g_kvs = copy(kvs);
-    g_inps = copy(inps);
-    g_obs = copy(obs);
-    g_tasks = copy(tasks);
-    g_paths = copy(paths);
-    g_post = copy(posts);
-    g_standing = copy(standing);
+    var at: i64 = 0;
+    var ok = true;
+    g_arena = section<u8>(body[at .. at + lens[0]], ok); at += lens[0];
+    g_kvs = section<Kv>(body[at .. at + lens[1]], ok); at += lens[1];
+    g_inps = section<Inp>(body[at .. at + lens[2]], ok); at += lens[2];
+    g_obs = section<Ob>(body[at .. at + lens[3]], ok); at += lens[3];
+    g_tasks = section<Task>(body[at .. at + lens[4]], ok); at += lens[4];
+    g_paths = section<PathE>(body[at .. at + lens[5]], ok); at += lens[5];
+    g_post = section<Post>(body[at .. at + lens[6]], ok); at += lens[6];
+    g_standing = section<i64>(body[at .. at + lens[7]], ok); at += lens[7];
+    g_ctxs = section<Ctx>(body[at .. at + lens[8]], ok);
+    if !ok { store_reset(st); return false; }
+    tp = trace_phase(tr, "idx_from_bytes", tp);
     st.baseline = Span { off: bo, len: bl };
     st.has_baseline = has_b == 1;
     st.ctx_id = if has_c == 1 { ci } else { -1 };
+    tp = trace_phase(tr, "idx_copy", tp);
     g_logbuf.append(log);
     if !index_ok(st) {
         store_reset(st);
         return false;
     }
+    tp = trace_phase(tr, "idx_index_ok", tp);
     var live: i64 = 0;
     for i in g_tasks.len { if task_live(i) { live += 1; } }
     g_live = live;
+    tp = trace_phase(tr, "idx_live_count", tp);
     rebuild_dicts(st);
+    tp = trace_phase(tr, "idx_rebuild_dicts", tp);
     g_applied = base;
     g_idx_current = true;
     let applied, ok = apply_from(st, g_logbuf, base);

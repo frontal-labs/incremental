@@ -57,10 +57,15 @@ fn read_input(path: const u8[:], out: u8[>..]&) -> bool {
 // Loads the store: the index image if it is valid for the log, else a full
 // replay (spec 6.4). Returns 0, or E_STORE when the log is missing or corrupt.
 fn open_store(st: Store&, sess: Session&) -> i64 {
+    let tr = trace_on();
+    var tp = native_cpu_ns();
     var log: u8[>..] = [];
     if !read_file(sess.log_path, log) { return E_STORE; }
+    tp = trace_phase(tr, "log_read", tp);
     if !load_index(st, sess.idx_path, log) {
+        tp = trace_phase(tr, "idx_rejected", tp);
         if !load_log(st, log) { return E_STORE; }
+        tp = trace_phase(tr, "log_replay", tp);
     }
     // The state now holds exactly the log as read: the first request need not read it again.
     mark_log(sess.log_path);
