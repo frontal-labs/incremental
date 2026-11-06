@@ -23,7 +23,7 @@ import os from "node:os";
 import path from "node:path";
 import { connect } from "@incremental/client";
 
-import { EDIT_SEQUENCE, applyEdit } from "./edits.js";
+import { applyEdit, editSequenceFor } from "./edits.js";
 import { ENGINE, FIXTURE, ROOT } from "./paths.js";
 import { groundTruth, runOnce, runRecorded } from "./vitest.js";
 import { git, headOf } from "./git.js";
@@ -33,11 +33,19 @@ import type { FalseSkip, Flaky } from "./types.js";
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
-  const commitsN = args.commits ?? EDIT_SEQUENCE.length;
+  const sequence = editSequenceFor(path.resolve(args.repo ?? FIXTURE));
+  const commitsN = args.commits ?? sequence.length;
   const work = mkdtempSync(path.join(os.tmpdir(), "bp-replay-"));
   const repo = path.join(work, "repo");
   const store = args.store ?? path.join(work, "store");
-  cpSync(args.repo ?? FIXTURE, repo, { recursive: true, verbatimSymlinks: true });
+  const source = path.resolve(args.repo ?? FIXTURE);
+  cpSync(source, repo, {
+    recursive: true,
+    verbatimSymlinks: true,
+    // Bazel's output symlinks (bazel-bin, bazel-out, bazel-testlogs, ...) are gitignored build
+    // products. Copying them lets Vitest discover test files inside them, so they are left out.
+    filter: (src) => path.dirname(src) !== source || !path.basename(src).startsWith("bazel-"),
+  });
 
   git(repo, ["init", "-q", "-b", "main"]);
   git(repo, ["add", "-A"]);
@@ -75,7 +83,7 @@ async function main(): Promise<void> {
     prevAllPassed = gt.allPassed;
 
     for (let i = 1; i <= commitsN; i++) {
-      applyEdit(repo, EDIT_SEQUENCE[(i - 1) % EDIT_SEQUENCE.length]!);
+      applyEdit(repo, sequence[(i - 1) % sequence.length]!);
       const id = headOf(repo);
       walked.push({ index: i, id });
 

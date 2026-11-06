@@ -1,4 +1,4 @@
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { git } from "./git.js";
 import type { Edit } from "./types.js";
@@ -83,11 +83,41 @@ export const EDIT_SEQUENCE: Edit[] = [
   },
 ];
 
+// The sequence above targets the default fixture (fixture/). The monorepo fixtures
+// (monorepos/*) have packages shared, api, web and utils, so they get their own sequence.
+// Every edit appends to a source file, so each one changes a single package. Expected
+// selection per edit: shared -> shared, api, web; api, web or utils -> only that package.
+// Edit 10 appends a module that throws on import, so shared's tests and its dependents
+// (api, web) fail: a false skip would show up if the engine did not invalidate them.
+export const MONOREPO_EDIT_SEQUENCE: Edit[] = [
+  { op: "append", path: "packages/shared/src/index.ts", content: "// replay 1\n" },
+  { op: "append", path: "packages/utils/src/index.ts", content: "// replay 2\n" },
+  { op: "append", path: "packages/api/src/index.ts", content: "// replay 3\n" },
+  { op: "append", path: "packages/web/src/index.ts", content: "// replay 4\n" },
+  { op: "append", path: "packages/shared/src/index.ts", content: "// replay 5\n" },
+  { op: "append", path: "packages/utils/src/index.ts", content: "// replay 6\n" },
+  { op: "append", path: "packages/api/src/index.ts", content: "// replay 7\n" },
+  { op: "append", path: "packages/web/src/index.ts", content: "// replay 8\n" },
+  { op: "append", path: "packages/shared/src/index.ts", content: "// replay 9\n" },
+  {
+    op: "append",
+    path: "packages/shared/src/index.ts",
+    content: 'export const broken: number = (() => { throw new Error("broken shared"); })();\n',
+  },
+];
+
+// The sequence for a repo: the monorepo sequence when it has packages/shared, else the default.
+export function editSequenceFor(repo: string): Edit[] {
+  return existsSync(path.join(repo, "packages", "shared")) ? MONOREPO_EDIT_SEQUENCE : EDIT_SEQUENCE;
+}
+
 export function applyEdit(repo: string, edit: Edit): void {
   const full = path.join(repo, edit.path);
   if (edit.op === "write") {
     mkdirSync(path.dirname(full), { recursive: true });
     writeFileSync(full, edit.content!);
+  } else if (edit.op === "append") {
+    appendFileSync(full, edit.content!);
   } else {
     rmSync(full, { force: true });
   }

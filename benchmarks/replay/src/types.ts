@@ -13,7 +13,8 @@ export interface GtResult {
 }
 
 export interface Edit {
-  op: "write" | "delete";
+  // append: add content to the end of an existing file (the monorepo sequence uses it).
+  op: "write" | "delete" | "append";
   path: string;
   content?: string;
 }
