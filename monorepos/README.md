@@ -25,13 +25,14 @@ Each package has one Vitest file, so each fixture has 4 files and 8 tests.
 
 ## Git history
 
-The change that a benchmark measures is always the last commit (HEAD), and it
-always touches `packages/shared/src/index.ts`, so the expected affected set is
-`shared`, `api`, `web`.
+The change that a benchmark measures is the last commit that touches
+`packages/shared/src/index.ts`, and the benchmark's base is its parent. The
+expected affected set is `shared`, `api`, `web`. Commits after that one (for
+example a README) do not change which commit is measured, so they are allowed.
 
 - `monorepos/nx/` and `monorepos/turborepo/`: `initial` → `fix relative imports`
-  (api and web) → `add diff to shared` (HEAD).
-- `monorepos/bazel/`: `initial` → `add diff to shared` (HEAD).
+  (api and web) → `add diff to shared` (the measured change).
+- `monorepos/bazel/`: `initial` → `add diff to shared` (the measured change).
 
 ## Dependency wiring
 
@@ -63,12 +64,14 @@ to. Vitest 2 starts child processes during a run, and the recorder marks such ob
 
 | Path                   | Tool          | Affected-detection command (timed by `bench-compare.mjs`) |
 | ---------------------- | ------------- | --------------------------------------------------------- |
-| `monorepos/nx/`        | Nx            | `nx show projects --affected --base=HEAD~1`               |
-| `monorepos/turborepo/` | Turborepo 2.x | `turbo run build --filter=...[HEAD~1] --dry=json`         |
+| `monorepos/nx/`        | Nx            | `nx show projects --affected --base=<shared commit>^`     |
+| `monorepos/turborepo/` | Turborepo 2.x | `turbo run build --filter=...[<shared commit>^] --dry=json` |
 | `monorepos/bazel/`     | Bazel         | `bazel query 'kind(filegroup, rdeps(//packages/..., set(<changed>)))'` |
 
-`--affected=HEAD~1` is not used for Turborepo: on turbo 2.11.10 it selects no
-tasks, while the explicit `--filter=...[HEAD~1]` selects the right ones.
+`<shared commit>` is the last commit that touches `packages/shared/src/index.ts`
+(`scripts/bench-compare.mjs` finds it). `--affected=<ref>` is not used for
+Turborepo: on turbo 2.11.10 it selects no tasks, while the explicit
+`--filter=...[<ref>]` selects the right ones.
 
 ## Running
 
