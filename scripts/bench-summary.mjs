@@ -35,6 +35,7 @@ function range(obj) {
 function main() {
   const replay = load("replay.json");
   const warmPlan = load("warm-plan.json");
+  const warmPlan100k = load("warm-plan-100k.json");
   const comparison = load("comparison.json");
   const now = new Date().toISOString();
   const lines = [
@@ -46,6 +47,7 @@ function main() {
     "",
     `- benchmarks/results/replay.json: ${replay ? "present" : "missing"}`,
     `- benchmarks/results/warm-plan.json: ${warmPlan ? "present" : "missing"}`,
+    `- benchmarks/results/warm-plan-100k.json: ${warmPlan100k ? "present" : "missing"}`,
     `- benchmarks/results/comparison.json: ${comparison ? "present" : "missing"}`,
     "",
     "## Replay",
@@ -63,16 +65,38 @@ function main() {
       "",
     );
   }
-  lines.push("## Warm plan latency", "");
-  if (warmPlan) {
+  // Replays on the monorepo fixtures (each with its own edit sequence, see edits.ts).
+  const monorepoReplays = ["nx", "turborepo", "bazel"]
+    .map((m) => [m, load(`replay-${m}.json`)])
+    .filter(([, r]) => r);
+  if (monorepoReplays.length) {
     lines.push(
-      `| tasks | queries | iterations | process_load_ms (median) | per_query_ms (median) | per_query_ms (min–max) | log_bytes |`,
+      "### Replay on the monorepo fixtures",
+      "",
+      `| fixture | commits_evaluated | total_tasks | task_commit_pairs_examined | false_skips | rule_of_three_bound | median_skip_share |`,
       `|---|---|---|---|---|---|---|`,
-      `| ${warmPlan.tasks ?? "-"} | ${warmPlan.queries ?? "-"} | ${warmPlan.iterations ?? "-"} | ${msMedian(warmPlan.process_load_ms)} | ${msMedian(warmPlan.per_query_ms)} | ${range(warmPlan.per_query_ms)} | ${ms(warmPlan.log_bytes)} |`,
-      "",
-      `_Note: ${warmPlan.note || ""}_`,
-      "",
     );
+    for (const [m, r] of monorepoReplays) {
+      lines.push(
+        `| monorepos/${m} | ${r.commits_evaluated ?? "-"} | ${r.total_tasks ?? "-"} | ${r.task_commit_pairs_examined ?? "-"} | ${(r.false_skips ?? []).length} | ${r.rule_of_three_bound ?? "-"} | ${r.median_skip_share == null ? "n/a" : (r.median_skip_share * 100).toFixed(2) + "%"} |`,
+      );
+    }
+    lines.push("");
+  }
+  lines.push("## Warm plan latency", "");
+  const warmRows = [warmPlan, warmPlan100k].filter(Boolean);
+  if (warmRows.length) {
+    lines.push(
+      `| tasks | queries | iterations | process_load_ms (median) | per_query_ms (median) | per_query_ms (min–max) | per_query_ms p50 / p99 | log_bytes |`,
+      `|---|---|---|---|---|---|---|---|`,
+    );
+    for (const w of warmRows) {
+      const p = w.per_query_percentiles_ms;
+      lines.push(
+        `| ${w.tasks ?? "-"} | ${w.queries ?? "-"} | ${w.iterations ?? "-"} | ${msMedian(w.process_load_ms)} | ${msMedian(w.per_query_ms)} | ${range(w.per_query_ms)} | ${p ? `${p.p50.toFixed(3)} / ${p.p99.toFixed(3)} (n=${p.samples})` : "-"} | ${ms(w.log_bytes)} |`,
+      );
+    }
+    lines.push("", `_Note: ${warmRows[0].note || ""}_`, "");
   }
   lines.push("## Comparison vs alternatives", "");
   lines.push(
@@ -125,12 +149,16 @@ function main() {
       "",
     );
   }
+  const p100 = warmPlan100k?.per_query_percentiles_ms;
   lines.push(
     "## Thresholds",
     "",
-    "- Warm plan target: p50 under 5 ms and p99 under 20 ms at 100k tasks.",
-    "- Cold CLI plan target: under 300 ms at 100k tasks (hyperfine).",
-    "- Measured so far: warm plan at 10k tasks only. The 100k-task targets are not measured.",
+    p100
+      ? `- Warm plan target at 100k tasks (p50 under 5 ms, p99 under 20 ms): p50 ${p100.p50.toFixed(3)} ms, p99 ${p100.p99.toFixed(3)} ms over ${p100.samples} queries. ${p100.p50 < 5 && p100.p99 < 20 ? "Met." : "Not met."}`
+      : "- Warm plan target at 100k tasks (p50 under 5 ms, p99 under 20 ms): not measured (warm-plan-100k.json missing).",
+    warmPlan100k
+      ? `- Cold CLI plan target (under 300 ms at 100k tasks): proxy only, spawn + hello + store load median ${msMedian(warmPlan100k.process_load_ms)} ms (hyperfine not used). ${warmPlan100k.process_load_ms.median < 300 ? "Within target." : "Over target."}`
+      : "- Cold CLI plan target (under 300 ms at 100k tasks): not measured.",
     "",
   );
   writeFileSync(path.join(RESULTS, "RESULTS.md"), lines.join("\n") + "\n");

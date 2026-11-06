@@ -18,7 +18,7 @@
 
 import { spawnSync } from "node:child_process";
 import { statSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const GRAPH_ROOT = process.env.GRAPH_ROOT || resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -81,7 +81,24 @@ function benchIncremental(iterations) {
 }
 
 // Nx: measure affected project detection time
+// The change under test is the last commit that touches packages/shared/src/index.ts, and the
+// base is its parent. The fixture repos can have later commits (READMEs, docs) on top of it,
+// so HEAD~1 is not the change under test; the shared commit is.
+function changeBase(monorepoPath) {
+  const r = spawnSync("git", ["log", "-1", "--format=%H", "--", "packages/shared/src/index.ts"], {
+    cwd: monorepoPath,
+    encoding: "utf8",
+  });
+  const sha = r.stdout.trim();
+  if (r.status !== 0 || sha === "") {
+    return { error: r.stderr.trim() || "no commit touches packages/shared/src/index.ts" };
+  }
+  return { base: `${sha}^` };
+}
+
 function benchNx(monorepoPath, iterations) {
+  const { base, error } = changeBase(monorepoPath);
+  if (error) return { affected_detect_ms: null, projects: [], samples: [], error };
   const samples = [];
   let projects = [];
   let lastError = null;
@@ -95,16 +112,16 @@ function benchNx(monorepoPath, iterations) {
             "show",
             "projects",
             "--affected",
-            "--base=HEAD~1",
+            `--base=${base}`,
           ],
           { cwd: monorepoPath },
         ),
       () =>
-        timeCommand("nx", ["show", "projects", "--affected", "--base=HEAD~1"], {
+        timeCommand("nx", ["show", "projects", "--affected", `--base=${base}`], {
           cwd: monorepoPath,
         }),
       () =>
-        timeCommand("npx", ["nx", "show", "projects", "--affected", "--base=HEAD~1"], {
+        timeCommand("npx", ["nx", "show", "projects", "--affected", `--base=${base}`], {
           cwd: monorepoPath,
         }),
     ];
@@ -145,10 +162,13 @@ function benchNx(monorepoPath, iterations) {
 // Turbo: measure affected task detection time. Uses the explicit git-range filter,
 // because `--affected=<ref>` selects nothing on turbo 2.11 (verified 2026-11-05).
 function benchTurbo(monorepoPath, iterations) {
+  const { base, error } = changeBase(monorepoPath);
+  if (error) return { affected_detect_ms: null, tasks_found: 0, samples: [], error };
   const samples = [];
   let tasksFound = 0;
+  let packages = [];
   let lastError = null;
-  const args = ["run", "build", "--filter=...[HEAD~1]", "--dry=json"];
+  const args = ["run", "build", `--filter=...[${base}]`, "--dry=json"];
   for (let i = 0; i < iterations; i++) {
     const attempts = [
       () =>
@@ -167,7 +187,9 @@ function benchTurbo(monorepoPath, iterations) {
       continue;
     }
     try {
-      tasksFound = JSON.parse(result.stdout).tasks.length;
+      const tasks = JSON.parse(result.stdout).tasks;
+      tasksFound = tasks.length;
+      packages = tasks.map((t) => t.package).sort();
       samples.push(result.ms);
     } catch {
       lastError = "turbo --dry=json output was not JSON";
@@ -176,16 +198,17 @@ function benchTurbo(monorepoPath, iterations) {
   return {
     affected_detect_ms: median(samples),
     tasks_found: tasksFound,
+    packages,
     samples,
     error: lastError,
   };
 }
 
-// Bazel: affected targets = rdeps of the packages whose files changed in HEAD~1..HEAD.
+// Bazel: affected targets = rdeps of the packages whose files changed in base..HEAD.
 // Each package p has the target //packages/p:p_pkg (see monorepos/bazel/packages/*/BUILD.bazel).
 // The timed command is the rdeps query, not a listing of all targets.
-function changedBazelTargets(monorepoPath) {
-  const diff = spawnSync("git", ["diff", "--name-only", "HEAD~1", "HEAD", "--", "packages"], {
+function changedBazelTargets(monorepoPath, base) {
+  const diff = spawnSync("git", ["diff", "--name-only", base, "HEAD", "--", "packages"], {
     cwd: monorepoPath,
     encoding: "utf8",
   });
@@ -214,7 +237,8 @@ function benchBazel(monorepoPath, iterations) {
     };
   }
 
-  const changed = changedBazelTargets(monorepoPath);
+  const { base, error: baseError } = changeBase(monorepoPath);
+  const changed = baseError ? { error: baseError } : changedBazelTargets(monorepoPath, base);
   if (changed.error) {
     return { affected_detect_ms: null, targets: [], samples: [], error: changed.error };
   }
@@ -277,14 +301,35 @@ async function main() {
     timestamp: new Date().toISOString(),
     iterations,
     incremental,
-    nx: { ...nx, monorepo: MONOREPOS.nx },
-    turbo: { ...turbo, monorepo: MONOREPOS.turbo },
-    bazel: { ...bazel, monorepo: MONOREPOS.bazel },
+    // Relative to the graph root, so the results file does not carry a machine's absolute paths.
+    nx: { ...nx, monorepo: relative(GRAPH_ROOT, MONOREPOS.nx) },
+    turbo: { ...turbo, monorepo: relative(GRAPH_ROOT, MONOREPOS.turbo) },
+    bazel: { ...bazel, monorepo: relative(GRAPH_ROOT, MONOREPOS.bazel) },
   };
 
   const outPath = join(GRAPH_ROOT, "benchmarks", "results", "comparison.json");
   writeFileSync(outPath, JSON.stringify(comparison, null, 2) + "\n");
   console.log(`\nResults written to ${outPath}`);
+
+  // Each tool must select exactly the packages the change under test affects. A wrong set makes
+  // the timing meaningless, so the run fails (non-zero exit) and `make bench` stops.
+  const EXPECTED = ["api", "shared", "web"];
+  const selected = {
+    nx: nx.projects,
+    turbo: turbo.packages,
+    bazel: bazel.targets.map((t) => t.replace(/^\/\/packages\//, "").replace(/:.*$/, "")),
+  };
+  let wrong = false;
+  for (const [tool, got] of Object.entries(selected)) {
+    const sorted = [...got].sort();
+    if (JSON.stringify(sorted) !== JSON.stringify(EXPECTED)) {
+      wrong = true;
+      console.error(
+        `FAIL ${tool}: selected [${sorted.join(", ")}], expected [${EXPECTED.join(", ")}]`,
+      );
+    }
+  }
+  if (wrong) process.exit(1);
 }
 
 main().catch((e) => {
