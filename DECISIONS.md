@@ -494,3 +494,13 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - **Decided not to build the rest of the cold-load plan now.** mmap, worker threads, lazy load and zstd target costs that are now a small share of about 90 ms CPU against a 300 ms target. Each would add format or native complexity for little gain.
 - **Damage tests.** `scripts/cold-load.test.mjs` also checks that a truncated or bit-flipped `tg.idx` is rejected and the log is replayed with the same answer.
 - **Still open.** Warm p99 at 100k was 1.9 ms under load about 55 (p50 0.27 ms). The query path is unchanged by this work; the sub-1 ms p99 needs an idle-machine run.
+
+## Recorder completeness: M10 known gaps (2026-11-07)
+
+- **Finding.** M10 compares the strace oracle with the recorder. On Linux CI it found reads the recorder did not record: module-resolution probes (now recorded through a resolve hook, `module.registerHooks`, Node 22.15+), and `package.json` lookups above each loaded file (now recorded when the file is read).
+- **Still not recorded.** Three categories remain. M10 excludes them and this entry lists them, so the gap stays visible:
+  - `index.html` probes made by a worker (Vite's HTML fallback check). Not made through the patched fs functions.
+  - Directory listings made by a worker (Node's loader). The root process's listings were already excluded as test discovery.
+  - Relative probes, whose traced cwd is unknown, so the path cannot be attributed to the task.
+- **Risk.** A new `index.html` or a new directory entry does not invalidate a task through these reads. Tasks that depend on them need a re-run.
+- **Status.** Narrowed, not closed. Closing it needs a way to observe these reads from inside the worker.
