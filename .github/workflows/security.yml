@@ -72,7 +72,10 @@ jobs:
           image-ref: incremental:scan
           format: sarif
           output: trivy-results.sarif
+      # Code scanning is not enabled for this private repo, so upload-sarif is refused.
+      # Keep the SARIF as a workflow artifact instead.
       - name: Upload Trivy results
-        uses: github/codeql-action/upload-sarif@a3d1b77a1ba1550fbb5c74db1dc3a11f4a481126 # v3.39.2
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          sarif_file: trivy-results.sarif
+          name: trivy-results
+          path: trivy-results.sarif
