@@ -39,6 +39,11 @@ jobs:
           echo "06ac30284338269d3996d457412bf4f2b47c1f9a5601de65b6317187fe78d5c9  goose.tar.gz" | sha256sum -c -
           tar -xzf goose.tar.gz -C .toolchain/goose
           echo "GOOSE_DIR=$PWD/.toolchain/goose/goose-v2026.3-linux-x64" >> "$GITHUB_ENV"
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm@9.0.0
+          pnpm install --frozen-lockfile --ignore-scripts
+          (cd bindings/node && npm install --no-audit --no-fund)
       - name: Run conformance suite
         run: make test-policy
       - name: Validate case count
@@ -61,6 +66,20 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22"
+      - name: Install Goose toolchain (Linux x64, v2026.3)
+        run: |
+          mkdir -p .toolchain/goose
+          curl -fsSL -o goose.tar.gz https://github.com/aardappel/goose/releases/download/v2026.3/goose-v2026.3-linux-x64.tar.gz
+          echo "06ac30284338269d3996d457412bf4f2b47c1f9a5601de65b6317187fe78d5c9  goose.tar.gz" | sha256sum -c -
+          tar -xzf goose.tar.gz -C .toolchain/goose
+          echo "GOOSE_DIR=$PWD/.toolchain/goose/goose-v2026.3-linux-x64" >> "$GITHUB_ENV"
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm@9.0.0
+          pnpm install --frozen-lockfile --ignore-scripts
+          (cd bindings/node && npm install --no-audit --no-fund)
+      - name: Build engine
+        run: make build
       - name: Check spec format
         run: node spec/validate.mjs
 
@@ -81,5 +100,10 @@ jobs:
           echo "06ac30284338269d3996d457412bf4f2b47c1f9a5601de65b6317187fe78d5c9  goose.tar.gz" | sha256sum -c -
           tar -xzf goose.tar.gz -C .toolchain/goose
           echo "GOOSE_DIR=$PWD/.toolchain/goose/goose-v2026.3-linux-x64" >> "$GITHUB_ENV"
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm@9.0.0
+          pnpm install --frozen-lockfile --ignore-scripts
+          (cd bindings/node && npm install --no-audit --no-fund)
       - name: Run protocol check
         run: make test-protocol

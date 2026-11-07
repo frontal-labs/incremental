@@ -35,7 +35,8 @@ jobs:
           pip install ruff==0.14.13
       - name: Install system formatters
         run: |
-          sudo apt-get update && sudo apt-get install -y clang-format shfmt shellcheck taplo || true
+          sudo apt-get update && sudo apt-get install -y clang-format shfmt shellcheck
+          npm install -g @taplo/cli@0.7.0
       - name: Check formatting
         run: make fmt-check
       - name: Run linters
