@@ -21,6 +21,20 @@ import { EXCLUDED_DIRS, isTrackedEnv, sha256 } from "./shared.js";
 
 type Kind = "read" | "stat" | "list";
 
+// Extensions Node and the TypeScript loaders try for a specifier without one.
+const PROBE_EXTENSIONS = [
+  ".js",
+  ".mjs",
+  ".cjs",
+  ".json",
+  ".node",
+  ".ts",
+  ".mts",
+  ".cts",
+  ".tsx",
+  ".jsx",
+];
+
 const OUT = process.env.INCREMENTAL_TRACE_OUT;
 const RECORD = OUT !== undefined && OUT !== "";
 // Worker processes and worker threads run the task's own code. Only they
@@ -208,6 +222,48 @@ function install(out: string): void {
     patch(fs.promises, name, name === "open" ? openKind : "read");
   for (const name of ["stat", "lstat", "access", "realpath"]) patch(fs.promises, name, "stat");
   patch(fs.promises, "readdir", "list");
+
+  // Module resolution probes candidate files (the specifier as given, then each
+  // extension, then index files) and walks up for package.json through internal
+  // bindings that the patches above never see. A resolve hook records those
+  // candidates. Recording a candidate that is never read only adds an input, so
+  // it can make a task invalid when it need not be, but it cannot skip one that
+  // is. Hooks need Node 22.15 or later; earlier Node versions record no
+  // resolution probes.
+  const noteResolution = (specifier: string, parentURL: string | undefined): void => {
+    if (parentURL === undefined || !parentURL.startsWith("file:")) return;
+    const parent = fileURLToPath(parentURL);
+    let dir = path.dirname(parent);
+    for (;;) {
+      noteAccess(path.join(dir, "package.json"), "stat");
+      const up = path.dirname(dir);
+      if (up === dir) break;
+      dir = up;
+    }
+    if (!(specifier.startsWith("./") || specifier.startsWith("../") || specifier.startsWith("/")))
+      return;
+    const target = path.resolve(path.dirname(parent), specifier);
+    noteAccess(target, "stat");
+    for (const ext of PROBE_EXTENSIONS) {
+      noteAccess(target + ext, "stat");
+      noteAccess(path.join(target, "index" + ext), "stat");
+    }
+  };
+  if (typeof Module.registerHooks === "function") {
+    Module.registerHooks({
+      resolve(specifier, context, nextResolve) {
+        if (!busy) {
+          busy = true;
+          try {
+            noteResolution(specifier, context.parentURL);
+          } finally {
+            busy = false;
+          }
+        }
+        return nextResolve(specifier, context);
+      },
+    });
+  }
 
   // Subprocesses are not observed. Their reads are not in the trace, so the
   // task is recorded as incomplete (PLAN 11.1 rule 4).
