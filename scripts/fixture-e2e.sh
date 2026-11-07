@@ -40,6 +40,7 @@ PY
 }
 
 fail=0
+skipped=""
 
 # fixture <name> <adapter run.js> <nx|turbo|bazel>
 fixture() {
@@ -49,6 +50,13 @@ fixture() {
   src="$ROOT/monorepos/$name"
   repo="$WORK/$name"
   store="$WORK/$name-store"
+  # A fixture is a separate git repository. When it is not checked out here (CI does not
+  # fetch it), skip it. A fixture that is present must pass.
+  if [ ! -e "$src/.git" ]; then
+    echo "== $name: SKIP (fixture repository not present at monorepos/$name)"
+    skipped="$skipped $name"
+    return 0
+  fi
   echo "== $name ($kind adapter)"
   git clone -q "$src" "$repo"
   cp -R "$src/node_modules" "$repo/"
@@ -107,7 +115,11 @@ fixture turborepo "$ROOT/adapters/turbo/dist/src/run.js" turbo
 fixture bazel "$ROOT/adapters/bazel/dist/src/run.js" bazel
 
 if [ "$fail" -eq 0 ]; then
-  echo "PASS fixture-e2e"
+  if [ -n "$skipped" ]; then
+    echo "PASS fixture-e2e (skipped:$skipped)"
+  else
+    echo "PASS fixture-e2e"
+  fi
 else
   echo "FAIL fixture-e2e"
   exit 1
