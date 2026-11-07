@@ -254,9 +254,23 @@ function install(out: string): void {
       if (up === dir) break;
       dir = up;
     }
-    if (!(specifier.startsWith("./") || specifier.startsWith("../") || specifier.startsWith("/")))
+    let target: string;
+    if (specifier.startsWith("file:")) {
+      // A file URL names an absolute path directly (Vite builds some ids this way).
+      try {
+        target = fileURLToPath(specifier);
+      } catch {
+        return;
+      }
+    } else if (
+      specifier.startsWith("./") ||
+      specifier.startsWith("../") ||
+      specifier.startsWith("/")
+    ) {
+      target = path.resolve(path.dirname(parent), specifier);
+    } else {
       return;
-    const target = path.resolve(path.dirname(parent), specifier);
+    }
     noteAccess(target, "stat");
     for (const ext of PROBE_EXTENSIONS) {
       noteAccess(target + ext, "stat");

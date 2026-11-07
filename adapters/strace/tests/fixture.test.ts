@@ -153,12 +153,14 @@ function recorderPaths(events: TraceEvent[], dir: string): Set<string> {
 // so the gap stays visible. Each is a read that Node or Vite makes outside the
 // public fs functions the recorder patches:
 // - `index.html` probes: Vite's HTML fallback check, made by a worker.
+// - `tsconfig.json` probes: Vite's tsconfig lookup, which walks up from each file.
 // - directory listings made by a worker: Node's loader, not the task's own reads.
-// - relative probes: the traced cwd is unknown, so the path cannot be attributed.
+
 function isKnownGap(e: StraceEvent, rootPid: number): boolean {
   if (e.kind === "probe" && path.basename(e.path).startsWith("index.html")) return true;
+  if (e.kind === "probe" && path.basename(e.path) === "tsconfig.json") return true;
   if (e.kind === "dir" && e.pid !== rootPid) return true;
-  return e.kind === "probe" && e.relative === true;
+  return false;
 }
 
 m10(

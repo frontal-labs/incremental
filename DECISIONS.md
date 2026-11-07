@@ -497,10 +497,10 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 
 ## Recorder completeness: M10 known gaps (2026-11-07)
 
-- **Finding.** M10 compares the strace oracle with the recorder. On Linux CI it found reads the recorder did not record: module-resolution probes (now recorded through a resolve hook, `module.registerHooks`, Node 22.15+), and `package.json` lookups above each loaded file (now recorded when the file is read).
+- **Finding.** M10 compares the strace oracle with the recorder. On Linux CI it found reads the recorder did not record: module-resolution probes (now recorded through a resolve hook, `module.registerHooks`, Node 22.15+, including `file:` URL specifiers), and `package.json` lookups above each loaded file (now recorded when the file is read). The `tmp/bp-m10-repo-…` entries were absolute paths with the repo root doubled, from a `file:` URL specifier; they are now recorded too.
 - **Still not recorded.** Three categories remain. M10 excludes them and this entry lists them, so the gap stays visible:
   - `index.html` probes made by a worker (Vite's HTML fallback check). Not made through the patched fs functions.
+  - `tsconfig.json` probes from the root process (Vite's tsconfig lookup, which walks up from each file, including from the file path itself).
   - Directory listings made by a worker (Node's loader). The root process's listings were already excluded as test discovery.
-  - Relative probes, whose traced cwd is unknown, so the path cannot be attributed to the task.
 - **Risk.** A new `index.html` or a new directory entry does not invalidate a task through these reads. Tasks that depend on them need a re-run.
 - **Status.** Narrowed, not closed. Closing it needs a way to observe these reads from inside the worker.
