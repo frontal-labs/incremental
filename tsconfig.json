@@ -3,6 +3,6 @@
   "references": [
     { "path": "./bindings/node" },
     { "path": "./adapters/vitest" },
-    { "path": "./mcp" }
+    { "path": "./apps/mcp" }
   ]
 }

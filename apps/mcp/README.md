@@ -6,12 +6,12 @@ The incremental Model Context Protocol (MCP) server (`@incremental/mcp`). It exp
 
 | Path                 | Description                                                                                                                                              |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `mcp/src/index.ts`   | MCP server entry point and binary (`incremental-mcp`).                                                                                                   |
-| `mcp/src/server.ts`  | MCP server implementation: session handling, capability negotiation.                                                                                     |
-| `mcp/src/tools.ts`   | MCP tools wrapping incremental methods (`observe`, `observe_many`, `affected`, `explain`, `stats`, `baseline`, `advance`, `forget`, `ping`, `shutdown`). |
-| `mcp/src/context.ts` | Context handling for MCP tool calls.                                                                                                                     |
-| `mcp/src/git.ts`     | Git integration for change-set computation.                                                                                                              |
-| `mcp/tests/`         | MCP server tests (`node --test dist/tests/*.test.js`).                                                                                                   |
+| `apps/mcp/src/index.ts`   | MCP server entry point and binary (`incremental-mcp`).                                                                                                   |
+| `apps/mcp/src/server.ts`  | MCP server implementation: session handling, capability negotiation.                                                                                     |
+| `apps/mcp/src/tools.ts`   | MCP tools wrapping incremental methods (`observe`, `observe_many`, `affected`, `explain`, `stats`, `baseline`, `advance`, `forget`, `ping`, `shutdown`). |
+| `apps/mcp/src/context.ts` | Context handling for MCP tool calls.                                                                                                                     |
+| `apps/mcp/src/git.ts`     | Git integration for change-set computation.                                                                                                              |
+| `apps/mcp/tests/`         | MCP server tests (`node --test dist/tests/*.test.js`).                                                                                                   |
 
 ## Running
 
@@ -19,8 +19,8 @@ The MCP server depends on `@incremental/client` (`file:../bindings/node`), so bu
 
 ```sh
 cd bindings/node && npm run build
-cd mcp && npm run build   # tsc -b
-cd mcp && npm test         # tsc -b && node --test dist/tests/*.test.js
+cd apps/mcp && npm run build   # tsc -b
+cd apps/mcp && npm test         # tsc -b && node --test dist/tests/*.test.js
 ```
 
 From the repo root:

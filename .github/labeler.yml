@@ -12,7 +12,7 @@
       - any-glob-to-any-file: ["cli/**"]
 "area: mcp":
   - changed-files:
-      - any-glob-to-any-file: ["mcp/**"]
+      - any-glob-to-any-file: ["apps/mcp/**"]
 "area: adapters":
   - changed-files:
       - any-glob-to-any-file: ["adapters/**"]

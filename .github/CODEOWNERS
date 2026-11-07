@@ -6,7 +6,7 @@
 /core/ @frontal-labs/core
 /bindings/ @frontal-labs/bindings
 /cli/ @frontal-labs/cli
-/mcp/ @frontal-labs/mcp
+/apps/mcp/ @frontal-labs/mcp
 /adapters/ @frontal-labs/adapters
 /spec/ @frontal-labs/spec
 /docs/ @frontal-labs/docs

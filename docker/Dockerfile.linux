@@ -49,6 +49,6 @@ COPY . /app
 RUN pnpm install --frozen-lockfile
 
 # Start from clean node_modules: a leftover pnpm symlink would survive npm install.
-RUN for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/strace adapters/biome adapters/clippy adapters/bazel adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbopack adapters/watcher benchmarks/replay mcp; do rm -rf "$d/node_modules" && (cd "$d" && npm install --no-audit --no-fund); done
+RUN for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/strace adapters/biome adapters/clippy adapters/bazel adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbopack adapters/watcher benchmarks/replay apps/mcp; do rm -rf "$d/node_modules" && (cd "$d" && npm install --no-audit --no-fund); done
 
 CMD ["make", "all-tests", "test-python", "test-git", "test-fuzz"]

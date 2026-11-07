@@ -17,7 +17,7 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@incremental/client": "file:../bindings/node",
+    "@incremental/client": "file:../../bindings/node",
     "@modelcontextprotocol/sdk": "1.32.0",
     "zod": "4.6.7"
   },

@@ -24,7 +24,7 @@ Each skill should document what it automates, which incremental commands or bind
 
 ## Related
 
-- `mcp/` — the MCP server itself is an agent-facing skill surface over Protocol v1
+- `apps/mcp/` — the MCP server itself is an agent-facing skill surface over Protocol v1
 - `bindings/` — Node/Python/Rust clients skills can delegate to
 - `docs/spec/PROTOCOL.md` — the protocol skills speak
 - `docs/development/DEVELOPMENT_GUIDE.md` — contribution ground rules

@@ -10,7 +10,7 @@ on:
       - "core/**"
       - "bindings/**"
       - "cli/**"
-      - "mcp/**"
+      - "apps/mcp/**"
       - "package.json"
   pull_request:
     branches: [main]
@@ -19,7 +19,7 @@ on:
       - "core/**"
       - "bindings/**"
       - "cli/**"
-      - "mcp/**"
+      - "apps/mcp/**"
       - "package.json"
 
 permissions:

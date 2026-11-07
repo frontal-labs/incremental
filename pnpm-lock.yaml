@@ -33,7 +33,7 @@ importers:
         specifier: 0.8.0
         version: 0.8.0
 
-  mcp:
+  apps/mcp:
     dependencies:
       '@incremental/client':
         specifier: file:../bindings/node

@@ -141,4 +141,4 @@ MCP Client → User:
 
 - `docs/adapters/ADAPTERS.md` — MCP server (E8) tools and behavior.
 - `docs/spec/PROTOCOL.md` — Protocol v1 methods the MCP server forwards.
-- `mcp/` — the actual MCP server implementation (`@incremental/mcp`).
+- `apps/mcp/` — the actual MCP server implementation (`@incremental/mcp`).

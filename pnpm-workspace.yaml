@@ -1,4 +1,4 @@
 packages:
-  - "mcp"
+  - "apps/mcp"
   - "core"
   - "bindings/node"

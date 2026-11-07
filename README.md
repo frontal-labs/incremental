@@ -6,7 +6,7 @@
 
 An incremental dependency engine. It records what each task reads, lists, probes and writes, stores those observations as content-hashed records, and answers one question: given the changes since the last known-good baseline, which tasks are invalid, and why.
 
-The engine is written in Goose (`core/`). Protocol clients are TypeScript (`bindings/node`, `adapters/vitest`, `mcp`) and Python (`bindings/python`). The specification is in `spec/`, and the conformance suite (40 cases) is in `conformance/`.
+The engine is written in Goose (`core/`). Protocol clients are TypeScript (`bindings/node`, `adapters/vitest`, `apps/mcp`) and Python (`bindings/python`). The specification is in `spec/`, and the conformance suite (40 cases) is in `conformance/`.
 
 **Name status:** the project is named Incremental (renamed from its former name on 2026-11-04; the binary, packages and store follow the new name). The earlier trademark, GitHub and domain checks (DECISIONS.md D-E0-01) covered the former name only. The checks for "Incremental" are not done .
 
