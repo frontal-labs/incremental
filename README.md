@@ -67,6 +67,33 @@ core/dist/incremental affected --store $STORE --changes changes.json --baseline 
 
 The last command prints a plan. It lists `src/math.test.ts` with the reason `reads:src/math.ts`, and `skipped` is 0. Two other commands are `stats` (store summary) and `serve` (protocol v1 over stdio). See `examples/cli_workflow/README.md` for the full walkthrough and `spec/PROTOCOL.md` for the protocol.
 
+## Benchmarks
+
+Measured on macOS (arm64), 2026-11-05. Full tables, the methodology and the known issues are in [`BENCHMARKS.md`](./BENCHMARKS.md).
+
+**Warm query latency** (`benchmarks/warm-plan.mjs`, 1,000 queries × 3 iterations, each query invalidates exactly one task):
+
+| Tasks   | Per-query p50 | Per-query p99 | Process load (median) |
+| ------- | ------------- | ------------- | --------------------- |
+| 10,000  | 0.100 ms      | 0.650 ms      | 38 ms                 |
+| 100,000 | 0.093 ms      | 0.661 ms      | 394 ms                |
+
+The warm query target (p50 under 5 ms and p99 under 20 ms at 100k tasks) is met. The cold CLI target (under 300 ms at 100k tasks) is **not** met: loading 100k observations takes about 394 ms.
+
+**Replay accuracy** (`make bench-replay`, 10 commits per fixture): zero false skips across the default fixture and the Nx, Turborepo and Bazel monorepo fixtures. The sample is small: ten commits give a rule-of-three upper bound of 30%, so this shows no false skip was found, not that the rate is low.
+
+**Comparison with other tools** (`node scripts/bench-compare.mjs 10`): affected-detection on the 4-package monorepo fixtures, median of 10 runs.
+
+| Tool  | Median   |
+| ----- | -------- |
+| Nx    | 897 ms   |
+| Turbo | 151 ms   |
+| Bazel | 1,147 ms |
+
+These are cold CLI runs on small fixtures. Incremental's warm query is not the same operation, so do not read a ratio between these rows as a speedup.
+
+Reproduce with `make bench` (after `make build`). It writes the raw outputs to `benchmarks/results/`.
+
 ## Limits 
 
 - Non-file inputs (time, network, randomness) are not observed. A task that depends on them is not protected by the engine; re-run it when they matter.
