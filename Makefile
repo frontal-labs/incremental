@@ -136,7 +136,7 @@ gate0: build
 
 test-oracle: test-vitest
 	@if [ "$(UNAME_S)" = "linux" ]; then \
-		cd adapters/strace && npm test >../../logs/test-oracle.log 2>&1 || { grep -n "^not ok" -A30 ../../logs/test-oracle.log | cut -c1-300 | head -120; tail -30 ../../logs/test-oracle.log; echo "FAIL test-oracle"; exit 1; }; \
+		cd adapters/strace && npm test >../../logs/test-oracle.log 2>&1 || { grep -n "^not ok" -A80 ../../logs/test-oracle.log | cut -c1-300 | head -120; tail -30 ../../logs/test-oracle.log; echo "FAIL test-oracle"; exit 1; }; \
 		echo "PASS test-oracle"; \
 	else \
 		echo "PASS test-oracle (skipped on non-Linux)"; \
