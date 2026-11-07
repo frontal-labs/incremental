@@ -40,7 +40,8 @@ const FIXTURES = {
 
 const iterations = Number(process.argv[2] ?? 5);
 const work = process.argv[3] ?? mkdtempSync(join(os.tmpdir(), "e2e-compare-"));
-if (!Number.isInteger(iterations) || iterations < 1) throw new Error(`invalid iterations: ${process.argv[2]}`);
+if (!Number.isInteger(iterations) || iterations < 1)
+  throw new Error(`invalid iterations: ${process.argv[2]}`);
 
 function sh(cmd, args, opts = {}) {
   const t0 = process.hrtime.bigint();
@@ -51,7 +52,8 @@ function sh(cmd, args, opts = {}) {
 
 function must(cmd, args, opts) {
   const r = sh(cmd, args, opts);
-  if (r.status !== 0) throw new Error(`${cmd} ${args.join(" ")} failed (${r.status}):\n${r.out.slice(-2000)}`);
+  if (r.status !== 0)
+    throw new Error(`${cmd} ${args.join(" ")} failed (${r.status}):\n${r.out.slice(-2000)}`);
   return r;
 }
 
@@ -70,13 +72,26 @@ function packagesIn(text, pattern) {
 function summarize(set, status) {
   const covers = EXPECTED.every((p) => set.includes(p));
   const selective = JSON.stringify(set) === JSON.stringify(EXPECTED);
-  return { packages: set, pass: status === 0, correct: status === 0 && covers, selective: status === 0 && selective };
+  return {
+    packages: set,
+    pass: status === 0,
+    correct: status === 0 && covers,
+    selective: status === 0 && selective,
+  };
 }
 
 function setupFixture(name) {
   const dir = join(work, name);
   must("git", ["clone", "-q", join(ROOT, "monorepos", name), dir]);
-  const change = must("git", ["-C", dir, "log", "-1", "--format=%H", "--", "packages/shared/src/index.ts"]).out.trim();
+  const change = must("git", [
+    "-C",
+    dir,
+    "log",
+    "-1",
+    "--format=%H",
+    "--",
+    "packages/shared/src/index.ts",
+  ]).out.trim();
   const base = must("git", ["-C", dir, "rev-parse", `${change}^`]).out.trim();
   must("git", ["-C", dir, "checkout", "-q", "--detach", change]);
   // Install the fixture's Vitest without its workspace file (see monorepos/README.md). The
@@ -88,13 +103,23 @@ function setupFixture(name) {
 
 const RUNNERS = {
   raw: (f) => sh("npx", ["vitest", "run", "--reporter=verbose"], { cwd: f.dir }),
-  nx: (f) => sh("npx", ["nx", "affected", "-t", "test", `--base=${f.base}`, "--head=HEAD", "--skip-nx-cache"], {
-    cwd: f.dir,
-    env: { ...process.env, NX_DAEMON: "false", NX_NO_CLOUD: "true" },
-  }),
-  turbo: (f) => sh("npx", ["turbo", "run", "test", `--filter=...[${f.base}]`, "--force"], { cwd: f.dir }),
+  nx: (f) =>
+    sh(
+      "npx",
+      ["nx", "affected", "-t", "test", `--base=${f.base}`, "--head=HEAD", "--skip-nx-cache"],
+      {
+        cwd: f.dir,
+        env: { ...process.env, NX_DAEMON: "false", NX_NO_CLOUD: "true" },
+      },
+    ),
+  turbo: (f) =>
+    sh("npx", ["turbo", "run", "test", `--filter=...[${f.base}]`, "--force"], { cwd: f.dir }),
   bazel: (f) => {
-    const q = must("bazel", ["query", "kind(test, rdeps(//packages/..., //packages/shared:shared_pkg))"], { cwd: f.dir });
+    const q = must(
+      "bazel",
+      ["query", "kind(test, rdeps(//packages/..., //packages/shared:shared_pkg))"],
+      { cwd: f.dir },
+    );
     const targets = q.out.split("\n").filter((l) => l.startsWith("//"));
     return sh("bazel", ["test", "--nocache_test_results", ...targets], { cwd: f.dir });
   },
@@ -109,7 +134,8 @@ const RUNNERS = {
 // The set of packages each method ran, read from its output.
 function packagesRan(method, r) {
   if (method === "raw") return packagesIn(r.out, /packages\/(\w+)\/test\//g);
-  if (method === "nx" || method === "turbo") return packagesIn(r.out, /\b(shared|api|web|utils):test\b/g);
+  if (method === "nx" || method === "turbo")
+    return packagesIn(r.out, /\b(shared|api|web|utils):test\b/g);
   if (method === "bazel") return packagesIn(r.out, /\/\/packages\/(\w+):\w+_test/g);
   // Incremental prints JSON; "selected" lists the test files it ran.
   const json = JSON.parse(r.out.slice(r.out.indexOf("{")));
@@ -122,8 +148,11 @@ for (const [name, methods] of Object.entries(FIXTURES)) {
   const f = setupFixture(name);
   // Warm the Incremental store at the base, then snapshot it. Each timed run starts from the snapshot.
   must("git", ["-C", f.dir, "checkout", "-q", "--detach", f.base]);
-  const warm = sh("node", [INCR, "run", "--all", "--store", join(work, `${f.name}-store-base`)], { cwd: f.dir });
-  if (warm.status !== 0) throw new Error(`incremental warm-up failed for ${name}:\n${warm.out.slice(-1500)}`);
+  const warm = sh("node", [INCR, "run", "--all", "--store", join(work, `${f.name}-store-base`)], {
+    cwd: f.dir,
+  });
+  if (warm.status !== 0)
+    throw new Error(`incremental warm-up failed for ${name}:\n${warm.out.slice(-1500)}`);
   must("git", ["-C", f.dir, "checkout", "-q", "--detach", f.change]);
 
   const per = {};
@@ -143,7 +172,9 @@ for (const [name, methods] of Object.entries(FIXTURES)) {
       correct: runs.every((x) => x.correct),
       selective: runs.every((x) => x.selective),
     };
-    console.error(`${name} ${m}: median ${per[m].median_ms.toFixed(0)} ms, packages ${per[m].packages.join(",")}, correct=${per[m].correct}, selective=${per[m].selective}`);
+    console.error(
+      `${name} ${m}: median ${per[m].median_ms.toFixed(0)} ms, packages ${per[m].packages.join(",")}, correct=${per[m].correct}, selective=${per[m].selective}`,
+    );
   }
   results.fixtures[name] = { base: f.base, change: f.change, methods: per };
 }

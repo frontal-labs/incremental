@@ -2,11 +2,11 @@
 
 ## Files in `<store>/`
 
-| File         | Kind                                     | Notes                                                                         |
-| ------------ | ---------------------------------------- | ----------------------------------------------------------------------------- |
-| `tg.log`     | canonical, append-only JSON Lines, UTF-8 | Source of truth (D-4)                                                         |
-| `tg.lock`    | local                                    | Exclusive-create lock: `{"pid": N, "start": "<start time>"}`                  |
-| `stat.cache` | local                                    | Verify-mode cache, safe to delete (6.3, 7.6)                                  |
+| File         | Kind                                     | Notes                                                                                             |
+| ------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `tg.log`     | canonical, append-only JSON Lines, UTF-8 | Source of truth (D-4)                                                                             |
+| `tg.lock`    | local                                    | Exclusive-create lock: `{"pid": N, "start": "<start time>"}`                                      |
+| `stat.cache` | local                                    | Verify-mode cache, safe to delete (6.3, 7.6)                                                      |
 | `tg.idx`     | cache                                    | Index image, format 3. Stale or damaged: ignored, log replayed (see DECISIONS.md, index load fix) |
 
 The on-disk prefix `tg.*` is kept until E0 decides it .

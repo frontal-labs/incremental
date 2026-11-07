@@ -47,7 +47,7 @@ incremental/
 | Spec/Conformance | Freeze protocol/policy, write conformance first, verify milestones | `` (CR only), `spec/`, `conformance/`, `Makefile`, `Dockerfile.linux`, signoffs |
 | Core             | Engine (store, index, policy, protocol server, CLI)                | `core/`, `cli/`                                                                 |
 | Bindings         | Language clients over protocol (Node first, Python later)          | `bindings/`                                                                     |
-| Adapters         | Recorders/planners (Vitest, strace, git, MCP)                      | `adapters/`, `apps/mcp/`, `examples/`                                                |
+| Adapters         | Recorders/planners (Vitest, strace, git, MCP)                      | `adapters/`, `apps/mcp/`, `examples/`                                           |
 | Bench            | Harness, baselines, replay                                         | `benchmarks/`, `RESULTS.md`                                                     |
 
 ## Workflow

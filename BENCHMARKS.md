@@ -4,17 +4,17 @@ Benchmark harnesses and results for Incremental. Benchmarks measure whether the 
 
 ## Contents
 
-| Path                        | Description                                                                                                                                  |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `benchmarks/replay/`        | Replay driver: replays commits through the engine and measures false skips against ground truth. Built by `make build`.                     |
-| `benchmarks/warm-plan.mjs`  | Warm plan latency over protocol v1 stdio on a synthetic store (10k and 100k tasks).                                                          |
+| Path                        | Description                                                                                                                                                    |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `benchmarks/replay/`        | Replay driver: replays commits through the engine and measures false skips against ground truth. Built by `make build`.                                        |
+| `benchmarks/warm-plan.mjs`  | Warm plan latency over protocol v1 stdio on a synthetic store (10k and 100k tasks).                                                                            |
 | `benchmarks/results/`       | Raw outputs: `replay.json`, `replay-{nx,turborepo,bazel}.json`, `warm-plan.json`, `warm-plan-100k.json`, `comparison.json`, `cold-e2e.json`, and `RESULTS.md`. |
-| `scripts/bench-summary.mjs` | Generates `benchmarks/results/RESULTS.md` from the raw outputs.                                                                              |
-| `scripts/bench-compare.mjs` | Times affected-detection for Incremental, Nx, Turbo and Bazel on the monorepo fixtures. Fails if a tool selects the wrong set.              |
-| `scripts/cold-e2e.mjs`      | Cold end-to-end affected detection (git change source, new engine process, one plan) on the fixtures.                                        |
-| `monorepos/nx/`             | Nx-based monorepo fixture (4 packages, shared → api/web, utils standalone).                                                                  |
-| `monorepos/turborepo/`      | Turborepo-based monorepo fixture (same package structure).                                                                                   |
-| `monorepos/bazel/`          | Bazel-based monorepo fixture (same package structure).                                                                                       |
+| `scripts/bench-summary.mjs` | Generates `benchmarks/results/RESULTS.md` from the raw outputs.                                                                                                |
+| `scripts/bench-compare.mjs` | Times affected-detection for Incremental, Nx, Turbo and Bazel on the monorepo fixtures. Fails if a tool selects the wrong set.                                 |
+| `scripts/cold-e2e.mjs`      | Cold end-to-end affected detection (git change source, new engine process, one plan) on the fixtures.                                                          |
+| `monorepos/nx/`             | Nx-based monorepo fixture (4 packages, shared → api/web, utils standalone).                                                                                    |
+| `monorepos/turborepo/`      | Turborepo-based monorepo fixture (same package structure).                                                                                                     |
+| `monorepos/bazel/`          | Bazel-based monorepo fixture (same package structure).                                                                                                         |
 
 ## Running
 
@@ -102,12 +102,12 @@ node benchmarks/warm-plan.mjs <tasks> <queries> [iterations] > benchmarks/result
 
 Run: `node scripts/bench-compare.mjs 10`, 2026-11-05. Each tool runs its affected-detection command on its own fixture under `monorepos/`. The change under test is the last commit that touches `packages/shared/src/index.ts`; the base is its parent. The correct answer is `shared`, `api`, `web`, and the script fails if a tool selects another set.
 
-| Tool            | Timed command                                                          | Median (10 samples, ms)  | Selected                |
-| --------------- | ---------------------------------------------------------------------- | ------------------------ | ----------------------- |
-| **Incremental** | warm `affected` query, 10k-task synthetic store (0.148 ms/query)       | 0.148 ms/query           | per-task invalidation   |
-| **Nx**          | `nx show projects --affected --base=<shared commit>^`                  | 897                      | shared, api, web        |
-| **Turbo**       | `turbo run build --filter=...[<shared commit>^] --dry=json`            | 151                      | api, shared, web        |
-| **Bazel**       | `bazel query 'kind(filegroup, rdeps(//packages/..., set(<changed>)))'` | 1147                     | api, shared, web (targets) |
+| Tool            | Timed command                                                          | Median (10 samples, ms) | Selected                   |
+| --------------- | ---------------------------------------------------------------------- | ----------------------- | -------------------------- |
+| **Incremental** | warm `affected` query, 10k-task synthetic store (0.148 ms/query)       | 0.148 ms/query          | per-task invalidation      |
+| **Nx**          | `nx show projects --affected --base=<shared commit>^`                  | 897                     | shared, api, web           |
+| **Turbo**       | `turbo run build --filter=...[<shared commit>^] --dry=json`            | 151                     | api, shared, web           |
+| **Bazel**       | `bazel query 'kind(filegroup, rdeps(//packages/..., set(<changed>)))'` | 1147                    | api, shared, web (targets) |
 
 The Bazel result lists the three `*_pkg` filegroup targets, not the test targets.
 
@@ -141,17 +141,17 @@ Only `adapters/vitest/fixtures/repo` is an adapter fixture. The other adapters a
 
 One change to `packages/shared/src/index.ts` in each monorepo fixture, then a test run. Wall-clock of the whole command (tool start-up and selection included), 5 timed runs after one warm-up, load about 50 on the machine. Results: `benchmarks/results/e2e-compare.json`.
 
-| Fixture | Method | Median ms (min–max) | Packages tested |
-| --- | --- | --- | --- |
-| nx | raw (no selection) | 7390 (5004–8236) | all affected, plus extra (api, shared, utils, web) |
-| nx | Nx affected | 11285 (7588–12954) | exact (shared, api, web) |
-| nx | Incremental | 2682 (2434–2906) | exact (shared, api, web) |
-| turborepo | raw (no selection) | 4420 (3267–5379) | all affected, plus extra (api, shared, utils, web) |
-| turborepo | Turbo --filter | 5883 (4266–6987) | exact (shared, api, web) |
-| turborepo | Incremental | 2665 (2392–2934) | exact (shared, api, web) |
-| bazel | raw (no selection) | 2666 (1970–3235) | all affected, plus extra (api, shared, utils, web) |
-| bazel | Bazel rdeps query | 4423 (3974–4803) | misses shared (api, web) |
-| bazel | Incremental | 4287 (3642–6078) | exact (shared, api, web) |
+| Fixture   | Method             | Median ms (min–max) | Packages tested                                    |
+| --------- | ------------------ | ------------------- | -------------------------------------------------- |
+| nx        | raw (no selection) | 7390 (5004–8236)    | all affected, plus extra (api, shared, utils, web) |
+| nx        | Nx affected        | 11285 (7588–12954)  | exact (shared, api, web)                           |
+| nx        | Incremental        | 2682 (2434–2906)    | exact (shared, api, web)                           |
+| turborepo | raw (no selection) | 4420 (3267–5379)    | all affected, plus extra (api, shared, utils, web) |
+| turborepo | Turbo --filter     | 5883 (4266–6987)    | exact (shared, api, web)                           |
+| turborepo | Incremental        | 2665 (2392–2934)    | exact (shared, api, web)                           |
+| bazel     | raw (no selection) | 2666 (1970–3235)    | all affected, plus extra (api, shared, utils, web) |
+| bazel     | Bazel rdeps query  | 4423 (3974–4803)    | misses shared (api, web)                           |
+| bazel     | Incremental        | 4287 (3642–6078)    | exact (shared, api, web)                           |
 
 Read these with care:
 

@@ -46,7 +46,9 @@ function observation(i) {
 // which writes tg.idx.
 async function buildStore(store) {
   assert.equal(spawnSync(ENGINE, ["init", "--store", store]).status, 0);
-  const proc = spawn(ENGINE, ["serve", "--store", store, "--root", ROOT], { stdio: ["pipe", "pipe", "pipe"] });
+  const proc = spawn(ENGINE, ["serve", "--store", store, "--root", ROOT], {
+    stdio: ["pipe", "pipe", "pipe"],
+  });
   let buf = "";
   const waiting = new Map();
   let nextId = 1;
@@ -102,11 +104,14 @@ test("cold start loads tg.idx when observations carry contexts", async () => {
 // the log and answers the same.
 for (const [name, damage] of [
   ["truncated", (img) => img.subarray(0, Math.floor(img.length / 2))],
-  ["flipped body byte", (img) => {
-    const out = Buffer.from(img);
-    out[out.length - 100] ^= 0xff;
-    return out;
-  }],
+  [
+    "flipped body byte",
+    (img) => {
+      const out = Buffer.from(img);
+      out[out.length - 100] ^= 0xff;
+      return out;
+    },
+  ],
 ]) {
   test(`a ${name} tg.idx is ignored and the log is replayed`, async () => {
     const work = mkdtempSync(join(os.tmpdir(), "cold-load-"));

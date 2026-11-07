@@ -201,7 +201,8 @@ int64_t native_getpid(void) {
     return (int64_t)getpid();
 }
 
-/* Process CPU time in nanoseconds, for the phase trace (INCREMENTAL_TRACE), so machine load does not skew it. */
+/* Process CPU time in nanoseconds, for the phase trace (INCREMENTAL_TRACE), so machine load does
+ * not skew it. */
 int64_t native_cpu_ns(void) {
     struct timespec ts;
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts);
