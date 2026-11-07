@@ -24,7 +24,17 @@ importers:
         specifier: ^2.11.10
         version: 2.11.10
 
-  bindings/node:
+  apps/mcp:
+    dependencies:
+      '@incremental/client':
+        specifier: file:../../bindings/node
+        version: link:../../bindings/node
+      '@modelcontextprotocol/sdk':
+        specifier: 1.32.0
+        version: 1.32.0(zod@4.6.7)
+      zod:
+        specifier: 4.6.7
+        version: 4.6.7
     devDependencies:
       '@types/node':
         specifier: 22.20.5
@@ -33,17 +43,7 @@ importers:
         specifier: 0.8.0
         version: 0.8.0
 
-  apps/mcp:
-    dependencies:
-      '@incremental/client':
-        specifier: file:../bindings/node
-        version: link:../bindings/node
-      '@modelcontextprotocol/sdk':
-        specifier: 1.32.0
-        version: 1.32.0(zod@4.6.7)
-      zod:
-        specifier: 4.6.7
-        version: 4.6.7
+  bindings/node:
     devDependencies:
       '@types/node':
         specifier: 22.20.5

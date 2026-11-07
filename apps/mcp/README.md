@@ -15,7 +15,7 @@ The incremental Model Context Protocol (MCP) server (`@incremental/mcp`). It exp
 
 ## Running
 
-The MCP server depends on `@incremental/client` (`file:../bindings/node`), so build the Node client first:
+The MCP server depends on `@incremental/client` (`file:../../bindings/node`), so build the Node client first:
 
 ```sh
 cd bindings/node && npm run build
