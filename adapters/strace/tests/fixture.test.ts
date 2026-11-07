@@ -224,7 +224,13 @@ m10(
     assert.equal(
       gaps.length,
       0,
-      `M10 gaps (oracle paths missing from the recorder's inputs): ${JSON.stringify(gaps, null, 2)}`,
+      [
+        `M10 gaps (oracle paths missing from the recorder's inputs): ${gaps.length} task(s)`,
+        ...gaps.flatMap((g) => [
+          `${g.task}: rootPid=${g.rootPid} tracePids=[${g.tracePids.join(",")}] missing=${g.missing.length}`,
+          ...g.missingEvents.slice(0, 40).map((line) => `  ${line}`),
+        ]),
+      ].join("\n"),
     );
   },
 );
