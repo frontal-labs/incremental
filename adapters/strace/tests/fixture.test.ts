@@ -150,7 +150,15 @@ m10(
   "M10: every strace-oracle path is in the recorder's input set, per fixture test file",
   async () => {
     const env = { ...process.env, NODE_ENV: "test" };
-    const gaps: Array<{ task: string; missing: string[] }> = [];
+    // Diagnostics for a gap: the root pid, every pid in the trace, and each
+    // missing path with the event kind and pid that produced it.
+    const gaps: Array<{
+      task: string;
+      missing: string[];
+      rootPid: number;
+      tracePids: number[];
+      missingEvents: string[];
+    }> = [];
 
     for (const task of FIXTURE_TESTS) {
       const dir = mkdtempSync(path.join(os.tmpdir(), "bp-m10-repo-"));
@@ -193,7 +201,18 @@ m10(
 
           const recPaths = recorderPaths(recEvents, dir);
           const missing = [...oraclePaths].filter((p) => !recPaths.has(p));
-          if (missing.length > 0) gaps.push({ task, missing });
+          if (missing.length > 0) {
+            const missingSet = new Set(missing);
+            gaps.push({
+              task,
+              missing,
+              rootPid,
+              tracePids: [...new Set(events.map((e) => e.pid))],
+              missingEvents: events
+                .filter((e) => missingSet.has(e.path))
+                .map((e) => `${e.kind} pid=${e.pid} ${e.path}`),
+            });
+          }
         } finally {
           rmSync(work, { recursive: true, force: true });
         }
