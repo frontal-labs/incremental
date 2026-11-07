@@ -4,12 +4,12 @@
 
 Default: `<repo>/.incremental/` (configurable via `INCREMENTAL_STORE` or `--store`)
 
-| File         | Kind                                     | Notes                                                 |
-| ------------ | ---------------------------------------- | ----------------------------------------------------- |
-| `tg.log`     | Canonical, append-only JSON Lines, UTF-8 | Source of truth                                       |
-| `tg.lock`    | Local                                    | Exclusive lock: `{"pid": N, "start": "<start time>"}` |
-| `stat.cache` | Local                                    | Verify-mode cache for file hashes; safe to delete     |
-| `tg.idx`     | Cache                                    | Index image, format 3. Stale or damaged: ignored, log replayed                     |
+| File         | Kind                                     | Notes                                                          |
+| ------------ | ---------------------------------------- | -------------------------------------------------------------- |
+| `tg.log`     | Canonical, append-only JSON Lines, UTF-8 | Source of truth                                                |
+| `tg.lock`    | Local                                    | Exclusive lock: `{"pid": N, "start": "<start time>"}`          |
+| `stat.cache` | Local                                    | Verify-mode cache for file hashes; safe to delete              |
+| `tg.idx`     | Cache                                    | Index image, format 3. Stale or damaged: ignored, log replayed |
 
 ## Log Records
 

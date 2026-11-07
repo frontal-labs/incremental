@@ -42,6 +42,8 @@ jobs:
           npm install -g pnpm@9.0.0 @bufbuild/buf@1.70.0 @bazel/bazelisk@1.28.1
       - name: Install TypeScript package dependencies
         run: |
+          # Root install provides node_modules/.bin/tsc-rs, which the build target uses for benchmarks/replay.
+          pnpm install --frozen-lockfile --ignore-scripts
           for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/biome adapters/clippy adapters/bazel adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbopack adapters/watcher apps/mcp; do
             (cd "$d" && npm install --no-audit --no-fund)
           done

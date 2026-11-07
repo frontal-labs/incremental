@@ -4,8 +4,8 @@ The incremental Model Context Protocol (MCP) server (`@incremental/mcp`). It exp
 
 ## Contents
 
-| Path                 | Description                                                                                                                                              |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Path                      | Description                                                                                                                                              |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `apps/mcp/src/index.ts`   | MCP server entry point and binary (`incremental-mcp`).                                                                                                   |
 | `apps/mcp/src/server.ts`  | MCP server implementation: session handling, capability negotiation.                                                                                     |
 | `apps/mcp/src/tools.ts`   | MCP tools wrapping incremental methods (`observe`, `observe_many`, `affected`, `explain`, `stats`, `baseline`, `advance`, `forget`, `ping`, `shutdown`). |
