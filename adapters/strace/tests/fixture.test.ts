@@ -20,6 +20,9 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ADAPTER = path.resolve(HERE, "..", "..");
 const VITEST = path.resolve(ADAPTER, "..", "vitest");
 const FIXTURE = path.join(VITEST, "fixtures", "repo");
+// Set by `make test-oracle` (STRACE_LOG_DIR): each task's raw strace log is kept
+// there, so CI can upload it when this test fails.
+const STRACE_LOG_DIR = process.env.STRACE_LOG_DIR;
 const PRELOAD = path.join(VITEST, "dist", "src", "preload.js");
 
 // The Vitest CLI entry of the pinned Vitest (mirrors adapters/vitest/src/planner.ts).
@@ -181,7 +184,15 @@ m10(
               "--pool=forks",
               "--reporter=json",
             ],
-            { roots: [dir], cwd: dir, env, timeoutMs: 180_000 },
+            {
+              roots: [dir],
+              cwd: dir,
+              env,
+              timeoutMs: 180_000,
+              keepLogDir: STRACE_LOG_DIR
+                ? path.join(STRACE_LOG_DIR, task.replace(/[/.]/g, "_"))
+                : undefined,
+            },
           );
 
           // The traced command is the Vitest main process (rootPid, read from

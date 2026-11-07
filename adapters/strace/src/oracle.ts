@@ -23,7 +23,7 @@
 // throws `StraceUnavailableError` elsewhere.
 
 import { spawn } from "node:child_process";
-import { readFileSync, realpathSync, rmSync, statSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, realpathSync, rmSync, statSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
@@ -65,6 +65,9 @@ export interface ParsedLog {
 export interface RunOptions extends ParseOptions {
   timeoutMs?: number; // default 120 000 ms
   env?: NodeJS.ProcessEnv;
+  // When set, the raw strace log is copied into this directory before the temp
+  // log is removed, so a failing comparison can be inspected after the run.
+  keepLogDir?: string;
 }
 
 export class StraceUnavailableError extends Error {
@@ -526,6 +529,14 @@ export async function runOracle(
         text = readFileSync(log, "utf8");
       } catch {
         // no log: nothing was traced
+      }
+      if (opts.keepLogDir !== undefined) {
+        try {
+          mkdirSync(opts.keepLogDir, { recursive: true });
+          copyFileSync(log, path.join(opts.keepLogDir, "strace.log"));
+        } catch {
+          // keeping the log is best effort
+        }
       }
       try {
         rmSync(log, { force: true });
