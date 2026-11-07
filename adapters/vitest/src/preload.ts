@@ -127,6 +127,19 @@ function install(out: string): void {
     return undefined; // file descriptors are covered by the open that made them
   }
 
+  // Node reads the nearest package.json above a loaded file to decide its module
+  // type, through internal bindings the patches never see. Record each manifest
+  // on the way up to the root, as a file (if it exists) or a probe.
+  function noteAncestorManifests(abs: string): void {
+    let dir = path.dirname(abs);
+    for (;;) {
+      noteAccess(path.join(dir, "package.json"), "stat");
+      const up = path.dirname(dir);
+      if (up === dir) break;
+      dir = up;
+    }
+  }
+
   // Records what the access depends on: a regular file (with its content hash
   // at this moment), a listed directory, or a missing path (a probe).
   function noteAccess(arg: unknown, kind: Kind): void {
@@ -153,6 +166,7 @@ function install(out: string): void {
         hash = "unreadable";
       }
       emit("f:" + rel, { k: "file", p: rel, h: hash });
+      noteAncestorManifests(abs);
     } else if (isDir && kind === "list" && isTaskProcess) {
       emit("d:" + rel, { k: "dir", p: rel });
     }

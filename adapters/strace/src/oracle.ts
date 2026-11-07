@@ -45,6 +45,9 @@ export interface StraceEvent {
   kind: "file" | "dir" | "probe" | "exec";
   path: string; // repo-relative, canonicalized
   pid: number;
+  // The traced path was relative. It was resolved against the test's cwd, which
+  // is not necessarily the traced process's cwd, so it may be misattributed.
+  relative?: true;
 }
 
 export interface ParseOptions {
@@ -307,7 +310,12 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
   const add = (kind: StraceEvent["kind"], pid: number, p: string): void => {
     const resolved = resolvePath(p, opts);
     if (resolved.rel === null) return;
-    events.push({ kind, path: resolved.rel, pid });
+    events.push({
+      kind,
+      path: resolved.rel,
+      pid,
+      ...(p.startsWith("/") ? {} : { relative: true }),
+    });
   };
 
   // A stat-family result. Failure is a probe (the recorder treats any stat
