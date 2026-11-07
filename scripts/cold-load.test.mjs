@@ -55,8 +55,7 @@ async function buildStore(store) {
   proc.stdout.setEncoding("utf8");
   proc.stdout.on("data", (c) => {
     buf += c;
-    let nl;
-    while ((nl = buf.indexOf("\n")) >= 0) {
+    for (let nl = buf.indexOf("\n"); nl >= 0; nl = buf.indexOf("\n")) {
       const line = buf.slice(0, nl);
       buf = buf.slice(nl + 1);
       if (!line.trim()) continue;

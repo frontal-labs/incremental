@@ -243,7 +243,7 @@ if (!fs.existsSync(engine)) {
     ["plan.json", res[4] && { ...res[4].result }, schema("plan.json")],
     ["stats.json", res[5] && res[5].result, schema("stats.json")],
     ["explanation.json", res[6] && res[6].result, schema("explanation.json")],
-    ["error.json", res[7] && res[7].error, schema("error.json")],
+    ["error.json", res[7]?.error, schema("error.json")],
   ];
   for (const [name, value, s] of checks) {
     if (value === undefined) {
