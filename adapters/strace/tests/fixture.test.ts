@@ -162,7 +162,7 @@ m10(
           const recEvents = await recordTask(dir, task, work, 1, env);
 
           // The same command, traced with strace (PLAN §11.5).
-          const { events } = await runOracle(
+          const { events, rootPid } = await runOracle(
             [
               process.execPath,
               vitestBin,
@@ -176,15 +176,14 @@ m10(
             { roots: [dir], cwd: dir, env, timeoutMs: 180_000 },
           );
 
-          // The first traced process is the Vitest main process itself. Its
+          // The traced command is the Vitest main process (rootPid, read from
+          // the strace log, not from the first recorded event). Its
           // directory listings (test discovery) are deliberately not task
           // inputs (PLAN 11.2), so dirs from that pid are excluded. Files and
           // probes from it are inputs, as are all events from forked workers.
           // `exec` events are process observations (for @incremental/process),
           // not file reads: the Node recorder deliberately does not intercept
           // execve, so they are not part of the recorder-completeness comparison.
-          const first = events[0];
-          const rootPid = first === undefined ? -1 : first.pid;
           const oraclePaths = new Set<string>();
           for (const e of events) {
             if (e.kind !== "exec" && !(e.kind === "dir" && e.pid === rootPid)) {

@@ -57,6 +57,9 @@ export interface ParseOptions {
 export interface ParsedLog {
   events: StraceEvent[];
   summary: OracleResult;
+  // The pid of the traced command: the first process in the `strace -f` log.
+  // -1 when the log has no syscall lines.
+  rootPid: number;
 }
 
 export interface RunOptions extends ParseOptions {
@@ -294,6 +297,7 @@ function firstFd(args: string): number | undefined {
 
 export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
   const events: StraceEvent[] = [];
+  let rootPid = -1;
   // pid -> fd -> what the fd refers to (populated from successful opens).
   const fds = new Map<number, Map<number, FdInfo>>();
 
@@ -421,6 +425,7 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
     const m = /^\s*(\d+)\s+([a-z_][a-z0-9_]*)\(/.exec(line);
     if (m !== null) {
       const pid = Number(m[1] ?? "");
+      if (rootPid === -1) rootPid = pid;
       const sys = m[2] ?? "";
       // An unfinished syscall: `pid sys(args) <unfinished ...>`. Remember its
       // args and wait for the matching `<... sys resumed>) = result` line.
@@ -471,13 +476,13 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
   for (const kind of Object.keys(summary) as Array<keyof OracleResult>) {
     summary[kind].sort();
   }
-  return { events, summary };
+  return { events, summary, rootPid };
 }
 
 export async function runOracle(
   command: string[],
   opts: RunOptions,
-): Promise<{ log: string; events: StraceEvent[]; summary: OracleResult }> {
+): Promise<{ log: string; events: StraceEvent[]; summary: OracleResult; rootPid: number }> {
   if (process.platform !== "linux") {
     throw new StraceUnavailableError(
       "the strace oracle is Linux-only; strace is not available on this platform",
@@ -494,7 +499,7 @@ export async function runOracle(
       detached: true,
     },
   );
-  return new Promise<{ log: string; events: StraceEvent[]; summary: OracleResult }>(
+  return new Promise<{ log: string; events: StraceEvent[]; summary: OracleResult; rootPid: number }>(
     (resolve, reject) => {
       let finished = false;
       const fail = (err: unknown): void => {
@@ -530,7 +535,7 @@ export async function runOracle(
           fail(err);
           return;
         }
-        resolve({ log, events: parsed.events, summary: parsed.summary });
+        resolve({ log, events: parsed.events, summary: parsed.summary, rootPid: parsed.rootPid });
       });
       const timeoutMs = opts.timeoutMs ?? 120_000;
       const timer = setTimeout(() => {
