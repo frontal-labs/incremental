@@ -203,8 +203,8 @@ test("the CLI exits 0 when every task passes and 1 when one fails", async () => 
 });
 
 linux("oracle: a strace-traced command records its file reads as inputs", async () => {
-  const { runOracle } = requireStrace("@incremental/strace") as {
-    runOracle: (command: string[], opts: unknown) => Promise<unknown>;
+  const { runOracleSummary } = requireStrace("@incremental/strace") as {
+    runOracleSummary: (command: string[], opts: unknown) => Promise<unknown>;
   };
   const f = await fixture({
     reader: { command: [NODE, "-e", "require('fs').readFileSync('a.txt')"], oracle: true },
@@ -214,7 +214,7 @@ linux("oracle: a strace-traced command records its file reads as inputs", async 
       root: f.root,
       store: f.store,
       timeoutMs: 60_000,
-      runOracle: runOracle as any,
+      runOracle: runOracleSummary as any,
     });
     assert.equal(r?.outcome, "pass");
     const ex = await withClient(f, (c) => c.explain("reader"));

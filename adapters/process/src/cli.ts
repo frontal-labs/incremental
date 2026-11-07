@@ -20,8 +20,8 @@ const requireStrace = createRequire(import.meta.url);
 // being built (its types are structural via @incremental/fs's OracleRun).
 async function loadOracleRunner(): Promise<OracleRun> {
   if (process.platform !== "linux") throw new Error("the strace oracle is Linux-only");
-  const mod = requireStrace("@incremental/strace") as { runOracle: unknown };
-  return mod.runOracle as OracleRun;
+  const mod = requireStrace("@incremental/strace") as { runOracleSummary: unknown };
+  return mod.runOracleSummary as OracleRun;
 }
 
 const USAGE = "usage: incremental-process run [NAME...] [--root DIR] [--store DIR] [--timeout MS]";
