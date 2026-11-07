@@ -49,3 +49,10 @@ jobs:
           done
       - name: All tests
         run: make all-tests test-python test-git test-fuzz
+      - name: Upload strace logs on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: strace-logs
+          path: logs/strace/
+          if-no-files-found: ignore
