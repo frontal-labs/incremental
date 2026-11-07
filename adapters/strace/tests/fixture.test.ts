@@ -154,11 +154,16 @@ function recorderPaths(events: TraceEvent[], dir: string): Set<string> {
 // public fs functions the recorder patches:
 // - `index.html` probes: Vite's HTML fallback check, made by a worker.
 // - `tsconfig.json` probes: Vite's tsconfig lookup, which walks up from each file.
+// - doubled-root probes: Vite resolves the test file under the repo root a second time.
 // - directory listings made by a worker: Node's loader, not the task's own reads.
 
 function isKnownGap(e: StraceEvent, rootPid: number): boolean {
   if (e.kind === "probe" && path.basename(e.path).startsWith("index.html")) return true;
   if (e.kind === "probe" && path.basename(e.path) === "tsconfig.json") return true;
+  // Probes of the test repo's own path with its root doubled, made by Vite's
+  // module resolution (the file and its extension candidates). Not made through
+  // a patched fs call or the Node resolve hook.
+  if (e.kind === "probe" && /^tmp\/bp-m10-repo-[^/]+\//.test(e.path)) return true;
   if (e.kind === "dir" && e.pid !== rootPid) return true;
   return false;
 }
