@@ -499,56 +499,59 @@ export async function runOracle(
       detached: true,
     },
   );
-  return new Promise<{ log: string; events: StraceEvent[]; summary: OracleResult; rootPid: number }>(
-    (resolve, reject) => {
-      let finished = false;
-      const fail = (err: unknown): void => {
-        if (finished) return;
-        finished = true;
-        reject(err);
-      };
-      child.on("error", (err) =>
-        fail(
-          new StraceUnavailableError(
-            `cannot run strace: ${(err as NodeJS.ErrnoException).message} (is strace installed?)`,
-          ),
+  return new Promise<{
+    log: string;
+    events: StraceEvent[];
+    summary: OracleResult;
+    rootPid: number;
+  }>((resolve, reject) => {
+    let finished = false;
+    const fail = (err: unknown): void => {
+      if (finished) return;
+      finished = true;
+      reject(err);
+    };
+    child.on("error", (err) =>
+      fail(
+        new StraceUnavailableError(
+          `cannot run strace: ${(err as NodeJS.ErrnoException).message} (is strace installed?)`,
         ),
-      );
-      child.on("close", () => {
-        if (finished) return;
-        finished = true;
-        let text = "";
-        try {
-          text = readFileSync(log, "utf8");
-        } catch {
-          // no log: nothing was traced
-        }
-        try {
-          rmSync(log, { force: true });
-        } catch {
-          // the temp log is best effort
-        }
-        let parsed: ParsedLog;
-        try {
-          parsed = parseStraceLog(text, { cwd: opts.cwd, roots: opts.roots });
-        } catch (err) {
-          fail(err);
-          return;
-        }
-        resolve({ log, events: parsed.events, summary: parsed.summary, rootPid: parsed.rootPid });
-      });
-      const timeoutMs = opts.timeoutMs ?? 120_000;
-      const timer = setTimeout(() => {
-        try {
-          // strace is the process group leader (detached): kill the group so the
-          // traced command and its children stop too.
-          const pid = child.pid;
-          if (pid !== undefined) process.kill(-pid, "SIGTERM");
-        } catch {
-          // best effort
-        }
-      }, timeoutMs);
-      timer.unref();
-    },
-  );
+      ),
+    );
+    child.on("close", () => {
+      if (finished) return;
+      finished = true;
+      let text = "";
+      try {
+        text = readFileSync(log, "utf8");
+      } catch {
+        // no log: nothing was traced
+      }
+      try {
+        rmSync(log, { force: true });
+      } catch {
+        // the temp log is best effort
+      }
+      let parsed: ParsedLog;
+      try {
+        parsed = parseStraceLog(text, { cwd: opts.cwd, roots: opts.roots });
+      } catch (err) {
+        fail(err);
+        return;
+      }
+      resolve({ log, events: parsed.events, summary: parsed.summary, rootPid: parsed.rootPid });
+    });
+    const timeoutMs = opts.timeoutMs ?? 120_000;
+    const timer = setTimeout(() => {
+      try {
+        // strace is the process group leader (detached): kill the group so the
+        // traced command and its children stop too.
+        const pid = child.pid;
+        if (pid !== undefined) process.kill(-pid, "SIGTERM");
+      } catch {
+        // best effort
+      }
+    }, timeoutMs);
+    timer.unref();
+  });
 }
