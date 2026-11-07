@@ -1,16 +1,16 @@
-// The config adapter (spec/adapters/config.md). Config files that backplane.config.json
+// The config adapter (spec/adapters/config.md). Config files that incremental.config.json
 // lists under globalInputs are recorded as `declared` inputs with content hashes (PLAN 9.5).
 // The adapter runs no task: it supplies inputs and the config the engine compares.
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
-import type { Config, Context, Input } from "@backplane/client";
+import type { Config, Context, Input } from "@incremental/client";
 
-export const CONFIG_FILE = "backplane.config.json";
+export const CONFIG_FILE = "incremental.config.json";
 export const CONFIG_RUNNER = "config@0.1.0";
 
 // Directories the walk never enters (PLAN 6.7 default exclude).
-const SKIP_DIRS = new Set(["node_modules", ".git", ".backplane"]);
+const SKIP_DIRS = new Set(["node_modules", ".git", ".incremental"]);
 
 export class ConfigError extends Error {
   constructor(message: string) {
@@ -23,7 +23,7 @@ export function sha256(data: Buffer | string): string {
   return "sha256:" + createHash("sha256").update(data).digest("hex");
 }
 
-// backplane.config.json at the root (PLAN 6.7). A missing file is an empty config.
+// incremental.config.json at the root (PLAN 6.7). A missing file is an empty config.
 export function loadConfig(root: string): Config {
   const file = path.join(root, CONFIG_FILE);
   if (!existsSync(file)) return {};
@@ -31,9 +31,12 @@ export function loadConfig(root: string): Config {
   try {
     raw = JSON.parse(readFileSync(file, "utf8"));
   } catch (e) {
-    throw new ConfigError(`cannot parse ${CONFIG_FILE}: ${e instanceof Error ? e.message : String(e)}`);
+    throw new ConfigError(
+      `cannot parse ${CONFIG_FILE}: ${e instanceof Error ? e.message : String(e)}`,
+    );
   }
-  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) throw new ConfigError(`${CONFIG_FILE} must be an object`);
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw))
+    throw new ConfigError(`${CONFIG_FILE} must be an object`);
   return raw as Config;
 }
 
@@ -42,7 +45,8 @@ export function affectedConfig(config: Config): Config {
   const out: Config = {};
   if (config.ignore !== undefined) out.ignore = config.ignore;
   if (config.globalInputs !== undefined) out.globalInputs = config.globalInputs;
-  if (config.fallbackContextKeys !== undefined) out.fallbackContextKeys = config.fallbackContextKeys;
+  if (config.fallbackContextKeys !== undefined)
+    out.fallbackContextKeys = config.fallbackContextKeys;
   return out;
 }
 
@@ -75,12 +79,13 @@ export function walkFiles(root: string): string[] {
   const out: string[] = [];
   const visit = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue;
-      const abs = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (!SKIP_DIRS.has(entry.name)) visit(abs);
-      } else if (entry.isFile()) {
-        out.push(path.relative(root, abs).split(path.sep).join("/"));
+      if (!entry.isSymbolicLink()) {
+        const abs = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (!SKIP_DIRS.has(entry.name)) visit(abs);
+        } else if (entry.isFile()) {
+          out.push(path.relative(root, abs).split(path.sep).join("/"));
+        }
       }
     }
   };
@@ -128,9 +133,15 @@ export function declaredInputs(root: string, paths: readonly string[]): Input[] 
 // The context (PLAN 8.4). The config adapter does not own lockfile, tsconfig or pkgjson,
 // so those are hashed from the root for completeness. caps is the caller's claim: the
 // config adapter records no probes or dirs, so the default is all false (see README.md).
-export function contextFor(root: string, caps: Context["caps"] = { probes: false, dirs: false, env: false }): Context {
-  const hashOf = (rel: string): string => (existsSync(path.join(root, rel)) ? sha256(readFileSync(path.join(root, rel))) : "absent");
-  const lock = ["package-lock.json", "pnpm-lock.yaml", "yarn.lock"].find((f) => existsSync(path.join(root, f)));
+export function contextFor(
+  root: string,
+  caps: Context["caps"] = { probes: false, dirs: false, env: false },
+): Context {
+  const hashOf = (rel: string): string =>
+    existsSync(path.join(root, rel)) ? sha256(readFileSync(path.join(root, rel))) : "absent";
+  const lock = ["package-lock.json", "pnpm-lock.yaml", "yarn.lock"].find((f) =>
+    existsSync(path.join(root, f)),
+  );
   return {
     lockfile: lock === undefined ? "absent" : hashOf(lock),
     tsconfig: hashOf("tsconfig.json"),

@@ -3,12 +3,12 @@
   "type": "object",
   "required": ["task", "observed", "certificate"],
   "properties": {
-    "task": {"type": "string"},
-    "observed": {"type": "boolean"},
-    "outcome": {"enum": ["pass", "fail", "error", "none"]},
-    "dirty": {"type": "boolean"},
-    "baseline": {"type": "string"},
-    "inputs": {"type": "integer"},
-    "certificate": {"type": "boolean"}
+    "task": { "type": "string" },
+    "observed": { "type": "boolean" },
+    "outcome": { "enum": ["pass", "fail", "error", "none"] },
+    "dirty": { "type": "boolean" },
+    "baseline": { "type": "string" },
+    "inputs": { "type": "integer" },
+    "certificate": { "type": "boolean" }
   }
 }

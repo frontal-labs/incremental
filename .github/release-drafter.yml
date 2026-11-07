@@ -1,15 +1,15 @@
-name-template: 'v$RESOLVED_VERSION'
-tag-template: 'v$RESOLVED_VERSION'
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
 categories:
-  - title: 'Features'
-    labels: ['enhancement', 'feature']
-  - title: 'Bug Fixes'
-    labels: ['bug', 'fix']
-  - title: 'Documentation'
-    labels: ['docs']
-  - title: 'Maintenance'
-    labels: ['chore', 'ci']
-change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+  - title: "Features"
+    labels: ["enhancement", "feature"]
+  - title: "Bug Fixes"
+    labels: ["bug", "fix"]
+  - title: "Documentation"
+    labels: ["docs"]
+  - title: "Maintenance"
+    labels: ["chore", "ci"]
+change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 template: |
   ## Changes
 
@@ -19,16 +19,16 @@ template: |
 
   $CONTRIBUTORS
 autolabeler:
-  - label: 'bug'
-    files: ['**/*.ts', '**/*.js']
-    title: '/fix/i'
-  - label: 'enhancement'
-    title: '/feat/i'
+  - label: "bug"
+    files: ["**/*.ts", "**/*.js"]
+    title: "/fix/i"
+  - label: "enhancement"
+    title: "/feat/i"
 version-resolver:
   major:
-    labels: ['breaking']
+    labels: ["breaking"]
   minor:
-    labels: ['enhancement', 'feature']
+    labels: ["enhancement", "feature"]
   patch:
-    labels: ['bug', 'fix', 'chore']
+    labels: ["bug", "fix", "chore"]
   default: patch

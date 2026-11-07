@@ -5,10 +5,7 @@
   "store": {
     "from": "conformance/stores/base.jsonl"
   },
-  "raw_lines": [
-    "{not json",
-    "{\"id\":7,\"method\":\"ping\"}"
-  ],
+  "raw_lines": ["{not json", "{\"id\":7,\"method\":\"ping\"}"],
   "expect": {
     "responses": [
       {

@@ -4,13 +4,13 @@
 import { createHash } from "node:crypto";
 
 // Directories that are never recorded or discovered (PLAN 6.7 default exclude).
-export const EXCLUDED_DIRS: readonly string[] = ["node_modules", ".git", ".backplane"];
+export const EXCLUDED_DIRS: readonly string[] = ["node_modules", ".git", ".incremental"];
 
 // Environment names that are not tracked: the adapter's own variables, the
 // variables Vitest injects into its workers, and NODE_OPTIONS (which carries
 // the preload). The same filter applies when recording and when planning.
 const UNTRACKED_ENV_PREFIXES: readonly string[] = [
-  "BACKPLANE_",
+  "INCREMENTAL_",
   "VITEST",
   "TINYPOOL",
   "NODE_OPTIONS",

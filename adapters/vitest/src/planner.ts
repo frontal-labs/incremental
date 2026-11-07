@@ -1,11 +1,11 @@
 // Planner inputs (PLAN 11.3, 10.4, 11.7, 9.5): test discovery, the ChangeSet
 // from the git change source, the context, the environment map and the
-// optional backplane.config.json.
+// optional incremental.config.json.
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
-import { repoRoot, type ChangeSet, type Config, type Context } from "@backplane/client";
+import { repoRoot, type ChangeSet, type Config, type Context } from "@incremental/client";
 import { EXCLUDED_DIRS, TEST_FILE, VITEST_VERSION, isTrackedEnv, sha256 } from "./shared.js";
 
 // Repo-relative paths of the files under root that satisfy the predicate,
@@ -14,15 +14,15 @@ export function walkFiles(root: string, match: (rel: string) => boolean): string
   const out: string[] = [];
   const visit = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue;
-      const abs = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (!EXCLUDED_DIRS.includes(entry.name)) visit(abs);
-        continue;
+      if (!entry.isSymbolicLink()) {
+        const abs = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (!EXCLUDED_DIRS.includes(entry.name)) visit(abs);
+        } else if (entry.isFile()) {
+          const rel = path.relative(root, abs).split(path.sep).join("/");
+          if (match(rel)) out.push(rel);
+        }
       }
-      if (!entry.isFile()) continue;
-      const rel = path.relative(root, abs).split(path.sep).join("/");
-      if (match(rel)) out.push(rel);
     }
   };
   visit(root);
@@ -37,7 +37,11 @@ export function discoverTests(root: string): string[] {
 // given) and no exclude glob. Globs follow path.matchesGlob (minimatch syntax),
 // matched against repo-relative paths. Used to restrict discovery to one Vitest
 // project of a repo, so the planner and the runner see the same task set.
-export function selectTests(files: readonly string[], include: readonly string[], exclude: readonly string[]): string[] {
+export function selectTests(
+  files: readonly string[],
+  include: readonly string[],
+  exclude: readonly string[],
+): string[] {
   return files.filter(
     (f) =>
       (include.length === 0 || include.some((g) => path.matchesGlob(f, g))) &&
@@ -45,9 +49,12 @@ export function selectTests(files: readonly string[], include: readonly string[]
   );
 }
 
-// The git change source (PLAN 11.7): backplane-git changes --base REF --root DIR.
+// The git change source (PLAN 11.7): incremental-git changes --base REF --root DIR.
 export function gitSourcePath(): string {
-  return process.env.BACKPLANE_GIT || path.join(repoRoot(), "adapters", "git", "dist", "backplane-git");
+  return (
+    process.env.INCREMENTAL_GIT ||
+    path.join(repoRoot(), "adapters", "git", "dist", "incremental-git")
+  );
 }
 
 export interface GitChangeSet extends ChangeSet {
@@ -65,8 +72,11 @@ export class GitSourceError extends Error {
 // Changes from ref to the worktree. Throws GitSourceError when the git source
 // fails (for example, the ref is not in a shallow clone's history).
 export function gitChangeSet(root: string, ref: string): GitChangeSet {
-  const r = spawnSync(gitSourcePath(), ["changes", "--base", ref, "--root", root], { encoding: "utf8" });
-  if (r.error !== undefined) throw new GitSourceError(`cannot run the git change source: ${r.error.message}`);
+  const r = spawnSync(gitSourcePath(), ["changes", "--base", ref, "--root", root], {
+    encoding: "utf8",
+  });
+  if (r.error !== undefined)
+    throw new GitSourceError(`cannot run the git change source: ${r.error.message}`);
   if (r.status !== 0) {
     let message = (r.stdout || r.stderr || "").trim();
     try {
@@ -89,7 +99,9 @@ function hashOrAbsent(file: string): string {
 // Probes, directory listings and environment reads are all captured, so the
 // capabilities are true (PLAN 11.2, proven on the fixture in E4).
 export function contextFor(root: string, vitestVersion: string = VITEST_VERSION): Context {
-  const lock = ["package-lock.json", "pnpm-lock.yaml", "yarn.lock"].find((f) => existsSync(path.join(root, f)));
+  const lock = ["package-lock.json", "pnpm-lock.yaml", "yarn.lock"].find((f) =>
+    existsSync(path.join(root, f)),
+  );
   const pkgs = walkFiles(root, (rel) => rel === "package.json" || rel.endsWith("/package.json"));
   const pkgjson =
     pkgs.length === 0
@@ -110,17 +122,18 @@ export function contextFor(root: string, vitestVersion: string = VITEST_VERSION)
 export function envHashes(env: NodeJS.ProcessEnv): Record<string, string> {
   const out: Record<string, string> = {};
   for (const name of Object.keys(env)) {
-    if (!isTrackedEnv(name)) continue;
-    const value = env[name];
-    if (value !== undefined) out[name] = sha256(value);
+    if (isTrackedEnv(name)) {
+      const value = env[name];
+      if (value !== undefined) out[name] = sha256(value);
+    }
   }
   return out;
 }
 
-// backplane.config.json at the repo root (PLAN 6.7). Missing fields take the
+// incremental.config.json at the repo root (PLAN 6.7). Missing fields take the
 // engine defaults, so only the fields the file sets are passed on.
 export function loadConfig(root: string): Config | undefined {
-  const file = path.join(root, "backplane.config.json");
+  const file = path.join(root, "incremental.config.json");
   if (!existsSync(file)) return undefined;
   const raw = JSON.parse(readFileSync(file, "utf8")) as Config;
   const out: Config = {};
@@ -140,6 +153,8 @@ export function vitestBin(): string {
 // runner is part of the context (PLAN 8.4), so it must name the Vitest that
 // actually runs the tests, which for a repo is its own installed Vitest.
 export function vitestVersion(bin: string): string {
-  const pkg = JSON.parse(readFileSync(path.join(path.dirname(bin), "package.json"), "utf8")) as { version?: string };
+  const pkg = JSON.parse(readFileSync(path.join(path.dirname(bin), "package.json"), "utf8")) as {
+    version?: string;
+  };
   return pkg.version ?? VITEST_VERSION;
 }

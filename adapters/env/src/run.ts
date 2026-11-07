@@ -1,7 +1,7 @@
 // The env adapter runner. It records one observation per task with the env inputs of its
 // allowlist, and queries the plan with the hash map of every name the tasks recorded.
 // The process environment is passed in, so a test never mutates process.env.
-import type { backplane, Change, Context, Observation, Outcome, Plan } from "@backplane/client";
+import type { incremental, Change, Context, Observation, Outcome, Plan } from "@incremental/client";
 import { type Env, envInputs, queryEnv } from "./env.js";
 
 export interface EnvTask {
@@ -33,7 +33,7 @@ export function observationsFor(opts: EnvRunOptions): Observation[] {
   }));
 }
 
-export async function recordTasks(client: backplane, opts: EnvRunOptions): Promise<number> {
+export async function recordTasks(client: incremental, opts: EnvRunOptions): Promise<number> {
   const observations = observationsFor(opts);
   if (observations.length === 0) return 0;
   return (await client.observeMany(observations)).accepted;
@@ -42,7 +42,7 @@ export async function recordTasks(client: backplane, opts: EnvRunOptions): Promi
 // The affected query for the given changes (possibly none) with the env hash map. A
 // variable that the tasks did not record is never compared by the engine (P2b).
 export async function planEnv(
-  client: backplane,
+  client: incremental,
   opts: Omit<EnvRunOptions, "tasks"> & { tasks: EnvTask[]; changes?: Change[] },
 ): Promise<Plan> {
   const names = opts.tasks.flatMap((t) => t.names);

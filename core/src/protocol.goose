@@ -350,7 +350,7 @@ fn dispatch(sess: Session&, st: Store&, method: const u8[:], params: json::Node?
         body.append("{\"tasks\":");
         json::format_int(body, g_live);
         body.append(",\"observations\":");
-        json::format_int(body, g_live);
+        json::format_int(body, g_obs.len);
         body.append(",\"baseline\":");
         if st.has_baseline { json::format_string(body, text(st, st.baseline)); } else { body.append("null"); }
         body.append(",\"graph_version\":\"");
@@ -445,8 +445,8 @@ fn handle(sess: Session&, st: Store&, line: const u8[:], out: u8[>..]&) -> i64 {
             reply(id, has_id, out, body, true);
             return 2;
         }
-        body.append("{\"protocol\":1,\"engine\":{\"name\":\"backplane-core-goose\",\"version\":\"0.1.0\"},");
-        body.append("\"capabilities\":[\"probes\",\"dirs\",\"env\",\"verify\"],\"store\":\".backplane\"}");
+        body.append("{\"protocol\":1,\"engine\":{\"name\":\"incremental-core-goose\",\"version\":\"0.1.0\"},");
+        body.append("\"capabilities\":[\"probes\",\"dirs\",\"env\",\"verify\"],\"store\":\".incremental\"}");
         reply(id, has_id, out, body, false);
         return 0;
     }

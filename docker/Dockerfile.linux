@@ -5,8 +5,30 @@
 FROM --platform=linux/amd64 node:22-bookworm
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends git python3 make curl ca-certificates tar build-essential \
+ && apt-get install -y --no-install-recommends git python3 python3-pip make curl ca-certificates tar build-essential strace protobuf-compiler \
  && rm -rf /var/lib/apt/lists/*
+
+# Rust toolchain (cargo) for adapters that need it.
+RUN curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal \
+ && /root/.cargo/bin/rustup default stable
+
+# pnpm
+RUN npm install -g pnpm@9.0.0
+
+# ruff
+RUN pip3 install --no-cache-dir --break-system-packages ruff
+
+# bazelisk
+RUN curl -fsSL -o /usr/local/bin/bazelisk https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64 \
+ && chmod +x /usr/local/bin/bazelisk \
+ && ln -sf /usr/local/bin/bazelisk /usr/local/bin/bazel
+
+# buf
+RUN curl -fsSL -o /tmp/buf.tar.gz https://github.com/bufbuild/buf/releases/latest/download/buf-Linux-x86_64.tar.gz \
+ && tar -xzf /tmp/buf.tar.gz -C /usr/local --strip-components=1 \
+ && rm /tmp/buf.tar.gz
+
+ENV PATH=/root/.cargo/bin:$PATH
 
 # Pinned to the release's published SHA-256 (same digest as scripts/fetch-goose.sh).
 RUN mkdir -p /opt/goose \
@@ -15,14 +37,18 @@ RUN mkdir -p /opt/goose \
  && tar -xzf /tmp/goose.tar.gz -C /opt/goose \
  && rm /tmp/goose.tar.gz
 
-ENV GOOSE_DIR=/opt/goose/goose-v2026.3-linux-x64 \
+ENV PATH=/root/.cargo/bin:/usr/local/bin:$PATH \
+    GOOSE_DIR=/opt/goose/goose-v2026.3-linux-x64 \
     GOOSE_HOME=/app/.toolchain/goose-home \
     GOOSE_CC=/usr/bin/cc
 
 WORKDIR /app
 COPY . /app
 
+# Root devDependencies (tsc-rs, used by make build) and the pnpm workspace packages.
+RUN pnpm install --frozen-lockfile
+
 # Start from clean node_modules: a leftover pnpm symlink would survive npm install.
-RUN for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/biome adapters/clippy adapters/bazel adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbopack adapters/watcher mcp; do rm -rf "$d/node_modules" && (cd "$d" && npm install --no-audit --no-fund); done
+RUN for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/strace adapters/biome adapters/clippy adapters/bazel adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbopack adapters/watcher benchmarks/replay mcp; do rm -rf "$d/node_modules" && (cd "$d" && npm install --no-audit --no-fund); done
 
 CMD ["make", "all-tests", "test-python", "test-git", "test-fuzz"]

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// `backplane-pnpm run`: the pnpm workspace adapter loop (PLAN 10.4).
+// `incremental-pnpm run`: the pnpm workspace adapter loop (PLAN 10.4).
 //
 //   B    = store baseline
-//   ch   = ChangeSet from B to the worktree (backplane-git)
+//   ch   = ChangeSet from B to the worktree (incremental-git)
 //   plan = affected(ch, context, declared tasks)
 //   forget the tasks the plan reports as deleted
 //   run each selected script with pnpm and observe it (dirty: no recorder is paired)
@@ -18,17 +18,18 @@ import { pathToFileURL } from "node:url";
 import {
   connect,
   defaultEngine,
-  isBackplaneError,
+  isIncrementalError,
   repoRoot,
   type Change,
   type Fallback,
   type Observation,
   type Outcome,
   type Plan,
-} from "@backplane/client";
+} from "@incremental/client";
 import {
   contextFor,
   confinedTasks,
+  ignoreOutside,
   declaredInputs,
   runScript,
   tasksOf,
@@ -90,20 +91,30 @@ interface GitChangeSet {
 
 // The git change source (PLAN 11.7). Throws an Error on failure.
 function gitSourcePath(): string {
-  return process.env.BACKPLANE_GIT || path.join(repoRoot(), "adapters", "git", "dist", "backplane-git");
+  return (
+    process.env.INCREMENTAL_GIT ||
+    path.join(repoRoot(), "adapters", "git", "dist", "incremental-git")
+  );
 }
 
 function gitChangeSet(root: string, ref: string): GitChangeSet {
-  const r = spawnSync(gitSourcePath(), ["changes", "--base", ref, "--root", root], { encoding: "utf8" });
-  if (r.error !== undefined) throw new Error(`cannot run the git change source: ${r.error.message}`);
-  if (r.status !== 0) throw new Error(`git change source failed (exit ${r.status}): ${(r.stdout || r.stderr || "").trim()}`);
+  const r = spawnSync(gitSourcePath(), ["changes", "--base", ref, "--root", root], {
+    encoding: "utf8",
+  });
+  if (r.error !== undefined)
+    throw new Error(`cannot run the git change source: ${r.error.message}`);
+  if (r.status !== 0)
+    throw new Error(
+      `git change source failed (exit ${r.status}): ${(r.stdout || r.stderr || "").trim()}`,
+    );
   return JSON.parse(r.stdout) as GitChangeSet;
 }
 
 function ensureStore(store: string): void {
   if (existsSync(store)) return;
   const r = spawnSync(defaultEngine(), ["init", "--store", store], { encoding: "utf8" });
-  if (r.status !== 0) throw new UsageError(`cannot create the store at ${store}: ${(r.stderr || "").trim()}`);
+  if (r.status !== 0)
+    throw new UsageError(`cannot create the store at ${store}: ${(r.stderr || "").trim()}`);
 }
 
 export async function runAdapter(opts: RunOptions): Promise<RunReport> {
@@ -125,7 +136,12 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     throw new UsageError(e instanceof Error ? e.message : String(e));
   }
 
-  const client = await connect({ store, root, command: [defaultEngine(), "serve"], timeoutMs: 60_000 });
+  const client = await connect({
+    store,
+    root,
+    command: [defaultEngine(), "serve"],
+    timeoutMs: 60_000,
+  });
   try {
     const stored = (await client.baseline()).baseline;
 
@@ -140,14 +156,23 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       throw new UsageError(gitError ?? "the git change source failed");
     }
     if (cs !== null && opts.base !== undefined && stored !== null && cs.baseline !== stored) {
-      throw new UsageError(`--base resolves to ${cs.baseline}, but the store baseline is ${stored}`);
+      throw new UsageError(
+        `--base resolves to ${cs.baseline}, but the store baseline is ${stored}`,
+      );
     }
 
     let plan: Plan | null = null;
     if (cs !== null) {
       plan = await client.affected(
         { baseline: cs.baseline, head: cs.head, changes: cs.changes },
-        { baseline: cs.baseline, context, declared_tasks: discovered, verify: false, policy: "balanced" },
+        {
+          baseline: cs.baseline,
+          context,
+          declared_tasks: discovered,
+          verify: false,
+          policy: "balanced",
+          config: { ignore: ignoreOutside(root, pkgs, confined) },
+        },
       );
     }
     for (const t of plan?.deleted_tasks ?? []) await client.forget(t);
@@ -163,25 +188,34 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       let inputs: DeclaredInput[];
       try {
         inputs = declaredInputs(root, pkgs, t.pkg.rel);
+        const run = runScript(root, t, opts.timeoutMs);
+        results.push({
+          task: t.task,
+          outcome: run.outcome,
+          durationMs: run.durationMs,
+          problem: run.problem,
+        });
+        // No recorder is paired with this adapter. A task is dirty unless the repo
+        // declares it confined (incremental-pnpm.json): then its inputs are the whole
+        // of what it reads, by the repo's own statement.
+        observations.push({
+          task: t.task,
+          baseline: obsBaseline,
+          dirty: !confined.has(t.task),
+          context,
+          inputs,
+          outputs: [],
+          outcome: run.outcome,
+          duration_ms: run.durationMs,
+        });
       } catch (e) {
-        results.push({ task: t.task, outcome: "error", durationMs: 0, problem: e instanceof Error ? e.message : String(e) });
-        continue;
+        results.push({
+          task: t.task,
+          outcome: "error",
+          durationMs: 0,
+          problem: e instanceof Error ? e.message : String(e),
+        });
       }
-      const run = runScript(root, t, opts.timeoutMs);
-      results.push({ task: t.task, outcome: run.outcome, durationMs: run.durationMs, problem: run.problem });
-      // No recorder is paired with this adapter. A task is dirty unless the repo
-      // declares it confined (backplane-pnpm.json): then its inputs are the whole
-      // of what it reads, by the repo's own statement.
-      observations.push({
-        task: t.task,
-        baseline: obsBaseline,
-        dirty: !confined.has(t.task),
-        context,
-        inputs,
-        outputs: [],
-        outcome: run.outcome,
-        duration_ms: run.durationMs,
-      });
     }
 
     const end = gitChangeSet(root, "HEAD");
@@ -199,7 +233,9 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
 
     const notAdvanced: string[] = [];
     if (!canAdvance) {
-      for (const r of results) if (r.outcome === "error") notAdvanced.push(`error: ${r.task}${r.problem ? ` (${r.problem})` : ""}`);
+      for (const r of results)
+        if (r.outcome === "error")
+          notAdvanced.push(`error: ${r.task}${r.problem ? ` (${r.problem})` : ""}`);
       if (dirty) notAdvanced.push("the worktree is dirty at the end of the run");
       if (headEnd !== head0.head) notAdvanced.push("HEAD moved during the run");
     }
@@ -216,7 +252,9 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       dirty,
       changes: cs?.changes ?? [],
       plan,
-      fallback: plan?.fallback ?? (runAll && plan === null ? { action: "run_all", reason: "git_source" } : null),
+      fallback:
+        plan?.fallback ??
+        (runAll && plan === null ? { action: "run_all", reason: "git_source" } : null),
       selected: selected.map((t) => t.task),
       discovered,
       results,
@@ -237,7 +275,10 @@ interface ParsedArgs {
 
 export function parseArgs(argv: string[]): ParsedArgs {
   const [cmd, ...rest] = argv;
-  if (cmd !== "run") throw new UsageError("usage: backplane-pnpm run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]");
+  if (cmd !== "run")
+    throw new UsageError(
+      "usage: incremental-pnpm run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]",
+    );
   const opts: RunOptions = { root: process.cwd(), store: "", all: false, timeoutMs: 600_000 };
   let json = false;
   let storeGiven = false;
@@ -248,23 +289,28 @@ export function parseArgs(argv: string[]): ParsedArgs {
       if (v === undefined) throw new UsageError(`${a} needs a value`);
       return v;
     };
-    switch (a) {
-      case "--base": opts.base = value(); break;
-      case "--json": json = true; break;
-      case "--all": opts.all = true; break;
-      case "--store": opts.store = value(); storeGiven = true; break;
-      case "--root": opts.root = value(); break;
-      case "--timeout": {
-        const n = Number(value());
-        if (!Number.isInteger(n) || n < 1) throw new UsageError("--timeout needs a positive integer");
-        opts.timeoutMs = n;
-        break;
-      }
-      default: throw new UsageError(`unknown option ${a}`);
+    if (a === "--base") {
+      opts.base = value();
+    } else if (a === "--json") {
+      json = true;
+    } else if (a === "--all") {
+      opts.all = true;
+    } else if (a === "--store") {
+      opts.store = value();
+      storeGiven = true;
+    } else if (a === "--root") {
+      opts.root = value();
+    } else if (a === "--timeout") {
+      const n = Number(value());
+      if (!Number.isInteger(n) || n < 1) throw new UsageError("--timeout needs a positive integer");
+      opts.timeoutMs = n;
+    } else {
+      throw new UsageError(`unknown option ${a}`);
     }
   }
   opts.root = path.resolve(opts.root);
-  if (!storeGiven) opts.store = process.env.BACKPLANE_STORE || path.join(opts.root, ".backplane");
+  if (!storeGiven)
+    opts.store = process.env.INCREMENTAL_STORE || path.join(opts.root, ".incremental");
   return { opts, json };
 }
 
@@ -272,12 +318,19 @@ function printText(r: RunReport): void {
   const counts: Record<Outcome, number> = { pass: 0, fail: 0, error: 0, none: 0 };
   for (const t of r.results) counts[t.outcome]++;
   const lines = [
-    `backplane pnpm ${r.mode}: stored ${r.stored ?? "none"}, query ${r.base ?? "none"}, head ${r.headEnd}${r.dirty ? " (dirty)" : ""}`,
+    `incremental pnpm ${r.mode}: stored ${r.stored ?? "none"}, query ${r.base ?? "none"}, head ${r.headEnd}${r.dirty ? " (dirty)" : ""}`,
   ];
   if (r.fallback !== null) lines.push(`fallback: ${r.fallback.reason}`);
-  else if (r.plan !== null) lines.push(`plan: ${r.plan.tasks.length} invalid of ${r.plan.total_tasks}, confidence ${r.plan.confidence}`);
-  lines.push(`ran ${r.results.length}: pass ${counts.pass}, fail ${counts.fail}, error ${counts.error}`);
-  for (const t of r.results) if (t.outcome !== "pass") lines.push(`  ${t.outcome} ${t.task}${t.problem ? ` (${t.problem})` : ""}`);
+  else if (r.plan !== null)
+    lines.push(
+      `plan: ${r.plan.tasks.length} invalid of ${r.plan.total_tasks}, confidence ${r.plan.confidence}`,
+    );
+  lines.push(
+    `ran ${r.results.length}: pass ${counts.pass}, fail ${counts.fail}, error ${counts.error}`,
+  );
+  for (const t of r.results)
+    if (t.outcome !== "pass")
+      lines.push(`  ${t.outcome} ${t.task}${t.problem ? ` (${t.problem})` : ""}`);
   lines.push(r.advanced ? `advanced to ${r.headEnd}` : `not advanced: ${r.notAdvanced.join("; ")}`);
   lines.push(`exit ${r.exit}`);
   process.stdout.write(lines.join("\n") + "\n");
@@ -297,10 +350,12 @@ export async function main(argv: string[]): Promise<number> {
     else printText(report);
     return report.exit;
   } catch (e) {
-    const code = e instanceof UsageError ? "invalid_params" : isBackplaneError(e) ? e.code : "internal";
+    const code =
+      e instanceof UsageError ? "invalid_params" : isIncrementalError(e) ? e.code : "internal";
     const message = e instanceof Error ? e.message : String(e);
-    if (parsed.json) process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
-    process.stderr.write(`backplane pnpm: ${message}\n`);
+    if (parsed.json)
+      process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
+    process.stderr.write(`incremental pnpm: ${message}\n`);
     return e instanceof UsageError ? 2 : 4;
   }
 }

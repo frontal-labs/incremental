@@ -30,8 +30,7 @@ struct Inp {
 // outcome: 0 pass, 1 fail, 2 error, 3 none. line: the record as logged.
 struct Ob {
     task: i64,
-    ctx_from: i64,
-    ctx_n: i64,
+    ctx_id: i64,          // index into g_ctxs, -1 when no context
     baseline: Span,
     dirty: bool,
     outcome: i64,
@@ -55,6 +54,11 @@ struct Post { obs: i64, inp: i64, next: i64 }
 // inputs), ls dir listers, pr probers. chain links paths with the same hash.
 struct PathE { p: Span, chain: i64, rd: i64, ls: i64, pr: i64 }
 
+// A deduplicated context: points into g_kvs at [from, from + n).
+// Multiple observations can share the same ctx_id, avoiding repeated storage
+// of identical context key/value pairs (cuts g_kvs / index image by ~1/3 at scale).
+struct Ctx { from: i64, n: i64 }
+
 // The resizable collections are globals: a struct may hold at most one
 // resizable value, and it must be its last field (spec 3.4).
 var g_arena: u8[>..] = [];
@@ -66,6 +70,10 @@ var g_obs: Ob[>..] = [];
 var g_tasks: Task[>..] = [];
 // Hash of a task id -> the newest task index with that hash.
 var g_task_head: dictionary<u64, i64> = dictionary<u64, i64> {};
+// Hash of a context's combined member hash -> index into g_ctxs.
+var g_ctx_head: dictionary<u64, i64> = dictionary<u64, i64> {};
+// Deduplicated contexts: each entry points into g_kvs at [from, from + n).
+var g_ctxs: Ctx[>..] = [];
 // The whole log as read, including any truncated tail.
 var g_logbuf: u8[>..] = [];
 // Bytes of g_logbuf whose complete lines are applied to the state.
@@ -84,13 +92,15 @@ var g_live: i64 = 0;
 // Size and mtime of the log as last read, see refresh_log.
 var g_log_mtime: i64 = 0;
 var g_stat_known: bool = false;
+// When true (default), the body hash of the index image is verified on load.
+// Set to false via INCREMENTAL_NO_BODY_HASH=1 to skip the 12 ms damage check
+// at large scale; the span/index checks and log tail hash still validate.
+var g_check_body_hash: bool = true;
 
 struct Store {
     baseline: Span,
     has_baseline: bool,
-    ctx_from: i64,
-    ctx_n: i64,
-    has_ctx: bool,
+    ctx_id: i64,          // index into g_ctxs, -1 when no context
 }
 
 fn store_reset(st: Store&) {
@@ -102,6 +112,8 @@ fn store_reset(st: Store&) {
     g_obs.clear();
     g_tasks.clear();
     g_task_head.clear();
+    g_ctxs.clear();
+    g_ctx_head.clear();
     g_paths.clear();
     g_post.clear();
     g_path_head.clear();
@@ -111,9 +123,13 @@ fn store_reset(st: Store&) {
     g_applied = 0;
     st.baseline = Span { off: 0, len: 0 };
     st.has_baseline = false;
-    st.ctx_from = 0;
-    st.ctx_n = 0;
-    st.has_ctx = false;
+    st.ctx_id = -1;
+    var env_val: u8[>..] = [];
+    var skip_hash = false;
+    if env("INCREMENTAL_NO_BODY_HASH", env_val) {
+        skip_hash = env_val.len > 0 && env_val[0] != '0';
+    }
+    g_check_body_hash = !skip_hash;
 }
 
 fn put(st: Store&, s: const u8[:]) -> Span {
@@ -146,6 +162,82 @@ fn line_text(s: Span) -> const u8[:] {
 
 fn same(st: Store&, s: Span, t: const u8[:]) -> bool {
     return s.len == t.len && text(st, s) == t;
+}
+
+// ---- Context dedup -------------------------------------------------------
+
+// Hash a JSON object's members into a combined u64. Used to find duplicate
+// contexts without interning every Kv pair first.
+fn ctx_obj_hash(obj: json::Node?) -> u64 {
+    if !obj { return 0; }
+    var h: u64 = 0;
+    json::each(obj) { child =>
+        h = hash_combine(h, hash(child.key));
+        let s, sok = json::as_string(child);
+        if sok { h = hash_combine(h, hash(s)); }
+        else {
+            let i, iok = json::as_i64(child);
+            if iok { h = hash_combine(h, hash(i)); }
+            else {
+                let b, bok = json::as_bool(child);
+                if bok { h = hash_combine(h, hash(b)); }
+                else {
+                    let f, fok = json::as_f64(child);
+                    if fok { h = hash_combine(h, hash(f)); }
+                }
+            }
+        }
+    };
+    return h;
+}
+
+// True when two Kv ranges [a_from, a_from + a_n) and [b_from, b_from + b_n)
+// hold identical key/value pairs. Used to verify hash-collision candidates.
+fn ctx_kvs_equal(st: Store&, a_from: i64, a_n: i64, b_from: i64, b_n: i64) -> bool {
+    if a_n != b_n { return false; }
+    for i in a_n {
+        let ak = g_kvs[a_from + i].k;
+        let av = g_kvs[a_from + i].v;
+        let bk = g_kvs[b_from + i].k;
+        let bv = g_kvs[b_from + i].v;
+        if text(st, ak) != text(st, bk) || text(st, av) != text(st, bv) { return false; }
+    }
+    return true;
+}
+
+// The lookup key of a context: the combined hash of all its keys and values.
+fn ctx_hash(st: Store&, cfrom: i64, cn: i64) -> u64 {
+    var h: u64 = 0;
+    for i in cn {
+        let k = g_kvs[cfrom + i].k;
+        let v = g_kvs[cfrom + i].v;
+        h = hash_combine(h, hash(text(st, k)));
+        h = hash_combine(h, hash(text(st, v)));
+    }
+    return h;
+}
+
+// Find an existing context matching the Kv range, or create a new one.
+// Returns the index into g_ctxs.
+fn ctx_find_or_create(st: Store&, cfrom: i64, cn: i64) -> i64 {
+    let h = ctx_hash(st, cfrom, cn);
+    let hit = g_ctx_head.get(h);
+    if hit {
+        let meta = g_ctxs[hit];
+        if ctx_kvs_equal(st, meta.from, meta.n, cfrom, cn) {
+            return hit;
+        }
+        // Hash collision: fall through to create a new entry.
+    }
+    g_ctxs.push(Ctx { from: cfrom, n: cn });
+    g_ctx_head.insert(h, g_ctxs.len - 1);
+    return g_ctxs.len - 1;
+}
+
+// Return the (from, n) range into g_kvs for a context id.
+fn ctx_range(ctx_id: i64) -> i64, i64 {
+    let c = g_ctxs[ctx_id];
+    return c.from, c.n;
 }
 
 // A task is live when its latest observation stands and it is not forgotten.
@@ -246,6 +338,7 @@ fn add_obs(st: Store&, o: json::Node?, line: Span) -> bool {
         else if oc == "error" { outcome = 2; }
     }
     let cfrom, cn = read_pairs(st, json::member(o, "context"), false);
+    let ctx_id = ctx_find_or_create(st, cfrom, cn);
     let ti = task_index(st, tid);
     let ifrom = g_inps.len;
     var env_any = false;
@@ -284,7 +377,7 @@ fn add_obs(st: Store&, o: json::Node?, line: Span) -> bool {
     }
     let ni = g_inps.len - ifrom;
     let bs = intern(st, bl);
-    g_obs.push(Ob { task: ti, ctx_from: cfrom, ctx_n: cn, baseline: bs, dirty: dok && dirty,
+    g_obs.push(Ob { task: ti, ctx_id: ctx_id, baseline: bs, dirty: dok && dirty,
         outcome: outcome, inp_from: ifrom, inp_n: ni, line: line });
     let oi = g_obs.len - 1;
     for k in ni { index_input(st, oi, ifrom + k); }
@@ -292,9 +385,7 @@ fn add_obs(st: Store&, o: json::Node?, line: Span) -> bool {
     if !task_live(ti) { g_live += 1; }
     g_tasks[ti].latest = oi;
     g_tasks[ti].forgotten = false;
-    st.ctx_from = cfrom;
-    st.ctx_n = cn;
-    st.has_ctx = true;
+    st.ctx_id = ctx_id;
     return true;
 }
 
@@ -509,22 +600,47 @@ fn append_lines(st: Store&, log_path: const u8[:], recs: const u8[:]) -> bool {
     return ok;
 }
 
+// ---- phase trace -------------------------------------------------------------
+// With INCREMENTAL_TRACE set to a non-zero value, each load phase prints its
+// CPU time in microseconds to stderr. Off by default: the only cost is a clock
+// read per phase.
+fn trace_on() -> bool {
+    var v: u8[>..] = [];
+    return env("INCREMENTAL_TRACE", v) && v.len > 0 && v[0] != '0';
+}
+
+// Prints the time since t0 for one phase, and returns the time now.
+fn trace_phase(on: bool, name: const u8[:], t0: i64) -> i64 {
+    let t1 = native_cpu_ns();
+    if on {
+        var line: u8[>..] = [];
+        line.append("trace ");
+        line.append(name);
+        line.append(" ");
+        json::format_int(line, (t1 - t0) / 1000);
+        line.append(" us\n");
+        write_stderr(line);
+    }
+    return t1;
+}
+
 // ---- index image (spec 6.4) ------------------------------------------------
-// tg.idx, format 2: a binary image of the state's arrays, written with Goose's
+// tg.idx, format 3: a binary image of the state's arrays, written with Goose's
 // serialization (to_bytes / from_bytes, reference section 23). Layout:
 //   "BPIX"                         magic
-//   uleb fmt (2)
+//   uleb fmt (3)
 //   uleb base_log_len
 //   uleb n, n bytes                base_tail_sha: "sha256:<hex>" of the 1,024
 //                                  log bytes ending at base_log_len
 //   uleb has_baseline, uleb baseline.off, uleb baseline.len
 //   uleb has_ctx, uleb ctx_from, uleb ctx_n
-//   uleb 8                         number of sections
-//   uleb len[k] for k in 0..8      byte length of each section
+//   uleb 9                         number of sections
+//   uleb len[k] for k in 0..9      byte length of each section
 //   8 bytes, little endian         hash() of the body (damage check)
 //   body: to_bytes of, in order, the arena (u8), the kvs, the inputs, the
-//         observations, the tasks, the path table and the postings, then the
-//         standing list (i64). Each section is a framed image of one array.
+//         observations, the tasks, the path table and the postings, the
+//         standing list (i64), then the contexts (Ctx). Each section is a
+//         framed image of one array.
 // The observation lines are not stored: each is a span of the log, which the
 // load reads anyway, and the tail hash ties the image to that log.
 // Not stored: the dictionaries (rebuilt from the tasks and paths in one pass),
@@ -552,10 +668,12 @@ fn state_records(st: Store&, out: u8[>..]&) {
     if g_obs.len > 0 { lo = g_obs.len - 1; }
     for i in g_tasks.len {
         let t = g_tasks[i];
-        if t.forgotten || t.latest < 0 { continue; }
-        if t.latest == lo { continue; }
-        out.append(line_text(g_obs[t.latest].line));
-        out.push('\n');
+        if !(t.forgotten || t.latest < 0) {
+            if t.latest != lo {
+                out.append(line_text(g_obs[t.latest].line));
+                out.push('\n');
+            }
+        }
     }
     if lo >= 0 {
         let t = g_tasks[g_obs[lo].task];
@@ -612,6 +730,9 @@ fn index_ok(st: Store&) -> bool {
     for i in nk {
         if !span_in(g_kvs[i].k, an) || !span_in(g_kvs[i].v, an) { return false; }
     }
+    for i in g_ctxs.len {
+        if !range_in(g_ctxs[i].from, g_ctxs[i].n, nk) { return false; }
+    }
     for i in ni {
         let x = g_inps[i];
         if x.kind < 0 || x.kind > 5 { return false; }
@@ -623,7 +744,8 @@ fn index_ok(st: Store&) -> bool {
         if o.task < 0 || o.task >= nt { return false; }
         if o.outcome < 0 || o.outcome > 3 { return false; }
         if !span_in(o.baseline, an) || !span_in(o.line, g_logbuf.len) { return false; }
-        if !range_in(o.ctx_from, o.ctx_n, nk) || !range_in(o.inp_from, o.inp_n, ni) { return false; }
+        if o.ctx_id >= 0 && (o.ctx_id >= g_ctxs.len) { return false; }
+        if !range_in(o.inp_from, o.inp_n, ni) { return false; }
     }
     for i in nt {
         let t = g_tasks[i];
@@ -647,7 +769,7 @@ fn index_ok(st: Store&) -> bool {
         if g_standing[i] < 0 || g_standing[i] >= no { return false; }
     }
     if st.has_baseline && !span_in(st.baseline, an) { return false; }
-    if st.has_ctx && !range_in(st.ctx_from, st.ctx_n, nk) { return false; }
+    if st.ctx_id >= 0 && st.ctx_id >= g_ctxs.len { return false; }
     return true;
 }
 
@@ -657,8 +779,10 @@ fn index_ok(st: Store&) -> bool {
 fn rebuild_dicts(st: Store&) {
     g_task_head.clear();
     g_path_head.clear();
+    g_ctx_head.clear();
     for i in g_tasks.len { g_task_head.insert(hash(text(st, g_tasks[i].id)), i); }
     for i in g_paths.len { g_path_head.insert(hash(text(st, g_paths[i].p)), i); }
+    for i in g_ctxs.len { g_ctx_head.insert(ctx_hash(st, g_ctxs[i].from, g_ctxs[i].n), i); }
 }
 
 // Writes tg.idx for the applied prefix of the log. A no-op when the file on
@@ -687,19 +811,20 @@ fn write_index(st: Store&, idx_path: const u8[:]) -> bool {
     to_bytes(g_post, body);
     lens.push(body.len - mark); mark = body.len;
     to_bytes(g_standing, body);
+    lens.push(body.len - mark); mark = body.len;
+    to_bytes(g_ctxs, body);
     lens.push(body.len - mark);
     var img: u8[>..] = [];
     img.append("BPIX");
-    format_uleb(img, 2);
+    format_uleb(img, 3);
     format_uleb(img, base);
     format_uleb(img, sha.len);
     img.append(sha);
     format_uleb(img, flag_of(st.has_baseline));
     format_uleb(img, st.baseline.off);
     format_uleb(img, st.baseline.len);
-    format_uleb(img, flag_of(st.has_ctx));
-    format_uleb(img, st.ctx_from);
-    format_uleb(img, st.ctx_n);
+    format_uleb(img, flag_of(st.ctx_id >= 0));
+    format_uleb(img, if st.ctx_id >= 0 { st.ctx_id } else { 0 });
     format_uleb(img, lens.len);
     for k in lens.len { format_uleb(img, lens[k]); }
     let h = hash(body);
@@ -710,15 +835,25 @@ fn write_index(st: Store&, idx_path: const u8[:]) -> bool {
     return ok;
 }
 
+// One verified section of an image. A failed check clears ok and gives an empty array.
+fn section<T>(b: u8[:], ok: bool&) -> T[>..] {
+    let arr, good = from_bytes<T[>..]>(b);
+    if !good { ok = false; }
+    return arr;
+}
+
 // Loads tg.idx when it describes a prefix of the log. False (with the state
 // cleared) when it does not, and the caller replays the log instead.
 fn load_index(st: Store&, idx_path: const u8[:], log: const u8[:]) -> bool {
+    let tr = trace_on();
+    var tp = native_cpu_ns();
     var img: u8[>..] = [];
     if !read_file(idx_path, img) { return false; }
+    tp = trace_phase(tr, "idx_read", tp);
     if img.len < 4 || img[..4] != "BPIX" { return false; }
     var pos: i64 = 4;
     let fmt, f_ok = take_uleb(img, pos);
-    if !f_ok || fmt != 2 { return false; }
+    if !f_ok || fmt != 3 { return false; }
     let base, b_ok = take_uleb(img, pos);
     if !b_ok || base < 0 || base > log.len { return false; }
     let sl, s_ok = take_uleb(img, pos);
@@ -729,18 +864,18 @@ fn load_index(st: Store&, idx_path: const u8[:], log: const u8[:]) -> bool {
     var want: u8[>..] = [];
     sha_text(log[tail..base], want);
     if want != sha { return false; }
+    tp = trace_phase(tr, "idx_tail_sha", tp);
     let has_b, hb_ok = take_uleb(img, pos);
     let bo, bo_ok = take_uleb(img, pos);
     let bl, bl_ok = take_uleb(img, pos);
     let has_c, hc_ok = take_uleb(img, pos);
-    let cf, cf_ok = take_uleb(img, pos);
-    let cn, cn_ok = take_uleb(img, pos);
+    let ci, ci_ok = take_uleb(img, pos);
     let nsec, n_ok = take_uleb(img, pos);
-    if !(hb_ok && bo_ok && bl_ok && hc_ok && cf_ok && cn_ok && n_ok) { return false; }
-    if has_b > 1 || has_c > 1 || nsec != 8 { return false; }
+    if !(hb_ok && bo_ok && bl_ok && hc_ok && ci_ok && n_ok) { return false; }
+    if has_b > 1 || has_c > 1 || nsec != 9 { return false; }
     var lens: i64[>..] = [];
     var total: i64 = 0;
-    for k in 8 {
+    for k in 9 {
         let len, ok = take_uleb(img, pos);
         if !ok || len < 0 || len > img.len { return false; }
         lens.push(len);
@@ -752,40 +887,40 @@ fn load_index(st: Store&, idx_path: const u8[:], log: const u8[:]) -> bool {
     pos += 8;
     if total != img.len - pos { return false; }
     let body = img[pos ..];
-    if hash(body) != stored { return false; }
-    var at: i64 = 0;
-    let arena, a_ok = from_bytes<u8[>..]>(body[at .. at + lens[0]]); at += lens[0];
-    let kvs, k_ok = from_bytes<Kv[>..]>(body[at .. at + lens[1]]); at += lens[1];
-    let inps, i_ok = from_bytes<Inp[>..]>(body[at .. at + lens[2]]); at += lens[2];
-    let obs, o_ok = from_bytes<Ob[>..]>(body[at .. at + lens[3]]); at += lens[3];
-    let tasks, t_ok = from_bytes<Task[>..]>(body[at .. at + lens[4]]); at += lens[4];
-    let paths, p_ok = from_bytes<PathE[>..]>(body[at .. at + lens[5]]); at += lens[5];
-    let posts, q_ok = from_bytes<Post[>..]>(body[at .. at + lens[6]]); at += lens[6];
-    let standing, s2_ok = from_bytes<i64[>..]>(body[at .. at + lens[7]]);
-    if !(a_ok && k_ok && i_ok && o_ok && t_ok && p_ok && q_ok && s2_ok) { return false; }
+    if g_check_body_hash && hash(body) != stored { return false; }
+    tp = trace_phase(tr, "idx_body_hash", tp);
+    // Each section is decoded straight into its global: from_bytes returns a
+    // fresh array, so the assignment moves it and no second copy is made.
     store_reset(st);
-    g_arena = copy(arena);
-    g_kvs = copy(kvs);
-    g_inps = copy(inps);
-    g_obs = copy(obs);
-    g_tasks = copy(tasks);
-    g_paths = copy(paths);
-    g_post = copy(posts);
-    g_standing = copy(standing);
+    var at: i64 = 0;
+    var ok = true;
+    g_arena = section<u8>(body[at .. at + lens[0]], ok); at += lens[0];
+    g_kvs = section<Kv>(body[at .. at + lens[1]], ok); at += lens[1];
+    g_inps = section<Inp>(body[at .. at + lens[2]], ok); at += lens[2];
+    g_obs = section<Ob>(body[at .. at + lens[3]], ok); at += lens[3];
+    g_tasks = section<Task>(body[at .. at + lens[4]], ok); at += lens[4];
+    g_paths = section<PathE>(body[at .. at + lens[5]], ok); at += lens[5];
+    g_post = section<Post>(body[at .. at + lens[6]], ok); at += lens[6];
+    g_standing = section<i64>(body[at .. at + lens[7]], ok); at += lens[7];
+    g_ctxs = section<Ctx>(body[at .. at + lens[8]], ok);
+    if !ok { store_reset(st); return false; }
+    tp = trace_phase(tr, "idx_from_bytes", tp);
     st.baseline = Span { off: bo, len: bl };
     st.has_baseline = has_b == 1;
-    st.ctx_from = cf;
-    st.ctx_n = cn;
-    st.has_ctx = has_c == 1;
+    st.ctx_id = if has_c == 1 { ci } else { -1 };
+    tp = trace_phase(tr, "idx_copy", tp);
     g_logbuf.append(log);
     if !index_ok(st) {
         store_reset(st);
         return false;
     }
+    tp = trace_phase(tr, "idx_index_ok", tp);
     var live: i64 = 0;
     for i in g_tasks.len { if task_live(i) { live += 1; } }
     g_live = live;
+    tp = trace_phase(tr, "idx_live_count", tp);
     rebuild_dicts(st);
+    tp = trace_phase(tr, "idx_rebuild_dicts", tp);
     g_applied = base;
     g_idx_current = true;
     let applied, ok = apply_from(st, g_logbuf, base);

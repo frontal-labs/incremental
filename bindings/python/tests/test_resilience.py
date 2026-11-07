@@ -8,9 +8,10 @@ import threading
 import time
 import unittest
 
+from incremental import IncrementalError, connect
+from incremental._transport import _FifoLock
+
 from . import _support as S
-from backplane import BackplaneError, connect
-from backplane._transport import _FifoLock
 
 
 def _wait_dead(client, limit=5.0):
@@ -66,7 +67,7 @@ class TestRestart(unittest.TestCase):
         try:
             os.kill(client.engine_pid, signal.SIGKILL)
             _wait_dead(client)
-            with self.assertRaises(BackplaneError) as cm:
+            with self.assertRaises(IncrementalError) as cm:
                 client.baseline()
             self.assertEqual(cm.exception.code, "engine_exited")
         finally:
@@ -85,13 +86,14 @@ class TestTimeoutAndFakeEngine(unittest.TestCase):
     def tearDown(self):
         os.environ.pop("FAKE_MARKER", None)
         import shutil
+
         shutil.rmtree(self.dir, ignore_errors=True)
 
     def test_timeout_raises_code_timeout_and_restarts(self):
         client = connect(self.dir, engine=self.fake, root=self.dir, timeout=0.5)
         try:
             first = client.engine_pid
-            with self.assertRaises(BackplaneError) as cm:
+            with self.assertRaises(IncrementalError) as cm:
                 client.stats()  # the fake engine never answers stats
             self.assertEqual(cm.exception.code, "timeout")
             self.assertEqual(cm.exception.data, {"partial": False})
@@ -113,7 +115,7 @@ class TestTimeoutAndFakeEngine(unittest.TestCase):
     def test_mutating_call_not_retried_after_death_in_flight(self):
         client = connect(self.dir, engine=self.fake, root=self.dir, timeout=5)
         try:
-            with self.assertRaises(BackplaneError) as cm:
+            with self.assertRaises(IncrementalError) as cm:
                 client.forget("x")  # the fake engine exits without answering
             self.assertEqual(cm.exception.code, "engine_exited")
             self.assertEqual(client.baseline(), {"baseline": None})  # next call restarts
@@ -163,12 +165,25 @@ class TestSerialization(unittest.TestCase):
             def worker(w):
                 try:
                     for i in range(10):
-                        ack = client.observe({
-                            "task": f"packages/core/src/t/w{w}_{i}.test.ts", "baseline": "b1",
-                            "dirty": False, "outcome": "pass", "inputs": [], "outputs": [],
-                            "context": {"lockfile": "sha256:l1", "tsconfig": "sha256:t1", "pkgjson": "sha256:p1",
-                                        "runner": "vitest@4.1.12", "node": "22.11.0", "fmt": 1,
-                                        "caps": {"probes": True, "dirs": True, "env": True}}})
+                        ack = client.observe(
+                            {
+                                "task": f"packages/core/src/t/w{w}_{i}.test.ts",
+                                "baseline": "b1",
+                                "dirty": False,
+                                "outcome": "pass",
+                                "inputs": [],
+                                "outputs": [],
+                                "context": {
+                                    "lockfile": "sha256:l1",
+                                    "tsconfig": "sha256:t1",
+                                    "pkgjson": "sha256:p1",
+                                    "runner": "vitest@4.1.12",
+                                    "node": "22.11.0",
+                                    "fmt": 1,
+                                    "caps": {"probes": True, "dirs": True, "env": True},
+                                },
+                            }
+                        )
                         if ack != {"accepted": True}:
                             errors.append(ack)
                         if client.baseline() != {"baseline": "b1"}:
@@ -196,7 +211,7 @@ class TestErrorsAndLifecycle(unittest.TestCase):
         S.require_engine()
 
     def test_missing_store_raises_store_missing(self):
-        with self.assertRaises(BackplaneError) as cm:
+        with self.assertRaises(IncrementalError) as cm:
             connect(os.path.join(tempfile.mkdtemp(), "nope"), engine=S.ENGINE, root=S.REPO)
         self.assertEqual(cm.exception.code, "store_missing")
 
@@ -205,7 +220,7 @@ class TestErrorsAndLifecycle(unittest.TestCase):
         try:
             with S.open_client(store, S.REPO) as client:
                 S.apply_messages(client, S.seed_messages(S.SEED_DEFAULT))
-                with self.assertRaises(BackplaneError) as cm:
+                with self.assertRaises(IncrementalError) as cm:
                     client.advance("b2", "b0")
                 self.assertEqual(cm.exception.code, "baseline_conflict")
                 # PLAN 9.1: the error carries expected and actual.
@@ -221,7 +236,7 @@ class TestErrorsAndLifecycle(unittest.TestCase):
             client.close()
             client.close()
             self.assertIsNone(client.engine_pid)
-            with self.assertRaises(BackplaneError) as cm:
+            with self.assertRaises(IncrementalError) as cm:
                 client.stats()
             self.assertEqual(cm.exception.code, "closed")
         finally:
@@ -242,13 +257,26 @@ class TestErrorsAndLifecycle(unittest.TestCase):
         try:
             with S.open_client(store, S.REPO) as client:
                 S.apply_messages(client, S.seed_messages(S.SEED_DEFAULT))
-                obs = {"task": "packages/core/src/m.test.ts", "baseline": "b1", "dirty": False,
-                       "outcome": "pass", "inputs": [], "outputs": [],
-                       "context": {"lockfile": "sha256:l1", "tsconfig": "sha256:t1", "pkgjson": "sha256:p1",
-                                   "runner": "vitest@4.1.12", "node": "22.11.0", "fmt": 1,
-                                   "caps": {"probes": True, "dirs": True, "env": True}}}
-                self.assertEqual(client.observe_many([obs, dict(obs, task=obs["task"] + "2")]),
-                                 {"accepted": 2})
+                obs = {
+                    "task": "packages/core/src/m.test.ts",
+                    "baseline": "b1",
+                    "dirty": False,
+                    "outcome": "pass",
+                    "inputs": [],
+                    "outputs": [],
+                    "context": {
+                        "lockfile": "sha256:l1",
+                        "tsconfig": "sha256:t1",
+                        "pkgjson": "sha256:p1",
+                        "runner": "vitest@4.1.12",
+                        "node": "22.11.0",
+                        "fmt": 1,
+                        "caps": {"probes": True, "dirs": True, "env": True},
+                    },
+                }
+                self.assertEqual(
+                    client.observe_many([obs, dict(obs, task=obs["task"] + "2")]), {"accepted": 2}
+                )
                 self.assertIn("task", client.explain(obs["task"]))
                 before = client.stats()["tasks"]
                 self.assertEqual(client.forget(obs["task"]), {"forgotten": True})

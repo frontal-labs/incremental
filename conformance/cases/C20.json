@@ -70,9 +70,7 @@
     "tasks": [
       {
         "id": "packages/core/src/math.test.ts",
-        "reasons": [
-          "failed_outcome"
-        ]
+        "reasons": ["failed_outcome"]
       }
     ],
     "unobserved": [],

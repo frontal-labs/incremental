@@ -51,11 +51,17 @@ export function toolchain(cwd: string): string {
   const version = (cmd: string, args: string[]): string => {
     const r = spawnSync(cmd, args, { cwd, encoding: "utf8" });
     if (r.error !== undefined || r.status !== 0) {
-      throw new CargoError(`${cmd} ${args.join(" ")} failed: ${(r.stderr || r.error?.message || "").trim()}`);
+      throw new CargoError(
+        `${cmd} ${args.join(" ")} failed: ${(r.stderr || r.error?.message || "").trim()}`,
+      );
     }
     return r.stdout.trim();
   };
-  return [version("rustc", ["-V"]), version("cargo", ["-V"]), version("cargo", ["clippy", "--version"])].join(" | ");
+  return [
+    version("rustc", ["-V"]),
+    version("cargo", ["-V"]),
+    version("cargo", ["clippy", "--version"]),
+  ].join(" | ");
 }
 
 // One JSON line from cargo --message-format=json. Only the fields the recorder reads are typed.

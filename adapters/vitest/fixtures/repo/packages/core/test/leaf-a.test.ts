@@ -1,5 +1,5 @@
-import { LEAF } from '../src/leaf.ts';
+import { LEAF } from "../src/leaf.ts";
 
-it('leaf a reads the leaf utility', () => {
-  expect(typeof LEAF).toBe('number');
+it("leaf a reads the leaf utility", () => {
+  expect(typeof LEAF).toBe("number");
 });

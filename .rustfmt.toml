@@ -1,0 +1,14 @@
+# .rustfmt.toml — Rust formatting for Incremental bindings
+edition = "2021"
+max_width = 100
+tab_spaces = 4
+normalize_comments = true
+reorder_imports = true
+merge_imports = true
+wrap_comments = true
+comment_width = 100
+newline_style = "Unix"
+trailing_comma = "Vertical"
+use_try_shorthand = true
+wrap_operands = true
+newline_at_end_of_file = true

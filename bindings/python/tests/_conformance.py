@@ -5,20 +5,24 @@ determinism checks. Returns a list of mismatch strings (empty means pass).
 Expectations come from the case files only; nothing here computes them.
 """
 
-import json
 import os
-import shutil
-import subprocess
 import threading
 
+from incremental import IncrementalError
+from incremental._transport import Engine
+
 from . import _support as S
-from backplane._transport import Engine
-from backplane import BackplaneError
 
 HELLO_PARAMS = {"protocol": 1, "client": {"name": "conformance", "version": "0.0.0"}}
-CONTEXT_OK = {"lockfile": "sha256:l1", "tsconfig": "sha256:t1", "pkgjson": "sha256:p1",
-              "runner": "vitest@4.1.12", "node": "22.11.0", "fmt": 1,
-              "caps": {"probes": True, "dirs": True, "env": True}}
+CONTEXT_OK = {
+    "lockfile": "sha256:l1",
+    "tsconfig": "sha256:t1",
+    "pkgjson": "sha256:p1",
+    "runner": "vitest@4.1.12",
+    "node": "22.11.0",
+    "fmt": 1,
+    "caps": {"probes": True, "dirs": True, "env": True},
+}
 
 
 def run_case(case: dict) -> list:
@@ -103,7 +107,8 @@ def _run_query(case: dict) -> list:
 
 def _run_hello_action(case: dict) -> list:
     """Protocol-level: hello with an unsupported version. The public client
-    always sends protocol 1, so this goes through the transport layer."""
+    always sends protocol 1, so this goes through the transport layer.
+    """
     store = S.new_store(case["id"])
     try:
         eng = Engine([S.ENGINE, "serve", "--store", store, "--root", S.REPO], timeout=5)
@@ -111,7 +116,7 @@ def _run_hello_action(case: dict) -> list:
         try:
             eng.request(case["action"]["method"], case["action"]["params"])
             return ["hello with protocol 2 was accepted"]
-        except BackplaneError as err:
+        except IncrementalError as err:
             diffs = []
             if err.code != case["expect"]["error"]:
                 diffs.append(f"error: want {case['expect']['error']} got {err.code}")
@@ -135,13 +140,15 @@ def _run_action(case: dict) -> list:
             try:
                 getattr(client, act["method"])(**act["params"])
                 diffs.append(f"error: want {case['expect']['error']} got no error")
-            except BackplaneError as err:
+            except IncrementalError as err:
                 if err.code != case["expect"]["error"]:
                     diffs.append(f"error: want {case['expect']['error']} got {err.code}")
             if "baseline_after" in case["expect"]:
                 after = client.baseline()["baseline"]
                 if after != case["expect"]["baseline_after"]:
-                    diffs.append(f"baseline_after: want {case['expect']['baseline_after']} got {after}")
+                    diffs.append(
+                        f"baseline_after: want {case['expect']['baseline_after']} got {after}"
+                    )
             return diffs
         finally:
             client.close()
@@ -161,11 +168,16 @@ def _run_raw_lines(case: dict) -> list:
             # The first raw line is malformed. The second is a valid ping with id 7.
             eng.send_raw(case["raw_lines"][0].encode("utf-8"))
             first = eng.read_response(5)
-            if first.get("id") is not None or first.get("error", {}).get("code") != want[0]["error_code"]:
+            if (
+                first.get("id") is not None
+                or first.get("error", {}).get("code") != want[0]["error_code"]
+            ):
                 diffs.append(f"response 0: got {S.dumps(first)}")
             eng.send_raw(case["raw_lines"][1].encode("utf-8"))
             second = eng.read_response(5)
-            if second.get("id") != want[1]["id"] or S.dumps(second.get("result")) != S.dumps(want[1]["result"]):
+            if second.get("id") != want[1]["id"] or S.dumps(second.get("result")) != S.dumps(
+                want[1]["result"]
+            ):
                 diffs.append(f"response 1: got {S.dumps(second)}")
             return diffs
         finally:
@@ -201,20 +213,28 @@ def _run_index(case: dict) -> list:
             finally:
                 c.close()  # the engine writes tg.idx at exit
 
-        a = plan_once()                       # from the index
+        a = plan_once()  # from the index
         os.remove(idx)
-        b = plan_once()                       # rebuilt from the log
+        b = plan_once()  # rebuilt from the log
         c = S.open_client(store, S.worktree(case))
         try:
-            c.observe({"task": "packages/core/src/extra.test.ts", "baseline": "b1", "dirty": False,
-                       "outcome": "pass", "context": CONTEXT_OK, "inputs": []})
+            c.observe(
+                {
+                    "task": "packages/core/src/extra.test.ts",
+                    "baseline": "b1",
+                    "dirty": False,
+                    "outcome": "pass",
+                    "context": CONTEXT_OK,
+                    "inputs": [],
+                }
+            )
         finally:
             c.close()
-        with open(idx, "wb") as fh:           # stale index, then the log tail after it
+        with open(idx, "wb") as fh:  # stale index, then the log tail after it
             fh.write(saved)
         cdelta = plan_once()
         os.remove(idx)
-        d = plan_once()                       # rebuilt, after the same log growth
+        d = plan_once()  # rebuilt, after the same log growth
 
         diffs = []
         if S.dumps(a) != S.dumps(b):
@@ -238,10 +258,18 @@ def _run_concurrency(case: dict) -> list:
                 client = S.open_client(store, S.worktree(case))
                 try:
                     for i in range(per):
-                        ack = client.observe({
-                            "task": f"packages/core/src/gen/w{w}_{i}.test.ts", "baseline": "b1",
-                            "dirty": False, "context": CONTEXT_OK, "inputs": [], "outputs": [],
-                            "outcome": "pass", "duration_ms": 1})
+                        ack = client.observe(
+                            {
+                                "task": f"packages/core/src/gen/w{w}_{i}.test.ts",
+                                "baseline": "b1",
+                                "dirty": False,
+                                "context": CONTEXT_OK,
+                                "inputs": [],
+                                "outputs": [],
+                                "outcome": "pass",
+                                "duration_ms": 1,
+                            }
+                        )
                         if ack != {"accepted": True}:
                             errors.append(f"writer {w}: ack {ack}")
                 finally:
@@ -262,9 +290,13 @@ def _run_concurrency(case: dict) -> list:
         diffs = list(errors)
         accepted = case["writers"] * per
         if stats["tasks"] != case["expect"]["tasks"]:
-            diffs.append(f"tasks: want {case['expect']['tasks']} got {stats['tasks']} (accepted {accepted})")
+            diffs.append(
+                f"tasks: want {case['expect']['tasks']} got {stats['tasks']} (accepted {accepted})"
+            )
         if stats["observations"] != case["expect"]["observations"]:
-            diffs.append(f"observations: want {case['expect']['observations']} got {stats['observations']}")
+            diffs.append(
+                f"observations: want {case['expect']['observations']} got {stats['observations']}"
+            )
         return diffs
     finally:
         S.cleanup(store)

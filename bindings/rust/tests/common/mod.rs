@@ -2,7 +2,7 @@
 //! bindings/python/tests/_support.py and _conformance.py.
 #![allow(dead_code)]
 
-use backplane::{Affected, Backplane, Config, Result};
+use incremental::{Affected, Incremental, Config, Result};
 use serde_json::{json, Value};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -16,8 +16,8 @@ pub fn repo() -> PathBuf {
 }
 
 pub fn engine() -> String {
-    let path = std::env::var("BACKPLANE_ENGINE")
-        .unwrap_or_else(|_| repo().join("core/dist/backplane").display().to_string());
+    let path = std::env::var("INCREMENTAL_ENGINE")
+        .unwrap_or_else(|_| repo().join("core/dist/incremental").display().to_string());
     assert!(Path::new(&path).exists(), "engine missing at {path}: run make build");
     path
 }
@@ -76,12 +76,12 @@ pub fn config(case: &Value, store: &Path) -> Config {
     Config { engine: vec![engine()], store: store.to_path_buf(), root: worktree(case), ..Config::default() }
 }
 
-pub fn open(case: &Value, store: &Path) -> Backplane {
-    Backplane::connect(config(case, store)).expect("connect")
+pub fn open(case: &Value, store: &Path) -> Incremental {
+    Incremental::connect(config(case, store)).expect("connect")
 }
 
 /// Replays one protocol message (`method`, `params` as keyword arguments) through the client.
-pub fn dispatch(client: &mut Backplane, method: &str, params: &Value) -> Result<Value> {
+pub fn dispatch(client: &mut Incremental, method: &str, params: &Value) -> Result<Value> {
     match method {
         "observe" => client.observe(&params["observation"]),
         "observe_many" => client.observe_many(params["observations"].as_array().expect("array")),
@@ -146,13 +146,12 @@ pub fn query_plan(case: &Value, store: &Path) -> Value {
 pub fn mismatches(plan: &Value, expect: &Value) -> Vec<String> {
     let mut out = Vec::new();
     for key in COMPARED {
-        if expect.get(key).is_none() {
-            continue;
-        }
-        let want = dumps(&expect[key]);
-        let got = dumps(plan.get(key).unwrap_or(&Value::Null));
-        if want != got {
-            out.push(format!("{key}: want {want} got {got}"));
+        if expect.get(key).is_some() {
+            let want = dumps(&expect[key]);
+            let got = dumps(plan.get(key).unwrap_or(&Value::Null));
+            if want != got {
+                out.push(format!("{key}: want {want} got {got}"));
+            }
         }
     }
     out

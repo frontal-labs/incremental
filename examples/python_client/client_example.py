@@ -1,13 +1,14 @@
-"""Example Python client for backplane Protocol v1."""
+"""Example Python client for incremental Protocol v1."""
 
-from typing import Any
-from backplane import Backplane, BackplaneError, connect
 import asyncio
 import sys
+from typing import Any
+
+from incremental import IncrementalError, connect
 
 
 async def main() -> None:
-    store = ".backplane"
+    store = ".incremental"
     client = await connect(store=store)
 
     try:
@@ -52,8 +53,8 @@ async def main() -> None:
         if plan["fallback"]:
             print(f"Fallback: {plan['fallback']['reason']}")
 
-    except BackplaneError as e:
-        print(f"Backplane error: {e.code}: {e.message}", file=sys.stderr)
+    except IncrementalError as e:
+        print(f"Incremental error: {e.code}: {e.message}", file=sys.stderr)
         sys.exit(1)
     finally:
         await client.close()

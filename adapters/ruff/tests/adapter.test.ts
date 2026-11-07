@@ -1,5 +1,5 @@
 // Integration tests: a scratch git repository with three Python files, run
-// through the real engine, backplane-git and ruff (spec/adapters/ruff.md).
+// through the real engine, incremental-git and ruff (spec/adapters/ruff.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -37,7 +37,7 @@ function commit(root: string, message: string): void {
 }
 
 function makeRepo(): { root: string; store: string } {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-ruff-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-ruff-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");
@@ -57,7 +57,12 @@ async function run(root: string, store: string): Promise<RunReport> {
 }
 
 // ruff checks pyproject.toml too (its own TOML rules), so it is a task.
-const ALL = ["ruff check pkg/a.py", "ruff check pkg/b.py", "ruff check pkg/c.py", "ruff check pyproject.toml"];
+const ALL = [
+  "ruff check pkg/a.py",
+  "ruff check pkg/b.py",
+  "ruff check pkg/c.py",
+  "ruff check pyproject.toml",
+];
 
 test("discovers each file ruff checks as a task", () => {
   const { root } = makeRepo();
@@ -74,7 +79,10 @@ test("first run checks every file and advances the baseline", async () => {
   try {
     const r = await run(root, store);
     assert.deepEqual(r.selected, ALL);
-    assert.deepEqual(r.results.map((x) => x.outcome), ["pass", "pass", "pass", "pass"]);
+    assert.deepEqual(
+      r.results.map((x) => x.outcome),
+      ["pass", "pass", "pass", "pass"],
+    );
     assert.equal(r.advanced, true);
     assert.equal(r.exit, 0);
   } finally {
@@ -140,7 +148,10 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
     const r = await run(root, store);
     assert.equal(r.advanced, false);
     assert.equal(r.exit, 7);
-    assert.ok(r.notAdvanced.some((m) => m.includes("dirty")), r.notAdvanced.join("; "));
+    assert.ok(
+      r.notAdvanced.some((m) => m.includes("dirty")),
+      r.notAdvanced.join("; "),
+    );
   } finally {
     cleanup(root);
   }
@@ -168,7 +179,11 @@ test("a deleted Python file runs every remaining task and forgets its own", asyn
     git(root, "rm", "-q", "pkg/c.py");
     commit(root, "remove c");
     const r = await run(root, store);
-    assert.deepEqual(r.selected, ["ruff check pkg/a.py", "ruff check pkg/b.py", "ruff check pyproject.toml"]);
+    assert.deepEqual(r.selected, [
+      "ruff check pkg/a.py",
+      "ruff check pkg/b.py",
+      "ruff check pyproject.toml",
+    ]);
     assert.equal(r.advanced, true);
     assert.equal(r.exit, 0);
   } finally {

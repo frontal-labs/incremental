@@ -4,7 +4,7 @@
 
 mod common;
 
-use backplane::Backplane;
+use incremental::Incremental;
 use common::*;
 use serde_json::{json, Value};
 use std::fs::{self, OpenOptions};
@@ -245,11 +245,13 @@ fn run_concurrency(case: &Value) -> Vec<String> {
 
 fn writer(case: &Value, store: &Path, w: u64, per: u64) -> Vec<String> {
     let mut errors = Vec::new();
-    let mut client = match Backplane::connect(config(case, store)) {
+    let mut client = match Incremental::connect(config(case, store)) {
         Ok(client) => client,
         Err(err) => return vec![format!("writer {w}: {err}")],
     };
-    for i in 0..per {
+    let mut failed = false;
+    let mut i = 0;
+    while i < per && !failed {
         let obs = json!({"task": format!("packages/core/src/gen/w{w}_{i}.test.ts"), "baseline": "b1",
                          "dirty": false, "context": context_ok(), "inputs": [], "outputs": [],
                          "outcome": "pass", "duration_ms": 1});
@@ -258,9 +260,10 @@ fn writer(case: &Value, store: &Path, w: u64, per: u64) -> Vec<String> {
             Ok(ack) => errors.push(format!("writer {w}: ack {ack}")),
             Err(err) => {
                 errors.push(format!("writer {w}: {err}"));
-                break;
+                failed = true;
             }
         }
+        i += 1;
     }
     client.close();
     errors
@@ -290,10 +293,10 @@ impl RawEngine {
         let stdout = child.stdout.take().expect("stdout");
         let (tx, lines) = mpsc::channel();
         thread::spawn(move || {
-            for line in BufReader::new(stdout).lines().map_while(Result::ok) {
-                if tx.send(line).is_err() {
-                    break;
-                }
+            let mut lines = BufReader::new(stdout).lines().map_while(Result::ok);
+            let mut open = true;
+            while open {
+                open = lines.next().is_some_and(|line| tx.send(line).is_ok());
             }
         });
         RawEngine { child, stdin, lines }

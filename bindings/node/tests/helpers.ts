@@ -4,7 +4,14 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { connect, defaultEngine, type backplane, type Change, type Context, type Plan } from "../src/index.js";
+import {
+  connect,
+  defaultEngine,
+  type incremental,
+  type Change,
+  type Context,
+  type Plan,
+} from "../src/index.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 // dist/test -> repository root (four levels up).
@@ -12,7 +19,14 @@ export const REPO = path.resolve(here, "..", "..", "..", "..");
 export const ENGINE = defaultEngine();
 export const CASES_DIR = path.join(REPO, "conformance", "cases");
 export const WORKTREES = path.join(REPO, "conformance", "worktrees");
-export const SILENT_ENGINE = path.resolve(here, "..", "..", "tests", "fixtures", "silent-engine.mjs");
+export const SILENT_ENGINE = path.resolve(
+  here,
+  "..",
+  "..",
+  "tests",
+  "fixtures",
+  "silent-engine.mjs",
+);
 
 // Fields of a conformance case that the runner reads (conformance/run.mjs).
 export interface SeedMsg {
@@ -74,7 +88,7 @@ export function seedsOf(c: CaseFile): SeedMsg[] {
 }
 
 // Applies protocol messages through the client, in order.
-export async function replay(client: backplane, msgs: SeedMsg[]): Promise<void> {
+export async function replay(client: incremental, msgs: SeedMsg[]): Promise<void> {
   for (const m of msgs) {
     const p = m.params;
     if (m.method === "observe") {
@@ -88,7 +102,7 @@ export async function replay(client: backplane, msgs: SeedMsg[]): Promise<void> 
 }
 
 export function tempDir(label: string): string {
-  return fs.mkdtempSync(path.join(os.tmpdir(), `backplane-${label}-`));
+  return fs.mkdtempSync(path.join(os.tmpdir(), `incremental-${label}-`));
 }
 
 // A new store directory created by the engine's `init` command.
@@ -100,7 +114,11 @@ export function initStore(label: string): string {
 }
 
 // Runs fn on a fresh connection and closes it afterwards.
-export async function once<T>(store: string, root: string, fn: (c: backplane) => Promise<T>): Promise<T> {
+export async function once<T>(
+  store: string,
+  root: string,
+  fn: (c: incremental) => Promise<T>,
+): Promise<T> {
   const c = await connect({ store, root });
   try {
     return await fn(c);
@@ -116,14 +134,21 @@ export function sameJSON(a: unknown, b: unknown): boolean {
 // Differences between a plan and a case's expect block (conformance/run.mjs comparePlan).
 export function comparePlan(plan: Plan, expect: Record<string, unknown>): string[] {
   const diffs: string[] = [];
-  const keys = ["tasks", "unobserved", "ignored", "deleted_tasks", "fallback", "confidence"] as const;
+  const keys = [
+    "tasks",
+    "unobserved",
+    "ignored",
+    "deleted_tasks",
+    "fallback",
+    "confidence",
+  ] as const;
   for (const key of keys) {
-    if (!(key in expect)) continue;
-    const got = (plan as unknown as Record<string, unknown>)[key];
-    if (!sameJSON(got, expect[key])) {
-      diffs.push(`${key}: want ${JSON.stringify(expect[key])} got ${JSON.stringify(got)}`);
+    if (key in expect) {
+      const got = (plan as unknown as Record<string, unknown>)[key];
+      if (!sameJSON(got, expect[key])) {
+        diffs.push(`${key}: want ${JSON.stringify(expect[key])} got ${JSON.stringify(got)}`);
+      }
     }
   }
   return diffs;
 }
-

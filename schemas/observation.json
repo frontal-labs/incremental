@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/observation.json",
+  "$id": "https://incremental.dev/schemas/observation.json",
   "title": "Observation",
   "description": "One recorded run of a task: its inputs, outputs, outcome, baseline, dirty state, and context.",
   "type": "object",
@@ -56,8 +56,8 @@
         "type": "object",
         "required": ["path"],
         "properties": {
-          "path": {"type": "string"},
-          "hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+          "path": { "type": "string" },
+          "hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
         }
       }
     },

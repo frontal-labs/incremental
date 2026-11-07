@@ -12,8 +12,15 @@ import path from "node:path";
 // Directories the input walk never enters. node_modules is covered by the
 // lockfile in the context. dist is not skipped: a dependent app reads its
 // workspace dependency's build output. .next is the app's own build output.
-const SKIP_DIRS = new Set(["node_modules", ".git", ".next", ".backplane", ".toolchain"]);
-export const NEXT_CONFIGS = ["next.config.js", "next.config.mjs", "next.config.cjs", "next.config.ts", "next.config.mts", "next.config.cts"];
+const SKIP_DIRS = new Set(["node_modules", ".git", ".next", ".incremental", ".toolchain"]);
+export const NEXT_CONFIGS = [
+  "next.config.js",
+  "next.config.mjs",
+  "next.config.cjs",
+  "next.config.ts",
+  "next.config.mts",
+  "next.config.cts",
+];
 // Env files `next build` reads in production mode (from the app directory).
 export const ENV_FILES = [".env", ".env.local", ".env.production", ".env.production.local"];
 export const LOCKFILES = ["package-lock.json", "pnpm-lock.yaml", "yarn.lock"];
@@ -43,7 +50,10 @@ function readJson(file: string): Record<string, unknown> {
 
 function dependsOnNext(pkgFile: string): boolean {
   const pkg = readJson(pkgFile);
-  const deps = { ...(pkg.dependencies as object | undefined), ...(pkg.devDependencies as object | undefined) };
+  const deps = {
+    ...(pkg.dependencies as object | undefined),
+    ...(pkg.devDependencies as object | undefined),
+  };
   return "next" in deps;
 }
 
@@ -55,8 +65,9 @@ export function discoverApps(root: string): string[] {
     const pkg = path.join(dir, "package.json");
     if (existsSync(pkg) && dependsOnNext(pkg)) out.push(taskOf(root, dir));
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink() || !entry.isDirectory() || SKIP_DIRS.has(entry.name)) continue;
-      visit(path.join(dir, entry.name));
+      if (!entry.isSymbolicLink() && entry.isDirectory() && !SKIP_DIRS.has(entry.name)) {
+        visit(path.join(dir, entry.name));
+      }
     }
   };
   visit(root);
@@ -68,12 +79,13 @@ export function allPackageJsons(root: string): string[] {
   const out: string[] = [];
   const visit = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue;
-      const abs = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (!SKIP_DIRS.has(entry.name)) visit(abs);
-      } else if (entry.isFile() && entry.name === "package.json") {
-        out.push(relPath(root, abs));
+      if (!entry.isSymbolicLink()) {
+        const abs = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (!SKIP_DIRS.has(entry.name)) visit(abs);
+        } else if (entry.isFile() && entry.name === "package.json") {
+          out.push(relPath(root, abs));
+        }
       }
     }
   };
@@ -93,20 +105,26 @@ export function nextPackage(appAbs: string): { dir: string; version: string } {
 // the context, so they are not inputs (recording them would make the first build dirty).
 export const GENERATED = new Set(["next-env.d.ts"]);
 
-// Every file under root that a build can read, hashed now (spec/adapters/turbopack.md).
-// `next build` reads source modules anywhere in the repository, and no module
-// graph is recorded, so the inputs are the whole repository minus SKIP_DIRS.
+// Every file under root that a build of one app can read, hashed now
+// (spec/adapters/turbopack.md). `next build` reads source modules anywhere in the
+// repository, and no module graph is recorded, so the inputs are the repository
+// minus SKIP_DIRS and minus `excluded`: the directories of the other apps. An app
+// is a leaf: it does not import from another app's directory (see README).
 // Paths are repo-relative and sorted. Symbolic links are not followed.
-export function repoInputs(root: string): DeclaredInput[] {
+export function repoInputs(
+  root: string,
+  excluded: ReadonlySet<string> = new Set(),
+): DeclaredInput[] {
   const out: DeclaredInput[] = [];
   const visit = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue;
-      const abs = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (!SKIP_DIRS.has(entry.name)) visit(abs);
-      } else if (entry.isFile() && !GENERATED.has(entry.name)) {
-        out.push({ kind: "declared", path: relPath(root, abs), hash: sha256(readFileSync(abs)) });
+      if (!entry.isSymbolicLink()) {
+        const abs = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (!SKIP_DIRS.has(entry.name) && !excluded.has(relPath(root, abs))) visit(abs);
+        } else if (entry.isFile() && !GENERATED.has(entry.name)) {
+          out.push({ kind: "declared", path: relPath(root, abs), hash: sha256(readFileSync(abs)) });
+        }
       }
     }
   };
@@ -116,7 +134,8 @@ export function repoInputs(root: string): DeclaredInput[] {
 
 // The environment a build reads that the adapter records: NEXT_* variables and
 // NODE_ENV, as hashes. Other variables are not observed (stated in the README).
-export const TRACKED_ENV = (name: string): boolean => name.startsWith("NEXT_") || name === "NODE_ENV";
+export const TRACKED_ENV = (name: string): boolean =>
+  name.startsWith("NEXT_") || name === "NODE_ENV";
 
 export function envHashes(env: NodeJS.ProcessEnv): Record<string, string> {
   const out: Record<string, string> = {};
@@ -138,13 +157,17 @@ export interface BuildResult {
 // failed compile, type check or prerender); anything else, or a timeout, is error.
 export function buildApp(appAbs: string, nextDir: string, timeoutMs: number): BuildResult {
   const started = Date.now();
-  const r = spawnSync(process.execPath, [path.join(nextDir, "dist", "bin", "next"), "build", "--turbopack"], {
-    cwd: appAbs,
-    encoding: "utf8",
-    timeout: timeoutMs,
-    maxBuffer: 256 * 1024 * 1024,
-    env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1" },
-  });
+  const r = spawnSync(
+    process.execPath,
+    [path.join(nextDir, "dist", "bin", "next"), "build", "--turbopack"],
+    {
+      cwd: appAbs,
+      encoding: "utf8",
+      timeout: timeoutMs,
+      maxBuffer: 256 * 1024 * 1024,
+      env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1" },
+    },
+  );
   const durationMs = Date.now() - started;
   if (r.error !== undefined || r.signal !== null) {
     return { outcome: "error", durationMs, problem: r.error?.message ?? `killed by ${r.signal}` };

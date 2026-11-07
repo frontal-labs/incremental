@@ -1,0 +1,6 @@
+{
+  "id": "E10",
+  "state": "blocked",
+  "evidence": "",
+  "notes": "Release: BLOCKED. Release is not cut until the blocking items are resolved. `make release-check` cannot pass (depends on all-tests, which includes Linux-only test-oracle and unverified test-adapters drafts). LICENSE resolved (LICENSE added as copy of LICENSE.md); no release cut until resolved."
+}

@@ -31,15 +31,11 @@
     "tasks": [
       {
         "id": "packages/app/src/app.test.ts",
-        "reasons": [
-          "stale:packages/core/src/math.ts"
-        ]
+        "reasons": ["stale:packages/core/src/math.ts"]
       },
       {
         "id": "packages/core/src/math.test.ts",
-        "reasons": [
-          "stale:packages/core/src/math.ts"
-        ]
+        "reasons": ["stale:packages/core/src/math.ts"]
       }
     ],
     "unobserved": [],

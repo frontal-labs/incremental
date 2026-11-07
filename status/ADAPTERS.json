@@ -1,6 +1,6 @@
 {
   "id": "E4",
   "state": "done",
-  "evidence": "",
-  "notes": "Vitest adapter signed off by the user's instruction, with CR-001 to CR-003 applied. E8 MCP server also signed off (test-mcp passes)."
+  "evidence": "evidence/E4.txt",
+  "notes": "Signed off by user's instruction. CR-001 to CR-003 applied; PLAN v4.1 sections 8.7, 11.2, 12.3 V16 reworded. V01-V16 pass; capabilities true."
 }

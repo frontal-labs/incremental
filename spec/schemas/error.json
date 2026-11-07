@@ -3,8 +3,20 @@
   "type": "object",
   "required": ["code", "message"],
   "properties": {
-    "code": {"enum": ["invalid_params", "unknown_method", "protocol_mismatch", "store_missing", "store_corrupt", "lock_busy", "baseline_conflict", "timeout", "internal"]},
-    "message": {"type": "string"},
-    "data": {"type": "object"}
+    "code": {
+      "enum": [
+        "invalid_params",
+        "unknown_method",
+        "protocol_mismatch",
+        "store_missing",
+        "store_corrupt",
+        "lock_busy",
+        "baseline_conflict",
+        "timeout",
+        "internal"
+      ]
+    },
+    "message": { "type": "string" },
+    "data": { "type": "object" }
   }
 }

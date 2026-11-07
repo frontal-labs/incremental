@@ -1,27 +1,28 @@
-# Backplane Benchmarks
+# Incremental Benchmarks
 
-Benchmark harnesses and results for backplane. Benchmarks measure whether the engine's invalidation answers match ground truth across replayed commits, and whether skipping unchanged tasks is sound and faster than re-running everything.
+Benchmark harnesses and results for incremental. Benchmarks measure whether the engine's invalidation answers match ground truth across replayed commits, and whether skipping unchanged tasks is sound and faster than re-running everything.
 
 ## Contents
 
-| Path | Description |
-|---|---|
-| `benchmarks/m1.mjs` | Milestone M1 benchmark script. |
-| `benchmarks/gate0/` | Gate 0 benchmark: `demo/` (demo fixture generation and replay) and `driver/` (JSON generation, probe, replay and setup scripts). |
-| `benchmarks/results/` | Benchmark outputs: `gate0.json`, `gate0-demo.json`. |
+| Path                        | Description                                                                                                             |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `benchmarks/replay/`        | Replay driver: replays commits through the engine and measures false skips against ground truth. Built by `make build`. |
+| `benchmarks/warm-plan.mjs`  | Warm plan latency benchmark script.                                                                                     |
+| `benchmarks/results/`       | Benchmark outputs: `replay.json`, `warm-plan.json`, and generated `RESULTS.md`.                                         |
+| `scripts/bench-summary.mjs` | Generates `benchmarks/results/RESULTS.md` from the raw outputs.                                                         |
 
 ## Running
 
-Benchmarks require the built engine (`make build`) and, for Gate 0, a real Vitest monorepo (`BACKPLANE_BENCH_REPO`) plus a human decision.
+Benchmarks require the built engine (`make build`).
 
 ```sh
-make bench-smoke   # not implemented yet (fails on purpose per PLAN.md 2.12)
-make bench         # not implemented yet (fails on purpose per PLAN.md 2.12)
+make bench-replay   # replay driver: writes benchmarks/results/replay.json
+make bench-smoke    # replay with 3 commits + warm-plan timing
+make bench          # full replay + warm-plan timing + benchmarks/results/RESULTS.md
 ```
 
 ## Status
 
-- Gate 0 is done with result **STOP** (a valid outcome): 0 commits evaluated — the repo's own unit suite was red at the replayed commits (2 of 122 files), so no ground-truth commit was green. E5, E7 and E10 do not run. See `status/BENCH.json` and `bench/results/gate0.json`.
-- Gate 1 / full benchmarks are blocked: they need a real Vitest monorepo and a human decision. See `status/BENCHMARKS.json` and `STATUS.md`.
-
-Evidence for benchmarks is not yet recorded; see `evidence/` for E1/E2.
+- Replay runs end to end against a real Vitest monorepo (`INCREMENTAL_BENCH_REPO`, defaults to the in-repo `fixture/` which is runnable out of the box). Raw data: `benchmarks/results/replay.json`. See `status/BENCH.json` and `status/BENCHMARKS.json` (both `done`).
+- Full benchmarks run: `make bench-smoke` (3 commits + warm-plan timing) and `make bench` (6 commits + warm-plan timing + `benchmarks/results/RESULTS.md`) both pass.
+- Evidence is recorded in `evidence/BENCH.txt`; see `evidence/` for E1/E2.

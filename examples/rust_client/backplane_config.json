@@ -1,5 +1,0 @@
-{
-  "roots": ["."],
-  "exclude": ["**/node_modules/**", ".git/**", ".backplane/**"],
-  "policy": "balanced"
-}

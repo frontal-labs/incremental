@@ -1,0 +1,6 @@
+{
+  "id": "E8",
+  "state": "done",
+  "evidence": "",
+  "notes": "MCP server: make test-mcp PASS (9 tests: S1-S5 scenarios V01/V03/V14/V10/fallback plus helper checks; all five scenarios return expected plans through the MCP server). Tool descriptions one sentence each (PLAN 11.8). Not yet folded into committed status/ADAPTERS.json (only ADAPTERS.json.tmp records E8 done)."
+}

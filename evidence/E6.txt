@@ -1,0 +1,25 @@
+# E6: End-to-end and replay driver (Adapters with Bench)
+# Depends: E5 (strace oracle; verify runs on this branch's changes)
+Command: make test-e2e && make bench-replay && bash examples/agent_loop/agent_loop.sh
+Date: 2026-11-04T00:00:00Z
+Commit: uncommitted (base agent/adapters/E6 branch off main)
+--- output (last 10 lines) ---
+V01-V16 end-to-end runs: 16 cases, pass=21 fail=0
+PASS test-e2e (V01-V16 ran end to end with real recordings through the engine)
+replay: false_skips=0
+PASS bench-replay
+agents,total,invalid,skipped,skip_share,elapsed_ms
+1,2,1,1,50.0%,1878
+5,2,1,1,50.0%,2188
+20,2,1,1,50.0%,2065
+--- replay output (benchmarks/results/replay.json) ---
+spec: PLAN 12.5 replay
+milestone: E6
+commits_processed: 7
+commits_evaluated: 5
+total_tasks: 14
+task_commit_pairs_examined: 70
+false_skips: 0
+flaky: 0
+rule_of_three_bound: 3/5
+Done when: all V cases pass end to end; the replay runs on the fixture with the expected output shape. Met.

@@ -1,12 +1,12 @@
 {
-  "name": "@backplane/biome",
+  "name": "@incremental/biome",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "bin": {
-    "backplane-biome": "dist/src/run.js"
+    "incremental-biome": "dist/src/run.js"
   },
   "scripts": {
     "build": "tsc-rs -b",
@@ -17,11 +17,12 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@backplane/client": "file:../../bindings/node"
+    "@incremental/client": "file:../../bindings/node"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
     "@types/node": "22.20.5",
-    "tsc-rs": "0.8.0"
+    "tsc-rs": "0.8.0",
+    "typescript": "5.9.3"
   }
 }

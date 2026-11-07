@@ -17,7 +17,11 @@ test("tools/list returns the three tools with one-sentence descriptions", async 
   const repo = makeRepo("list", { "src/leaf.ts": "export const l = 1;\n" });
   await withMcpClient(repo, {}, async (client) => {
     const { tools } = await client.listTools();
-    assert.deepStrictEqual(tools.map((t) => t.name).sort(), ["affected_tasks", "engine_status", "record_observation"]);
+    assert.deepStrictEqual(tools.map((t) => t.name).sort(), [
+      "affected_tasks",
+      "engine_status",
+      "record_observation",
+    ]);
     for (const t of tools) {
       const description = t.description ?? "";
       assert.equal(description, TOOL_DESCRIPTIONS[t.name as keyof typeof TOOL_DESCRIPTIONS]);
@@ -31,7 +35,9 @@ test("tools/list returns the three tools with one-sentence descriptions", async 
 
 test("an invalid record_observation is rejected as an MCP tool error, and the server keeps serving", async () => {
   const repo = makeRepo("invalid", { "src/leaf.ts": "export const l = 1;\n" });
-  await seedStore(repo, [observation(repo, "tests/leaf.test.ts", [fileInput(repo, "src/leaf.ts")])]);
+  await seedStore(repo, [
+    observation(repo, "tests/leaf.test.ts", [fileInput(repo, "src/leaf.ts")]),
+  ]);
   await withMcpClient(repo, {}, async (client) => {
     const before = await callTool(client, "engine_status");
     assert.equal(before.isError, false);
@@ -70,6 +76,11 @@ test("affected_tasks without a stored baseline is a tool error, not a plan", asy
 
 // The observation as JSON tool arguments (the same shape as the client's type).
 function observationArgs(repo: Parameters<typeof observation>[0]): Record<string, unknown> {
-  const o = observation(repo, "tests/valid.test.ts", [fileInput(repo, "src/leaf.ts")], contextOf(repo));
+  const o = observation(
+    repo,
+    "tests/valid.test.ts",
+    [fileInput(repo, "src/leaf.ts")],
+    contextOf(repo),
+  );
   return { ...o };
 }

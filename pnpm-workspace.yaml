@@ -1,5 +1,4 @@
 packages:
   - "mcp"
-  - "cli"
   - "core"
   - "bindings/node"

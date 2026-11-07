@@ -1,0 +1,22 @@
+{
+  "name": "incremental-replay",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Replay driver: replays commits through the engine and measures false skips against ground truth, using the Node client.",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "bin": {
+    "incremental-replay": "dist/src/index.js"
+  },
+  "dependencies": {
+    "@incremental/client": "file:../../bindings/node"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "tsc-rs": "0.8.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

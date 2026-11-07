@@ -2,7 +2,8 @@
 
 Demonstrates the Vitest adapter integration: record → plan → skip unchanged tests.
 
-Per PLAN.md §11.2–11.3 and `docs/adapters/ADAPTERS.md`, the Vitest adapter consists of:
+Per §11.2–11.3 and `docs/adapters/ADAPTERS.md`, the Vitest adapter consists of:
+
 - **Recorder** (preload): wraps `fs` API and `process.env`, records observations per test file.
 - **Planner**: maps a plan to Vitest work, runs invalid tests, follows the adapter loop.
 
@@ -12,7 +13,7 @@ Per PLAN.md §11.2–11.3 and `docs/adapters/ADAPTERS.md`, the Vitest adapter co
 examples/vitest_adapter/
 ├── README.md              # this file
 ├── vitest.config.ts       # Vitest config with forks pool
-├── backplane.config.json  # backplane configuration
+├── incremental.config.json  # incremental configuration
 ├── src/
 │   ├── lib.ts             # library module
 │   └── lib.test.ts        # test that reads lib.ts
@@ -24,13 +25,13 @@ examples/vitest_adapter/
 ## vitest.config.ts
 
 ```ts
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    include: ['src/**/*.test.ts'],
-    pool: 'forks'
-  }
+    include: ["src/**/*.test.ts"],
+    pool: "forks",
+  },
 });
 ```
 
@@ -39,17 +40,17 @@ export default defineConfig({
 The recorder preload wraps `fs` and `process.env` via `NODE_OPTIONS`. Each test file runs in its own forked process, so observations belong to exactly one task:
 
 ```sh
-export BACKPLANE_TRACE_OUT=/tmp/trace.jsonl
+export INCREMENTAL_TRACE_OUT=/tmp/trace.jsonl
 export NODE_OPTIONS="--require ./preload.mjs"
 npx vitest run
 ```
 
-Observations are written to `BACKPLANE_TRACE_OUT` at exit, then sent to the engine via `observe`.
+Observations are written to `INCREMENTAL_TRACE_OUT` at exit, then sent to the engine via `observe`.
 
 ## Asking for the plan
 
 ```sh
-core/dist/backplane affected \
+core/dist/incremental affected \
   --changes changeset.json \
   --baseline <BASELINE> \
   --context context.json \

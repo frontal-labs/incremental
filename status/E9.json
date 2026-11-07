@@ -1,0 +1,6 @@
+{
+  "id": "E9",
+  "state": "done",
+  "evidence": "",
+  "notes": "Python binding: make test-python PASS (55 tests; 40/40 conformance cases; 36/36 query cases byte-equal to serve, G6 parity). spec/bindings-python.md written first. Optional milestone, not on critical path (PLAN.md 999, 15.4). Signed off by user's instruction; recorded in DECISIONS.md D-E9-01 and status/BINDINGS.json notes."
+}

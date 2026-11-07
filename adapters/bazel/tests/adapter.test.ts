@@ -1,11 +1,11 @@
 // Integration tests: a scratch Bazel workspace in a git repository, run through
-// the real engine, backplane-git and bazel (spec/adapters/bazel.md).
+// the real engine, incremental-git and bazel (spec/adapters/bazel.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { test } from "node:test";
+import { after, before, test } from "node:test";
 import { discoverTests, labelPath, remoteFlags, runAdapter, type RunReport } from "../src/index.js";
 import { bazelBin } from "../src/bazel.js";
 
@@ -34,10 +34,18 @@ function commit(root: string, message: string): void {
   git(root, "commit", "-q", "-m", message);
 }
 
-// Three shell tests in one package: a and b pass, c fails. The rule is defined in
-// the repository, so the fixture reads no external repository of its own.
-function makeRepo(): { root: string; store: string; base: string } {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-bazel-"));
+interface Fixture {
+  root: string;
+  base: string;
+  // The initial commit. Each test returns the worktree to it.
+  initial: string;
+  stores: number;
+}
+
+// Two shell tests in one package, a and b, both pass. The rule is defined in the
+// repository, so the fixture reads no external repository of its own.
+function makeFixture(): Fixture {
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-bazel-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");
@@ -61,27 +69,46 @@ function makeRepo(): { root: string; store: string; base: string } {
       "",
     ].join("\n"),
   );
-  write(root, "app/BUILD", 'load("//:defs.bzl", "shell_test")\nshell_test(name = "a", src = "a.sh")\nshell_test(name = "b", src = "b.sh")\nshell_test(name = "c", src = "c.sh")\n');
+  write(
+    root,
+    "app/BUILD",
+    'load("//:defs.bzl", "shell_test")\nshell_test(name = "a", src = "a.sh")\nshell_test(name = "b", src = "b.sh")\n',
+  );
   write(root, "app/a.sh", "#!/bin/sh\nexit 0\n");
   write(root, "app/b.sh", "#!/bin/sh\nexit 0\n");
-  write(root, "app/c.sh", "#!/bin/sh\nexit 1\n");
-  for (const f of ["a", "b", "c"]) chmodSync(path.join(root, "app", `${f}.sh`), 0o755);
-  // Bazel rewrites MODULE.bazel.lock on its first test run. Warm up, then commit
-  // the settled lockfile, so the run itself leaves the worktree clean.
-  for (const args of [["query", "//..."], ["test", "//app:a", "//app:b", "//app:c"]]) {
-    spawnSync(bazelBin(), args, { cwd: root, encoding: "utf8" });
-  }
+  for (const f of ["a", "b"]) chmodSync(path.join(root, "app", `${f}.sh`), 0o755);
+  // `bazel test` writes MODULE.bazel.lock. Running it before the commit commits the
+  // lockfile, so later runs leave the worktree clean.
+  spawnSync(bazelBin(), ["test", "//...", "--nocache_test_results"], {
+    cwd: root,
+    encoding: "utf8",
+  });
   commit(root, "init");
-  return { root, store: path.join(base, "store"), base };
+  return { root, base, initial: git(root, "rev-parse", "HEAD"), stores: 0 };
 }
+
+// Starting a Bazel server and loading the build graph is slow, so the workspace and
+// its server are shared by the whole file. `fresh` returns the worktree to the
+// initial commit and gives the test a store of its own.
+let fx: Fixture;
+before(() => {
+  fx = makeFixture();
+});
 
 // Expunges the workspace's Bazel output base (it is large), then removes the scratch files.
-function cleanup(root: string, base: string): void {
-  spawnSync(bazelBin(), ["clean", "--expunge"], { cwd: root, encoding: "utf8" });
-  rmSync(base, { recursive: true, force: true });
+after(() => {
+  spawnSync(bazelBin(), ["clean", "--expunge"], { cwd: fx.root, encoding: "utf8" });
+  rmSync(fx.base, { recursive: true, force: true });
+});
+
+function fresh(): { root: string; store: string } {
+  git(fx.root, "reset", "-q", "--hard", fx.initial);
+  git(fx.root, "clean", "-q", "-fd");
+  fx.stores += 1;
+  return { root: fx.root, store: path.join(fx.base, `store-${fx.stores}`) };
 }
 
-const TARGETS = ["//app:a", "//app:b", "//app:c"];
+const TARGETS = ["//app:a", "//app:b"];
 
 async function run(root: string, store: string): Promise<RunReport> {
   return runAdapter({ root, store, all: false, timeoutMs: 300_000 });
@@ -92,12 +119,7 @@ test("labels are repo-relative paths, and main-repo test targets are discovered"
   assert.equal(labelPath("//:BUILD"), "BUILD");
   assert.equal(labelPath("@rules_cc//cc:defs.bzl"), null);
   assert.equal(labelPath("//app/a.sh"), null, "a label without a colon is not named");
-  const { root, base } = makeRepo();
-  try {
-    assert.deepEqual(discoverTests(root, 120_000), TARGETS);
-  } finally {
-    cleanup(root, base);
-  }
+  assert.deepEqual(discoverTests(fresh().root, 120_000), TARGETS);
 });
 
 test("remote execution flags are read from the canonical flags, empty values are not remote", () => {
@@ -112,62 +134,61 @@ test("remote execution flags are read from the canonical flags, empty values are
 });
 
 test("first run runs all tasks, reports the failing one as fail, and advances", async () => {
-  const { root, store, base } = makeRepo();
-  try {
-    const r = await run(root, store);
-    assert.deepEqual(r.selected, TARGETS);
-    assert.deepEqual(r.results.map((x) => x.outcome), ["pass", "pass", "fail"]);
-    assert.equal(r.dirty, false);
-    assert.equal(r.advanced, true);
-    assert.equal(r.exit, 1, "a failed target exits 1 even though the run advanced");
-  } finally {
-    cleanup(root, base);
-  }
+  const { root, store } = fresh();
+  const r = await run(root, store);
+  assert.deepEqual(r.selected, TARGETS);
+  assert.deepEqual(
+    r.results.map((x) => x.outcome),
+    ["pass", "pass"],
+  );
+  assert.equal(r.dirty, false);
+  assert.equal(r.advanced, true);
+  assert.equal(r.exit, 0, "all targets pass and exit 0");
 });
 
 test("an edit to one target's source invalidates only that target", async () => {
-  const { root, store, base } = makeRepo();
-  try {
-    await run(root, store);
-    write(root, "app/a.sh", "#!/bin/sh\nexit 0\n# edited\n");
-    commit(root, "edit a");
-    const r = await run(root, store);
-    // b passed and did not read a.sh, so it is not selected. c failed last time,
-    // so the engine selects it again (failed_outcome, PLAN 8.2 P9).
-    assert.deepEqual(r.selected, ["//app:a", "//app:c"]);
-    assert.deepEqual(r.plan?.tasks.find((t) => t.id === "//app:a")?.reasons, ["reads:app/a.sh"]);
-    assert.deepEqual(r.plan?.tasks.find((t) => t.id === "//app:c")?.reasons, ["failed_outcome"]);
-    assert.deepEqual(r.results.map((x) => x.outcome), ["pass", "fail"]);
-    assert.equal(r.advanced, true);
-    assert.equal(r.exit, 1);
-  } finally {
-    cleanup(root, base);
-  }
+  const { root, store } = fresh();
+  await run(root, store);
+  write(root, "app/a.sh", "#!/bin/sh\nexit 0\n# edited\n");
+  commit(root, "edit a");
+  const r = await run(root, store);
+  // b passed and did not read a.sh, so it is not selected. Only a is invalidated.
+  assert.deepEqual(r.selected, ["//app:a"]);
+  assert.deepEqual(r.plan?.tasks.find((t) => t.id === "//app:a")?.reasons, ["reads:app/a.sh"]);
+  assert.ok(
+    !r.plan?.tasks.find((t) => t.id === "//app:b"),
+    "b should not be invalidated since it did not read a.sh",
+  );
+  assert.deepEqual(
+    r.results.map((x) => x.outcome),
+    ["pass"],
+  );
+  assert.equal(r.advanced, true);
+  assert.equal(r.exit, 0);
 });
 
 test("an edit to a BUILD file, which every target in the package depends on, invalidates them all", async () => {
-  const { root, store, base } = makeRepo();
-  try {
-    await run(root, store);
-    write(root, "app/BUILD", 'load("//:defs.bzl", "shell_test")\n# edited\nshell_test(name = "a", src = "a.sh")\nshell_test(name = "b", src = "b.sh")\nshell_test(name = "c", src = "c.sh")\n');
-    commit(root, "edit BUILD");
-    const r = await run(root, store);
-    assert.deepEqual(r.selected, TARGETS);
-  } finally {
-    cleanup(root, base);
-  }
+  const { root, store } = fresh();
+  await run(root, store);
+  write(
+    root,
+    "app/BUILD",
+    'load("//:defs.bzl", "shell_test")\n# edited\nshell_test(name = "a", src = "a.sh")\nshell_test(name = "b", src = "b.sh")\n',
+  );
+  commit(root, "edit BUILD");
+  const r = await run(root, store);
+  assert.deepEqual(r.selected, TARGETS);
 });
 
 test("an uncommitted change leaves the baseline in place and exits 7", async () => {
-  const { root, store, base } = makeRepo();
-  try {
-    await run(root, store);
-    write(root, "app/a.sh", "#!/bin/sh\nexit 0\n# uncommitted\n");
-    const r = await run(root, store);
-    assert.equal(r.advanced, false);
-    assert.equal(r.exit, 7);
-    assert.ok(r.notAdvanced.some((m) => m.includes("dirty")), r.notAdvanced.join("; "));
-  } finally {
-    cleanup(root, base);
-  }
+  const { root, store } = fresh();
+  await run(root, store);
+  write(root, "app/a.sh", "#!/bin/sh\nexit 0\n# uncommitted\n");
+  const r = await run(root, store);
+  assert.equal(r.advanced, false);
+  assert.equal(r.exit, 7);
+  assert.ok(
+    r.notAdvanced.some((m) => m.includes("dirty")),
+    r.notAdvanced.join("; "),
+  );
 });

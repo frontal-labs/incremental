@@ -1,16 +1,16 @@
 // The MCP server (PLAN 11.8): McpServer from the pinned SDK (1.32.0) over the
 // stdio transport. The store and root default as the client does: the store
-// is BACKPLANE_STORE, else <root>/.backplane; the root is the nearest ancestor
+// is INCREMENTAL_STORE, else <root>/.incremental; the root is the nearest ancestor
 // of the working directory that holds tsconfig.base.json.
 import fs from "node:fs";
 import path from "node:path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { connect, type backplane } from "@backplane/client";
+import { connect, type incremental } from "@incremental/client";
 import { defaultGitBinary } from "./git.js";
 import { registerTools } from "./tools.js";
 
-export const SERVER_NAME = "backplane-mcp";
+export const SERVER_NAME = "incremental-mcp";
 export const SERVER_VERSION = "0.1.0";
 
 export interface ServerSettings {
@@ -32,11 +32,14 @@ export function findRoot(start: string): string {
   }
 }
 
-export function resolveSettings(env: NodeJS.ProcessEnv = process.env, cwd: string = process.cwd()): ServerSettings {
+export function resolveSettings(
+  env: NodeJS.ProcessEnv = process.env,
+  cwd: string = process.cwd(),
+): ServerSettings {
   const root = findRoot(cwd);
   return {
     root,
-    store: path.resolve(env.BACKPLANE_STORE || path.join(root, ".backplane")),
+    store: path.resolve(env.INCREMENTAL_STORE || path.join(root, ".incremental")),
     gitBinary: defaultGitBinary(env),
     env,
   };
@@ -52,8 +55,8 @@ export interface RunningServer {
 // the first tool call, so a missing store is reported by the tool, not at start.
 export function createServer(settings: ServerSettings = resolveSettings()): RunningServer {
   const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });
-  let started: Promise<backplane> | null = null;
-  const client = (): Promise<backplane> => {
+  let started: Promise<incremental> | null = null;
+  const client = (): Promise<incremental> => {
     started ??= connect({ store: settings.store, root: settings.root }).catch((e: unknown) => {
       started = null;
       throw e;

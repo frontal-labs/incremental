@@ -1,4 +1,4 @@
-// Public types of @backplane/client (plans/PLAN.md 9.5, 9.6, 10.1; spec/schemas).
+// Public types of @incremental/client (plans/PLAN.md 9.5, 9.6, 10.1; spec/schemas).
 
 export interface Hello {
   protocol: 1;
@@ -124,11 +124,11 @@ export interface CompactResult {
 }
 
 export interface ConnectOptions {
-  // Store directory. Default: $BACKPLANE_STORE, then <repo>/.backplane.
+  // Store directory. Default: $INCREMENTAL_STORE, then <repo>/.incremental.
   store?: string;
   // Command that starts the server; "serve", "--store" and "--root" are
   // appended by the client. Default: [<engine>, "serve"], where <engine> is
-  // $BACKPLANE_ENGINE, then <repo>/core/dist/backplane.
+  // $INCREMENTAL_ENGINE, then <repo>/core/dist/incremental.
   command?: string[];
   // Per-request timeout in milliseconds. Default: 10000.
   timeoutMs?: number;

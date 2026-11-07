@@ -1,0 +1,6 @@
+{
+  "id": "E4",
+  "state": "done",
+  "evidence": "evidence/E4.txt",
+  "notes": "Signed off by user's instruction (DECISIONS.md, 2026-11-03). CR-001 to CR-003 accepted and applied (CR-002: deleted task invalidated by P5; CR-003: targeted worker-thread behaviour). make test-vitest passes: 21 tests, V01-V16 end to end; NODE_OPTIONS probe passed; capabilities probes/dirs/env proven true."
+}

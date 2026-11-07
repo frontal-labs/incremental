@@ -1,4 +1,4 @@
-// The backplane command line: a thin binding over protocol v1 (spec 10.2).
+// The incremental command line: a thin binding over protocol v1 (spec 10.2).
 // Each command builds the params of one method and calls dispatch(), the same
 // function the serve loop uses, so CLI and protocol answers are identical.
 import std;
@@ -9,7 +9,7 @@ import protocol;
 import policy;
 import native;
 
-let version_line = "backplane-core-goose 0.1.0";
+let version_line = "incremental-core-goose 0.1.0";
 
 // Paths of the store, built once and kept for the whole run.
 var p_log: u8[>..] = [];
@@ -57,10 +57,15 @@ fn read_input(path: const u8[:], out: u8[>..]&) -> bool {
 // Loads the store: the index image if it is valid for the log, else a full
 // replay (spec 6.4). Returns 0, or E_STORE when the log is missing or corrupt.
 fn open_store(st: Store&, sess: Session&) -> i64 {
+    let tr = trace_on();
+    var tp = native_cpu_ns();
     var log: u8[>..] = [];
     if !read_file(sess.log_path, log) { return E_STORE; }
+    tp = trace_phase(tr, "log_read", tp);
     if !load_index(st, sess.idx_path, log) {
+        tp = trace_phase(tr, "idx_rejected", tp);
         if !load_log(st, log) { return E_STORE; }
+        tp = trace_phase(tr, "log_replay", tp);
     }
     // The state now holds exactly the log as read: the first request need not read it again.
     mark_log(sess.log_path);
@@ -106,7 +111,7 @@ fn write_error(body: const u8[:]) {
     line.append("}\n");
     write_stdout(line);
     var msg: u8[>..] = [];
-    msg.append("backplane: ");
+    msg.append("incremental: ");
     msg.append(body);
     msg.append("\n");
     write_stderr(msg);
@@ -160,7 +165,7 @@ fn params_affected(av: u8[:][>..]&, out: u8[>..]&) -> bool {
     var config: u8[>..] = [];
     var cfg_path: u8[>..] = [];
     cfg_path.append(p_root);
-    cfg_path.append("/backplane.config.json");
+    cfg_path.append("/incremental.config.json");
     if !read_file(cfg_path, config) { config.append("null"); }
     let pi = opt_index(av, "--policy");
     var policy_name: u8[>..] = [];
@@ -200,7 +205,7 @@ fn params_one(av: u8[:][>..]&, flag: const u8[:], key: const u8[:], out: u8[>..]
 fn main() {
     let av = args();
     if av.len < 2 {
-        write_stderr("usage: backplane <command> [options]\n");
+        write_stderr("usage: incremental <command> [options]\n");
         exit(2);
     }
     let cmd = av[1];
@@ -210,7 +215,7 @@ fn main() {
         store_dir.append(av[si]);
     } else {
         var from_env: u8[>..] = [];
-        if env("BACKPLANE_STORE", from_env) { store_dir.append(from_env); } else { store_dir.append(".backplane"); }
+        if env("INCREMENTAL_STORE", from_env) { store_dir.append(from_env); } else { store_dir.append(".incremental"); }
     }
     var root: u8[>..] = [];
     let ri = opt_index(av, "--root");
@@ -225,13 +230,13 @@ fn main() {
     if cmd == "init" {
         let code = init_store(store_dir);
         if code != 0 {
-            write_stderr("backplane: init failed\n");
+            write_stderr("incremental: init failed\n");
             exit(code);
         }
         return;
     }
 
-    var st = Store { baseline: Span { off: 0, len: 0 }, has_baseline: false, ctx_from: 0, ctx_n: 0, has_ctx: false };
+    var st = Store { baseline: Span { off: 0, len: 0 }, has_baseline: false, ctx_id: -1 };
     let sess = session();
     let opened = open_store(st, sess);
     if opened != 0 {
@@ -243,15 +248,24 @@ fn main() {
 
     if cmd == "serve" {
         var status: i64 = 0;
-        while true {
+        var running = true;
+        while running {
             var line: u8[>..] = [];
-            if !read_line(line) { break; }
-            if line.len == 0 { continue; }
-            var out: u8[>..] = [];
-            status = handle(sess, st, line, out);
-            write_stdout(out);
-            flush_stdout();
-            if status != 0 { break; }
+            if read_line(line) {
+                if line.len != 0 {
+                    var out: u8[>..] = [];
+                    status = handle(sess, st, line, out);
+                    write_stdout(out);
+                    flush_stdout();
+                    if status == 0 {
+                        // keep serving
+                    } else {
+                        running = false;
+                    }
+                }
+            } else {
+                running = false;
+            }
         }
         write_index(st, sess.idx_path);
         // A protocol mismatch closes the stream with exit status 2 (9.7).
@@ -292,7 +306,7 @@ fn main() {
         method.append("compact");
         params.append("{}");
     } else {
-        write_stderr("backplane: unknown command\n");
+        write_stderr("incremental: unknown command\n");
         exit(2);
     }
     if !ok {

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// `backplane-protobuf run`: the protobuf adapter loop (PLAN 10.4).
+// `incremental-protobuf run`: the protobuf adapter loop (PLAN 10.4).
 //
 //   B    = store baseline
-//   ch   = ChangeSet from B to the worktree (backplane-git)
+//   ch   = ChangeSet from B to the worktree (incremental-git)
 //   plan = affected(ch, context, declared targets)
 //   forget the targets whose file was deleted
 //   run each selected target (protoc compile, or buf build of a module) and observe it
@@ -18,7 +18,7 @@ import { pathToFileURL } from "node:url";
 import {
   connect,
   defaultEngine,
-  isBackplaneError,
+  isIncrementalError,
   repoRoot,
   type Change,
   type Context,
@@ -27,7 +27,7 @@ import {
   type Observation,
   type Outcome,
   type Plan,
-} from "@backplane/client";
+} from "@incremental/client";
 import {
   bufVersion,
   checkBuf,
@@ -92,13 +92,22 @@ interface GitChangeSet {
 
 // The git change source (PLAN 11.7). Throws an Error on failure.
 function gitSourcePath(): string {
-  return process.env.BACKPLANE_GIT || path.join(repoRoot(), "adapters", "git", "dist", "backplane-git");
+  return (
+    process.env.INCREMENTAL_GIT ||
+    path.join(repoRoot(), "adapters", "git", "dist", "incremental-git")
+  );
 }
 
 function gitChangeSet(root: string, ref: string): GitChangeSet {
-  const r = spawnSync(gitSourcePath(), ["changes", "--base", ref, "--root", root], { encoding: "utf8" });
-  if (r.error !== undefined) throw new Error(`cannot run the git change source: ${r.error.message}`);
-  if (r.status !== 0) throw new Error(`git change source failed (exit ${r.status}): ${(r.stdout || r.stderr || "").trim()}`);
+  const r = spawnSync(gitSourcePath(), ["changes", "--base", ref, "--root", root], {
+    encoding: "utf8",
+  });
+  if (r.error !== undefined)
+    throw new Error(`cannot run the git change source: ${r.error.message}`);
+  if (r.status !== 0)
+    throw new Error(
+      `git change source failed (exit ${r.status}): ${(r.stdout || r.stderr || "").trim()}`,
+    );
   return JSON.parse(r.stdout) as GitChangeSet;
 }
 
@@ -131,7 +140,8 @@ export function contextFor(root: string, bufLocks: readonly string[]): Context {
 function ensureStore(store: string): void {
   if (existsSync(store)) return;
   const r = spawnSync(defaultEngine(), ["init", "--store", store], { encoding: "utf8" });
-  if (r.status !== 0) throw new UsageError(`cannot create the store at ${store}: ${(r.stderr || "").trim()}`);
+  if (r.status !== 0)
+    throw new UsageError(`cannot create the store at ${store}: ${(r.stderr || "").trim()}`);
 }
 
 type FileInput = Extract<Input, { kind: "file" }>;
@@ -163,7 +173,8 @@ function declaredFor(root: string, bufRel: string): Input[] {
   return out;
 }
 
-const isTarget = (p: string): boolean => p.endsWith(".proto") || path.posix.basename(p) === "buf.yaml";
+const isTarget = (p: string): boolean =>
+  p.endsWith(".proto") || path.posix.basename(p) === "buf.yaml";
 
 export async function runAdapter(opts: RunOptions): Promise<RunReport> {
   const root = realpathSync(path.resolve(opts.root));
@@ -181,7 +192,12 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     throw new UsageError(e instanceof Error ? e.message : String(e));
   }
 
-  const client = await connect({ store, root, command: [defaultEngine(), "serve"], timeoutMs: 60_000 });
+  const client = await connect({
+    store,
+    root,
+    command: [defaultEngine(), "serve"],
+    timeoutMs: 60_000,
+  });
   try {
     const stored = (await client.baseline()).baseline;
 
@@ -196,21 +212,30 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       throw new UsageError(gitError ?? "the git change source failed");
     }
     if (cs !== null && opts.base !== undefined && stored !== null && cs.baseline !== stored) {
-      throw new UsageError(`--base resolves to ${cs.baseline}, but the store baseline is ${stored}`);
+      throw new UsageError(
+        `--base resolves to ${cs.baseline}, but the store baseline is ${stored}`,
+      );
     }
 
     let plan: Plan | null = null;
     if (cs !== null) {
       plan = await client.affected(
         { baseline: cs.baseline, head: cs.head, changes: cs.changes },
-        { baseline: cs.baseline, context, declared_tasks: discovered, verify: false, policy: "balanced" },
+        {
+          baseline: cs.baseline,
+          context,
+          declared_tasks: discovered,
+          verify: false,
+          policy: "balanced",
+        },
       );
     }
 
     const deleted = new Set<string>(plan?.deleted_tasks ?? []);
     for (const c of cs?.changes ?? []) {
       if (c.status === "deleted" && isTarget(c.path)) deleted.add(c.path);
-      if (c.status === "renamed" && c.old_path !== undefined && isTarget(c.old_path)) deleted.add(c.old_path);
+      if (c.status === "renamed" && c.old_path !== undefined && isTarget(c.old_path))
+        deleted.add(c.old_path);
     }
     for (const t of [...deleted].sort()) await client.forget(t);
 
@@ -228,7 +253,13 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
         const c = compileProto(root, task, opts.timeoutMs);
         const deps = classifyDeps(root, c.deps);
         const hashed = hashFiles(root, deps.files);
-        results.push({ task, kind: "protoc", outcome: c.outcome, durationMs: c.durationMs, problem: c.problem });
+        results.push({
+          task,
+          kind: "protoc",
+          outcome: c.outcome,
+          durationMs: c.durationMs,
+          problem: c.problem,
+        });
         observations.push({
           task,
           baseline: obsBaseline,
@@ -242,7 +273,13 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       } else {
         const b = checkBuf(root, task, opts.timeoutMs);
         const hashed = hashFiles(root, b.files);
-        results.push({ task, kind: "buf", outcome: b.outcome, durationMs: b.durationMs, problem: b.problem });
+        results.push({
+          task,
+          kind: "buf",
+          outcome: b.outcome,
+          durationMs: b.durationMs,
+          problem: b.problem,
+        });
         observations.push({
           task,
           baseline: obsBaseline,
@@ -272,7 +309,9 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
 
     const notAdvanced: string[] = [];
     if (!canAdvance) {
-      for (const r of results) if (r.outcome === "error") notAdvanced.push(`error: ${r.task}${r.problem ? ` (${r.problem})` : ""}`);
+      for (const r of results)
+        if (r.outcome === "error")
+          notAdvanced.push(`error: ${r.task}${r.problem ? ` (${r.problem})` : ""}`);
       if (dirty) notAdvanced.push("the worktree is dirty at the end of the run");
       if (headEnd !== head0.head) notAdvanced.push("HEAD moved during the run");
     }
@@ -289,7 +328,9 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       dirty,
       changes: cs?.changes ?? [],
       plan,
-      fallback: plan?.fallback ?? (runAll && plan === null ? { action: "run_all", reason: "git_source" } : null),
+      fallback:
+        plan?.fallback ??
+        (runAll && plan === null ? { action: "run_all", reason: "git_source" } : null),
       selected,
       discovered,
       results,
@@ -310,7 +351,10 @@ interface ParsedArgs {
 
 export function parseArgs(argv: string[]): ParsedArgs {
   const [cmd, ...rest] = argv;
-  if (cmd !== "run") throw new UsageError("usage: backplane-protobuf run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]");
+  if (cmd !== "run")
+    throw new UsageError(
+      "usage: incremental-protobuf run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]",
+    );
   const opts: RunOptions = { root: process.cwd(), store: "", all: false, timeoutMs: 600_000 };
   let json = false;
   let storeGiven = false;
@@ -321,23 +365,28 @@ export function parseArgs(argv: string[]): ParsedArgs {
       if (v === undefined) throw new UsageError(`${a} needs a value`);
       return v;
     };
-    switch (a) {
-      case "--base": opts.base = value(); break;
-      case "--json": json = true; break;
-      case "--all": opts.all = true; break;
-      case "--store": opts.store = value(); storeGiven = true; break;
-      case "--root": opts.root = value(); break;
-      case "--timeout": {
-        const n = Number(value());
-        if (!Number.isInteger(n) || n < 1) throw new UsageError("--timeout needs a positive integer");
-        opts.timeoutMs = n;
-        break;
-      }
-      default: throw new UsageError(`unknown option ${a}`);
+    if (a === "--base") {
+      opts.base = value();
+    } else if (a === "--json") {
+      json = true;
+    } else if (a === "--all") {
+      opts.all = true;
+    } else if (a === "--store") {
+      opts.store = value();
+      storeGiven = true;
+    } else if (a === "--root") {
+      opts.root = value();
+    } else if (a === "--timeout") {
+      const n = Number(value());
+      if (!Number.isInteger(n) || n < 1) throw new UsageError("--timeout needs a positive integer");
+      opts.timeoutMs = n;
+    } else {
+      throw new UsageError(`unknown option ${a}`);
     }
   }
   opts.root = path.resolve(opts.root);
-  if (!storeGiven) opts.store = process.env.BACKPLANE_STORE || path.join(opts.root, ".backplane");
+  if (!storeGiven)
+    opts.store = process.env.INCREMENTAL_STORE || path.join(opts.root, ".incremental");
   return { opts, json };
 }
 
@@ -345,12 +394,19 @@ function printText(r: RunReport): void {
   const counts: Record<Outcome, number> = { pass: 0, fail: 0, error: 0, none: 0 };
   for (const t of r.results) counts[t.outcome]++;
   const lines = [
-    `backplane protobuf ${r.mode}: stored ${r.stored ?? "none"}, query ${r.base ?? "none"}, head ${r.headEnd}${r.dirty ? " (dirty)" : ""}`,
+    `incremental protobuf ${r.mode}: stored ${r.stored ?? "none"}, query ${r.base ?? "none"}, head ${r.headEnd}${r.dirty ? " (dirty)" : ""}`,
   ];
   if (r.fallback !== null) lines.push(`fallback: ${r.fallback.reason}`);
-  else if (r.plan !== null) lines.push(`plan: ${r.plan.tasks.length} invalid of ${r.plan.total_tasks}, confidence ${r.plan.confidence}`);
-  lines.push(`checked ${r.results.length}: pass ${counts.pass}, fail ${counts.fail}, error ${counts.error}`);
-  for (const t of r.results) if (t.outcome !== "pass") lines.push(`  ${t.outcome} ${t.task}${t.problem ? ` (${t.problem})` : ""}`);
+  else if (r.plan !== null)
+    lines.push(
+      `plan: ${r.plan.tasks.length} invalid of ${r.plan.total_tasks}, confidence ${r.plan.confidence}`,
+    );
+  lines.push(
+    `checked ${r.results.length}: pass ${counts.pass}, fail ${counts.fail}, error ${counts.error}`,
+  );
+  for (const t of r.results)
+    if (t.outcome !== "pass")
+      lines.push(`  ${t.outcome} ${t.task}${t.problem ? ` (${t.problem})` : ""}`);
   lines.push(r.advanced ? `advanced to ${r.headEnd}` : `not advanced: ${r.notAdvanced.join("; ")}`);
   lines.push(`exit ${r.exit}`);
   process.stdout.write(lines.join("\n") + "\n");
@@ -370,10 +426,12 @@ export async function main(argv: string[]): Promise<number> {
     else printText(report);
     return report.exit;
   } catch (e) {
-    const code = e instanceof UsageError ? "invalid_params" : isBackplaneError(e) ? e.code : "internal";
+    const code =
+      e instanceof UsageError ? "invalid_params" : isIncrementalError(e) ? e.code : "internal";
     const message = e instanceof Error ? e.message : String(e);
-    if (parsed.json) process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
-    process.stderr.write(`backplane protobuf: ${message}\n`);
+    if (parsed.json)
+      process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
+    process.stderr.write(`incremental protobuf: ${message}\n`);
     return e instanceof UsageError ? 2 : 4;
   }
 }

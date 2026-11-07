@@ -35,9 +35,7 @@
     "tasks": [
       {
         "id": "packages/core/src/math.test.ts",
-        "reasons": [
-          "reads:packages/core/src/utils.ts"
-        ]
+        "reasons": ["reads:packages/core/src/utils.ts"]
       }
     ],
     "unobserved": [],

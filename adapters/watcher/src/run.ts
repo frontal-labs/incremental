@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// `backplane-watcher watch`: the watcher loop. Runs a cycle every --interval
+// `incremental-watcher watch`: the watcher loop. Runs a cycle every --interval
 // milliseconds (default 1000), --cycles times (default: until interrupted).
 //
 // Exit codes: 0 every run task passed; 1 a task failed; 2 usage error; 4 engine or setup error.
@@ -7,7 +7,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
-import { defaultEngine } from "@backplane/client";
+import { defaultEngine } from "@incremental/client";
 import { type CycleReport, ConfigError, Session, type TaskDef } from "./session.js";
 
 export interface WatchOptions {
@@ -39,9 +39,18 @@ export function loadTasks(file: string): TaskDef[] {
   const ids = new Set<string>();
   return raw.map((t: unknown, i) => {
     const o = t as Partial<TaskDef>;
-    const strings = (v: unknown): v is string[] => Array.isArray(v) && v.every((x) => typeof x === "string");
-    if (typeof o.id !== "string" || o.id === "" || !strings(o.command) || o.command.length === 0 || !strings(o.inputs)) {
-      throw new UsageError(`task ${i} needs id, command (non-empty string array) and inputs (string array)`);
+    const strings = (v: unknown): v is string[] =>
+      Array.isArray(v) && v.every((x) => typeof x === "string");
+    if (
+      typeof o.id !== "string" ||
+      o.id === "" ||
+      !strings(o.command) ||
+      o.command.length === 0 ||
+      !strings(o.inputs)
+    ) {
+      throw new UsageError(
+        `task ${i} needs id, command (non-empty string array) and inputs (string array)`,
+      );
     }
     if (ids.has(o.id)) throw new UsageError(`duplicate task id ${o.id}`);
     ids.add(o.id);
@@ -51,9 +60,18 @@ export function loadTasks(file: string): TaskDef[] {
 
 export function parseArgs(argv: string[]): WatchOptions {
   const [cmd, ...rest] = argv;
-  const usage = "usage: backplane-watcher watch --tasks FILE [--interval MS] [--cycles N] [--json] [--store DIR] [--root DIR] [--timeout MS]";
+  const usage =
+    "usage: incremental-watcher watch --tasks FILE [--interval MS] [--cycles N] [--json] [--store DIR] [--root DIR] [--timeout MS]";
   if (cmd !== "watch") throw new UsageError(usage);
-  const opts: WatchOptions = { root: process.cwd(), store: "", tasks: [], intervalMs: 1000, cycles: 0, timeoutMs: 600_000, json: false };
+  const opts: WatchOptions = {
+    root: process.cwd(),
+    store: "",
+    tasks: [],
+    intervalMs: 1000,
+    cycles: 0,
+    timeoutMs: 600_000,
+    json: false,
+  };
   let tasksFile: string | null = null;
   let storeGiven = false;
   for (let i = 0; i < rest.length; i++) {
@@ -68,20 +86,29 @@ export function parseArgs(argv: string[]): WatchOptions {
       if (!Number.isInteger(n) || n < min) throw new UsageError(`${a} needs an integer >= ${min}`);
       return n;
     };
-    switch (a) {
-      case "--tasks": tasksFile = value(); break;
-      case "--interval": opts.intervalMs = int(0); break;
-      case "--cycles": opts.cycles = int(0); break;
-      case "--timeout": opts.timeoutMs = int(1); break;
-      case "--json": opts.json = true; break;
-      case "--store": opts.store = value(); storeGiven = true; break;
-      case "--root": opts.root = value(); break;
-      default: throw new UsageError(`unknown option ${a}`);
+    if (a === "--tasks") {
+      tasksFile = value();
+    } else if (a === "--interval") {
+      opts.intervalMs = int(0);
+    } else if (a === "--cycles") {
+      opts.cycles = int(0);
+    } else if (a === "--timeout") {
+      opts.timeoutMs = int(1);
+    } else if (a === "--json") {
+      opts.json = true;
+    } else if (a === "--store") {
+      opts.store = value();
+      storeGiven = true;
+    } else if (a === "--root") {
+      opts.root = value();
+    } else {
+      throw new UsageError(`unknown option ${a}`);
     }
   }
   if (tasksFile === null) throw new UsageError(usage);
   opts.root = path.resolve(opts.root);
-  if (!storeGiven) opts.store = process.env.BACKPLANE_STORE || path.join(opts.root, ".backplane");
+  if (!storeGiven)
+    opts.store = process.env.INCREMENTAL_STORE || path.join(opts.root, ".incremental");
   opts.store = path.resolve(opts.store);
   opts.tasks = loadTasks(path.resolve(tasksFile));
   return opts;
@@ -90,7 +117,8 @@ export function parseArgs(argv: string[]): WatchOptions {
 function ensureStore(store: string): void {
   if (existsSync(store)) return;
   const r = spawnSync(defaultEngine(), ["init", "--store", store], { encoding: "utf8" });
-  if (r.status !== 0) throw new UsageError(`cannot create the store at ${store}: ${(r.stderr || "").trim()}`);
+  if (r.status !== 0)
+    throw new UsageError(`cannot create the store at ${store}: ${(r.stderr || "").trim()}`);
 }
 
 function describe(n: number, r: CycleReport): string {
@@ -116,19 +144,28 @@ export async function main(argv: string[]): Promise<number> {
   let session: Session | null = null;
   try {
     ensureStore(opts.store);
-    session = new Session({ root: opts.root, store: opts.store, tasks: opts.tasks, timeoutMs: opts.timeoutMs });
+    session = new Session({
+      root: opts.root,
+      store: opts.store,
+      tasks: opts.tasks,
+      timeoutMs: opts.timeoutMs,
+    });
     await session.open();
     for (let n = 1; opts.cycles === 0 || n <= opts.cycles; n++) {
       const report = await session.cycle();
       if (opts.json) process.stdout.write(JSON.stringify(report) + "\n");
       else process.stdout.write(describe(n, report) + "\n");
       if (report.results.some((t) => t.outcome === "fail")) code = 1;
-      if (opts.cycles === 0 || n < opts.cycles) await new Promise((res) => setTimeout(res, opts.intervalMs));
+      // Each cycle walks the whole tree, so the wait is at least ten times that
+      // walk: the check never takes more than about a tenth of the time, however
+      // large the repository. The interval is a minimum, not a fixed rate.
+      const wait = Math.max(opts.intervalMs, 10 * session.lastCheckMs());
+      if (opts.cycles === 0 || n < opts.cycles) await new Promise((res) => setTimeout(res, wait));
     }
     return code;
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
-    process.stderr.write(`backplane watcher: ${message}\n`);
+    process.stderr.write(`incremental watcher: ${message}\n`);
     return e instanceof ConfigError || e instanceof UsageError ? 2 : 4;
   } finally {
     await session?.close();

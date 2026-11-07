@@ -1,14 +1,34 @@
 {
-  "id": "V02", "desc": "Edit a file read only by an app test", "mode":"balanced",
-  "edit": [{"op":"write","path":"packages/app/src/only-app.ts","content":"export const ONLY_APP: string = 'app-2';\n"}],
-  "query": {"changes":[{"path":"packages/app/src/only-app.ts","status":"modified"}],"verify":false,"policy":"balanced"},
+  "id": "V02",
+  "desc": "Edit a file read only by an app test",
+  "mode": "balanced",
+  "edit": [
+    {
+      "op": "write",
+      "path": "packages/app/src/only-app.ts",
+      "content": "export const ONLY_APP: string = 'app-2';\n"
+    }
+  ],
+  "query": {
+    "changes": [{ "path": "packages/app/src/only-app.ts", "status": "modified" }],
+    "verify": false,
+    "policy": "balanced"
+  },
   "expect": {
     "tasks": [
-      {"id":"packages/app/test/only-app.test.ts","reasons":["reads:packages/app/src/only-app.ts"]},
-      {"id":"packages/core/test/worker.test.ts","reasons":["dirty_observation"]}
+      {
+        "id": "packages/app/test/only-app.test.ts",
+        "reasons": ["reads:packages/app/src/only-app.ts"]
+      },
+      { "id": "packages/core/test/worker.test.ts", "reasons": ["dirty_observation"] }
     ],
-    "unobserved": [], "ignored": [], "deleted_tasks": [], "fallback": null, "confidence": "medium",
-    "ran": ["packages/app/test/only-app.test.ts","packages/core/test/worker.test.ts"],
-    "exit": 0, "advanced": true
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium",
+    "ran": ["packages/app/test/only-app.test.ts", "packages/core/test/worker.test.ts"],
+    "exit": 0,
+    "advanced": true
   }
 }

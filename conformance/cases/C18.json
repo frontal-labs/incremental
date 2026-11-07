@@ -36,15 +36,11 @@
     "tasks": [
       {
         "id": "packages/app/src/list.test.ts",
-        "reasons": [
-          "dir:packages/app/plugins"
-        ]
+        "reasons": ["dir:packages/app/plugins"]
       },
       {
         "id": "packages/core/src/math.test.ts",
-        "reasons": [
-          "removed_read:packages/core/src/utils.ts"
-        ]
+        "reasons": ["removed_read:packages/core/src/utils.ts"]
       }
     ],
     "unobserved": [],

@@ -1,0 +1,5497 @@
+[
+  {
+    "store": 48,
+    "query": 1000,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1000,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": []
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_OTHER": "sha256:v1"
+          }
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1001,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\",\"self_changed\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1001,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "t3.test.ts",
+              "status": "modified"
+            },
+            {
+              "path": "packages/core/src/utils.ts",
+              "status": "renamed",
+              "old_path": "packages/core/src/utils.ts"
+            },
+            {
+              "path": "src/a.ts",
+              "status": "added"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_MODE": "sha256:v2"
+          }
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1002,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"fresh.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t0.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t2.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t4.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"fallback\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "fallback: engine null reference {\"action\":\"run_all\",\"reason\":\"global_input\"}",
+      "confidence: engine null reference \"n/a\"",
+      "total_tasks: engine null reference 6",
+      "skipped: engine null reference 0"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1002,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "package.json",
+              "status": "modified"
+            },
+            {
+              "path": "package.json",
+              "status": "modified"
+            },
+            {
+              "path": "t5.test.ts",
+              "status": "added"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "conservative",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_MODE": "sha256:v1"
+          },
+          "declared_tasks": ["t3.test.ts", "fresh.test.ts"]
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1003,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1003,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": []
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_MODE": "sha256:v2",
+            "TG_OTHER": "sha256:v2"
+          }
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1004,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1004,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": []
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {}
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1005,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"fresh.test.ts\",\"reasons\":[\"no_observation\"]},{\"id\":\"t1.test.ts\",\"reasons\":[\"no_observation\"]},{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\",\"self_changed\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 7",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1005,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "t3.test.ts",
+              "status": "modified"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "conservative",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_OTHER": "sha256:v2"
+          },
+          "declared_tasks": ["t1.test.ts", "fresh.test.ts"]
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1006,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\",\"stale:docs/x.md\",\"stale:packages/core/src/math.ts\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1006,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": []
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": true,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_MODE": "sha256:v1",
+            "TG_OTHER": "sha256:v2"
+          }
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1007,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t0.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t2.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t4.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"fallback\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "fallback: engine null reference {\"action\":\"run_all\",\"reason\":\"unobserved_input\"}",
+      "confidence: engine null reference \"n/a\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 0"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1007,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "packages/core/src/utils.ts",
+              "status": "renamed",
+              "old_path": "packages/core/src/math.ts"
+            },
+            {
+              "path": "t0.test.ts",
+              "status": "deleted"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "conservative",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_MODE": "sha256:v1"
+          }
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1008,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t0.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t2.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t4.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"fallback\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "fallback: engine null reference {\"action\":\"run_all\",\"reason\":\"global_input\"}",
+      "confidence: engine null reference \"n/a\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 0"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1008,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "src/b.ts",
+              "status": "deleted"
+            },
+            {
+              "path": "package.json",
+              "status": "modified"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "conservative",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_MODE": "sha256:v2",
+            "TG_OTHER": "sha256:v2"
+          }
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1009,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\",\"self_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1009,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "packages/core/src/old.ts",
+              "status": "added"
+            },
+            {
+              "path": "t2.test.ts",
+              "status": "added"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_OTHER": "sha256:v2"
+          }
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1010,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\",\"reads:docs/x.md\",\"removed_read:docs/x.md\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference [\"src/n.ts\"]",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1010,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "docs/x.md",
+              "status": "renamed",
+              "old_path": "docs/x.md"
+            },
+            {
+              "path": "src/n.ts",
+              "status": "modified"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {}
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1011,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t0.test.ts\",\"reasons\":[\"removed_listed:packages/app/plugins\"]},{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\",\"self_changed\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 1"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1011,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "t5.test.ts",
+              "status": "added"
+            },
+            {
+              "path": "t1.test.ts",
+              "status": "deleted"
+            },
+            {
+              "path": "packages/app/plugins/n.ts",
+              "status": "deleted"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_MODE": "sha256:v2",
+            "TG_OTHER": "sha256:v1"
+          }
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1012,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t0.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t2.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t4.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"fallback\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "fallback: engine null reference {\"action\":\"run_all\",\"reason\":\"context_changed\"}",
+      "confidence: engine null reference \"n/a\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 0"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1012,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "packages/app/plugins/n.ts",
+              "status": "modified"
+            },
+            {
+              "path": "docs/y.md",
+              "status": "added"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l2",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_OTHER": "sha256:v1"
+          }
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1013,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1013,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": []
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "conservative",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_OTHER": "sha256:v1"
+          }
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1014,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t3.test.ts\",\"reasons\":[\"failed_outcome\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 3"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1014,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": []
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_MODE": "sha256:v1",
+            "TG_OTHER": "sha256:v1"
+          }
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1015,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1015,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": []
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {}
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1016,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1016,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "src/b.ts",
+              "status": "deleted"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "conservative",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {}
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1017,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\",\"stale:docs/x.md\",\"stale:packages/core/src/math.ts\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\",\"self_changed\"]}]",
+      "unobserved: engine null reference [\"docs/y.md\"]",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1017,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "docs/y.md",
+              "status": "modified"
+            },
+            {
+              "path": "t5.test.ts",
+              "status": "added"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": true,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_MODE": "sha256:v1",
+            "TG_OTHER": "sha256:v2"
+          }
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1018,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t0.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t2.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t4.test.ts\",\"reasons\":[\"fallback\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"fallback\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "fallback: engine null reference {\"action\":\"run_all\",\"reason\":\"context_changed\"}",
+      "confidence: engine null reference \"n/a\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 0"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1018,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "t2.test.ts",
+              "status": "deleted"
+            },
+            {
+              "path": "packages/core/src/helpers.ts",
+              "status": "added"
+            },
+            {
+              "path": "packages/core/src/old.ts",
+              "status": "modified"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": false,
+          "policy": "conservative",
+          "context": {
+            "lockfile": "sha256:l2",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {}
+        }
+      }
+    }
+  },
+  {
+    "store": 48,
+    "query": 1019,
+    "diffs": [
+      "tasks: engine null reference [{\"id\":\"t2.test.ts\",\"reasons\":[\"env_all_changed\"]},{\"id\":\"t3.test.ts\",\"reasons\":[\"env_all_changed\",\"failed_outcome\",\"stale:docs/x.md\",\"stale:packages/core/src/math.ts\"]},{\"id\":\"t5.test.ts\",\"reasons\":[\"failed_outcome\"]}]",
+      "unobserved: engine null reference []",
+      "ignored: engine null reference []",
+      "deleted_tasks: engine null reference []",
+      "confidence: engine null reference \"medium\"",
+      "total_tasks: engine null reference 5",
+      "skipped: engine null reference 2"
+    ],
+    "msgs": [
+      {
+        "id": 2,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t0.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "dir",
+                "path": "packages/app/plugins"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t1.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              },
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t2.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 5,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t3.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "env_all",
+                "snapshot": {
+                  "TG_MODE": "sha256:v1",
+                  "TG_OTHER": "sha256:v1"
+                }
+              },
+              {
+                "kind": "declared",
+                "path": "packages/core/src/math.ts",
+                "hash": "sha256:h2"
+              },
+              {
+                "kind": "file",
+                "path": "docs/x.md",
+                "hash": "sha256:h1"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t4.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "pass",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              {
+                "kind": "probe",
+                "path": "packages/core/src/helpers.ts"
+              }
+            ],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "t5.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "outcome": "fail",
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [],
+            "outputs": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "method": "advance",
+        "params": {
+          "to": "b1",
+          "expected": null
+        }
+      },
+      {
+        "id": 9,
+        "method": "forget",
+        "params": {
+          "task": "t1.test.ts"
+        }
+      }
+    ],
+    "q": {
+      "id": 1019,
+      "method": "affected",
+      "params": {
+        "changes": {
+          "baseline": "b1",
+          "changes": [
+            {
+              "path": "src/c.ts",
+              "status": "added"
+            },
+            {
+              "path": "packages/core/src/old.ts",
+              "status": "added"
+            },
+            {
+              "path": "packages/core/src/n.ts",
+              "status": "added"
+            }
+          ]
+        },
+        "options": {
+          "baseline": "b1",
+          "verify": true,
+          "policy": "balanced",
+          "context": {
+            "lockfile": "sha256:l1",
+            "tsconfig": "sha256:t1",
+            "pkgjson": "sha256:p1",
+            "runner": "vitest@4.1.12",
+            "node": "22.11.0",
+            "fmt": 1,
+            "caps": {
+              "probes": true,
+              "dirs": true,
+              "env": true
+            }
+          },
+          "env": {
+            "TG_MODE": "sha256:v2"
+          }
+        }
+      }
+    }
+  }
+]

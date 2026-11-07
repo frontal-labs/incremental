@@ -4,18 +4,22 @@ on:
   push:
     branches: [main]
     paths:
-      - 'conformance/**'
-      - 'spec/**'
-      - 'core/**'
+      - "conformance/**"
+      - "spec/**"
+      - "core/**"
   pull_request:
     branches: [main]
     paths:
-      - 'conformance/**'
-      - 'spec/**'
-      - 'core/**'
+      - "conformance/**"
+      - "spec/**"
+      - "core/**"
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   conformance:
@@ -24,10 +28,17 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          bun-version: '2.2'
+          node-version: "22"
+      - name: Install Goose toolchain (Linux x64, v2026.3)
+        run: |
+          mkdir -p .toolchain/goose
+          curl -fsSL -o goose.tar.gz https://github.com/aardappel/goose/releases/download/v2026.3/goose-v2026.3-linux-x64.tar.gz
+          echo "06ac30284338269d3996d457412bf4f2b47c1f9a5601de65b6317187fe78d5c9  goose.tar.gz" | sha256sum -c -
+          tar -xzf goose.tar.gz -C .toolchain/goose
+          echo "GOOSE_DIR=$PWD/.toolchain/goose/goose-v2026.3-linux-x64" >> "$GITHUB_ENV"
       - name: Run conformance suite
         run: make test-policy
       - name: Validate case count
@@ -46,10 +57,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          bun-version: '2.2'
+          node-version: "22"
       - name: Check spec format
         run: node spec/validate.mjs
 
@@ -59,9 +70,16 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          bun-version: '2.2'
+          node-version: "22"
+      - name: Install Goose toolchain (Linux x64, v2026.3)
+        run: |
+          mkdir -p .toolchain/goose
+          curl -fsSL -o goose.tar.gz https://github.com/aardappel/goose/releases/download/v2026.3/goose-v2026.3-linux-x64.tar.gz
+          echo "06ac30284338269d3996d457412bf4f2b47c1f9a5601de65b6317187fe78d5c9  goose.tar.gz" | sha256sum -c -
+          tar -xzf goose.tar.gz -C .toolchain/goose
+          echo "GOOSE_DIR=$PWD/.toolchain/goose/goose-v2026.3-linux-x64" >> "$GITHUB_ENV"
       - name: Run protocol check
         run: make test-protocol

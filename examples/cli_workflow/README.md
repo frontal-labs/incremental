@@ -1,14 +1,14 @@
 # CLI Workflow Example
 
-A minimal repository demonstrating the backplane CLI workflow:
-`backplane init` → `backplane serve` → `affected` over a small change set.
+A minimal repository demonstrating the incremental CLI workflow:
+`incremental init` → `incremental serve` → `affected` over a small change set.
 
 ## Layout
 
 ```
 examples/cli_workflow/
 ├── README.md              # this file
-├── backplane.config.json  # repository configuration
+├── incremental.config.json  # repository configuration
 ├── src/
 │   ├── math.ts            # a library module
 │   └── math.test.ts       # a test that reads math.ts
@@ -19,15 +19,22 @@ examples/cli_workflow/
     └── plan.json
 ```
 
-## backplane.config.json
+## incremental.config.json
 
 ```json
 {
   "roots": ["."],
-  "exclude": ["**/node_modules/**", ".git/**", ".backplane/**"],
+  "exclude": ["**/node_modules/**", ".git/**", ".incremental/**"],
   "ignore": [],
-  "globalInputs": ["pnpm-lock.yaml", "package-lock.json", "yarn.lock", "package.json",
-                   "tsconfig*.json", "vitest.config.*", "vite.config.*"],
+  "globalInputs": [
+    "pnpm-lock.yaml",
+    "package-lock.json",
+    "yarn.lock",
+    "package.json",
+    "tsconfig*.json",
+    "vitest.config.*",
+    "vite.config.*"
+  ],
   "policy": "balanced",
   "fallbackContextKeys": ["lockfile", "tsconfig", "pkgjson", "runner", "node", "fmt", "caps"],
   "adapters": {
@@ -42,16 +49,16 @@ Requires the built engine (`make build`):
 
 ```sh
 # 1. Initialize the store
-core/dist/backplane init --store .backplane
+core/dist/incremental init --store .incremental
 
 # 2. Check stats (no baseline yet)
-core/dist/backplane stats --store .backplane --json
+core/dist/incremental stats --store .incremental --json
 
 # 3. Start the protocol server
-core/dist/backplane serve --store .backplane --root . &
+core/dist/incremental serve --store .incremental --root . &
 
 # 4. Send an affected query (via the CLI directly)
-core/dist/backplane affected \
+core/dist/incremental affected \
   --changes - \
   --baseline <BASELINE_SHA> \
   --context <context.json> \

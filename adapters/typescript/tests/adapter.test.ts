@@ -1,5 +1,5 @@
 // Integration tests: a scratch git repository with two TypeScript projects, run
-// through the real engine and backplane-git (spec/adapters/typescript.md).
+// through the real engine and incremental-git (spec/adapters/typescript.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -34,13 +34,17 @@ function commit(root: string, message: string): void {
 }
 
 function makeRepo(): { root: string; store: string } {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-ts-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-ts-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");
   write(root, "package.json", JSON.stringify({ name: "fixture", private: true }));
   for (const pkg of ["a", "b"]) {
-    write(root, `pkg/${pkg}/tsconfig.json`, JSON.stringify({ compilerOptions: { strict: true, noEmit: true }, include: ["src"] }));
+    write(
+      root,
+      `pkg/${pkg}/tsconfig.json`,
+      JSON.stringify({ compilerOptions: { strict: true, noEmit: true }, include: ["src"] }),
+    );
     write(root, `pkg/${pkg}/src/index.ts`, `export const ${pkg}: number = 1;\n`);
   }
   write(root, "README.md", "fixture\n");
@@ -53,7 +57,13 @@ function cleanup(root: string): void {
 }
 
 async function run(root: string, store: string, base?: string): Promise<RunReport> {
-  return runAdapter({ root, store, all: false, timeoutMs: 120_000, ...(base !== undefined ? { base } : {}) });
+  return runAdapter({
+    root,
+    store,
+    all: false,
+    timeoutMs: 120_000,
+    ...(base !== undefined ? { base } : {}),
+  });
 }
 
 test("discovers each tsconfig.json as a project, skipping node_modules", () => {
@@ -70,8 +80,14 @@ test("program files are the project's sources, repo-relative after the adapter",
   const { root } = makeRepo();
   try {
     const files = programFiles(path.join(root, "pkg/a/tsconfig.json"));
-    assert.ok(files.some((f) => f === path.join(root, "pkg/a/src/index.ts")), files.join("\n"));
-    assert.ok(!files.some((f) => f.startsWith(path.join(root, "pkg/b"))), "project a must not list project b");
+    assert.ok(
+      files.some((f) => f === path.join(root, "pkg/a/src/index.ts")),
+      files.join("\n"),
+    );
+    assert.ok(
+      !files.some((f) => f.startsWith(path.join(root, "pkg/b"))),
+      "project a must not list project b",
+    );
   } finally {
     cleanup(root);
   }
@@ -82,7 +98,10 @@ test("first run checks every project and advances the baseline", async () => {
   try {
     const r = await run(root, store);
     assert.deepEqual(r.selected, ["pkg/a/tsconfig.json", "pkg/b/tsconfig.json"]);
-    assert.deepEqual(r.results.map((x) => x.outcome), ["pass", "pass"]);
+    assert.deepEqual(
+      r.results.map((x) => x.outcome),
+      ["pass", "pass"],
+    );
     assert.equal(r.advanced, true);
     assert.equal(r.exit, 0);
   } finally {
@@ -140,7 +159,10 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
     const r = await run(root, store);
     assert.equal(r.advanced, false);
     assert.equal(r.exit, 7);
-    assert.ok(r.notAdvanced.some((m) => m.includes("dirty")), r.notAdvanced.join("; "));
+    assert.ok(
+      r.notAdvanced.some((m) => m.includes("dirty")),
+      r.notAdvanced.join("; "),
+    );
   } finally {
     cleanup(root);
   }

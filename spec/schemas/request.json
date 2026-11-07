@@ -3,8 +3,23 @@
   "type": "object",
   "required": ["id", "method"],
   "properties": {
-    "id": {"type": "integer"},
-    "method": {"enum": ["hello", "observe", "observe_many", "baseline", "advance", "affected", "explain", "forget", "stats", "compact", "ping", "shutdown"]},
-    "params": {"type": "object"}
+    "id": { "type": "integer" },
+    "method": {
+      "enum": [
+        "hello",
+        "observe",
+        "observe_many",
+        "baseline",
+        "advance",
+        "affected",
+        "explain",
+        "forget",
+        "stats",
+        "compact",
+        "ping",
+        "shutdown"
+      ]
+    },
+    "params": { "type": "object" }
   }
 }

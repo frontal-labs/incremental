@@ -1,5 +1,5 @@
 // Integration tests: a scratch git repository with a pnpm workspace (one package
-// depends on another), run through the real engine, backplane-git and pnpm
+// depends on another), run through the real engine, incremental-git and pnpm
 // (spec/adapters/pnpm.md). The fixture has no external dependencies.
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -7,7 +7,14 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { closure, declaredInputs, runAdapter, tasksOf, workspacePackages, type RunReport } from "../src/index.js";
+import {
+  closure,
+  declaredInputs,
+  runAdapter,
+  tasksOf,
+  workspacePackages,
+  type RunReport,
+} from "../src/index.js";
 
 const GIT_ENV = {
   ...process.env,
@@ -39,7 +46,7 @@ function commit(root: string, message: string): void {
 }
 
 function makeRepo(): { root: string; store: string } {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-pnpm-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-pnpm-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");
@@ -71,18 +78,30 @@ function cleanup(root: string): void {
 }
 
 async function run(root: string, store: string, base?: string): Promise<RunReport> {
-  return runAdapter({ root, store, all: false, timeoutMs: 120_000, ...(base !== undefined ? { base } : {}) });
+  return runAdapter({
+    root,
+    store,
+    all: false,
+    timeoutMs: 120_000,
+    ...(base !== undefined ? { base } : {}),
+  });
 }
 
 test("discovers workspace packages, their scripts and workspace edges", () => {
   const { root } = makeRepo();
   try {
     const pkgs = workspacePackages(root);
-    assert.deepEqual(pkgs.map((p) => p.rel), [".", "packages/app", "packages/lib"]);
+    assert.deepEqual(
+      pkgs.map((p) => p.rel),
+      [".", "packages/app", "packages/lib"],
+    );
     const app = pkgs.find((p) => p.rel === "packages/app");
     assert.deepEqual(app?.deps, ["packages/lib"]);
     assert.deepEqual(closure(pkgs, "packages/app"), ["packages/app", "packages/lib"]);
-    assert.deepEqual(tasksOf(pkgs).map((t) => t.task), ["packages/app#test", "packages/lib#build", "packages/lib#test"]);
+    assert.deepEqual(
+      tasksOf(pkgs).map((t) => t.task),
+      ["packages/app#test", "packages/lib#build", "packages/lib#test"],
+    );
   } finally {
     cleanup(root);
   }
@@ -105,7 +124,10 @@ test("first run runs all tasks and advances the baseline", async () => {
   try {
     const r = await run(root, store);
     assert.deepEqual(r.selected, ["packages/app#test", "packages/lib#build", "packages/lib#test"]);
-    assert.deepEqual(r.results.map((x) => x.outcome), ["pass", "pass", "pass"]);
+    assert.deepEqual(
+      r.results.map((x) => x.outcome),
+      ["pass", "pass", "pass"],
+    );
     assert.equal(r.advanced, true);
     assert.equal(r.exit, 0);
   } finally {
@@ -120,9 +142,11 @@ test("a change to a workspace dependency invalidates its dependents", async () =
     write(root, "packages/lib/index.js", "module.exports = 2;\n");
     commit(root, "edit lib");
     const r = await run(root, store);
+    // No confined task reads packages/lib/index.js, so the ignore list drops it. The
+    // dependent is unconfined and dirty, so it is selected on its own account.
     const app = r.plan?.tasks.find((t) => t.id === "packages/app#test");
     assert.ok(app, "the dependent task is in the plan");
-    assert.ok(app.reasons.some((m) => m.includes("packages/lib/index.js")), app.reasons.join("; "));
+    assert.deepEqual(app.reasons, ["dirty_observation"]);
     assert.ok(r.selected.includes("packages/app#test"));
     assert.equal(r.advanced, true);
     assert.equal(r.exit, 0);
@@ -155,7 +179,10 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
     const r = await run(root, store);
     assert.equal(r.advanced, false);
     assert.equal(r.exit, 7);
-    assert.ok(r.notAdvanced.some((m) => m.includes("dirty")), r.notAdvanced.join("; "));
+    assert.ok(
+      r.notAdvanced.some((m) => m.includes("dirty")),
+      r.notAdvanced.join("; "),
+    );
   } finally {
     cleanup(root);
   }
@@ -163,9 +190,9 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
 
 const ALL_TASKS = ["packages/app#test", "packages/lib#build", "packages/lib#test"];
 
-// backplane-pnpm.json declares tasks whose scripts read only their declared inputs.
+// incremental-pnpm.json declares tasks whose scripts read only their declared inputs.
 function confine(root: string, tasks: string[]): void {
-  write(root, "backplane-pnpm.json", JSON.stringify({ confined: tasks }));
+  write(root, "incremental-pnpm.json", JSON.stringify({ confined: tasks }));
   commit(root, "declare confined tasks");
 }
 
@@ -193,7 +220,10 @@ test("a confined edit reaches its own task and its dependents, and nothing else"
     const r = await run(root, store);
     assert.deepEqual(r.selected, ["packages/app#test", "packages/lib#build", "packages/lib#test"]);
     const app = r.plan?.tasks.find((t) => t.id === "packages/app#test");
-    assert.ok(app?.reasons.some((m) => m.includes("packages/lib/index.js")), app?.reasons.join("; "));
+    assert.ok(
+      app?.reasons.some((m) => m.includes("packages/lib/index.js")),
+      app?.reasons.join("; "),
+    );
     assert.equal(r.advanced, true);
   } finally {
     cleanup(root);
@@ -206,6 +236,22 @@ test("an unconfined script stays dirty, so it runs again even when nothing chang
     await run(root, store);
     const r = await run(root, store);
     assert.deepEqual(r.selected, ALL_TASKS, "no recorder is paired, so the observation is dirty");
+  } finally {
+    cleanup(root);
+  }
+});
+
+test("an edit no confined task reads selects nothing and does not fall back", async () => {
+  const { root, store } = makeRepo();
+  try {
+    confine(root, ALL_TASKS);
+    await run(root, store);
+    write(root, "docs/notes.md", "outside every workspace package\n");
+    commit(root, "docs only");
+    const r = await run(root, store);
+    assert.equal(r.plan?.fallback, null, `fallback: ${JSON.stringify(r.plan?.fallback)}`);
+    assert.deepEqual(r.selected, []);
+    assert.equal(r.advanced, true);
   } finally {
     cleanup(root);
   }

@@ -17,45 +17,31 @@
     "tasks": [
       {
         "id": "packages/app/src/app.test.ts",
-        "reasons": [
-          "fallback"
-        ]
+        "reasons": ["fallback"]
       },
       {
         "id": "packages/app/src/list.test.ts",
-        "reasons": [
-          "fallback"
-        ]
+        "reasons": ["fallback"]
       },
       {
         "id": "packages/core/src/env.test.ts",
-        "reasons": [
-          "fallback"
-        ]
+        "reasons": ["fallback"]
       },
       {
         "id": "packages/core/src/envall.test.ts",
-        "reasons": [
-          "fallback"
-        ]
+        "reasons": ["fallback"]
       },
       {
         "id": "packages/core/src/math.test.ts",
-        "reasons": [
-          "fallback"
-        ]
+        "reasons": ["fallback"]
       },
       {
         "id": "packages/core/src/old.test.ts",
-        "reasons": [
-          "fallback"
-        ]
+        "reasons": ["fallback"]
       },
       {
         "id": "packages/core/src/probe.test.ts",
-        "reasons": [
-          "fallback"
-        ]
+        "reasons": ["fallback"]
       }
     ],
     "unobserved": [],

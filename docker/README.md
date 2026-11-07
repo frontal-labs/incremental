@@ -1,11 +1,11 @@
-# Backplane Docker
+# Incremental Docker
 
-Docker definition for the Linux gate check (PLAN 17.1 `linux-gate`): running the full backplane test target on linux/amd64.
+Docker definition for the Linux gate check : running the full incremental test target on linux/amd64.
 
 ## Contents
 
-| Path | Description |
-|---|---|
+| Path                      | Description                                                                                                                                                                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `docker/Dockerfile.linux` | Builds and runs the test target: Node 22 bookworm, git/python3/make/curl/build-essential, the released Goose linux-x64 binary, then `make all-tests test-python test-git test-fuzz`. |
 
 ## Running
@@ -17,8 +17,8 @@ make linux-gate
 This runs:
 
 ```sh
-docker build --no-cache --platform linux/amd64 -f docker/Dockerfile.linux -t backplane:linux .
-docker run --rm --platform linux/amd64 backplane:linux make all-tests test-python test-git test-fuzz
+docker build --no-cache --platform linux/amd64 -f docker/Dockerfile.linux -t incremental:linux .
+docker run --rm --platform linux/amd64 incremental:linux make all-tests test-python test-git test-fuzz
 ```
 
 Output is captured in `core/dist/linux-gate.log`.

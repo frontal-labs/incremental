@@ -1,4 +1,4 @@
-// Wiring tests: a scratch repository with backplane-process.json and the real
+// Wiring tests: a scratch repository with incremental-process.json and the real
 // engine. No child-process tracing is tested (none on macOS; see README.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -6,12 +6,17 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { connect, defaultEngine, type backplane } from "@backplane/client";
-import { contextFor } from "@backplane/fs";
+import { createRequire } from "node:module";
+import { connect, defaultEngine, type incremental } from "@incremental/client";
+import { contextFor } from "@incremental/fs";
 import { main } from "../src/cli.js";
 import { runTasks, type TaskConfig } from "../src/index.js";
 
 const NODE = process.execPath;
+const requireStrace = createRequire(import.meta.url);
+
+// Linux only: the strace oracle is exercised here; on macOS this test skips.
+const linux = process.platform === "linux" ? test : test.skip;
 
 interface Fixture {
   base: string;
@@ -21,13 +26,19 @@ interface Fixture {
 
 // A repo with one commit, an advanced store, and the given task config.
 async function fixture(tasks: Record<string, TaskConfig>): Promise<Fixture> {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-proc-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-proc-"));
   const root = path.join(base, "repo");
   const store = path.join(base, "store");
   mkdirSync(root);
   writeFileSync(path.join(root, "a.txt"), "a\n");
-  writeFileSync(path.join(root, "backplane-process.json"), JSON.stringify({ tasks }));
-  const env = { ...process.env, GIT_AUTHOR_NAME: "t", GIT_AUTHOR_EMAIL: "t@e", GIT_COMMITTER_NAME: "t", GIT_COMMITTER_EMAIL: "t@e" };
+  writeFileSync(path.join(root, "incremental-process.json"), JSON.stringify({ tasks }));
+  const env = {
+    ...process.env,
+    GIT_AUTHOR_NAME: "t",
+    GIT_AUTHOR_EMAIL: "t@e",
+    GIT_COMMITTER_NAME: "t",
+    GIT_COMMITTER_EMAIL: "t@e",
+  };
   const git = (...args: string[]) => spawnSync("git", args, { cwd: root, encoding: "utf8", env });
   git("init", "-q", "-b", "main");
   git("add", "-A");
@@ -35,7 +46,12 @@ async function fixture(tasks: Record<string, TaskConfig>): Promise<Fixture> {
   const head = git("rev-parse", "HEAD").stdout.trim();
   const init = spawnSync(defaultEngine(), ["init", "--store", store], { encoding: "utf8" });
   assert.equal(init.status, 0, init.stderr);
-  const client = await connect({ store, root, command: [defaultEngine(), "serve"], timeoutMs: 60_000 });
+  const client = await connect({
+    store,
+    root,
+    command: [defaultEngine(), "serve"],
+    timeoutMs: 60_000,
+  });
   await client.advance(head, null);
   await client.close();
   return { base, root, store };
@@ -46,8 +62,13 @@ function cleanup(f: Fixture): void {
 }
 
 // A separate client, to read what the run observed.
-async function withClient<T>(f: Fixture, fn: (c: backplane) => Promise<T>): Promise<T> {
-  const c = await connect({ store: f.store, root: f.root, command: [defaultEngine(), "serve"], timeoutMs: 60_000 });
+async function withClient<T>(f: Fixture, fn: (c: incremental) => Promise<T>): Promise<T> {
+  const c = await connect({
+    store: f.store,
+    root: f.root,
+    command: [defaultEngine(), "serve"],
+    timeoutMs: 60_000,
+  });
   try {
     return await fn(c);
   } finally {
@@ -56,7 +77,9 @@ async function withClient<T>(f: Fixture, fn: (c: backplane) => Promise<T>): Prom
 }
 
 test("a passing command is recorded as pass, and a complete declaration is clean", async () => {
-  const f = await fixture({ ok: { command: [NODE, "-e", "process.exit(0)"], declared: ["a.txt"], complete: true } });
+  const f = await fixture({
+    ok: { command: [NODE, "-e", "process.exit(0)"], declared: ["a.txt"], complete: true },
+  });
   try {
     const [r] = await runTasks({ root: f.root, store: f.store, timeoutMs: 60_000 });
     assert.deepEqual([r?.outcome, r?.dirty], ["pass", false]);
@@ -78,7 +101,10 @@ test("a non-zero exit is a fail, and the engine invalidates the task (failed_out
     assert.equal(r?.problem, "exit 3");
     const baseline = await withClient(f, async (c) => (await c.baseline()).baseline ?? "");
     const plan = await withClient(f, (c) =>
-      c.affected({ baseline, changes: [] }, { baseline, context: contextFor(), declared_tasks: ["bad"] }),
+      c.affected(
+        { baseline, changes: [] },
+        { baseline, context: contextFor(), declared_tasks: ["bad"] },
+      ),
     );
     assert.deepEqual(plan.tasks, [{ id: "bad", reasons: ["failed_outcome"] }]);
   } finally {
@@ -87,7 +113,9 @@ test("a non-zero exit is a fail, and the engine invalidates the task (failed_out
 });
 
 test("a command that cannot start is an error and is not observed", async () => {
-  const f = await fixture({ missing: { command: ["backplane-no-such-program-xyz"], complete: true } });
+  const f = await fixture({
+    missing: { command: ["incremental-no-such-program-xyz"], complete: true },
+  });
   try {
     const [r] = await runTasks({ root: f.root, store: f.store, timeoutMs: 60_000 });
     assert.equal(r?.outcome, "error");
@@ -100,7 +128,9 @@ test("a command that cannot start is an error and is not observed", async () => 
 });
 
 test("a timed out command is an error", async () => {
-  const f = await fixture({ slow: { command: [NODE, "-e", "setTimeout(() => {}, 10000)"], complete: true } });
+  const f = await fixture({
+    slow: { command: [NODE, "-e", "setTimeout(() => {}, 10000)"], complete: true },
+  });
   try {
     const [r] = await runTasks({ root: f.root, store: f.store, timeoutMs: 300 });
     assert.equal(r?.outcome, "error");
@@ -112,7 +142,11 @@ test("a timed out command is an error", async () => {
 
 test("a declared input changed while the command runs makes the observation dirty", async () => {
   const f = await fixture({
-    writer: { command: [NODE, "-e", "require('fs').appendFileSync('a.txt', 'x')"], declared: ["a.txt"], complete: true },
+    writer: {
+      command: [NODE, "-e", "require('fs').appendFileSync('a.txt', 'x')"],
+      declared: ["a.txt"],
+      complete: true,
+    },
   });
   try {
     const [r] = await runTasks({ root: f.root, store: f.store, timeoutMs: 60_000 });
@@ -125,7 +159,9 @@ test("a declared input changed while the command runs makes the observation dirt
 });
 
 test("a declared input that changes later invalidates the task", async () => {
-  const f = await fixture({ ok: { command: [NODE, "-e", "process.exit(0)"], declared: ["a.txt"], complete: true } });
+  const f = await fixture({
+    ok: { command: [NODE, "-e", "process.exit(0)"], declared: ["a.txt"], complete: true },
+  });
   try {
     await runTasks({ root: f.root, store: f.store, timeoutMs: 60_000 });
     const baseline = await withClient(f, async (c) => (await c.baseline()).baseline ?? "");
@@ -144,7 +180,10 @@ test("a declared input that changes later invalidates the task", async () => {
 test("an unknown task name is rejected before anything runs", async () => {
   const f = await fixture({ ok: { command: [NODE, "-e", "process.exit(0)"] } });
   try {
-    await assert.rejects(runTasks({ root: f.root, store: f.store, names: ["nope"], timeoutMs: 60_000 }), /no task named nope/);
+    await assert.rejects(
+      runTasks({ root: f.root, store: f.store, names: ["nope"], timeoutMs: 60_000 }),
+      /no task named nope/,
+    );
   } finally {
     cleanup(f);
   }
@@ -160,5 +199,36 @@ test("the CLI exits 0 when every task passes and 1 when one fails", async () => 
   } finally {
     cleanup(pass);
     cleanup(fail);
+  }
+});
+
+linux("oracle: a strace-traced command records its file reads as inputs", async () => {
+  const { runOracle } = requireStrace("@incremental/strace") as {
+    runOracle: (command: string[], opts: unknown) => Promise<unknown>;
+  };
+  const f = await fixture({
+    reader: { command: [NODE, "-e", "require('fs').readFileSync('a.txt')"], oracle: true },
+  });
+  try {
+    const [r] = await runTasks({
+      root: f.root,
+      store: f.store,
+      timeoutMs: 60_000,
+      runOracle: runOracle as any,
+    });
+    assert.equal(r?.outcome, "pass");
+    const ex = await withClient(f, (c) => c.explain("reader"));
+    assert.equal(ex.observed, true);
+    assert.equal(ex.inputs, 1, "the traced read of a.txt is an input");
+    const stored = (await withClient(f, (c) => c.baseline())).baseline ?? "";
+    const plan = await withClient(f, (c) =>
+      c.affected(
+        { baseline: stored, changes: [{ path: "a.txt", status: "modified" }] },
+        { baseline: stored, context: contextFor(), declared_tasks: ["reader"] },
+      ),
+    );
+    assert.deepEqual(plan.tasks, [{ id: "reader", reasons: ["reads:a.txt"] }]);
+  } finally {
+    cleanup(f);
   }
 });

@@ -1,6 +1,6 @@
-//! Rust client for backplane Protocol v1 (docs/spec/PROTOCOL.md, spec/adapters/rust.md).
+//! Rust client for incremental Protocol v1 (docs/spec/PROTOCOL.md, spec/adapters/rust.md).
 //!
-//! The client spawns `backplane serve`, sends one JSON object per line and
+//! The client spawns `incremental serve`, sends one JSON object per line and
 //! matches each answer by id. It never plans: every answer comes from the engine.
 //! Methods take `&mut self`, so requests run one at a time in call order.
 
@@ -16,7 +16,7 @@ use std::thread;
 use std::time::{Duration, Instant};
 
 const PROTOCOL: u64 = 1;
-const CLIENT_NAME: &str = "backplane-rust";
+const CLIENT_NAME: &str = "incremental-rust";
 const CLIENT_VERSION: &str = env!("CARGO_PKG_VERSION");
 const STARTUP_TIMEOUT: Duration = Duration::from_secs(10);
 const STDERR_LINES: usize = 20;
@@ -33,7 +33,11 @@ pub struct Error {
 
 impl Error {
     fn new(code: &str, message: impl Into<String>, data: Option<Value>) -> Self {
-        Error { code: code.to_string(), message: message.into(), data }
+        Error {
+            code: code.to_string(),
+            message: message.into(),
+            data,
+        }
     }
 }
 
@@ -48,7 +52,7 @@ impl std::error::Error for Error {}
 pub type Result<T> = std::result::Result<T, Error>;
 
 /// Engine command, store, root and timing. `Config::default()` reads
-/// `BACKPLANE_ENGINE` and `BACKPLANE_STORE`, and uses the enclosing git repository.
+/// `INCREMENTAL_ENGINE` and `INCREMENTAL_STORE`, and uses the enclosing git repository.
 #[derive(Debug, Clone)]
 pub struct Config {
     /// Command prefix. The client runs `<engine...> serve --store <store> --root <root>`.
@@ -65,9 +69,10 @@ impl Default for Config {
     fn default() -> Self {
         let root = repo_root();
         Config {
-            engine: vec![env::var("BACKPLANE_ENGINE")
-                .unwrap_or_else(|_| root.join("core/dist/backplane").display().to_string())],
-            store: env::var_os("BACKPLANE_STORE").map_or_else(|| root.join(".backplane"), PathBuf::from),
+            engine: vec![env::var("INCREMENTAL_ENGINE")
+                .unwrap_or_else(|_| root.join("core/dist/incremental").display().to_string())],
+            store: env::var_os("INCREMENTAL_STORE")
+                .map_or_else(|| root.join(".incremental"), PathBuf::from),
             timeout: Duration::from_secs(10),
             restart: true,
             root,
@@ -111,7 +116,8 @@ impl Affected {
 
     /// The `options` object of the request.
     pub fn options(&self) -> Value {
-        let mut opts = json!({"baseline": self.baseline, "verify": self.verify, "policy": self.policy});
+        let mut opts =
+            json!({"baseline": self.baseline, "verify": self.verify, "policy": self.policy});
         let map = opts.as_object_mut().expect("options is an object");
         let extra = [
             ("context", &self.context),
@@ -141,17 +147,22 @@ struct Run {
 /// A client for one engine process. The process is started by `connect` and
 /// restarted on the next call if it died (when `Config::restart` is set).
 #[derive(Debug)]
-pub struct Backplane {
+pub struct Incremental {
     cfg: Config,
     run: Option<Run>,
     started: bool,
     next_id: u64,
 }
 
-impl Backplane {
+impl Incremental {
     /// Starts the engine and runs the `hello` handshake.
     pub fn connect(cfg: Config) -> Result<Self> {
-        let mut client = Backplane { cfg, run: None, started: false, next_id: 1 };
+        let mut client = Incremental {
+            cfg,
+            run: None,
+            started: false,
+            next_id: 1,
+        };
         client.ensure()?;
         Ok(client)
     }
@@ -181,7 +192,10 @@ impl Backplane {
 
     /// Returns the plan (PROTOCOL.md 9.6). A partial plan is an error.
     pub fn affected(&mut self, changes: &Value, options: &Affected) -> Result<Value> {
-        let plan = self.request("affected", &json!({"changes": changes, "options": options.options()}))?;
+        let plan = self.request(
+            "affected",
+            &json!({"changes": changes, "options": options.options()}),
+        )?;
         check_plan(plan)
     }
 
@@ -226,7 +240,11 @@ impl Backplane {
         if exited {
             self.run = None;
             if self.started && !self.cfg.restart {
-                return Err(Error::new("engine_exited", "the engine exited and restart is disabled", None));
+                return Err(Error::new(
+                    "engine_exited",
+                    "the engine exited and restart is disabled",
+                    None,
+                ));
             }
             let run = self.start()?;
             self.run = Some(run);
@@ -250,11 +268,19 @@ impl Backplane {
             Some(PROTOCOL) => {}
             Some(_) => {
                 kill(&mut run.child);
-                return Err(Error::new("protocol_mismatch", "the engine does not speak protocol 1", Some(hello)));
+                return Err(Error::new(
+                    "protocol_mismatch",
+                    "the engine does not speak protocol 1",
+                    Some(hello),
+                ));
             }
             None => {
                 kill(&mut run.child);
-                return Err(Error::new("internal", "the engine answered hello with no protocol", None));
+                return Err(Error::new(
+                    "internal",
+                    "the engine answered hello with no protocol",
+                    None,
+                ));
             }
         }
         run.hello = hello;
@@ -263,7 +289,11 @@ impl Backplane {
 
     fn request(&mut self, method: &str, params: &Value) -> Result<Value> {
         match self.exchange(method, params) {
-            Err(err) if err.code == "engine_exited" && self.cfg.restart && READ_ONLY.contains(&method) => {
+            Err(err)
+                if err.code == "engine_exited"
+                    && self.cfg.restart
+                    && READ_ONLY.contains(&method) =>
+            {
                 self.exchange(method, params)
             }
             other => other,
@@ -282,7 +312,9 @@ impl Backplane {
     }
 
     fn stop(&mut self) {
-        let Some(mut run) = self.run.take() else { return };
+        let Some(mut run) = self.run.take() else {
+            return;
+        };
         if matches!(run.child.try_wait(), Ok(None)) {
             let id = self.take_id();
             // The engine writes its index image before it exits, so give it time.
@@ -294,7 +326,7 @@ impl Backplane {
     }
 }
 
-impl Drop for Backplane {
+impl Drop for Incremental {
     fn drop(&mut self) {
         self.stop();
     }
@@ -323,7 +355,10 @@ fn spawn(cfg: &Config) -> Result<Run> {
 
     let (tx, lines) = mpsc::channel();
     thread::spawn(move || {
-        for line in BufReader::new(stdout).lines().map_while(std::io::Result::ok) {
+        for line in BufReader::new(stdout)
+            .lines()
+            .map_while(std::io::Result::ok)
+        {
             if tx.send(Some(line)).is_err() {
                 return;
             }
@@ -334,7 +369,10 @@ fn spawn(cfg: &Config) -> Result<Run> {
     let tail = Arc::new(Mutex::new(Vec::<String>::new()));
     let sink = Arc::clone(&tail);
     thread::spawn(move || {
-        for line in BufReader::new(stderr).lines().map_while(std::io::Result::ok) {
+        for line in BufReader::new(stderr)
+            .lines()
+            .map_while(std::io::Result::ok)
+        {
             let mut kept = sink.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
             kept.push(line);
             let excess = kept.len().saturating_sub(STDERR_LINES);
@@ -342,7 +380,13 @@ fn spawn(cfg: &Config) -> Result<Run> {
         }
     });
 
-    Ok(Run { child, stdin, lines, stderr: tail, hello: Value::Null })
+    Ok(Run {
+        child,
+        stdin,
+        lines,
+        stderr: tail,
+        hello: Value::Null,
+    })
 }
 
 // Sends one request and reads lines until the answer with `id` arrives. A
@@ -355,13 +399,20 @@ fn call(run: &mut Run, id: u64, method: &str, params: &Value, timeout: Duration)
 
     let deadline = Instant::now() + timeout;
     loop {
-        let raw = match run.lines.recv_timeout(deadline.saturating_duration_since(Instant::now())) {
+        let raw = match run
+            .lines
+            .recv_timeout(deadline.saturating_duration_since(Instant::now()))
+        {
             Ok(Some(raw)) => raw,
             Ok(None) | Err(RecvTimeoutError::Disconnected) => return Err(exited(run)),
             Err(RecvTimeoutError::Timeout) => {
                 kill(&mut run.child);
                 let data = json!({"partial": false});
-                return Err(Error::new("timeout", format!("no response within {timeout:?}"), Some(data)));
+                return Err(Error::new(
+                    "timeout",
+                    format!("no response within {timeout:?}"),
+                    Some(data),
+                ));
             }
         };
         let msg: Map<String, Value> = match serde_json::from_str(&raw) {
@@ -376,7 +427,11 @@ fn call(run: &mut Run, id: u64, method: &str, params: &Value, timeout: Duration)
                 return Err(error_of(err));
             }
             return msg.get("result").cloned().ok_or_else(|| {
-                Error::new("bad_response", "response has neither result nor error", None)
+                Error::new(
+                    "bad_response",
+                    "response has neither result nor error",
+                    None,
+                )
             });
         }
         // A store-level failure is printed without an id (CLI style): {"ok": false, "error": {...}}.
@@ -391,8 +446,16 @@ fn call(run: &mut Run, id: u64, method: &str, params: &Value, timeout: Duration)
 
 fn error_of(err: &Value) -> Error {
     Error {
-        code: err.get("code").and_then(Value::as_str).unwrap_or("internal").to_string(),
-        message: err.get("message").and_then(Value::as_str).unwrap_or("").to_string(),
+        code: err
+            .get("code")
+            .and_then(Value::as_str)
+            .unwrap_or("internal")
+            .to_string(),
+        message: err
+            .get("message")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_string(),
         data: err.get("data").filter(|data| !data.is_null()).cloned(),
     }
 }
@@ -401,10 +464,18 @@ fn error_of(err: &Value) -> Error {
 fn exited(run: &mut Run) -> Error {
     let status = wait_exit(&mut run.child, Duration::from_secs(5)).and_then(|status| status.code());
     kill(&mut run.child);
-    let stderr = run.stderr.lock().map(|lines| lines.join("\n")).unwrap_or_default();
+    let stderr = run
+        .stderr
+        .lock()
+        .map(|lines| lines.join("\n"))
+        .unwrap_or_default();
     let code = status.map_or_else(|| "unknown".to_string(), |code| code.to_string());
     let data = (!stderr.is_empty()).then(|| Value::String(stderr));
-    Error::new("engine_exited", format!("engine exited (status {code})"), data)
+    Error::new(
+        "engine_exited",
+        format!("engine exited (status {code})"),
+        data,
+    )
 }
 
 fn wait_exit(child: &mut Child, timeout: Duration) -> Option<ExitStatus> {
@@ -427,12 +498,18 @@ fn kill(child: &mut Child) {
 fn check_plan(plan: Value) -> Result<Value> {
     let lists = ["tasks", "unobserved", "ignored", "deleted_tasks"];
     let fields = ["fallback", "confidence", "graph_version"];
-    let complete = lists.iter().all(|key| plan.get(*key).is_some_and(|v| v.is_array()))
+    let complete = lists
+        .iter()
+        .all(|key| plan.get(*key).is_some_and(|v| v.is_array()))
         && fields.iter().all(|key| plan.get(*key).is_some());
     if complete {
         Ok(plan)
     } else {
         let data = json!({"reason": "partial_plan"});
-        Err(Error::new("internal", "the engine answered affected with an incomplete plan", Some(data)))
+        Err(Error::new(
+            "internal",
+            "the engine answered affected with an incomplete plan",
+            Some(data),
+        ))
     }
 }

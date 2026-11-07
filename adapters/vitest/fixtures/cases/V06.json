@@ -1,14 +1,31 @@
 {
-  "id": "V06", "desc": "Add a new test file (known as declared, so P4 also applies)", "mode":"balanced",
-  "edit": [{"op":"write","path":"packages/app/test/new.test.ts","content":"it('new test', () => {\n  expect(1 + 1).toBe(2);\n});\n"}],
-  "query": {"changes":[{"path":"packages/app/test/new.test.ts","status":"added"}],"verify":false,"policy":"balanced"},
+  "id": "V06",
+  "desc": "Add a new test file (known as declared, so P4 also applies)",
+  "mode": "balanced",
+  "edit": [
+    {
+      "op": "write",
+      "path": "packages/app/test/new.test.ts",
+      "content": "it('new test', () => {\n  expect(1 + 1).toBe(2);\n});\n"
+    }
+  ],
+  "query": {
+    "changes": [{ "path": "packages/app/test/new.test.ts", "status": "added" }],
+    "verify": false,
+    "policy": "balanced"
+  },
   "expect": {
     "tasks": [
-      {"id":"packages/app/test/new.test.ts","reasons":["no_observation","self_changed"]},
-      {"id":"packages/core/test/worker.test.ts","reasons":["dirty_observation"]}
+      { "id": "packages/app/test/new.test.ts", "reasons": ["no_observation", "self_changed"] },
+      { "id": "packages/core/test/worker.test.ts", "reasons": ["dirty_observation"] }
     ],
-    "unobserved": [], "ignored": [], "deleted_tasks": [], "fallback": null, "confidence": "medium",
-    "ran": ["packages/app/test/new.test.ts","packages/core/test/worker.test.ts"],
-    "exit": 0, "advanced": true
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium",
+    "ran": ["packages/app/test/new.test.ts", "packages/core/test/worker.test.ts"],
+    "exit": 0,
+    "advanced": true
   }
 }

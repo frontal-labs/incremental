@@ -30,15 +30,11 @@
     "tasks": [
       {
         "id": "packages/core/src/env.test.ts",
-        "reasons": [
-          "env_changed:TG_FIXTURE_MODE"
-        ]
+        "reasons": ["env_changed:TG_FIXTURE_MODE"]
       },
       {
         "id": "packages/core/src/envall.test.ts",
-        "reasons": [
-          "env_all_changed"
-        ]
+        "reasons": ["env_all_changed"]
       }
     ],
     "unobserved": [],

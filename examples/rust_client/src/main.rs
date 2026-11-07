@@ -1,13 +1,13 @@
-//! Example Rust client for backplane Protocol v1.
-//! Spawns `backplane serve` and communicates over JSON Lines on stdio.
+//! Example Rust client for incremental Protocol v1.
+//! Spawns `incremental serve` and communicates over JSON Lines on stdio.
 
 use serde_json::{json, Value};
 use std::process::{Command, Stdio};
 use std::io::{BufRead, BufReader, Write};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut child = Command::new("backplane")
-        .args(["serve", "--store", ".backplane", "--root", "."])
+    let mut child = Command::new("incremental")
+        .args(["serve", "--store", ".incremental", "--root", "."])
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
@@ -23,23 +23,30 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "method": "hello",
         "params": {
             "protocol": 1,
-            "client": {"name": "backplane-rust-example", "version": "0.1.0"}
+            "client": {"name": "incremental-rust-example", "version": "0.1.0"}
         }
     });
     writeln!(stdin_lock, "{}", hello_req)?;
     stdin_lock.flush()?;
 
     let reader = BufReader::new(stdout);
-    for line in reader.lines() {
-        let resp: Value = serde_json::from_str(&line?)?;
-        if resp.get("id") == Some(&json!(1)) {
-            if let Some(err) = resp.get("error") {
-                eprintln!("hello error: {}", err);
-                std::process::exit(1);
+    let mut lines = reader.lines();
+    let mut waiting = true;
+    while waiting {
+        match lines.next() {
+            Some(line) => {
+                let resp: Value = serde_json::from_str(&line?)?;
+                if resp.get("id") == Some(&json!(1)) {
+                    if let Some(err) = resp.get("error") {
+                        eprintln!("hello error: {}", err);
+                        std::process::exit(1);
+                    }
+                    println!("Engine: {:?}", resp["result"]["engine"]["name"]);
+                    println!("Capabilities: {:?}", resp["result"]["capabilities"]);
+                    waiting = false;
+                }
             }
-            println!("Engine: {:?}", resp["result"]["engine"]["name"]);
-            println!("Capabilities: {:?}", resp["result"]["capabilities"]);
-            break;
+            None => waiting = false,
         }
     }
 
@@ -73,19 +80,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     writeln!(stdin_lock, "{}", affected_req)?;
     stdin_lock.flush()?;
 
-    for line in BufReader::new(child.stdout.take().unwrap()).lines() {
-        let resp: Value = serde_json::from_str(&line?)?;
-        if resp.get("id") == Some(&json!(2)) {
-            if let Some(err) = resp.get("error") {
-                eprintln!("affected error: {}", err);
-                std::process::exit(1);
+    let mut lines = BufReader::new(child.stdout.take().unwrap()).lines();
+    let mut waiting = true;
+    while waiting {
+        match lines.next() {
+            Some(line) => {
+                let resp: Value = serde_json::from_str(&line?)?;
+                if resp.get("id") == Some(&json!(2)) {
+                    if let Some(err) = resp.get("error") {
+                        eprintln!("affected error: {}", err);
+                        std::process::exit(1);
+                    }
+                    let plan = &resp["result"];
+                    println!("Total tasks: {}", plan["total_tasks"]);
+                    println!("Invalid: {}", plan["tasks"].as_array().map(|a| a.len()).unwrap_or(0));
+                    println!("Skipped: {}", plan["skipped"]);
+                    println!("Confidence: {}", plan["confidence"]);
+                    waiting = false;
+                }
             }
-            let plan = &resp["result"];
-            println!("Total tasks: {}", plan["total_tasks"]);
-            println!("Invalid: {}", plan["tasks"].as_array().map(|a| a.len()).unwrap_or(0));
-            println!("Skipped: {}", plan["skipped"]);
-            println!("Confidence: {}", plan["confidence"]);
-            break;
+            None => waiting = false,
         }
     }
 

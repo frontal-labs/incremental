@@ -1,3 +1,3 @@
 export default function plugin(): string {
-  return 'p1';
+  return "p1";
 }

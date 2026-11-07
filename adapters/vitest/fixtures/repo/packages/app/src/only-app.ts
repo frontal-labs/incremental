@@ -1,1 +1,1 @@
-export const ONLY_APP: string = 'app';
+export const ONLY_APP: string = "app";

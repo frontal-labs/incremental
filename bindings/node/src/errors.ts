@@ -1,4 +1,4 @@
-// Error codes of backplane Protocol v1 (plans/PLAN.md 9.7).
+// Error codes of incremental Protocol v1 (plans/PLAN.md 9.7).
 export type ErrorCode =
   | "invalid_params"
   | "unknown_method"
@@ -22,15 +22,15 @@ const CODES: ReadonlySet<string> = new Set<ErrorCode>([
   "internal",
 ]);
 
-// Every rejection of the client is a backplaneError. A code the client does
+// Every rejection of the client is a incrementalError. A code the client does
 // not know is reported as "internal"; the engine's own code is kept in data.
-export class backplaneError extends Error {
+export class incrementalError extends Error {
   readonly code: ErrorCode;
   readonly data: unknown;
 
   constructor(code: string, message: string, data?: unknown) {
     super(message);
-    this.name = "backplaneError";
+    this.name = "incrementalError";
     if (CODES.has(code)) {
       this.code = code as ErrorCode;
       this.data = data;
@@ -41,8 +41,8 @@ export class backplaneError extends Error {
   }
 }
 
-export function isBackplaneError(e: unknown): e is backplaneError {
-  return e instanceof backplaneError;
+export function isIncrementalError(e: unknown): e is incrementalError {
+  return e instanceof incrementalError;
 }
 
 function isRecord(v: unknown): v is Record<string, unknown> {

@@ -2,5 +2,5 @@
   "id": "E1",
   "state": "done",
   "evidence": "evidence/E1.txt",
-  "notes": "Signed off by the user's instruction (2026-11-03). Fresh-clone verification passed."
+  "notes": "Signed off by user's instruction. Fresh-clone verification passed (DECISIONS.md)."
 }

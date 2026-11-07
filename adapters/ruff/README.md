@@ -1,16 +1,16 @@
-# @backplane/ruff
+# @incremental/ruff
 
 The ruff adapter: one task per file that `ruff check` checks. Spec: `spec/adapters/ruff.md`.
 
 ```
-backplane-ruff run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]
+incremental-ruff run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]
 ```
 
 Exit codes follow the TypeScript adapter: 0 advanced and clean, 1 advanced with violations, 2 usage, 4 engine or setup error, 7 ran but not advanced.
 
 ## Tasks
 
-- Task id: `ruff check <repo-relative path>` (PLAN D-2).
+- Task id: `ruff check <repo-relative path>` .
 - The task list is `ruff check --show-files`, so ruff's own excludes and `.gitignore` apply. `pyproject.toml` is a task too, because ruff checks it for its TOML rules.
 - Each task runs `ruff check --no-cache --output-format json <file>`. Exit 0 is `pass`, exit 1 is `fail`, anything else is `error`.
 
@@ -29,11 +29,11 @@ Exit codes follow the TypeScript adapter: 0 advanced and clean, 1 advanced with 
 - **Environment.** Ruff's environment variables (for example `RUFF_*`) are not recorded. The adapter does not record them, and `env` is false.
 - **`ruff format`** is not covered. Only `ruff check`.
 - **Notebooks.** `.ipynb` files that ruff lists are tasks, but the adapter has not been tested on them.
-- **Shallow clones and symlinks.** Inherited from the git change source (PLAN 11.7). Symlinked files are not resolved by the adapter.
+- **Shallow clones and symlinks.** Inherited from the git change source . Symlinked files are not resolved by the adapter.
 
 ## Dependencies
 
-`@backplane/client` (local, `../../bindings/node`), plus the dev dependencies `typescript` 5.9.3 and `@types/node` 22.20.5, the same versions as the TypeScript adapter. Ruff itself is an external binary (`BACKPLANE_RUFF` or `ruff` on PATH).
+`@incremental/client` (local, `../../bindings/node`), plus the dev dependencies `typescript` 5.9.3 and `@types/node` 22.20.5, the same versions as the TypeScript adapter. Ruff itself is an external binary (`INCREMENTAL_RUFF` or `ruff` on PATH).
 
 ## Tests
 

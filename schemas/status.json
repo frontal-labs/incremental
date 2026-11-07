@@ -1,14 +1,17 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/status.json",
+  "$id": "https://incremental.dev/schemas/status.json",
   "title": "Role Status",
   "description": "Role status JSON tracked in status/<ROLE>.json. States: todo, doing, verify, done, blocked, skipped.",
   "type": "object",
   "required": ["id", "state"],
   "properties": {
-    "id": {"type": "string", "pattern": "^E[0-9]$|^GATE [0-9]$|^PLAN [0-9]+\\.[0-9]+$"},
-    "state": {"type": "string", "enum": ["todo", "doing", "verify", "done", "blocked", "skipped"]},
-    "evidence": {"type": "string"},
-    "notes": {"type": "string"}
+    "id": { "type": "string", "pattern": "^E[0-9]$|^GATE [0-9]$|^PLAN [0-9]+\\.[0-9]+$" },
+    "state": {
+      "type": "string",
+      "enum": ["todo", "doing", "verify", "done", "blocked", "skipped"]
+    },
+    "evidence": { "type": "string" },
+    "notes": { "type": "string" }
   }
 }

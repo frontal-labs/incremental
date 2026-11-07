@@ -1,8 +1,8 @@
-# @backplane/turbopack
+# @incremental/turbopack
 
-The Turbopack app adapter, drafted in `spec/adapters/turbopack.md`. It is the honest version: entries are tasks, their declared inputs are recorded, and no module graph is claimed. An app is skipped when nothing in the repository changed. The inputs are every file under the repository root, except `node_modules`, `.git`, `.next`, `.backplane` and `.toolchain`, plus the lockfile and the `next` version in the context.
+The Turbopack app adapter, drafted in `spec/adapters/turbopack.md`. It is the honest version: entries are tasks, their declared inputs are recorded, and no module graph is claimed. An app is skipped when nothing in the repository changed. The inputs are every file under the repository root, except `node_modules`, `.git`, `.next`, `.incremental` and `.toolchain`, plus the lockfile and the `next` version in the context.
 
-Run: `backplane-turbopack run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]`. Exit codes match the TypeScript adapter: 0 advanced and all pass, 1 advanced with a failed build, 2 usage, 4 engine or setup error, 7 ran but not advanced.
+Run: `incremental-turbopack run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--timeout MS]`. Exit codes match the TypeScript adapter: 0 advanced and all pass, 1 advanced with a failed build, 2 usage, 4 engine or setup error, 7 ran but not advanced.
 
 ## Open questions and their answers
 
@@ -12,7 +12,7 @@ Checked against `next@16.4.2` (pinned), its `dist/docs` and its CLI help.
    - It is a bundle graph of the emitted client and server bundles. It does not list files the build reads without bundling them, such as files that only the type check reads (the log shows `Running TypeScript`). Not tested here, but it is the reason it cannot be the read set.
    - The route records carry coverage flags (`entries` and `groups`) that are `unknown` when the data is missing. An `unknown` coverage cannot be trusted as complete.
    - It needs a second analyzer build, and the docs still ask for feedback on it.
-   Revisit when the export covers the read set exactly and the coverage flags are always `exact`. Then the graph becomes a second capability and the adapter can claim the graph.
+     Revisit when the export covers the read set exactly and the coverage flags are always `exact`. Then the graph becomes a second capability and the adapter can claim the graph.
 2. **Is there a public, stable record of the modules read?** No. Turbopack has `--internal-trace`, which is internal. Nothing else lists the files a build read.
 3. **Can `next build` run offline?** Yes, in a fixture with `node_modules` installed. The build compiles, type checks and prerenders with no network access, with `NEXT_TELEMETRY_DISABLED=1`. Two requirements found on the way:
    - Turbopack resolves `next` from the app's own `node_modules` inside the workspace root. A `node_modules` symlinked from outside the repo fails with "Could not find the Next.js package". The tests copy `node_modules` instead.
@@ -25,6 +25,7 @@ Each directory with a `package.json` that depends on `next` is one task. The id 
 ## Declared inputs (not observed)
 
 Recorded with kind `declared` and a SHA-256 taken before the build. Absent files are not recorded.
+
 - `next.config.{js,mjs,cjs,ts,mts,cts}` in the app directory.
 - `tsconfig.json` and `package.json` in the app directory. The root `package.json` when the app is not the root.
 - `.env`, `.env.local`, `.env.production`, `.env.production.local` in the app directory. These are build-time env files.
@@ -42,10 +43,10 @@ Context: lockfile, root `tsconfig.json`, hash of all `package.json` files, `runn
 
 - `graph: false`. No module graph is recorded.
 - `caps.probes`, `caps.dirs` and `caps.env` are false. Environment reads at build time (for example `NEXT_PUBLIC_*`) are not observed. Use the env adapter's allowlist to make them declared.
-- Inputs are every file under the repository root (minus the skipped directories), hashed before and after each build. The build may write files: `next-env.d.ts` is excluded because its content follows the `next` version, and any other file the build changes makes the observation dirty, because the build did not read the state it recorded.
+- Inputs are every file under the repository root, minus the skipped directories and minus the directories of the other apps (an app does not import from another app's directory: this is an assumption, not checked). Shared code under `libs/` and the root files are inputs for every app, so an edit there reruns every app. Inputs are hashed before and after each build. The build may write files: `next-env.d.ts` is excluded because its content follows the `next` version, and any other file the build changes makes the observation dirty, because the build did not read the state it recorded.
 - Tracked environment: `NEXT_*` variables and `NODE_ENV`, recorded as env inputs. Other variables are not observed.
 - Not observed: variables outside the tracked set, files outside the repository root, and the `.next` build cache, which can change how a build behaves without changing any input. A build with an unobserved cache can therefore produce a different result for the same inputs.
-- Build outputs (`.next`) are not stored (PLAN 4.3). Remote build caches are not consulted. A `next build` that hits a cache is still recorded as a pass, and the cache is not trusted as proof.
+- Build outputs (`.next`) are not stored . Remote build caches are not consulted. A `next build` that hits a cache is still recorded as a pass, and the cache is not trusted as proof.
 
 ## Gaps
 

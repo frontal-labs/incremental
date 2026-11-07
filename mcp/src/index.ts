@@ -1,4 +1,4 @@
-// @backplane/mcp: the MCP server over stdio (bin backplane-mcp).
+// @incremental/mcp: the MCP server over stdio (bin incremental-mcp).
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { startServer } from "./server.js";
@@ -21,7 +21,7 @@ function isEntry(): boolean {
 
 if (isEntry()) {
   startServer().catch((e: unknown) => {
-    process.stderr.write(`backplane-mcp: ${e instanceof Error ? e.message : String(e)}\n`);
+    process.stderr.write(`incremental-mcp: ${e instanceof Error ? e.message : String(e)}\n`);
     process.exit(1);
   });
 }

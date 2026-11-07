@@ -1,0 +1,72 @@
+{
+  "spec": "replay",
+  "benchmark": "bench",
+  "engine": "/Users/gabrielfonseca/Desktop/graph/core/dist/incremental",
+  "repo": "/var/folders/kz/jgdz_yyx49qbmqh3l1txy9dw0000gn/T/bp-replay-0d3VuT/repo",
+  "commits": [
+    {
+      "index": 0,
+      "id": "17b6d74114beb9436c2e806e25b70ea837d15b66"
+    },
+    {
+      "index": 1,
+      "id": "2b2ac1f2db5bb30b59b44608bfbd4ed276dd428c"
+    },
+    {
+      "index": 2,
+      "id": "d3fc28c7e8df5784fb77fdecb7a097019ab46e3b"
+    },
+    {
+      "index": 3,
+      "id": "47d55c3eba06b76537ad5c8e2094f3216305c6d0"
+    },
+    {
+      "index": 4,
+      "id": "7313b286851dac2312879289409c4573c34f0f8c"
+    },
+    {
+      "index": 5,
+      "id": "5099d77e71bb6115032353fb5eb038899e584569"
+    },
+    {
+      "index": 6,
+      "id": "fbdbb9434cd11ebc4989d4a0e5aabbc9d33a51dd"
+    },
+    {
+      "index": 7,
+      "id": "29737f7a8c8b33b2cf60227f2850b9666f2a5298"
+    },
+    {
+      "index": 8,
+      "id": "ef3fc8839bcf6197b98f4663d6b594574559943a"
+    },
+    {
+      "index": 9,
+      "id": "7805b84dccbdea65bf960068073b25e78fa12c2b"
+    },
+    {
+      "index": 10,
+      "id": "862c80454bb6297a3b5edaeaa90d04c7f8bc5217"
+    }
+  ],
+  "commits_processed": 11,
+  "commits_evaluated": 10,
+  "total_tasks": 4,
+  "task_commit_pairs_examined": 40,
+  "false_skips": [],
+  "flaky": [],
+  "skip_shares": [
+    0.25,
+    0.75,
+    0.75,
+    0.75,
+    0.25,
+    0.75,
+    0.75,
+    0.75,
+    0.25,
+    0.25
+  ],
+  "median_skip_share": 0.75,
+  "rule_of_three_bound": "3/10"
+}

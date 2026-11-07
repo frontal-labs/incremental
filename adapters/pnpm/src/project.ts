@@ -6,12 +6,17 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, realpathSync } from "node:fs";
 import path from "node:path";
-import type { Context, Input } from "@backplane/client";
+import type { Context, Input } from "@incremental/client";
 
 // Directories the walk never enters. Build output (dist) is not skipped: a
 // dependent reads its dependency's output.
-const SKIP_DIRS = new Set(["node_modules", ".git", ".backplane", ".toolchain"]);
-const DEP_FIELDS = ["dependencies", "devDependencies", "optionalDependencies", "peerDependencies"] as const;
+const SKIP_DIRS = new Set(["node_modules", ".git", ".incremental", ".toolchain"]);
+const DEP_FIELDS = [
+  "dependencies",
+  "devDependencies",
+  "optionalDependencies",
+  "peerDependencies",
+] as const;
 
 export type DeclaredInput = Extract<Input, { kind: "declared" }>;
 
@@ -41,7 +46,7 @@ export interface TaskDef {
 }
 
 export function pnpmBin(): string {
-  return process.env.BACKPLANE_PNPM || "pnpm";
+  return process.env.INCREMENTAL_PNPM || "pnpm";
 }
 
 export function pnpmVersion(): string {
@@ -107,16 +112,18 @@ export function closure(pkgs: Pkg[], rel: string): string[] {
   const seen = new Set<string>();
   const stack = [rel];
   for (let next = stack.pop(); next !== undefined; next = stack.pop()) {
-    if (seen.has(next)) continue;
-    seen.add(next);
-    for (const d of byRel.get(next)?.deps ?? []) stack.push(d);
+    if (!seen.has(next)) {
+      seen.add(next);
+      for (const d of byRel.get(next)?.deps ?? []) stack.push(d);
+    }
   }
   return [...seen].sort();
 }
 
 export function tasksOf(pkgs: Pkg[]): TaskDef[] {
   const out: TaskDef[] = [];
-  for (const pkg of pkgs) for (const script of pkg.scripts) out.push({ task: `${pkg.rel}#${script}`, pkg, script });
+  for (const pkg of pkgs)
+    for (const script of pkg.scripts) out.push({ task: `${pkg.rel}#${script}`, pkg, script });
   return out.sort((a, b) => (a.task < b.task ? -1 : a.task > b.task ? 1 : 0));
 }
 
@@ -125,12 +132,13 @@ function filesUnder(root: string, rel: string): string[] {
   const out: string[] = [];
   const visit = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue;
-      const abs = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (!SKIP_DIRS.has(entry.name)) visit(abs);
-      } else if (entry.isFile()) {
-        out.push(relPath(root, abs));
+      if (!entry.isSymbolicLink()) {
+        const abs = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (!SKIP_DIRS.has(entry.name)) visit(abs);
+        } else if (entry.isFile()) {
+          out.push(relPath(root, abs));
+        }
       }
     }
   };
@@ -145,17 +153,17 @@ export function ownFiles(root: string, pkgs: Pkg[], rel: string): string[] {
   return filesUnder(root, rel).filter((f) => !others.some((o) => f === o || f.startsWith(`${o}/`)));
 }
 
-// The task ids that the repo declares confined in backplane-pnpm.json, a file
+// The task ids that the repo declares confined in incremental-pnpm.json, a file
 // at the root of the form {"confined": ["packages/lib#build"]}. A confined
 // task's script is declared to read nothing outside its declared inputs (its
 // package and workspace dependencies), so the observation is not dirty. The
 // adapter cannot verify that claim; the file is the user's statement of it.
 export function confinedTasks(root: string): Set<string> {
-  const file = path.join(root, "backplane-pnpm.json");
+  const file = path.join(root, "incremental-pnpm.json");
   if (!existsSync(file)) return new Set();
   const raw = JSON.parse(readFileSync(file, "utf8")) as { confined?: unknown };
   if (!Array.isArray(raw.confined) || raw.confined.some((t) => typeof t !== "string")) {
-    throw new Error("backplane-pnpm.json: confined must be an array of task ids");
+    throw new Error("incremental-pnpm.json: confined must be an array of task ids");
   }
   return new Set(raw.confined as string[]);
 }
@@ -220,4 +228,40 @@ export function runScript(root: string, t: TaskDef, timeoutMs: number): ScriptRe
   }
   if (r.status === 0) return { outcome: "pass", durationMs, problem: null };
   return { outcome: "fail", durationMs, problem: `script exited ${r.status}` };
+}
+
+// Config for the engine: every path that no confined task reads is ignored
+// (P11, dropped before any rule). A confined task is declared to read only its
+// declared inputs, so a change elsewhere cannot make it stale. Unconfined tasks
+// are dirty and rerun on every query whatever the ignore list says. The list is
+// directory globs where a whole directory holds no input, and file paths otherwise.
+// incremental-pnpm.json is always an input: it decides which tasks are confined.
+export function ignoreOutside(root: string, pkgs: Pkg[], confined: Set<string>): string[] {
+  const inputs = new Set<string>(["incremental-pnpm.json"]);
+  for (const t of tasksOf(pkgs)) {
+    if (confined.has(t.task)) {
+      for (const d of declaredInputs(root, pkgs, t.pkg.rel)) inputs.add(d.path);
+    }
+  }
+  const hasInputUnder = (rel: string): boolean => {
+    for (const f of inputs) if (f.startsWith(`${rel}/`)) return true;
+    return false;
+  };
+  const out: string[] = [];
+  const visit = (rel: string): void => {
+    const dir = path.join(root, rel);
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (!entry.isSymbolicLink() && !SKIP_DIRS.has(entry.name)) {
+        const childRel = rel === "" ? entry.name : `${rel}/${entry.name}`;
+        if (entry.isDirectory()) {
+          if (hasInputUnder(childRel)) visit(childRel);
+          else out.push(`${childRel}/**`);
+        } else if (!inputs.has(childRel)) {
+          out.push(childRel);
+        }
+      }
+    }
+  };
+  visit("");
+  return out.sort();
 }

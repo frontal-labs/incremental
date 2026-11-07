@@ -1,16 +1,39 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["protocol", "baseline", "graph_version", "verify", "tasks", "unobserved", "ignored", "deleted_tasks", "total_tasks", "skipped", "fallback", "confidence"],
+  "required": [
+    "protocol",
+    "baseline",
+    "graph_version",
+    "verify",
+    "tasks",
+    "unobserved",
+    "ignored",
+    "deleted_tasks",
+    "total_tasks",
+    "skipped",
+    "fallback",
+    "confidence"
+  ],
   "additionalProperties": true,
   "properties": {
-    "protocol": {"enum": [1]},
-    "tasks": {"type": "array", "items": {"type": "object", "required": ["id", "reasons"], "properties": {"id": {"type": "string"}, "reasons": {"type": "array", "items": {"type": "string"}}}}},
-    "unobserved": {"type": "array", "items": {"type": "string"}},
-    "ignored": {"type": "array", "items": {"type": "string"}},
-    "deleted_tasks": {"type": "array", "items": {"type": "string"}},
-    "total_tasks": {"type": "integer"},
-    "skipped": {"type": "integer"},
-    "confidence": {"enum": ["high", "medium", "n/a"]}
+    "protocol": { "enum": [1] },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "reasons"],
+        "properties": {
+          "id": { "type": "string" },
+          "reasons": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "unobserved": { "type": "array", "items": { "type": "string" } },
+    "ignored": { "type": "array", "items": { "type": "string" } },
+    "deleted_tasks": { "type": "array", "items": { "type": "string" } },
+    "total_tasks": { "type": "integer" },
+    "skipped": { "type": "integer" },
+    "confidence": { "enum": ["high", "medium", "n/a"] }
   }
 }

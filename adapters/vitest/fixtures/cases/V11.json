@@ -1,14 +1,21 @@
 {
-  "id": "V11", "desc": "Env-enumerating test, new variable", "mode":"balanced",
-  "edit": [{"op":"env","name":"FIXTURE_NEW_VAR","value":"1"}],
-  "query": {"changes":[],"verify":false,"policy":"balanced"},
+  "id": "V11",
+  "desc": "Env-enumerating test, new variable",
+  "mode": "balanced",
+  "edit": [{ "op": "env", "name": "FIXTURE_NEW_VAR", "value": "1" }],
+  "query": { "changes": [], "verify": false, "policy": "balanced" },
   "expect": {
     "tasks": [
-      {"id":"packages/app/test/envall.test.ts","reasons":["env_all_changed"]},
-      {"id":"packages/core/test/worker.test.ts","reasons":["dirty_observation"]}
+      { "id": "packages/app/test/envall.test.ts", "reasons": ["env_all_changed"] },
+      { "id": "packages/core/test/worker.test.ts", "reasons": ["dirty_observation"] }
     ],
-    "unobserved": [], "ignored": [], "deleted_tasks": [], "fallback": null, "confidence": "medium",
-    "ran": ["packages/app/test/envall.test.ts","packages/core/test/worker.test.ts"],
-    "exit": 0, "advanced": true
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium",
+    "ran": ["packages/app/test/envall.test.ts", "packages/core/test/worker.test.ts"],
+    "exit": 0,
+    "advanced": true
   }
 }

@@ -23,15 +23,11 @@
     "tasks": [
       {
         "id": "packages/core/test/crash.test.ts",
-        "reasons": [
-          "reads:packages/core/test/crash.flag"
-        ]
+        "reasons": ["reads:packages/core/test/crash.flag"]
       },
       {
         "id": "packages/core/test/worker.test.ts",
-        "reasons": [
-          "dirty_observation"
-        ]
+        "reasons": ["dirty_observation"]
       }
     ],
     "unobserved": [],
@@ -39,10 +35,7 @@
     "deleted_tasks": [],
     "fallback": null,
     "confidence": "medium",
-    "ran": [
-      "packages/core/test/crash.test.ts",
-      "packages/core/test/worker.test.ts"
-    ],
+    "ran": ["packages/core/test/crash.test.ts", "packages/core/test/worker.test.ts"],
     "exit": 7,
     "advanced": false,
     "outcomes": {
@@ -66,16 +59,11 @@
         "tasks": [
           {
             "id": "packages/core/test/crash.test.ts",
-            "reasons": [
-              "failed_outcome",
-              "reads:packages/core/test/crash.flag"
-            ]
+            "reasons": ["failed_outcome", "reads:packages/core/test/crash.flag"]
           },
           {
             "id": "packages/core/test/worker.test.ts",
-            "reasons": [
-              "dirty_observation"
-            ]
+            "reasons": ["dirty_observation"]
           }
         ],
         "unobserved": [],
@@ -83,10 +71,7 @@
         "deleted_tasks": [],
         "fallback": null,
         "confidence": "medium",
-        "ran": [
-          "packages/core/test/crash.test.ts",
-          "packages/core/test/worker.test.ts"
-        ],
+        "ran": ["packages/core/test/crash.test.ts", "packages/core/test/worker.test.ts"],
         "exit": 7,
         "advanced": false,
         "outcomes": {

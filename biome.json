@@ -1,33 +1,19 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "root": true,
-  "extends": ["ultracite/biome/core", "ultracite/biome/type-aware"],
-  "files": {
-    "includes": [
-      "**",
-      "!!**/node_modules",
-      "!!**/dist",
-      "!!**/build",
-      "!!**/.turbo",
-      "!!**/*.gen.ts"
-    ]
-  },
   "linter": {
     "enabled": true,
     "rules": {
+      "preset": "recommended",
       "suspicious": {
         "noConsole": "off",
         "noBiomeFirstException": "off"
       },
       "style": {
         "noNonNullAssertion": "off"
-      }
-    }
-  },
-  "assist": {
-    "actions": {
-      "source": {
-        "organizeImports": "off"
+      },
+      "performance": {
+        "noBarrelFile": "off"
       }
     }
   },
@@ -48,6 +34,29 @@
     "formatter": {
       "enabled": true,
       "trailingCommas": "none"
+    }
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!!**/node_modules",
+      "!!**/dist",
+      "!!**/build",
+      "!!**/target",
+      "!!benchmarks/results",
+      "!!monorepos",
+      "!!**/.turbo",
+      "!!**/*.gen.ts",
+      "!!LICENSE.md",
+      "!!COMPETITORS.md",
+      "!!**/*.test.md"
+    ]
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "off"
+      }
     }
   },
   "vcs": {
@@ -97,6 +106,12 @@
             "noUnresolvedImports": "off"
           }
         }
+      }
+    },
+    {
+      "includes": ["**/*.yml", "**/*.yaml"],
+      "formatter": {
+        "enabled": true
       }
     }
   ]

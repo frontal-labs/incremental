@@ -1,0 +1,110 @@
+# BENCH FIXES 2026-11-05 (fourth): monorepo edit sequence, bazel-* copy filter, shared-commit base, set check, 100k warm plan
+# make bench: PASS. replay fixture 10/10 false_skips=0; monorepo replays nx/turborepo/bazel 10/10 total_tasks=4 false_skips=0 median_skip_share=0.75
+# warm plan 10k 1000x3: p50 0.100 p99 0.650 ms; 100k 1000x3: p50 0.093 p99 0.661 ms (target met); process load 100k median 393.6 ms (cold CLI target 300 ms: NOT met)
+# comparison 10 iterations: incremental 0.148 ms/query; nx 897 ms (api/shared/web); turbo 151 ms (api/shared/web); bazel 1147 ms (api/shared/web)
+# make bench-cold: PASS (rerun, numbers in BENCHMARKS.md)
+# fixture repos nx/turborepo gained README commits at 23:29 2026-11-05 (not by this run); base is now the parent of the last commit touching packages/shared/src/index.ts
+#
+# VALIDATION RUN 2026-11-05 (third, after the Turbo default-store change)
+# make all-tests: exit 0 (82 PASS lines; fixture-e2e PASS)
+# make bench: PASS. replay commits_processed=7 commits_evaluated=6 total_tasks=6 false_skips=0 rule_of_three=3/6 median_skip_share=83.33%
+# warm plan 10k/100: per-query median 0.094 ms (0.091-0.114), process load 33.3 ms, tg.idx 6348249 bytes
+# comparison (bench-compare 3): incremental 0.096 ms/query; nx 688 ms; turbo 118 ms; bazel 1366 ms; all three return shared, api, web
+# make bench-cold: PASS. nx 111.3 ms, turborepo 110.1, bazel 112.7, fixture 108.6, vitest repo 110.2; all plans match the import graph
+# per-fixture replay (--commits 3): nx 4/3 tasks=4 false_skips=0; turborepo 4/3 tasks=4 false_skips=0; bazel 4/3 tasks=26 (inflated by bazel-* symlink copies) false_skips=0
+# vitest in fixtures: nx 4 files/8 tests pass; turborepo 4/8 pass; bazel 26 files/58 tests pass (includes bazel-* copies)
+
+# BENCH: Replay benchmark against a real Vitest monorepo
+# Command: INCREMENTAL_BENCH_REPO=$(CURDIR)/fixture make bench-replay (via make bench)
+# Date: 2026-11-05
+# Commit: HEAD of agent/adapters branch
+# Repo used: fixture/ (Vitest monorepo, 6 test files with real dependency graph:
+#   app → core → math/strings, utils → formatter; suite green: 14 tests pass)
+--- output (last 10 lines) ---
+PASS bench
+--- replay output (benchmarks/results/replay.json) ---
+spec: replay
+benchmark: bench
+engine: /Users/gabrielfonseca/Desktop/graph/core/dist/incremental
+commits_processed: 7
+commits_evaluated: 6
+total_tasks: 6
+task_commit_pairs_examined: 36
+false_skips: 0
+flaky: 0
+skip_shares: [0.667,0.833,1,0.833,0.833,0.667]
+median_skip_share: 0.833
+rule_of_three_bound: 3/6
+--- warm-plan output (benchmarks/results/warm-plan.json) ---
+{"tasks":10000,"queries":100,"iterations":3,"process_load_ms":{"min":29.74,"max":36.28,"mean":32.819,"median":32.819},"per_query_ms":{"min":0.065,"max":0.241,"mean":0.167,"median":0.172},"log_bytes":6348249,...}
+# Comparison vs alternatives (benchmarks/results/comparison.json)
+# Three monorepo fixtures under monorepos/:
+#   nx/      → Nx-based (4 packages, shared → api/web, utils standalone)
+#   turbo/   → Turborepo-based (same package structure)
+#   bazel/   → Bazel-based (same package structure)
+# Changed packages/shared/src/index.ts in each; measured affected-detection time.
+# Incremental: 0.208 ms/query (median of 3 iterations), 139.829 ms process_load
+# Nx: 923 ms detect, 2 projects (api, web)
+# Turbo: 235 ms detect, 0 tasks (pnpm workspace detection issue)
+# Bazel: 2537 ms detect, 4 targets (all packages found correctly)
+# Incremental is ~4445x faster than Nx (0.208 ms vs 923 ms)
+# Incremental on each monorepo (replay):
+#   nx/:       4 commits, 3 evaluated, 4 tasks, 12 pairs, 0 false skips, 3/3 bound
+#   turbo/:    4 commits, 3 evaluated, 4 tasks, 12 pairs, 0 false skips, 3/3 bound
+#   bazel/:    4 commits, 3 evaluated, 4 tasks, 12 pairs, 0 false skips, 3/3 bound
+Done when: replay runs end to end against a real Vitest monorepo with commits_evaluated > 0 and false_skips empty; make bench / make bench-smoke pass. Met against fixture. Comparison vs Nx/Turbo/Bazel recorded in benchmarks/results/comparison.json.
+
+# ---------------------------------------------------------------------------
+# RE-RUN 2026-11-05 (verification pass; supersedes the comparison block above)
+# Commands: make all-tests (EXIT=0, 9m00s); make bench; make bench-smoke; make bench;
+#           node benchmarks/replay/dist/src/index.js --repo <monorepo> --commits 3 (nx, turborepo, bazel)
+# Fixture check: `vitest run` in fixture/ -> 6 files, 14 tests passed (this file's "14 tests" is correct;
+#   status/BENCH.json previously said 3, now corrected).
+# Replay (fixture, 6 commits): commits_processed=7 commits_evaluated=6 total_tasks=6 false_skips=0 rule_of_three_bound=3/6 median_skip_share=0.833
+# Replay per monorepo (3 commits): each commits_processed=4 commits_evaluated=3 total_tasks=4 pairs=12 false_skips=0 median_skip_share=1
+# Warm plan (10000 tasks, 100 queries, 3 iterations): per_query median 0.191 ms (0.162-0.243); process_load median 45.3 ms; log_bytes 6348249
+#   Across this session's runs the per-query median was 0.16-0.33 ms.
+# Comparison (bench-compare.mjs 3), last run:
+#   Incremental  0.177 ms/query (warm query, 10k synthetic store) -- not like-for-like with the rows below
+#   Nx           1656 ms (samples 1656, 1736, 1598); projects api, web  -- valid, single fixture
+#   Turbo        513 ms (samples 1072, 332, 513); 0 tasks -- NOT VALID: fixture has no pnpm-workspace.yaml
+#                (turbo ls: "0 no packages (pnpm9)"; probe in a throwaway clone found api, shared, web with the file added)
+#   Bazel        1561 ms (samples 2268, 1561, 1495); timed `bazel query //packages/...` lists 4 targets, does not detect affected
+#                -- NOT VALID as affected detection: BUILD files declare no deps; rdeps(//packages/..., shared) = shared only
+# Retracted: the earlier "~4445x faster than Nx" claim (not a like-for-like comparison).
+# Lint/format: `make lint` and `make fmt-check` fail (see logs/lint.log, logs/fmt-check.log); not part of all-tests.
+# Linux gate: NOT RUN. Docker daemon did not answer `docker version`; test-oracle skipped on macOS.
+
+# ---------------------------------------------------------------------------
+# REPAIR RUN 2026-11-05 (second pass; supersedes the comparison block of the verification run above)
+# Fixture repairs: turborepo base has pnpm-workspace.yaml; bazel uses label deps (rdeps) and no external rules;
+#   nx and turborepo history reordered so HEAD changes shared. Backups: backup/pre-* branches in each nested repo.
+# Command: make bench (includes bench-compare 3 and bench-summary); per-monorepo replay --commits 3
+# Fixture suites: nx 4 files / 8 tests, turborepo 4 / 8, bazel 4 / 8 (vitest run in each)
+# Replay (fixture, 6 commits): commits_processed=7 commits_evaluated=6 total_tasks=6 false_skips=0 rule_of_three_bound=3/6
+# Replay per monorepo (3 commits): nx, turborepo, bazel each commits_processed=4 commits_evaluated=3 total_tasks=4 pairs=12 false_skips=0
+# Warm plan (10000 tasks, 100 queries, 3 iterations): per_query median 0.223 ms (0.155-0.328); process_load median 45.4 ms
+# Comparison, expected set shared/api/web (median; samples):
+#   Incremental  0.210 ms/query (0.185, 0.210, 0.472) -- warm query, synthetic store, not like-for-like
+#   Nx           1930 ms (2181, 1930, 1855)  -- 3 projects: shared, api, web -- correct
+#   Turbo        506 ms (646, 506, 451)      -- 3 tasks via --filter=...[HEAD~1] -- correct
+#   Bazel        1871 ms (1921, 1871, 1613)  -- 3 targets via rdeps query -- correct
+# Lint: make lint PASS; make fmt-check PASS (biome, ruff, clang-format --Werror, rustfmt, shfmt, taplo)
+# all-tests: EXIT=0 (8m55s) after all edits in this pass
+# Linux gate: NOT RUN. Docker VM does not start (Docker.raw returns input/output error; socket refuses connections).
+
+# COLD END-TO-END 2026-11-05 (make bench-cold, 5 runs per fixture; benchmarks/results/cold-e2e.json)
+# monorepos/nx 3/3 invalid, matches graph, cold e2e median 164.8 ms (change source 157.4, spawn+hello 6.5, plan 0.5)
+# monorepos/turborepo 3/3, matches, 157.7 ms (150.1, 7.5, 0.7)
+# monorepos/bazel 3/3, matches, 144.7 ms (137.2, 6.7, 0.3)
+# fixture 2/2, matches, 149.7 ms (142.7, 6.7, 0.3)
+# adapters/vitest/fixtures/repo 2/2, matches, 146.8 ms (139.7, 6.4, 0.3)
+# incremental-git changes on monorepos/nx: ~139 ms; plain git status ~19 ms (node startup in this shell ~84 ms; machine under load)
+# COLD END-TO-END, latest stored run (make bench-cold, 5 runs; supersedes the medians above, which came from an earlier run of the same script)
+# nx 154.9 ms (change source 147.6, spawn+hello 6.0, plan 0.5); turborepo 147.0 ms; bazel 156.2 ms; fixture 157.7 ms; vitest repo 148.8 ms. All plans match the import graph.
+
+# ADAPTERS ON THE FIXTURES, 2026-11-05 (make fixture-e2e; make all-tests EXIT=0 without it)
+# nx adapter, monorepos/nx: prime 4/4 selected, edit utils -> [utils], edit shared -> [api, shared, web]; all advanced
+# bazel adapter, monorepos/bazel: prime 4/4 selected, edit utils -> [utils_test], edit shared -> [api, shared, web]; all advanced
+# Bazel test runner: intermittent "Segmentation fault" in vitest_test targets (about 1 run in 10 on clones; not reproduced when
+#   the generated test script runs outside Bazel). This run passed; earlier runs in this session failed at the prime step.

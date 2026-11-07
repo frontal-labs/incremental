@@ -1,0 +1,188 @@
+{
+  "timestamp": "2026-11-06T15:53:37.564Z",
+  "iterations": 5,
+  "fixtures": {
+    "nx": {
+      "base": "4e8b385a29c3fbe3b1bdd94c2bcd82d30ad4f8da",
+      "change": "6b3868892fecff5e9f017838fedd822654bd40e1",
+      "methods": {
+        "raw": {
+          "median_ms": 7389.95925,
+          "samples_ms": [
+            5004,
+            7583,
+            7390,
+            8236,
+            7179
+          ],
+          "packages": [
+            "api",
+            "shared",
+            "utils",
+            "web"
+          ],
+          "pass": true,
+          "correct": true,
+          "selective": false
+        },
+        "nx": {
+          "median_ms": 11284.529083,
+          "samples_ms": [
+            10932,
+            12373,
+            12954,
+            11285,
+            7588
+          ],
+          "packages": [
+            "api",
+            "shared",
+            "web"
+          ],
+          "pass": true,
+          "correct": true,
+          "selective": true
+        },
+        "incremental": {
+          "median_ms": 2681.899166,
+          "samples_ms": [
+            2906,
+            2853,
+            2544,
+            2682,
+            2434
+          ],
+          "packages": [
+            "api",
+            "shared",
+            "web"
+          ],
+          "pass": true,
+          "correct": true,
+          "selective": true
+        }
+      }
+    },
+    "turborepo": {
+      "base": "962c2fa098745494679d6b6b425438fbe574f27a",
+      "change": "624b170e15fcb5e9a1b8e179b3bf978e962f0611",
+      "methods": {
+        "raw": {
+          "median_ms": 4420.052334,
+          "samples_ms": [
+            3267,
+            3487,
+            4420,
+            5379,
+            4441
+          ],
+          "packages": [
+            "api",
+            "shared",
+            "utils",
+            "web"
+          ],
+          "pass": true,
+          "correct": true,
+          "selective": false
+        },
+        "turbo": {
+          "median_ms": 5882.803042,
+          "samples_ms": [
+            6907,
+            5883,
+            5823,
+            4266,
+            6987
+          ],
+          "packages": [
+            "api",
+            "shared",
+            "web"
+          ],
+          "pass": true,
+          "correct": true,
+          "selective": true
+        },
+        "incremental": {
+          "median_ms": 2665.171208,
+          "samples_ms": [
+            2433,
+            2392,
+            2690,
+            2665,
+            2934
+          ],
+          "packages": [
+            "api",
+            "shared",
+            "web"
+          ],
+          "pass": true,
+          "correct": true,
+          "selective": true
+        }
+      }
+    },
+    "bazel": {
+      "base": "bb75f3bdd9b03cf9a4c0496e2a4951b41f016010",
+      "change": "288e1b288a1c47e56db8835fc47dc9b72829a5c9",
+      "methods": {
+        "raw": {
+          "median_ms": 2666.032333,
+          "samples_ms": [
+            3120,
+            2052,
+            2666,
+            3235,
+            1970
+          ],
+          "packages": [
+            "api",
+            "shared",
+            "utils",
+            "web"
+          ],
+          "pass": true,
+          "correct": true,
+          "selective": false
+        },
+        "bazel": {
+          "median_ms": 4422.525792,
+          "samples_ms": [
+            4423,
+            4292,
+            4587,
+            3974,
+            4803
+          ],
+          "packages": [
+            "api",
+            "web"
+          ],
+          "pass": true,
+          "correct": false,
+          "selective": false
+        },
+        "incremental": {
+          "median_ms": 4286.721625,
+          "samples_ms": [
+            3642,
+            4099,
+            6078,
+            4287,
+            5457
+          ],
+          "packages": [
+            "api",
+            "shared",
+            "web"
+          ],
+          "pass": true,
+          "correct": true,
+          "selective": true
+        }
+      }
+    }
+  }
+}

@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/index.json",
-  "title": "Backplane Schemas Index",
-  "description": "Index of all backplane JSON schemas.",
+  "$id": "https://incremental.dev/schemas/index.json",
+  "title": "Incremental Schemas Index",
+  "description": "Index of all incremental JSON schemas.",
   "type": "object",
   "required": ["schemas"],
   "properties": {
@@ -12,9 +12,9 @@
         "type": "object",
         "required": ["name", "path", "description"],
         "properties": {
-          "name": {"type": "string"},
-          "path": {"type": "string"},
-          "description": {"type": "string"}
+          "name": { "type": "string" },
+          "path": { "type": "string" },
+          "description": { "type": "string" }
         }
       }
     }

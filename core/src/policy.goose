@@ -233,16 +233,23 @@ fn plan(st: Store&, q: Query&, root: const u8[:], out: u8[>..]&) {
             let names = ["lockfile", "tsconfig", "pkgjson", "runner", "node", "fmt", "caps"];
             for j in names.len {
                 let qi = kv_find(st, q_ctx, 0, q_ctx.len, names[j]);
-                let si = kv_find(st, g_kvs, st.ctx_from, st.ctx_n, names[j]);
+                let si = if st.ctx_id >= 0 {
+                    let cf, cn = ctx_range(st.ctx_id);
+                    kv_find(st, g_kvs, cf, cn, names[j])
+                } else { -1 };
                 if !ctx_equal(st, q, qi, si) && fb < 2 { fb = 2; }
             }
         } else {
             for j in q_keys.len {
                 let key = text(st, q_keys[j]);
-                if is_reserved(key) { continue; }
-                let qi = kv_find(st, q_ctx, 0, q_ctx.len, key);
-                let si = kv_find(st, g_kvs, st.ctx_from, st.ctx_n, key);
-                if !ctx_equal(st, q, qi, si) && fb < 2 { fb = 2; }
+                if !is_reserved(key) {
+                    let qi = kv_find(st, q_ctx, 0, q_ctx.len, key);
+                    let si = if st.ctx_id >= 0 {
+                        let cf, cn = ctx_range(st.ctx_id);
+                        kv_find(st, g_kvs, cf, cn, key)
+                    } else { -1 };
+                    if !ctx_equal(st, q, qi, si) && fb < 2 { fb = 2; }
+                }
             }
         }
     }
@@ -269,42 +276,43 @@ fn plan(st: Store&, q: Query&, root: const u8[:], out: u8[>..]&) {
                 }
                 if is_known(st, old) { deleted.push(old_span); }
             }
-            if c.status == 2 { continue; }
-            // P3: readers of the path. P4 and P6 and P7 below.
-            let pi = find_path(st, p);
-            gather(pi, 0, hits);
-            let in_index = hits.len > 0;
-            for k in hits.len {
-                if g_inps[hits[k].inp].kind == 5 {
-                    add_reason(st, rs, obs_name(hits[k].obs), "declared:", p);
-                } else {
-                    add_reason(st, rs, obs_name(hits[k].obs), "reads:", p);
-                }
-            }
-            if is_known(st, p) && (c.status == 1 || c.status == 0) {
-                // P4
-                add_reason(st, rs, known_span(st, p), "self_changed", "");
-            } else if !in_index && (c.status == 1 || c.status == 3) {
-                // P6
-                if !cons && caps_ok {
-                    let dir = parent_of(p);
-                    gather(pi, 2, hits);
-                    for k in hits.len {
-                        add_reason(st, rs, obs_name(hits[k].obs), "probe:", p);
+            if c.status != 2 {
+                // P3: readers of the path. P4 and P6 and P7 below.
+                let pi = find_path(st, p);
+                gather(pi, 0, hits);
+                let in_index = hits.len > 0;
+                for k in hits.len {
+                    if g_inps[hits[k].inp].kind == 5 {
+                        add_reason(st, rs, obs_name(hits[k].obs), "declared:", p);
+                    } else {
+                        add_reason(st, rs, obs_name(hits[k].obs), "reads:", p);
                     }
-                    gather(find_path(st, dir), 1, hits);
-                    for k in hits.len {
-                        add_reason(st, rs, obs_name(hits[k].obs), "dir:", dir);
-                    }
-                } else if fb < 1 {
-                    fb = 1;
                 }
-            } else if !in_index && c.status == 0 {
-                // P7
-                if !cons && caps_ok {
-                    unobserved.push(c.path);
-                } else if fb < 1 {
-                    fb = 1;
+                if is_known(st, p) && (c.status == 1 || c.status == 0) {
+                    // P4
+                    add_reason(st, rs, known_span(st, p), "self_changed", "");
+                } else if !in_index && (c.status == 1 || c.status == 3) {
+                    // P6
+                    if !cons && caps_ok {
+                        let dir = parent_of(p);
+                        gather(pi, 2, hits);
+                        for k in hits.len {
+                            add_reason(st, rs, obs_name(hits[k].obs), "probe:", p);
+                        }
+                        gather(find_path(st, dir), 1, hits);
+                        for k in hits.len {
+                            add_reason(st, rs, obs_name(hits[k].obs), "dir:", dir);
+                        }
+                    } else if fb < 1 {
+                        fb = 1;
+                    }
+                } else if !in_index && c.status == 0 {
+                    // P7
+                    if !cons && caps_ok {
+                        unobserved.push(c.path);
+                    } else if fb < 1 {
+                        fb = 1;
+                    }
                 }
             }
         }
@@ -334,24 +342,25 @@ fn standing_reasons(st: Store&, q: Query&, rs: Rs[>..]&) {
     var w: i64 = 0;
     for i in g_standing.len {
         let oi = g_standing[i];
-        if !obs_live(oi) { continue; }
-        g_standing[w] = oi;
-        w += 1;
-        let o = g_obs[oi];
-        let name = obs_name(oi);
-        if o.dirty { add_reason(st, rs, name, "dirty_observation", ""); }
-        if o.outcome == 1 || o.outcome == 2 { add_reason(st, rs, name, "failed_outcome", ""); }
-        for k in o.inp_n {
-            let inp = g_inps[o.inp_from + k];
-            if inp.kind == 3 {
-                let qi = kv_find(st, q_env, 0, q_env.len, text(st, inp.name));
-                let cur = if qi >= 0 { text(st, q_env[qi].v) } else { "unset" };
-                if cur != text(st, inp.vh) {
-                    add_reason(st, rs, name, "env_changed:", text(st, inp.name));
+        if obs_live(oi) {
+            g_standing[w] = oi;
+            w += 1;
+            let o = g_obs[oi];
+            let name = obs_name(oi);
+            if o.dirty { add_reason(st, rs, name, "dirty_observation", ""); }
+            if o.outcome == 1 || o.outcome == 2 { add_reason(st, rs, name, "failed_outcome", ""); }
+            for k in o.inp_n {
+                let inp = g_inps[o.inp_from + k];
+                if inp.kind == 3 {
+                    let qi = kv_find(st, q_env, 0, q_env.len, text(st, inp.name));
+                    let cur = if qi >= 0 { text(st, q_env[qi].v) } else { "unset" };
+                    if cur != text(st, inp.vh) {
+                        add_reason(st, rs, name, "env_changed:", text(st, inp.name));
+                    }
                 }
-            }
-            if inp.kind == 4 && env_all_differs(st, q, inp) {
-                add_reason(st, rs, name, "env_all_changed", "");
+                if inp.kind == 4 && env_all_differs(st, q, inp) {
+                    add_reason(st, rs, name, "env_all_changed", "");
+                }
             }
         }
     }
@@ -363,12 +372,13 @@ fn standing_reasons(st: Store&, q: Query&, rs: Rs[>..]&) {
 // the mode that pays for hashing files, not the default query.
 fn verify_reasons(st: Store&, root: const u8[:], rs: Rs[>..]&) {
     for ti in g_tasks.len {
-        if !task_live(ti) { continue; }
-        let o = g_obs[g_tasks[ti].latest];
-        for k in o.inp_n {
-            let inp = g_inps[o.inp_from + k];
-            if (inp.kind == 0 || inp.kind == 5) && !file_matches(st, root, text(st, inp.path), text(st, inp.hash)) {
-                add_reason(st, rs, g_tasks[ti].id, "stale:", text(st, inp.path));
+        if task_live(ti) {
+            let o = g_obs[g_tasks[ti].latest];
+            for k in o.inp_n {
+                let inp = g_inps[o.inp_from + k];
+                if (inp.kind == 0 || inp.kind == 5) && !file_matches(st, root, text(st, inp.path), text(st, inp.hash)) {
+                    add_reason(st, rs, g_tasks[ti].id, "stale:", text(st, inp.path));
+                }
             }
         }
     }
@@ -509,10 +519,11 @@ fn write_list(st: Store&, xs: Span[>..]&, out: u8[>..]&) {
     out.push('[');
     var n: i64 = 0;
     for i in xs.len {
-        if i > 0 && same(st, xs[i], text(st, xs[i - 1])) { continue; }
-        if n > 0 { out.push(','); }
-        n += 1;
-        json::format_string(out, text(st, xs[i]));
+        if !(i > 0 && same(st, xs[i], text(st, xs[i - 1]))) {
+            if n > 0 { out.push(','); }
+            n += 1;
+            json::format_string(out, text(st, xs[i]));
+        }
     }
     out.push(']');
 }

@@ -1,18 +1,18 @@
-# Backplane Conformance
+# Incremental Conformance
 
-The language-neutral conformance suite for backplane Protocol v1 and the policy engine. Conformance ensures that any engine implementation answers `affected` identically, given the same observations and changes.
+The language-neutral conformance suite for incremental Protocol v1 and the policy engine. Conformance ensures that any engine implementation answers `affected` identically, given the same observations and changes.
 
 ## Contents
 
-| Path | Description |
-|---|---|
-| `conformance/cases/` | 40 conformance cases (C01–C40), covering policy rules P0–P11, fallbacks, confidence, verify, and protocol-level behavior. |
-| `conformance/run.mjs` | Conformance runner: executes the 40 cases through the engine (`core/dist/backplane`). |
-| `conformance/fuzz.mjs` | Differential fuzz against the general reference implementation (3 seeds). |
-| `conformance/adapters/` | Adapter-related conformance material. |
-| `conformance/spec/` | Spec snapshots used by conformance. |
-| `conformance/stores/` | Test stores used by cases. |
-| `conformance/worktrees/` | Test worktrees used by cases. |
+| Path                     | Description                                                                                                               |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `conformance/cases/`     | 40 conformance cases (C01–C40), covering policy rules P0–P11, fallbacks, confidence, verify, and protocol-level behavior. |
+| `conformance/run.mjs`    | Conformance runner: executes the 40 cases through the engine (`core/dist/incremental`).                                   |
+| `conformance/fuzz.mjs`   | Differential fuzz against the general reference implementation (3 seeds).                                                 |
+| `conformance/adapters/`  | Adapter-related conformance material.                                                                                     |
+| `conformance/spec/`      | Spec snapshots used by conformance.                                                                                       |
+| `conformance/stores/`    | Test stores used by cases.                                                                                                |
+| `conformance/worktrees/` | Test worktrees used by cases.                                                                                             |
 
 ## Running
 

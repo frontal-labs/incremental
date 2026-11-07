@@ -1,5 +1,5 @@
 // Integration tests: a scratch git repository with Playwright test files, run
-// through the real engine, backplane-git and the pinned Playwright CLI
+// through the real engine, incremental-git and the pinned Playwright CLI
 // (spec/adapters/playwright.md). No browser is launched: the test files use no
 // browser fixture. The live test uses the request fixture against a local server,
 // which is recorded dirty.
@@ -22,7 +22,11 @@ const GIT_ENV = {
 
 // The adapter's node_modules, linked into the scratch repo so its test files can
 // import @playwright/test. Ignored by git (.gitignore), so the worktree stays clean.
-const NODE_MODULES = path.resolve(path.dirname(createRequire(import.meta.url).resolve("@playwright/test/package.json")), "..", "..");
+const NODE_MODULES = path.resolve(
+  path.dirname(createRequire(import.meta.url).resolve("@playwright/test/package.json")),
+  "..",
+  "..",
+);
 
 function git(cwd: string, ...args: string[]): string {
   const r = spawnSync("git", args, { cwd, encoding: "utf8", env: GIT_ENV });
@@ -66,7 +70,7 @@ test("live", async ({ request }) => {
 `;
 
 function makeRepo(): { root: string; store: string; base: string } {
-  const base = mkdtempSync(path.join(os.tmpdir(), "backplane-pw-"));
+  const base = mkdtempSync(path.join(os.tmpdir(), "incremental-pw-"));
   const root = path.join(base, "repo");
   mkdirSync(root);
   git(root, "init", "-q", "-b", "main");
@@ -87,7 +91,13 @@ function cleanup(base: string): void {
 }
 
 async function run(root: string, store: string, base?: string): Promise<RunReport> {
-  return runAdapter({ root, store, all: false, timeoutMs: 120_000, ...(base !== undefined ? { base } : {}) });
+  return runAdapter({
+    root,
+    store,
+    all: false,
+    timeoutMs: 120_000,
+    ...(base !== undefined ? { base } : {}),
+  });
 }
 
 function result(r: RunReport, task: string) {
@@ -99,7 +109,11 @@ function result(r: RunReport, task: string) {
 test("discovery lists the test files, not the helpers", () => {
   const { root, base } = makeRepo();
   try {
-    assert.deepEqual(discoverTasks(root, defaultPlaywright()), ["live/api.spec.ts", "pure/a.spec.ts", "pure/b.spec.ts"]);
+    assert.deepEqual(discoverTasks(root, defaultPlaywright()), [
+      "live/api.spec.ts",
+      "pure/a.spec.ts",
+      "pure/b.spec.ts",
+    ]);
   } finally {
     cleanup(base);
   }
@@ -110,7 +124,11 @@ test("first run runs every task, advances the baseline and exits 0", async () =>
   try {
     const r = await run(root, store);
     assert.deepEqual(r.selected, ["live/api.spec.ts", "pure/a.spec.ts", "pure/b.spec.ts"]);
-    assert.deepEqual(r.results.map((x) => x.outcome), ["pass", "pass", "pass"], JSON.stringify(r.results));
+    assert.deepEqual(
+      r.results.map((x) => x.outcome),
+      ["pass", "pass", "pass"],
+      JSON.stringify(r.results),
+    );
     assert.equal(r.advanced, true);
     assert.equal(r.exit, 0);
   } finally {
@@ -138,7 +156,11 @@ test("an edit to a shared helper invalidates every test that imports it", async 
   const { root, store, base } = makeRepo();
   try {
     await run(root, store);
-    write(root, "pure/helper.ts", "export const add = (x: number, y: number): number => x + y + 0;\n");
+    write(
+      root,
+      "pure/helper.ts",
+      "export const add = (x: number, y: number): number => x + y + 0;\n",
+    );
     commit(root, "edit helper");
     const r = await run(root, store);
     assert.ok(r.selected.includes("pure/b.spec.ts"), r.selected.join(", "));
@@ -173,8 +195,14 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
     const r = await run(root, store);
     assert.equal(r.advanced, false);
     assert.equal(r.exit, 7);
-    assert.ok(r.notAdvanced.some((m) => m.includes("dirty")), r.notAdvanced.join("; "));
-    assert.ok(!existsSync(path.join(root, "test-results")), "the run must not write into the worktree");
+    assert.ok(
+      r.notAdvanced.some((m) => m.includes("dirty")),
+      r.notAdvanced.join("; "),
+    );
+    assert.ok(
+      !existsSync(path.join(root, "test-results")),
+      "the run must not write into the worktree",
+    );
   } finally {
     cleanup(base);
   }

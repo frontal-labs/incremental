@@ -9,11 +9,13 @@ import path from "node:path";
 export function parseDepInfo(text: string): string[] {
   const deps = new Set<string>();
   for (const line of text.replace(/\\\n/g, " ").split("\n")) {
-    if (line.trim() === "" || line.startsWith("#")) continue;
-    const sep = separatorOf(line);
-    if (sep < 0) continue;
-    for (const token of line.slice(sep + 1).match(/(?:\\ |[^ ])+/g) ?? []) {
-      deps.add(token.replace(/\\ /g, " "));
+    if (line.trim() !== "" && !line.startsWith("#")) {
+      const sep = separatorOf(line);
+      if (sep >= 0) {
+        for (const token of line.slice(sep + 1).match(/(?:\\ |[^ ])+/g) ?? []) {
+          deps.add(token.replace(/\\ /g, " "));
+        }
+      }
     }
   }
   return [...deps];
@@ -23,7 +25,8 @@ export function parseDepInfo(text: string): string[] {
 // the line, and not escaped.
 function separatorOf(line: string): number {
   for (let i = 0; i < line.length; i++) {
-    if (line[i] === ":" && (i + 1 === line.length || line[i + 1] === " ") && line[i - 1] !== "\\") return i;
+    if (line[i] === ":" && (i + 1 === line.length || line[i + 1] === " ") && line[i - 1] !== "\\")
+      return i;
   }
   return -1;
 }
@@ -55,8 +58,9 @@ export function buildScriptWatches(outputText: string): { files: string[]; envs:
   const envs: string[] = [];
   for (const line of outputText.split("\n")) {
     const m = /^cargo::?(rerun-if-changed|rerun-if-env-changed)=(.*)$/.exec(line);
-    if (m === null) continue;
-    (m[1] === "rerun-if-changed" ? files : envs).push((m[2] ?? "").trim());
+    if (m !== null) {
+      (m[1] === "rerun-if-changed" ? files : envs).push((m[2] ?? "").trim());
+    }
   }
   return { files, envs };
 }

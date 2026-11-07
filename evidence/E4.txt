@@ -1,0 +1,9 @@
+# E4: Vitest adapter
+Command: make test-vitest (V01-V16 end to end); NODE_OPTIONS probe passed; capabilities probes/dirs/env proven true
+Date: 2026-11-04T19:20:20Z
+Commit: 6cf1e90
+--- output (last 10 lines) ---
+CR-002 (deleted task definition, PLAN 8.7) decided for P5; PLAN v4.1 section 8.7 reworded.
+CR-003 (worker threads, PLAN 11.2/V16) decided for targeted behaviour; PLAN v4.1 section 11.2 and V16 row of 12.3 reworded.
+V01-V16 pass; capabilities probes/dirs/env true.
+PASS

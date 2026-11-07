@@ -1,5 +1,0 @@
-{
-  "$schema": "https://ultracite.ai/schema.json",
-  "presets": ["core", "type-aware"],
-  "description": "Ultracite preset selection for Backplane. Consumed by biome.json via extends."
-}

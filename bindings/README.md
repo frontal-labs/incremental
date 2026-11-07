@@ -1,14 +1,14 @@
-# Backplane Bindings
+# Incremental Bindings
 
-Client bindings for backplane Protocol v1. Bindings are thin clients over the protocol — all engine logic lives in `core/`. Every binding speaks JSON Lines on stdio to a `backplane serve` instance.
+Client bindings for incremental Protocol v1. Bindings are thin clients over the protocol — all engine logic lives in `core/`. Every binding speaks JSON Lines on stdio to a `incremental serve` instance.
 
 ## Bindings
 
-| Binding | Package | Language | Entry point |
-|---|---|---|---|
-| Node | `@backplane/client` | TypeScript | `bindings/node/src/` |
-| Python | `backplane` | Python | `bindings/python/src/` |
-| Rust | `backplane` | Rust | `bindings/rust/src/` |
+| Binding | Package               | Language   | Entry point          |
+| ------- | --------------------- | ---------- | -------------------- |
+| Node    | `@incremental/client` | TypeScript | `bindings/node/src/` |
+| Python  | `incremental`         | Python     | `bindings/python/`   |
+| Rust    | `incremental`         | Rust       | `bindings/rust/src/` |
 
 ## Running the tests
 
@@ -30,9 +30,9 @@ cd bindings/rust && cargo test
 
 ## Binding notes
 
-- **Node client (`@backplane/client`)**: typed Protocol v1 client with process supervision (`hello`, `observe`, `observe_many`, `affected`, `explain`, `stats`, `ping`, `shutdown`). Build with `npm run build` (tsc). Used by `mcp/` and the adapters.
-- **Python client**: `pyproject.toml`-based package under `bindings/python/src`, tests under `bindings/python/tests`. Requires Python 3.10+.
-- **Rust client**: spawns the `backplane` binary and speaks Protocol v1 over stdio. Uses `serde_json` with `preserve_order`. Edition 2021. See `bindings/rust/Cargo.toml`.
+- **Node client (`@incremental/client`)**: typed Protocol v1 client with process supervision (`hello`, `observe`, `observe_many`, `affected`, `explain`, `stats`, `ping`, `shutdown`). Build with `npm run build` (tsc). Used by `mcp/` and the adapters.
+- **Python client**: `pyproject.toml`-based package under `bindings/python`, tests under `bindings/python/tests`. Requires Python 3.10+.
+- **Rust client**: spawns the `incremental` binary and speaks Protocol v1 over stdio. Uses `serde_json` with `preserve_order`. Edition 2021. See `bindings/rust/Cargo.toml`.
 
 Python binding details are also in `spec/bindings-python.md`.
 
@@ -44,4 +44,4 @@ Binding verification status is tracked in `status/BINDINGS.json` (E3 verify for 
 
 - `docs/spec/PROTOCOL.md` — Protocol v1 transport, methods, errors
 - `docs/spec/POLICY.md` — plan semantics bindings rely on
-- `mcp/` — MCP server built on `@backplane/client`
+- `mcp/` — MCP server built on `@incremental/client`

@@ -1,38 +1,40 @@
-# Backplane Adapters
+# Incremental Adapters
 
-Adapters are the dataplane of backplane: they observe what tasks read, list, probe and write, and feed changes into the engine. The engine itself (`core/`) knows nothing about Vitest, git, or tests — those concerns live in adapters, which speak backplane Protocol v1 (JSON Lines over stdio).
+Adapters are the dataplane of incremental: they observe what tasks read, list, probe and write, and feed changes into the engine. The engine itself (`core/`) knows nothing about Vitest, git, or tests — those concerns live in adapters, which speak incremental Protocol v1 (JSON Lines over stdio).
 
 ## Adapters in this directory
 
-| Adapter | Package | Purpose |
-|---|---|---|
-| bazel | `@backplane/bazel` | Bazel build observation |
-| biome | `@backplane/biome` | Biome lint/format observation |
-| clippy | `@backplane/clippy` | Rust clippy observation |
-| config | `@backplane/config` | Configuration observation |
-| env | `@backplane/env` | Environment variable observation |
-| fs | `@backplane/fs` | Filesystem observation |
-| git | `@backplane/git` | Git change sets (built with the Goose toolchain) |
-| playwright | `@backplane/playwright` | Playwright test observation |
-| pnpm | `@backplane/pnpm` | pnpm workspace observation |
-| process | `@backplane/process` | Process invocation observation |
-| protobuf | `@backplane/protobuf` | Protobuf observation |
-| ruff | `@backplane/ruff` | Ruff lint observation |
-| turbopack | `@backplane/turbopack` | Turbopack observation |
-| typescript | `@backplane/typescript` | TypeScript compile observation |
-| vitest | `@backplane/vitest` | Vitest recorder and planner (V01-V16) |
-| watcher | `@backplane/watcher` | File watcher observation |
-| rust | — | Rust-side observation (see `bindings/rust`) |
+| Adapter    | Package                   | Purpose                                            |
+| ---------- | ------------------------- | -------------------------------------------------- |
+| bazel      | `@incremental/bazel`      | Bazel build observation                            |
+| biome      | `@incremental/biome`      | Biome lint/format observation                      |
+| clippy     | `@incremental/clippy`     | Rust clippy observation                            |
+| config     | `@incremental/config`     | Configuration observation                          |
+| env        | `@incremental/env`        | Environment variable observation                   |
+| fs         | `@incremental/fs`         | Filesystem observation                             |
+| git        | `@incremental/git`        | Git change sets (built with the Goose toolchain)   |
+| playwright | `@incremental/playwright` | Playwright test observation                        |
+| pnpm       | `@incremental/pnpm`       | pnpm workspace observation                         |
+| process    | `@incremental/process`    | Process invocation observation                     |
+| protobuf   | `@incremental/protobuf`   | Protobuf observation                               |
+| ruff       | `@incremental/ruff`       | Ruff lint observation                              |
+| turbopack  | `@incremental/turbopack`  | Turbopack observation                              |
+| typescript | `@incremental/typescript` | TypeScript compile observation                     |
+| nx         | `@incremental/nx`         | Nx project observation (recorder, nx graph)        |
+| turbo      | `@incremental/turbo`      | Turborepo package observation (recorder, turbo ls) |
+| vitest     | `@incremental/vitest`     | Vitest recorder and planner (V01-V16)              |
+| watcher    | `@incremental/watcher`    | File watcher observation                           |
+| rust       | —                         | Rust-side observation (see `bindings/rust`)        |
 
-Each adapter is a standalone package with its own `package.json` (or `Cargo.toml` for Rust). Most are `@backplane/*` TypeScript packages built with `tsc -b` and tested with `node --test`.
+Each adapter is a standalone package with its own `package.json` (or `Cargo.toml` for Rust). Most are `@incremental/*` TypeScript packages built with `tsc -b` and tested with `node --test`.
 
 ## Contract
 
-Adapters emit observations (`observe`/`observe_many`) and provide changesets (`affected`) over backplane Protocol v1. See `docs/spec/PROTOCOL.md` and `docs/spec/POLICY.md`. Adapter types, the recorder contract and the Vitest/git adapters are described in `docs/adapters/ADAPTERS.md`.
+Adapters emit observations (`observe`/`observe_many`) and provide changesets (`affected`) over incremental Protocol v1. See `docs/spec/PROTOCOL.md` and `docs/spec/POLICY.md`. Adapter types, the recorder contract and the Vitest/git adapters are described in `docs/adapters/ADAPTERS.md`.
 
 ## Testing
 
-From the repo root (requires the built engine `core/dist/backplane`):
+From the repo root (requires the built engine `core/dist/incremental`):
 
 ```sh
 make test-adapters   # all TypeScript adapters + Rust binding

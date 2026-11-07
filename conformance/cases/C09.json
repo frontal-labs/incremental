@@ -33,9 +33,7 @@
   },
   "expect": {
     "tasks": [],
-    "unobserved": [
-      "packages/core/src/notes.ts"
-    ],
+    "unobserved": ["packages/core/src/notes.ts"],
     "ignored": [],
     "deleted_tasks": [],
     "fallback": null,

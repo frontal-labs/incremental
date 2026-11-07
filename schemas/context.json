@@ -1,25 +1,25 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://backplane.dev/schemas/context.json",
+  "$id": "https://incremental.dev/schemas/context.json",
   "title": "Context",
   "description": "Environment of an observation: tool versions, lockfile hash, env snapshot, capabilities.",
   "type": "object",
   "required": ["lockfile", "tsconfig", "pkgjson", "runner", "node", "fmt", "caps"],
   "additionalProperties": true,
   "properties": {
-    "lockfile": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$|^absent$"},
-    "tsconfig": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$|^absent$"},
-    "pkgjson": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$|^absent$"},
-    "runner": {"type": "string"},
-    "node": {"type": "string"},
-    "fmt": {"type": "integer"},
+    "lockfile": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$|^absent$" },
+    "tsconfig": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$|^absent$" },
+    "pkgjson": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$|^absent$" },
+    "runner": { "type": "string" },
+    "node": { "type": "string" },
+    "fmt": { "type": "integer" },
     "caps": {
       "type": "object",
       "required": ["probes", "dirs", "env"],
       "properties": {
-        "probes": {"type": "boolean"},
-        "dirs": {"type": "boolean"},
-        "env": {"type": "boolean"}
+        "probes": { "type": "boolean" },
+        "dirs": { "type": "boolean" },
+        "env": { "type": "boolean" }
       },
       "additionalProperties": false
     }

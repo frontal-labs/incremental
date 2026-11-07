@@ -1,14 +1,34 @@
 {
-  "id": "V08", "desc": "Add a file that a test probes (module resolution shadowing)", "mode":"balanced",
-  "edit": [{"op":"write","path":"packages/core/src/shadow.ts","content":"export const SHADOW: boolean = true;\n"}],
-  "query": {"changes":[{"path":"packages/core/src/shadow.ts","status":"added"}],"verify":false,"policy":"balanced"},
+  "id": "V08",
+  "desc": "Add a file that a test probes (module resolution shadowing)",
+  "mode": "balanced",
+  "edit": [
+    {
+      "op": "write",
+      "path": "packages/core/src/shadow.ts",
+      "content": "export const SHADOW: boolean = true;\n"
+    }
+  ],
+  "query": {
+    "changes": [{ "path": "packages/core/src/shadow.ts", "status": "added" }],
+    "verify": false,
+    "policy": "balanced"
+  },
   "expect": {
     "tasks": [
-      {"id":"packages/core/test/probe.test.ts","reasons":["probe:packages/core/src/shadow.ts"]},
-      {"id":"packages/core/test/worker.test.ts","reasons":["dirty_observation"]}
+      {
+        "id": "packages/core/test/probe.test.ts",
+        "reasons": ["probe:packages/core/src/shadow.ts"]
+      },
+      { "id": "packages/core/test/worker.test.ts", "reasons": ["dirty_observation"] }
     ],
-    "unobserved": [], "ignored": [], "deleted_tasks": [], "fallback": null, "confidence": "medium",
-    "ran": ["packages/core/test/probe.test.ts","packages/core/test/worker.test.ts"],
-    "exit": 0, "advanced": true
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium",
+    "ran": ["packages/core/test/probe.test.ts", "packages/core/test/worker.test.ts"],
+    "exit": 0,
+    "advanced": true
   }
 }

@@ -1,7 +1,8 @@
 """G6: byte-identical plans. For every query case, the Python client's plan,
 serialized as json.dumps(separators=(',',':')), equals the body of the engine's
 serve response, and (where the CLI takes the same inputs) the CLI stdout
-minus its trailing newline."""
+minus its trailing newline.
+"""
 
 import os
 import shutil
@@ -10,23 +11,35 @@ import tempfile
 import unittest
 
 from . import _support as S
-from ._conformance import _seeded_store, _query_plan
+from ._conformance import _query_plan, _seeded_store
 
 SERVE_PREFIX = '{"id":500,"result":'
 
 
 def _serve_body(store: str, case: dict) -> bytes:
     """The result body of the serve response to the same affected request."""
-    hello = {"id": 1, "method": "hello", "params": {"protocol": 1, "client": {"name": "g6", "version": "0"}}}
-    req = {"id": 500, "method": "affected",
-           "params": {"changes": S.query_changes(case), "options": S.query_options(case)}}
+    hello = {
+        "id": 1,
+        "method": "hello",
+        "params": {"protocol": 1, "client": {"name": "g6", "version": "0"}},
+    }
+    req = {
+        "id": 500,
+        "method": "affected",
+        "params": {"changes": S.query_changes(case), "options": S.query_options(case)},
+    }
     lines = [S.dumps(hello), S.dumps(req)]
-    r = subprocess.run([S.ENGINE, "serve", "--store", store, "--root", S.worktree(case)],
-                       input="\n".join(lines) + "\n", capture_output=True, text=True, timeout=60)
+    r = subprocess.run(
+        [S.ENGINE, "serve", "--store", store, "--root", S.worktree(case)],
+        input="\n".join(lines) + "\n",
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
     found = [ln for ln in r.stdout.split("\n") if ln.startswith(SERVE_PREFIX)]
     if len(found) != 1 or not found[0].endswith("}"):
         raise AssertionError(f"no single result line for id 500: {r.stdout!r} {r.stderr!r}")
-    return found[0][len(SERVE_PREFIX):-1].encode("utf-8")
+    return found[0][len(SERVE_PREFIX) : -1].encode("utf-8")
 
 
 def _cli_stdout(store: str, case: dict, tmp: str) -> bytes:
@@ -37,8 +50,22 @@ def _cli_stdout(store: str, case: dict, tmp: str) -> bytes:
         fh.write(S.dumps(S.query_changes(case)))
     with open(ctx, "w", encoding="utf-8") as fh:
         fh.write(S.dumps(q["context"]))
-    argv = [S.ENGINE, "affected", "--changes", ch, "--baseline", q["baseline"], "--context", ctx,
-            "--store", store, "--root", S.worktree(case), "--policy", case["mode"]]
+    argv = [
+        S.ENGINE,
+        "affected",
+        "--changes",
+        ch,
+        "--baseline",
+        q["baseline"],
+        "--context",
+        ctx,
+        "--store",
+        store,
+        "--root",
+        S.worktree(case),
+        "--policy",
+        case["mode"],
+    ]
     if q.get("verify"):
         argv.append("--verify")
     # The CLI has no env, config or declared_tasks flags; the client run is
@@ -90,7 +117,9 @@ class TestByteParity(unittest.TestCase):
                             fh.write(case["post_raw_log"])
                     plan = S.dumps(_query_plan(case, store)).encode("utf-8")
                     body = _serve_body(store, case)
-                    self.assertEqual(plan, body, "client plan bytes differ from the serve result body")
+                    self.assertEqual(
+                        plan, body, "client plan bytes differ from the serve result body"
+                    )
                     self.__class__.counts["serve"] += 1
                     if _cli_eligible(case):
                         self.__class__.counts["cli_eligible"] += 1
@@ -101,11 +130,16 @@ class TestByteParity(unittest.TestCase):
                             shutil.rmtree(tmp, ignore_errors=True)
                         client = S.open_client(store, S.worktree(case))
                         try:
-                            cli_plan = S.dumps(client.affected(S.query_changes(case), **_cli_options(case)))
+                            cli_plan = S.dumps(
+                                client.affected(S.query_changes(case), **_cli_options(case))
+                            )
                         finally:
                             client.close()
-                        self.assertEqual(cli_plan.encode("utf-8") + b"\n", cli,
-                                         "client plan bytes differ from CLI stdout")
+                        self.assertEqual(
+                            cli_plan.encode("utf-8") + b"\n",
+                            cli,
+                            "client plan bytes differ from CLI stdout",
+                        )
                         self.__class__.counts["cli"] += 1
                 finally:
                     S.cleanup(store)
@@ -113,5 +147,7 @@ class TestByteParity(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         c = cls.counts
-        print(f"\nG6 counts: query cases {c['query']}, serve parity {c['serve']}, "
-              f"CLI-eligible {c['cli_eligible']}, CLI parity {c['cli']}")
+        print(
+            f"\nG6 counts: query cases {c['query']}, serve parity {c['serve']}, "
+            f"CLI-eligible {c['cli_eligible']}, CLI parity {c['cli']}"
+        )

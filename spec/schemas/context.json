@@ -4,19 +4,19 @@
   "required": ["lockfile", "tsconfig", "pkgjson", "runner", "node", "fmt", "caps"],
   "additionalProperties": true,
   "properties": {
-    "lockfile": {"type": "string"},
-    "tsconfig": {"type": "string"},
-    "pkgjson": {"type": "string"},
-    "runner": {"type": "string"},
-    "node": {"type": "string"},
-    "fmt": {"type": "number"},
+    "lockfile": { "type": "string" },
+    "tsconfig": { "type": "string" },
+    "pkgjson": { "type": "string" },
+    "runner": { "type": "string" },
+    "node": { "type": "string" },
+    "fmt": { "type": "number" },
     "caps": {
       "type": "object",
       "required": ["probes", "dirs", "env"],
       "properties": {
-        "probes": {"type": "boolean"},
-        "dirs": {"type": "boolean"},
-        "env": {"type": "boolean"}
+        "probes": { "type": "boolean" },
+        "dirs": { "type": "boolean" },
+        "env": { "type": "boolean" }
       }
     }
   }

@@ -65,9 +65,7 @@
     "tasks": [
       {
         "id": "packages/app/src/app.test.ts",
-        "reasons": [
-          "dirty_observation"
-        ]
+        "reasons": ["dirty_observation"]
       }
     ],
     "unobserved": [],

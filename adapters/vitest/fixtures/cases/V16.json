@@ -1,12 +1,29 @@
 {
-  "id": "V16", "desc": "Worker thread in a test: the worker task is recorded dirty; adds stay targeted", "mode":"balanced",
+  "id": "V16",
+  "desc": "Worker thread in a test: the worker task is recorded dirty; adds stay targeted",
+  "mode": "balanced",
   "spec_12_3": "PLAN 12.3 says: capabilities false for that task, fallback on adds. Conflicts with V08, V09 and V12 in the same fixture (see report).",
-  "edit": [{"op":"write","path":"packages/core/src/extra.ts","content":"export const EXTRA: number = 1;\n"}],
-  "query": {"changes":[{"path":"packages/core/src/extra.ts","status":"added"}],"verify":false,"policy":"balanced"},
+  "edit": [
+    {
+      "op": "write",
+      "path": "packages/core/src/extra.ts",
+      "content": "export const EXTRA: number = 1;\n"
+    }
+  ],
+  "query": {
+    "changes": [{ "path": "packages/core/src/extra.ts", "status": "added" }],
+    "verify": false,
+    "policy": "balanced"
+  },
   "expect": {
-    "tasks": [ {"id":"packages/core/test/worker.test.ts","reasons":["dirty_observation"]} ],
-    "unobserved": [], "ignored": [], "deleted_tasks": [], "fallback": null, "confidence": "medium",
+    "tasks": [{ "id": "packages/core/test/worker.test.ts", "reasons": ["dirty_observation"] }],
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium",
     "ran": ["packages/core/test/worker.test.ts"],
-    "exit": 0, "advanced": true
+    "exit": 0,
+    "advanced": true
   }
 }

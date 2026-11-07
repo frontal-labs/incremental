@@ -1,30 +1,54 @@
 {
-  "name": "@backplane/root",
+  "name": "@incremental/root",
   "version": "0.0.0",
   "private": true,
-  "description": "backplane: incremental dependency engine (Goose core, TypeScript bindings and adapters)",
+  "description": "High-performance incremental computation engine for building dependency-driven systems.",
   "type": "module",
   "packageManager": "pnpm@9.0.0",
   "scripts": {
     "typecheck": "tsc-rs -b",
     "build": "tsc-rs -b",
-    "test:ts": "tsc-rs -b && node --test dist/tests/*.test.js"
+    "test:ts": "tsc-rs -b && node --test dist/tests/*.test.js",
+    "format": "pnpm run format:js && pnpm run format:python && pnpm run format:c && pnpm run format:rust && pnpm run format:shell && pnpm run format:toml",
+    "format:js": "biome format --write .",
+    "format:python": "ruff format . && ruff check --fix .",
+    "format:c": "clang-format -i core/src/native.c adapters/*/src/*.c 2>/dev/null || true",
+    "format:rust": "rustfmt bindings/rust/src/*.rs 2>/dev/null || true",
+    "format:shell": "shfmt -w -i 2 -bn -ci scripts/*.sh",
+    "format:toml": "taplo fmt 2>/dev/null || true",
+    "lint": "pnpm run lint:js && pnpm run lint:python && pnpm run lint:c && pnpm run lint:rust && pnpm run lint:shell && pnpm run lint:toml",
+    "lint:js": "biome check .",
+    "lint:python": "ruff check .",
+    "lint:c": "clang-format --dry-run --Werror core/src/native.c adapters/*/src/*.c",
+    "lint:rust": "rustfmt --check bindings/rust/src/*.rs",
+    "lint:shell": "shellcheck scripts/*.sh",
+    "lint:toml": "taplo check",
+    "fmt-check": "pnpm run fmt-check:js && pnpm run fmt-check:python && pnpm run fmt-check:c && pnpm run fmt-check:rust && pnpm run fmt-check:shell && pnpm run fmt-check:toml",
+    "fmt-check:js": "biome format .",
+    "fmt-check:python": "ruff format --check . && ruff check .",
+    "fmt-check:c": "clang-format --dry-run --Werror core/src/native.c adapters/*/src/*.c",
+    "fmt-check:rust": "rustfmt --check bindings/rust/src/*.rs",
+    "fmt-check:shell": "shfmt -d -i 2 -bn -ci scripts/*.sh",
+    "fmt-check:toml": "taplo fmt --check"
   },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/frontal-labs/backplane.git"
+    "url": "https://github.com/frontal-labs/incremental.git"
   },
   "bugs": {
-    "url": "https://github.com/frontal-labs/backplane/issues"
+    "url": "https://github.com/frontal-labs/incremental/issues"
   },
-  "homepage": "https://github.com/frontal-labs/backplane#readme",
+  "homepage": "https://github.com/frontal-labs/incremental#readme",
   "author": "Frontal Labs, Inc.",
   "engines": {
     "node": ">=22.0.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.6.5",
     "@types/node": "22.20.5",
-    "tsc-rs": "0.8.0"
+    "nx": "^24.0.4",
+    "tsc-rs": "0.8.0",
+    "turbo": "^2.11.10"
   }
 }

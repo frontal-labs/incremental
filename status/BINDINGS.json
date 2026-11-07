@@ -1,6 +1,6 @@
 {
   "id": "E3",
   "state": "done",
-  "evidence": "",
-  "notes": "TypeScript client signed off by the user's instruction. E9 Python binding also signed off (55 tests, 36/36 byte-equal to serve)."
+  "evidence": "evidence/E3.txt",
+  "notes": "Signed off by user's instruction. TypeScript client; Python binding 55 tests, 36/36 byte-equal to serve."
 }

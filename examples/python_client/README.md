@@ -1,42 +1,42 @@
 # Python Client Example
 
-Demonstrates the Python binding (`bindings/python`, package `backplane`) speaking backplane Protocol v1 over stdio. Per `docs/spec/bindings-python.md` and PLAN §10.3.
+Demonstrates the Python binding (`bindings/python`, package `incremental`) speaking incremental Protocol v1 over stdio. Per `docs/spec/bindings-python.md` and
 
 ## Layout
 
 ```
 examples/python_client/
 ├── README.md           # this file
-├── client_example.py   # Python client using @backplane/python bindings
+├── client_example.py   # Python client using @incremental/python bindings
 ├── requirements.txt    # Python dependencies
-└── backplane_config.json
+└── incremental_config.json
 ```
 
 ## client_example.py
 
 ```python
-"""Example Python client for backplane Protocol v1.
+"""Example Python client for incremental Protocol v1.
 
-Uses the `backplane` package from bindings/python. Spawns `backplane serve`
+Uses the `incremental` package from bindings/python. Spawns `incremental serve`
 and communicates over JSON Lines on stdio.
 """
 
 from typing import Any
-from backplane import Backplane, BackplaneError, connect
+from incremental import Incremental, IncrementalError, connect
 
 
-async def main() -> None:
-    store = ".backplane"
+async def main -> None:
+    store = ".incremental"
     client = await connect(store=store)
 
     try:
         # Handshake
-        hello = await client.hello()
+        hello = await client.hello
         print(f"Engine: {hello['engine']['name']} v{hello['engine']['version']}")
         print(f"Capabilities: {hello['capabilities']}")
 
         # Get current baseline
-        baseline_resp = await client.baseline()
+        baseline_resp = await client.baseline
         baseline = baseline_resp["baseline"]
         print(f"Baseline: {baseline}")
 
@@ -76,32 +76,32 @@ async def main() -> None:
         if plan["fallback"]:
             print(f"Fallback: {plan['fallback']['reason']}")
 
-    except BackplaneError as e:
-        print(f"Backplane error: {e.code}: {e.message}", file=sys.stderr)
+    except IncrementalError as e:
+        print(f"Incremental error: {e.code}: {e.message}", file=sys.stderr)
         sys.exit(1)
     finally:
-        await client.close()
+        await client.close
 
 
 if __name__ == "__main__":
     import asyncio
     import sys
-    asyncio.run(main())
+    asyncio.run(main)
 ```
 
 ## requirements.txt
 
 ```
-# Standard library only — backplane uses no external dependencies
-# per PLAN.md §9 rule 2 (Bindings: stdlib + protocol).
+# Standard library only — incremental uses no external dependencies
+# per  §9 rule 2 (Bindings: stdlib + protocol).
 ```
 
-## backplane_config.json
+## incremental_config.json
 
 ```json
 {
   "roots": ["."],
-  "exclude": ["**/node_modules/**", ".git/**", ".backplane/**"],
+  "exclude": ["**/node_modules/**", ".git/**", ".incremental/**"],
   "policy": "balanced"
 }
 ```

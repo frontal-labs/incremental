@@ -12,14 +12,14 @@ import {
   connect,
   defaultEngine,
   repoRoot,
-  type backplane,
+  type incremental,
   type Change,
   type Context,
   type Input,
   type Observation,
   type Outcome,
   type Plan,
-} from "@backplane/client";
+} from "@incremental/client";
 import { relOf, SKIP_DIRS, Watcher, walk } from "./watch.js";
 
 export class ConfigError extends Error {
@@ -65,10 +65,13 @@ export interface CycleReport {
 }
 
 const require_ = createRequire(import.meta.url);
-const WATCHER_RUNNER = `backplane-watcher@${(require_("../../package.json") as { version: string }).version}`;
+const WATCHER_RUNNER = `incremental-watcher@${(require_("../../package.json") as { version: string }).version}`;
 
 function gitSourcePath(): string {
-  return process.env.BACKPLANE_GIT || path.join(repoRoot(), "adapters", "git", "dist", "backplane-git");
+  return (
+    process.env.INCREMENTAL_GIT ||
+    path.join(repoRoot(), "adapters", "git", "dist", "incremental-git")
+  );
 }
 
 // The git change source (PLAN 11.7), used only for the baseline check and for
@@ -81,9 +84,15 @@ interface GitChangeSet {
 }
 
 function gitChangeSet(root: string, ref: string): GitChangeSet {
-  const r = spawnSync(gitSourcePath(), ["changes", "--base", ref, "--root", root], { encoding: "utf8" });
-  if (r.error !== undefined) throw new Error(`cannot run the git change source: ${r.error.message}`);
-  if (r.status !== 0) throw new Error(`git change source failed (exit ${r.status}): ${(r.stdout || r.stderr || "").trim()}`);
+  const r = spawnSync(gitSourcePath(), ["changes", "--base", ref, "--root", root], {
+    encoding: "utf8",
+  });
+  if (r.error !== undefined)
+    throw new Error(`cannot run the git change source: ${r.error.message}`);
+  if (r.status !== 0)
+    throw new Error(
+      `git change source failed (exit ${r.status}): ${(r.stdout || r.stderr || "").trim()}`,
+    );
   return JSON.parse(r.stdout) as GitChangeSet;
 }
 
@@ -121,19 +130,27 @@ export function inputsOf(root: string, task: TaskDef): FileInput[] {
     if (rel.split("/").some((s) => SKIP_DIRS.has(s))) {
       throw new ConfigError(`task ${task.id}: input ${entry} is under an ignored directory`);
     }
-    if (!existsSync(abs)) continue;
-    const st = statSync(abs);
-    const kinds: Map<string, string> = st.isDirectory() ? walk(root, abs) : new Map([[rel, "file"]]);
-    for (const [child, kind] of kinds) {
-      if (kind !== "file") continue;
-      files.set(child, { kind: "file", path: child, hash: sha256(readFileSync(path.join(root, child))) });
+    if (existsSync(abs)) {
+      const st = statSync(abs);
+      const kinds: Map<string, string> = st.isDirectory()
+        ? walk(root, abs)
+        : new Map([[rel, "file"]]);
+      for (const [child, kind] of kinds) {
+        if (kind === "file") {
+          files.set(child, {
+            kind: "file",
+            path: child,
+            hash: sha256(readFileSync(path.join(root, child))),
+          });
+        }
+      }
     }
   }
   return [...files.values()].sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
 }
 
 export class Session {
-  private client: backplane | null = null;
+  private client: incremental | null = null;
   private readonly watcher: Watcher;
   // The baseline the event history is complete since, or null.
   private base: string | null = null;
@@ -159,6 +176,11 @@ export class Session {
     this.watcher.stop();
     await this.client?.close();
     this.client = null;
+  }
+
+  // Duration of the last full check of the tree, in milliseconds.
+  lastCheckMs(): number {
+    return this.watcher.lastWalkMs;
   }
 
   // Events the watcher has recorded since the window started, for callers that
@@ -189,7 +211,7 @@ export class Session {
     if (cs.baseline === stored && cs.changes.length === 0 && !cs.dirty) this.base = stored;
   }
 
-  private need(): backplane {
+  private need(): incremental {
     if (this.client === null) throw new Error("the session is not open");
     return this.client;
   }
@@ -225,11 +247,14 @@ export class Session {
       );
       if (plan.fallback !== null) reason = `${plan.fallback.reason}`;
       const declared = new Set(this.opts.tasks.map((t) => t.id));
-      if (reason === null && plan.tasks.some((t) => !declared.has(t.id))) reason = "plan_unknown_task";
+      if (reason === null && plan.tasks.some((t) => !declared.has(t.id)))
+        reason = "plan_unknown_task";
     }
 
     const full = reason !== null || stored === null;
-    const selectedIds = full ? this.opts.tasks.map((t) => t.id) : (plan?.tasks ?? []).map((t) => t.id);
+    const selectedIds = full
+      ? this.opts.tasks.map((t) => t.id)
+      : (plan?.tasks ?? []).map((t) => t.id);
     const selected = this.opts.tasks.filter((t) => selectedIds.includes(t.id));
 
     const results: TaskRun[] = [];
@@ -254,7 +279,8 @@ export class Session {
     const end = gitChangeSet(root, "HEAD");
     // The tree is clean at HEAD, the window covered the baseline, and no event
     // arrived during the run: the runs saw exactly the tree that the baseline names.
-    const treeClean = complete && !end.dirty && end.head === startHead && this.watcher.generation === gen;
+    const treeClean =
+      complete && !end.dirty && end.head === startHead && this.watcher.generation === gen;
     // Observations are reusable only from a clean tree (dirty ones are never trusted).
     for (const o of observations) o.dirty = !treeClean;
     if (observations.length > 0) await client.observeMany(observations);
@@ -290,11 +316,20 @@ export class Session {
 
 // Runs one task command in the repository. A command that cannot start, or is
 // killed, is an error, never a pass.
-export function runTask(root: string, task: TaskDef, timeoutMs: number): { outcome: Outcome; durationMs: number } {
+export function runTask(
+  root: string,
+  task: TaskDef,
+  timeoutMs: number,
+): { outcome: Outcome; durationMs: number } {
   const started = Date.now();
   const [cmd, ...args] = task.command;
   if (cmd === undefined) throw new ConfigError(`task ${task.id}: empty command`);
-  const r = spawnSync(cmd, args, { cwd: root, encoding: "utf8", timeout: timeoutMs, maxBuffer: 64 * 1024 * 1024 });
+  const r = spawnSync(cmd, args, {
+    cwd: root,
+    encoding: "utf8",
+    timeout: timeoutMs,
+    maxBuffer: 64 * 1024 * 1024,
+  });
   const durationMs = Date.now() - started;
   if (r.error !== undefined || r.signal !== null) return { outcome: "error", durationMs };
   return { outcome: r.status === 0 ? "pass" : "fail", durationMs };

@@ -70,9 +70,7 @@
     "tasks": [
       {
         "id": "packages/core/src/cfg.test.ts",
-        "reasons": [
-          "declared:packages/core/config/app.json"
-        ]
+        "reasons": ["declared:packages/core/config/app.json"]
       }
     ],
     "unobserved": [],

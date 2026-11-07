@@ -35,9 +35,7 @@
     "tasks": [
       {
         "id": "packages/core/src/math.test.ts",
-        "reasons": [
-          "self_changed"
-        ]
+        "reasons": ["self_changed"]
       }
     ],
     "unobserved": [],
