@@ -8,7 +8,7 @@ import path from "node:path";
 import { test } from "node:test";
 import { createRequire } from "node:module";
 import { connect, defaultEngine, type incremental } from "@incremental/client";
-import { contextFor } from "@incremental/fs";
+import { contextFor, oracleContext } from "@incremental/fs";
 import { main } from "../src/cli.js";
 import { runTasks, type TaskConfig } from "../src/index.js";
 
@@ -224,7 +224,7 @@ linux("oracle: a strace-traced command records its file reads as inputs", async 
     const plan = await withClient(f, (c) =>
       c.affected(
         { baseline: stored, changes: [{ path: "a.txt", status: "modified" }] },
-        { baseline: stored, context: contextFor(), declared_tasks: ["reader"] },
+        { baseline: stored, context: oracleContext(), declared_tasks: ["reader"] },
       ),
     );
     assert.deepEqual(plan.tasks, [{ id: "reader", reasons: ["reads:a.txt"] }]);
