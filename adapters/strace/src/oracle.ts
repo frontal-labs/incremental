@@ -490,6 +490,11 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
   return { events, summary, rootPid };
 }
 
+// runOracle in the shape @incremental/fs expects (OracleRun): the summary lists.
+export async function runOracleSummary(command: string[], opts: RunOptions): Promise<OracleResult> {
+  return (await runOracle(command, opts)).summary;
+}
+
 export async function runOracle(
   command: string[],
   opts: RunOptions,
