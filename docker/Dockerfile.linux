@@ -12,21 +12,13 @@ RUN apt-get update \
 RUN curl -fsSL --retry 5 --retry-all-errors --retry-delay 10 https://sh.rustup.rs | sh -s -- -y --profile minimal \
  && /root/.cargo/bin/rustup default stable
 
-# pnpm
-RUN npm install -g pnpm@9.0.0
+# pnpm, buf and bazelisk come from npm (the same pins as release.yml). GitHub release downloads
+# returned 503 from the Actions network, so they are not used here.
+RUN npm install -g pnpm@9.0.0 @bufbuild/buf@1.70.0 @bazel/bazelisk@1.28.1 \
+ && ln -sf "$(npm prefix -g)/bin/bazelisk" /usr/local/bin/bazel
 
 # ruff
 RUN pip3 install --no-cache-dir --break-system-packages ruff
-
-# bazelisk
-RUN curl -fsSL --retry 5 --retry-all-errors --retry-delay 10 -o /usr/local/bin/bazelisk https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64 \
- && chmod +x /usr/local/bin/bazelisk \
- && ln -sf /usr/local/bin/bazelisk /usr/local/bin/bazel
-
-# buf
-RUN curl -fsSL --retry 5 --retry-all-errors --retry-delay 10 -o /tmp/buf.tar.gz https://github.com/bufbuild/buf/releases/latest/download/buf-Linux-x86_64.tar.gz \
- && tar -xzf /tmp/buf.tar.gz -C /usr/local --strip-components=1 \
- && rm /tmp/buf.tar.gz
 
 ENV PATH=/root/.cargo/bin:$PATH
 
