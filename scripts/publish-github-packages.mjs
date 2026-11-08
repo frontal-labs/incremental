@@ -33,10 +33,15 @@ function readJson(file) {
 }
 
 // The package directories to publish, relative to the repo root.
+// Adapters for tools outside the Node ecosystem are not published: they stay in the repo and in
+// the tests, but are not npm packages in the sense this registry serves.
+const NOT_PUBLISHED = new Set(["bazel", "clippy", "protobuf", "ruff"]);
+
 function candidateDirs() {
   const dirs = ["bindings/node"];
   const adapters = path.join(ROOT, "adapters");
   for (const name of readdirSync(adapters).sort()) {
+    if (NOT_PUBLISHED.has(name)) continue;
     if (existsSync(path.join(adapters, name, "package.json"))) dirs.push(`adapters/${name}`);
   }
   return dirs;
