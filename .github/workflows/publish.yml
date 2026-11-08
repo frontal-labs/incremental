@@ -35,7 +35,7 @@ jobs:
           scope: "@frontal-labs"
       - name: Install and build the client and adapters
         run: |
-          for d in bindings/node adapters/bazel adapters/biome adapters/clippy adapters/config adapters/env adapters/fs adapters/nx adapters/playwright adapters/pnpm adapters/process adapters/protobuf adapters/ruff adapters/strace adapters/turbo adapters/turbopack adapters/typescript adapters/vitest adapters/watcher; do
+          for d in bindings/node adapters/biome adapters/config adapters/env adapters/fs adapters/nx adapters/playwright adapters/pnpm adapters/process adapters/strace adapters/turbo adapters/turbopack adapters/typescript adapters/vitest adapters/watcher; do
             (cd "$d" && npm install --no-audit --no-fund && npm run build)
           done
       - name: Publish
