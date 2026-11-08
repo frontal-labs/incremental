@@ -1,4 +1,4 @@
-# @incremental/turbopack
+# @frontal-labs/incremental-turbopack
 
 The Turbopack app adapter, drafted in `spec/adapters/turbopack.md`. It is the honest version: entries are tasks, their declared inputs are recorded, and no module graph is claimed. An app is skipped when nothing in the repository changed. The inputs are every file under the repository root, except `node_modules`, `.git`, `.next`, `.incremental` and `.toolchain`, plus the lockfile and the `next` version in the context.
 

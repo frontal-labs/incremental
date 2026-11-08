@@ -1,6 +1,6 @@
 # Incremental MCP
 
-The incremental Model Context Protocol (MCP) server (`@incremental/mcp`). It exposes incremental Protocol v1 to MCP clients (AI agents, IDEs, assistants) so they can observe tasks, compute affected plans, and inspect stores without speaking stdio JSON Lines directly.
+The incremental Model Context Protocol (MCP) server (`@frontal-labs/incremental-mcp`). It exposes incremental Protocol v1 to MCP clients (AI agents, IDEs, assistants) so they can observe tasks, compute affected plans, and inspect stores without speaking stdio JSON Lines directly.
 
 ## Contents
 
@@ -15,7 +15,7 @@ The incremental Model Context Protocol (MCP) server (`@incremental/mcp`). It exp
 
 ## Running
 
-The MCP server depends on `@incremental/client` (`file:../../bindings/node`), so build the Node client first:
+The MCP server depends on `@frontal-labs/incremental-client` (`file:../../bindings/node`), so build the Node client first:
 
 ```sh
 cd bindings/node && npm run build
@@ -31,7 +31,7 @@ make test-mcp   # MCP server tests
 
 ## Protocol
 
-`@incremental/mcp` is a thin layer over `@incremental/client`, which speaks incremental Protocol v1 (`hello`, `observe`, `affected`, `explain`, `stats`, ...). See `docs/spec/PROTOCOL.md` and `bindings/README.md`.
+`@frontal-labs/incremental-mcp` is a thin layer over `@frontal-labs/incremental-client`, which speaks incremental Protocol v1 (`hello`, `observe`, `affected`, `explain`, `stats`, ...). See `docs/spec/PROTOCOL.md` and `bindings/README.md`.
 
 ## Status
 
@@ -39,6 +39,6 @@ MCP verification status is tracked in `status/ADAPTERS.json` (E4 verify: test-vi
 
 ## Related
 
-- `bindings/node/` — `@incremental/client`, the TypeScript protocol client this server builds on
+- `bindings/node/` — `@frontal-labs/incremental-client`, the TypeScript protocol client this server builds on
 - `docs/spec/PROTOCOL.md` — Protocol v1 methods and errors
 - `docs/adapters/ADAPTERS.md` — MCP mentioned as an adapter surface

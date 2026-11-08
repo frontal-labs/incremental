@@ -15,7 +15,7 @@ Any command the caller runs (`recordOracle` runs `spec.command`). Task id: a sta
 
 - Declared paths, hashed before and after the check. They are recorded as `declared` inputs . A missing path is recorded as `absent`, so creating it later invalidates the task (P6).
 - A declared input that changes while the check runs makes the observation `dirty`.
-- On Linux: `recordOracle` runs the command under strace (an injected runner, typically `@incremental/strace`) and records the files, dirs and probes it observes . On macOS nothing beyond the declared paths is observed.
+- On Linux: `recordOracle` runs the command under strace (an injected runner, typically `@frontal-labs/incremental-strace`) and records the files, dirs and probes it observes . On macOS nothing beyond the declared paths is observed.
 
 ## What it cannot observe
 

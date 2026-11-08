@@ -1,4 +1,4 @@
-// @incremental/biome: the Biome file adapter (spec/adapters/biome.md).
+// @frontal-labs/incremental-biome: the Biome file adapter (spec/adapters/biome.md).
 export {
   BiomeError,
   biomeBin,

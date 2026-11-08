@@ -26,7 +26,7 @@ importers:
 
   apps/mcp:
     dependencies:
-      '@incremental/client':
+      '@frontal-labs/incremental-client':
         specifier: file:../../bindings/node
         version: link:../../bindings/node
       '@modelcontextprotocol/sdk':

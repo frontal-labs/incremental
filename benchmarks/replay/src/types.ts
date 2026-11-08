@@ -1,10 +1,12 @@
-import type { Plan } from "@incremental/client";
+import type { Plan } from "@frontal-labs/incremental-client";
 
 export interface CliArgs {
   repo?: string;
   commits?: number;
   store?: string;
   out?: string;
+  // Repo-relative directories that generated edits may touch (for example library/src/methods).
+  sources?: string[];
 }
 
 export interface GtResult {

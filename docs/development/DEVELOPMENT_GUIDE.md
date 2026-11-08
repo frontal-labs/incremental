@@ -14,7 +14,7 @@ Read sections 0,1,2,14 first. Follow the start protocol for every session.
 incremental/
 ├── core/           # Engine core (store, index, policy, protocol server)
 ├── cli/            # CLI binary (thin binding)
-├── bindings/node/  # Node/TS client (@incremental/client)
+├── bindings/node/  # Node/TS client (@frontal-labs/incremental-client)
 ├── adapters/       # Vitest, git, strace adapters
 ├── apps/mcp/          # MCP server
 ├── conformance/    # Conformance suite (cases, stores, runner)

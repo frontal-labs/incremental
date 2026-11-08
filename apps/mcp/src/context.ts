@@ -4,7 +4,7 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import type { Context } from "@incremental/client";
+import type { Context } from "@frontal-labs/incremental-client";
 
 // Value used for a repo file that does not exist.
 export const ABSENT = "absent";

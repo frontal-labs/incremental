@@ -60,7 +60,7 @@ Any recorder must:
 
 Workspace packages reached via `node_modules` symlinks resolve to real location. Recorder records real path; `exclude` applied to real paths. Fixture includes workspace-symlink shape (conformance V07).
 
-## Strace Oracle (Linux) — `adapters/strace`, package `@incremental/strace`
+## Strace Oracle (Linux) — `adapters/strace`, package `@frontal-labs/incremental-strace`
 
 ```bash
 strace -f -e trace=openat,open,openat2,stat,newfstatat,statx,access,faccessat,faccessat2,getdents64,readlink,readlinkat,execve -o <file> -- <cmd>
@@ -68,12 +68,12 @@ strace -f -e trace=openat,open,openat2,stat,newfstatat,statx,access,faccessat,fa
 
 `src/oracle.ts` runs that command and parses the log: `runOracle(command, opts)` spawns strace (Linux only), `parseStraceLog(text, opts)` parses strace output text on any platform. Reports `files` (successful read opens and stats of regular files), `dirs` (`getdents64` on directory fds), `probes` (failed lookups) and `execs` (`execve` targets), all realpath'd, confined to `roots`, excluded of `node_modules`/`.git`/`.incremental`, repo-relative with `/` separators — the same canonicalization as the Vitest recorder . strace cannot see env reads .
 
-**Rule**: the Node recorder must contain every path the strace oracle sees (after exclude/realpath). M10: zero gaps. Gaps are recorder bugs and can never be waived.
+**Rule**: the Node recorder must contain every path the strace oracle sees (after exclude/realpath). The recorder-completeness comparison reports zero gaps. Gaps are recorder bugs and can never be waived.
 
 Consumers:
 
-- `@incremental/fs` — `recordOracle(client, spec, baseline, runOracle)` runs a command under the oracle on Linux and records observed files/dirs/probes (`caps: {probes: true, dirs: true, env: false}`).
-- `@incremental/process` — `runTask` with `oracle: true` runs the command under the oracle on Linux (child processes visible via `execve`).
+- `@frontal-labs/incremental-fs` — `recordOracle(client, spec, baseline, runOracle)` runs a command under the oracle on Linux and records observed files/dirs/probes (`caps: {probes: true, dirs: true, env: false}`).
+- `@frontal-labs/incremental-process` — `runTask` with `oracle: true` runs the command under the oracle on Linux (child processes visible via `execve`).
 
 ## Adapter Loop Contract
 

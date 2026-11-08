@@ -1,4 +1,4 @@
-# @incremental/turbo: the Turborepo adapter
+# @frontal-labs/incremental-turbo: the Turborepo adapter
 
 Runs the `test` script of each Turborepo package that has one, and runs only the packages the
 engine says are invalid.

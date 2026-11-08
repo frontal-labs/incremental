@@ -17,6 +17,11 @@ export function parseArgs(argv: string[]): CliArgs {
         throw new Error("--commits needs a positive integer");
     } else if (a === "--store") {
       out.store = value();
+    } else if (a === "--sources") {
+      out.sources = value()
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
     } else if (a === "--out") {
       out.out = value();
     } else {

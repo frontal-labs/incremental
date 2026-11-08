@@ -25,7 +25,7 @@ import {
   type Observation,
   type Outcome,
   type Plan,
-} from "@incremental/client";
+} from "@frontal-labs/incremental-client";
 import {
   affectedProjects as listAffectedProjects,
   contextFor,
@@ -35,7 +35,7 @@ import {
 } from "./planner.js";
 import { envHashes, VOLATILE_ENV } from "./shared.js";
 import { projectGraph, testCommand } from "./inputs.js";
-import { buildObservation, type FileResult, type TraceEvent } from "@incremental/vitest";
+import { buildObservation, type FileResult, type TraceEvent } from "@frontal-labs/incremental-vitest";
 
 export interface RunOptions {
   root: string;
@@ -271,11 +271,11 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
   }
 }
 
-// The recorder's preload file, from the installed @incremental/vitest package.
+// The recorder's preload file, from the installed @frontal-labs/incremental-vitest package.
 function preloadPath(): string {
   const req = createRequire(import.meta.url);
   return path.join(
-    path.dirname(req.resolve("@incremental/vitest/package.json")),
+    path.dirname(req.resolve("@frontal-labs/incremental-vitest/package.json")),
     "dist",
     "src",
     "preload.js",

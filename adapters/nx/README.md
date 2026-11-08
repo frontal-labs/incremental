@@ -1,4 +1,4 @@
-# @incremental/nx: the Nx adapter (spec/adapters/nx.md).
+# @frontal-labs/incremental-nx: the Nx adapter (spec/adapters/nx.md).
 
 Observes Nx test runs through the incremental engine. Uses `nx show projects --affected`
 to discover affected projects, then runs `nx test <project>` for each affected project,

@@ -495,13 +495,30 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - **Damage tests.** `scripts/cold-load.test.mjs` also checks that a truncated or bit-flipped `tg.idx` is rejected and the log is replayed with the same answer.
 - **Still open.** Warm p99 at 100k was 1.9 ms under load about 55 (p50 0.27 ms). The query path is unchanged by this work; the sub-1 ms p99 needs an idle-machine run.
 
-## Recorder completeness: M10 known gaps (2026-11-07)
+## Recorder completeness: known gaps (2026-11-07)
 
-- **Finding.** M10 compares the strace oracle with the recorder. On Linux CI it found reads the recorder did not record: module-resolution probes (now recorded through a resolve hook, `module.registerHooks`, Node 22.15+, including `file:` URL specifiers), and `package.json` lookups above each loaded file (now recorded when the file is read). The `tmp/bp-m10-repo-…` entries were absolute paths with the repo root doubled, from a `file:` URL specifier; they are now recorded too.
-- **Still not recorded.** Four categories remain. M10 excludes them and this entry lists them, so the gap stays visible:
-  - `index.html` probes made by a worker (Vite's HTML fallback check). Not made through the patched fs functions.
-  - `tsconfig.json` probes from the root process (Vite's tsconfig lookup, which walks up from each file, including from the file path itself).
-  - Probes of the test repo's path with its root doubled (`tmp/bp-m10-repo-…/packages/…`): Vite's resolution of the test file, which the recorder does not see. The file and its extension candidates. The matching pattern is in M10.
+- **Finding.** The fixture comparison (strace oracle against the recorder) found on Linux CI reads the recorder did not record: module-resolution probes (now recorded through a resolve hook, `module.registerHooks`, Node 22.15+, including `file:` URL specifiers), and `package.json` lookups above each loaded file (now recorded when the file is read). The repo-root-doubled entries (the old temp-dir names) were absolute paths with the repo root doubled, from a `file:` URL specifier; they are now recorded too.
+- **Doubled-root probes: closed (2026-11-08).** The exclusion for the `oracle-fixture-repo-…` probes was removed. Linux amd64 (Docker, Rosetta), the fixture comparison over all 14 tasks passed with it removed and 0 gaps; the strace unit tests pass 23/23.
+- **Still not recorded.** One category remains, and the comparison excludes it so the gap stays visible:
   - Directory listings made by a worker (Node's loader). The root process's listings were already excluded as test discovery.
-- **Risk.** A new `index.html` or a new directory entry does not invalidate a task through these reads. Tasks that depend on them need a re-run.
-- **Status.** Narrowed, not closed. Closing it needs a way to observe these reads from inside the worker.
+- **Risk.** A new directory entry listed by a worker does not invalidate a task through these reads. Tasks that depend on them need a re-run.
+- **Status.** Narrowed to worker directory listings. Closing it needs a way to observe these reads from inside the worker.
+- **Strict check (2026-11-08).** With the `index.html` and `tsconfig.json` exclusions removed, the Linux container (Node 22, strace, amd64) passed 23 of 23, including the comparison, so those two exclusions are gone from the test.
+
+
+## Shared-file benchmark and open blockers (2026-11-08)
+
+- **Shared-file benchmark.** `benchmarks/shared-file.mjs` (`make bench-shared-file`) measures one change to a file every task reads. 5000 tasks with 120 reads each: the shared change invalidates all 5000 (median query 63 ms); a rarely read leaf invalidates 65 (2 ms). Index 70.8 MB, store 151 MB. The read sets are synthetic. The session helper moved to `benchmarks/lib/session.mjs`, shared with warm-plan.
+- **Replay on a real monorepo: blocked.** The replay driver is fixture-specific (edit paths). The candidate is valibot (3,472 commits, 287 test files, pnpm workspace, Vitest in `library/`). Installing its dependencies and running its tests was denied by the auto-mode classifier, so nothing ran. It needs an explicit go-ahead.
+- **Linux strace check: blocked.** Docker Desktop's containerd store returns input/output errors on blobs (including the neo4j image). Pulls, removals and container kills all fail. Restarting Docker Desktop stops the neo4j service, so that needs a decision.
+- **Release name: open.** Free on npm, PyPI and as a GitHub user at check time: touchgraph, rerunless, invalidex. affectra and stalecheck are taken as GitHub users. None of the three has a domain check yet.
+
+## Publishing to GitHub Packages and unblocked items (2026-11-08)
+
+- **Scope.** The packages publish under `@frontal-labs/incremental-*` to npm.pkg.github.com (owner frontal-labs). The client and the 18 adapters are published (19 packages, all at 0.1.0). The MCP app and the replay driver are not published. Visibility is `internal` (org members); making them public is an org admin step.
+- **Publish path.** `scripts/publish-github-packages.mjs` rewrites each manifest for the registry (drops `private`, sets publishConfig, repository and files; replaces `file:` workspace dependencies with `^0.1.0`) and restores the original file on success, failure and SIGINT/SIGTERM. `.github/workflows/publish.yml` runs it on a published release, or by hand with a dry run. The workflow only takes effect once it is on the default branch.
+- **Name.** The scope answer was `@frontal-labs` (the GHCR wording was read as the npm registry on GitHub Packages, since GHCR holds container images). The package names keep the placeholder suffix `incremental-`; renaming before a public release means another rename across the repo.
+- **Docker.** Docker Desktop was restarted. The daemon works again. neo4j exited during the restart and was started again.
+- **Valibot replay.** The driver now generates edits for repos that are not the fixtures (`--sources` limits them to a directory). The scratch copy of valibot runs 63 test files (methods and utils: 63 files, 451 tests). Ground truth on the full suite passed (280 files, 3,232 tests). The replay recorder starts one Vitest process per file, about 15 to 30 seconds each on this machine under load, so a 100-commit replay is not feasible in one session. The recorded run for 3 commits was still in its first pass after 45 minutes.
+- **Test environment.** The adapter Vitest needs jsdom to run valibot, so jsdom 27.2.0 is installed without saving in `adapters/vitest/node_modules`. This is local, not tracked.
+- **Lockfiles.** Regenerated for the new names: root pnpm-lock.yaml, apps/mcp, and every adapter package-lock.json.

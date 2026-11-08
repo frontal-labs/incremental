@@ -26,7 +26,7 @@ import {
   type Observation,
   type Outcome,
   type Plan,
-} from "@incremental/client";
+} from "@frontal-labs/incremental-client";
 import {
   configAnalysis,
   contextFor,

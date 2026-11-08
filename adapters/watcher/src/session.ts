@@ -19,7 +19,7 @@ import {
   type Observation,
   type Outcome,
   type Plan,
-} from "@incremental/client";
+} from "@frontal-labs/incremental-client";
 import { relOf, SKIP_DIRS, Watcher, walk } from "./watch.js";
 
 export class ConfigError extends Error {

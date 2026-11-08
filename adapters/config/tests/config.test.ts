@@ -12,7 +12,7 @@ import {
   type incremental,
   type Context,
   type Plan,
-} from "@incremental/client";
+} from "@frontal-labs/incremental-client";
 import { contextFor, loadConfig, planChanges, recordTasks, type TaskSpec } from "../src/index.js";
 
 interface Fixture {

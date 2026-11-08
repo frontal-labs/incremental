@@ -1,4 +1,4 @@
-# @incremental/protobuf
+# @frontal-labs/incremental-protobuf
 
 The protoc and buf adapter for incremental, built from `spec/adapters/protobuf.md`.
 

@@ -1,4 +1,4 @@
-// Wiring tests: a scratch repository, the real engine through @incremental/client.
+// Wiring tests: a scratch repository, the real engine through @frontal-labs/incremental-client.
 // The macOS path only: declared inputs, and dirty when undeclared reads are not
 // protected. No strace path exists (see README.md).
 import assert from "node:assert/strict";
@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { connect, defaultEngine, type incremental } from "@incremental/client";
+import { connect, defaultEngine, type incremental } from "@frontal-labs/incremental-client";
 import {
   contextFor,
   declaredInputs,

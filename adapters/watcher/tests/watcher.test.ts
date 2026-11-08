@@ -6,7 +6,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { connect, defaultEngine } from "@incremental/client";
+import { connect, defaultEngine } from "@frontal-labs/incremental-client";
 import { ConfigError, inputsOf, Session, type TaskDef } from "../src/index.js";
 import { Watcher } from "../src/watch.js";
 

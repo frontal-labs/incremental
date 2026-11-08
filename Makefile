@@ -167,6 +167,11 @@ bench-cold: build
 	@node scripts/cold-e2e.mjs 5 >$(LOGS)/bench-cold.log 2>&1 || { tail -20 $(LOGS)/bench-cold.log; echo "FAIL bench-cold"; exit 1; }
 	@echo "PASS bench-cold"
 
+# Shared-file benchmark: 5000 tasks, 120 reads each; writes benchmarks/results/shared-file.json.
+bench-shared-file: build
+	@node benchmarks/shared-file.mjs 5000 120 3 >benchmarks/results/shared-file.json 2>$(LOGS)/bench-shared-file.log || { tail -20 $(LOGS)/bench-shared-file.log; echo "FAIL bench-shared-file"; exit 1; }
+	@echo "PASS bench-shared-file"
+
 test-mcp: build
 	@cd apps/mcp && npm test >../../logs/test-mcp.log 2>&1 || { tail -30 ../../logs/test-mcp.log; echo "FAIL test-mcp"; exit 1; }
 	@echo "PASS test-mcp"

@@ -1,4 +1,4 @@
-# @incremental/watcher
+# @frontal-labs/incremental-watcher
 
 The file-system change source (draft: `spec/adapters/watcher.md`). It turns events under the repository into a ChangeSet since the stored baseline, runs `affected`, runs the selected tasks, and advances only from a complete history. It is a change source, not a recorder, and it never sets the first baseline.
 

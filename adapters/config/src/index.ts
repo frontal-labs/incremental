@@ -1,4 +1,4 @@
-// @incremental/config: config files as declared inputs (spec/adapters/config.md).
+// @frontal-labs/incremental-config: config files as declared inputs (spec/adapters/config.md).
 export {
   affectedConfig,
   CONFIG_FILE,

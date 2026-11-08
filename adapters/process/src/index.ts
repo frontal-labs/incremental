@@ -1,11 +1,11 @@
-// @incremental/process: runs named commands as tasks and records their outcome
+// @frontal-labs/incremental-process: runs named commands as tasks and records their outcome
 // (spec/adapters/process.md, PLAN 10.4). Declared inputs are recorded by
-// @incremental/fs. The outcome is pass (exit 0), fail (non-zero exit) or error
+// @frontal-labs/incremental-fs. The outcome is pass (exit 0), fail (non-zero exit) or error
 // (the command could not run, was killed, or timed out).
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { connect, defaultEngine, type incremental, type Outcome } from "@incremental/client";
+import { connect, defaultEngine, type incremental, type Outcome } from "@frontal-labs/incremental-client";
 import {
   recordFiles,
   recordOracle,
@@ -13,7 +13,7 @@ import {
   type FileTask,
   type OracleFileTask,
   type OracleRun,
-} from "@incremental/fs";
+} from "@frontal-labs/incremental-fs";
 
 export interface TaskConfig {
   // argv, not a shell line. The first entry is the program.
@@ -22,11 +22,11 @@ export interface TaskConfig {
   cwd?: string;
   // Repo-relative input paths the command is known to read.
   declared?: string[];
-  // The caller asserts that `declared` is complete (see @incremental/fs).
+  // The caller asserts that `declared` is complete (see @frontal-labs/incremental-fs).
   complete?: boolean;
   // Run the command under the strace oracle and record its observed files,
   // dirs and probes instead of relying on declared inputs. Linux only;
-  // ignored on other platforms (see @incremental/fs oracleContext).
+  // ignored on other platforms (see @frontal-labs/incremental-fs oracleContext).
   oracle?: boolean;
 }
 

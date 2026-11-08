@@ -1,4 +1,4 @@
-// Public types of @incremental/client (plans/PLAN.md 9.5, 9.6, 10.1; spec/schemas).
+// Public types of @frontal-labs/incremental-client (plans/PLAN.md 9.5, 9.6, 10.1; spec/schemas).
 
 export interface Hello {
   protocol: 1;

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist/src",
-    "paths": { "@incremental/client": ["../../bindings/node/dist/src/index.d.ts"] }
+    "paths": { "@frontal-labs/incremental-client": ["../../bindings/node/dist/src/index.d.ts"] }
   },
   "include": ["src/**/*.ts"]
 }

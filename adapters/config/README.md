@@ -1,4 +1,4 @@
-# @incremental/config
+# @frontal-labs/incremental-config
 
 Config files as declared inputs (spec/adapters/config.md). Not a task runner: it records
 the global config files that `incremental.config.json` lists under `globalInputs`, and any

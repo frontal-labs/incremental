@@ -3,7 +3,7 @@
 // and the optional incremental.config.json.
 import { spawnSync } from "node:child_process";
 import path from "node:path";
-import { repoRoot, type ChangeSet, type Config, type Context } from "@incremental/client";
+import { repoRoot, type ChangeSet, type Config, type Context } from "@frontal-labs/incremental-client";
 import { ABSENT, hashOrAbsent } from "./shared.js";
 
 // Runs `nx show projects --affected --base=` and returns the affected

@@ -8,19 +8,19 @@ import { createRequire } from "node:module";
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { defaultEngine } from "@incremental/client";
-import type { OracleRun } from "@incremental/fs";
+import { defaultEngine } from "@frontal-labs/incremental-client";
+import type { OracleRun } from "@frontal-labs/incremental-fs";
 import { loadConfig, runTasks, type TaskRun } from "./index.js";
 
 const requireStrace = createRequire(import.meta.url);
 
-// @incremental/strace is Linux-only and wired dynamically: it is loaded only
+// @frontal-labs/incremental-strace is Linux-only and wired dynamically: it is loaded only
 // when a task opts into `oracle: true`, and only on Linux. `require` is used
 // instead of `import()` so typecheck does not depend on the strace package
-// being built (its types are structural via @incremental/fs's OracleRun).
+// being built (its types are structural via @frontal-labs/incremental-fs's OracleRun).
 async function loadOracleRunner(): Promise<OracleRun> {
   if (process.platform !== "linux") throw new Error("the strace oracle is Linux-only");
-  const mod = requireStrace("@incremental/strace") as { runOracleSummary: unknown };
+  const mod = requireStrace("@frontal-labs/incremental-strace") as { runOracleSummary: unknown };
   return mod.runOracleSummary as OracleRun;
 }
 

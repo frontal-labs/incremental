@@ -7,7 +7,7 @@ Demonstrates the Python binding (`bindings/python`, package `incremental`) speak
 ```
 examples/python_client/
 ├── README.md           # this file
-├── client_example.py   # Python client using @incremental/python bindings
+├── client_example.py   # Python client using @frontal-labs/incremental-python bindings
 ├── requirements.txt    # Python dependencies
 └── incremental_config.json
 ```
