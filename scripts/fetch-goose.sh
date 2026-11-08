@@ -29,7 +29,7 @@ if [ -x "$DEST/goose-$VERSION-$DIR/goose" ]; then
   exit 0
 fi
 TMP="$DEST/$TARBALL.part"
-curl -fsSL -o "$TMP" "https://github.com/aardappel/goose/releases/download/$VERSION/$TARBALL"
+curl -fsSL --retry 5 --retry-all-errors --retry-delay 10 -o "$TMP" "https://github.com/aardappel/goose/releases/download/$VERSION/$TARBALL"
 if command -v sha256sum >/dev/null 2>&1; then GOT=$(sha256sum "$TMP" | cut -d' ' -f1); else GOT=$(shasum -a 256 "$TMP" | cut -d' ' -f1); fi
 if [ "$GOT" != "$SHA256" ]; then
   rm -f "$TMP"

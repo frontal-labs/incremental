@@ -9,7 +9,7 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 # Rust toolchain (cargo) for adapters that need it.
-RUN curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal \
+RUN curl -fsSL --retry 5 --retry-all-errors --retry-delay 10 https://sh.rustup.rs | sh -s -- -y --profile minimal \
  && /root/.cargo/bin/rustup default stable
 
 # pnpm
@@ -19,12 +19,12 @@ RUN npm install -g pnpm@9.0.0
 RUN pip3 install --no-cache-dir --break-system-packages ruff
 
 # bazelisk
-RUN curl -fsSL -o /usr/local/bin/bazelisk https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64 \
+RUN curl -fsSL --retry 5 --retry-all-errors --retry-delay 10 -o /usr/local/bin/bazelisk https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64 \
  && chmod +x /usr/local/bin/bazelisk \
  && ln -sf /usr/local/bin/bazelisk /usr/local/bin/bazel
 
 # buf
-RUN curl -fsSL -o /tmp/buf.tar.gz https://github.com/bufbuild/buf/releases/latest/download/buf-Linux-x86_64.tar.gz \
+RUN curl -fsSL --retry 5 --retry-all-errors --retry-delay 10 -o /tmp/buf.tar.gz https://github.com/bufbuild/buf/releases/latest/download/buf-Linux-x86_64.tar.gz \
  && tar -xzf /tmp/buf.tar.gz -C /usr/local --strip-components=1 \
  && rm /tmp/buf.tar.gz
 
@@ -32,7 +32,7 @@ ENV PATH=/root/.cargo/bin:$PATH
 
 # Pinned to the release's published SHA-256 (same digest as scripts/fetch-goose.sh).
 RUN mkdir -p /opt/goose \
- && curl -fsSL -o /tmp/goose.tar.gz https://github.com/aardappel/goose/releases/download/v2026.3/goose-v2026.3-linux-x64.tar.gz \
+ && curl -fsSL --retry 5 --retry-all-errors --retry-delay 10 -o /tmp/goose.tar.gz https://github.com/aardappel/goose/releases/download/v2026.3/goose-v2026.3-linux-x64.tar.gz \
  && echo "06ac30284338269d3996d457412bf4f2b47c1f9a5601de65b6317187fe78d5c9  /tmp/goose.tar.gz" | sha256sum -c - \
  && tar -xzf /tmp/goose.tar.gz -C /opt/goose \
  && rm /tmp/goose.tar.gz
