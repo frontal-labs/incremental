@@ -139,7 +139,8 @@ export function generatedEditSequence(repo: string, count: number, dirs: string[
   const inScope = (f: string): boolean =>
     dirs.length === 0 || dirs.some((d) => f === d || f.startsWith(d.replace(/\/+$/, "") + "/"));
   const sources = listSourceFiles(repo).filter(inScope);
-  if (sources.length === 0) throw new Error(`no source files found under ${repo} for ${dirs.join(", ") || "the repo"}`);
+  if (sources.length === 0)
+    throw new Error(`no source files found under ${repo} for ${dirs.join(", ") || "the repo"}`);
   const barrel =
     sources.find((f) => dirs.length > 0 && f === `${dirs[0]!.replace(/\/+$/, "")}/index.ts`) ??
     sources.find((f) => /(^|\/)src\/index\.ts$/.test(f)) ??
@@ -156,7 +157,8 @@ export function generatedEditSequence(repo: string, count: number, dirs: string[
   edits.push({
     op: "append",
     path: barrel,
-    content: 'export const replayBroken: number = (() => { throw new Error("broken replay"); })();\n',
+    content:
+      'export const replayBroken: number = (() => { throw new Error("broken replay"); })();\n',
   });
   return edits;
 }

@@ -5,7 +5,12 @@
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { connect, defaultEngine, type incremental, type Outcome } from "@frontal-labs/incremental-client";
+import {
+  connect,
+  defaultEngine,
+  type incremental,
+  type Outcome,
+} from "@frontal-labs/incremental-client";
 import {
   recordFiles,
   recordOracle,

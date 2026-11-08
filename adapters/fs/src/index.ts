@@ -8,7 +8,13 @@
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, realpathSync } from "node:fs";
 import path from "node:path";
-import type { incremental, Context, Input, Observation, Outcome } from "@frontal-labs/incremental-client";
+import type {
+  incremental,
+  Context,
+  Input,
+  Observation,
+  Outcome,
+} from "@frontal-labs/incremental-client";
 
 export const FS_VERSION = "0.1.0";
 

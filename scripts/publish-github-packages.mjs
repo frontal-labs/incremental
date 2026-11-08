@@ -46,7 +46,8 @@ function candidateDirs() {
 function loadPackages() {
   const found = candidateDirs().map((dir) => {
     const pkg = readJson(path.join(ROOT, dir, "package.json"));
-    if (!pkg.name.startsWith(SCOPE_PREFIX)) die(`${dir}: name ${pkg.name} is not under ${SCOPE_PREFIX}`);
+    if (!pkg.name.startsWith(SCOPE_PREFIX))
+      die(`${dir}: name ${pkg.name} is not under ${SCOPE_PREFIX}`);
     return { dir, name: pkg.name, version: pkg.version, pkg };
   });
   const byName = new Map(found.map((p) => [p.name, p]));
@@ -113,7 +114,8 @@ process.on("SIGTERM", onSignal);
 function publish(p, manifest, userConfig) {
   const file = path.join(ROOT, p.dir, "package.json");
   const original = readFileSync(file, "utf8");
-  if (!existsSync(path.join(ROOT, p.dir, "dist"))) die(`${p.dir}: no dist/ directory, build it first`);
+  if (!existsSync(path.join(ROOT, p.dir, "dist")))
+    die(`${p.dir}: no dist/ directory, build it first`);
   pending = { file, original };
   let failure = null;
   try {

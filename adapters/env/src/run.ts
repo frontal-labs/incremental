@@ -1,7 +1,14 @@
 // The env adapter runner. It records one observation per task with the env inputs of its
 // allowlist, and queries the plan with the hash map of every name the tasks recorded.
 // The process environment is passed in, so a test never mutates process.env.
-import type { incremental, Change, Context, Observation, Outcome, Plan } from "@frontal-labs/incremental-client";
+import type {
+  incremental,
+  Change,
+  Context,
+  Observation,
+  Outcome,
+  Plan,
+} from "@frontal-labs/incremental-client";
 import { type Env, envInputs, queryEnv } from "./env.js";
 
 export interface EnvTask {

@@ -4,8 +4,8 @@ Adapters are the dataplane of incremental: they observe what tasks read, list, p
 
 ## Adapters in this directory
 
-| Adapter    | Package                   | Purpose                                            |
-| ---------- | ------------------------- | -------------------------------------------------- |
+| Adapter    | Package                                | Purpose                                            |
+| ---------- | -------------------------------------- | -------------------------------------------------- |
 | bazel      | `@frontal-labs/incremental-bazel`      | Bazel build observation                            |
 | biome      | `@frontal-labs/incremental-biome`      | Biome lint/format observation                      |
 | clippy     | `@frontal-labs/incremental-clippy`     | Rust clippy observation                            |
@@ -24,7 +24,7 @@ Adapters are the dataplane of incremental: they observe what tasks read, list, p
 | turbo      | `@frontal-labs/incremental-turbo`      | Turborepo package observation (recorder, turbo ls) |
 | vitest     | `@frontal-labs/incremental-vitest`     | Vitest recorder and planner (V01-V16)              |
 | watcher    | `@frontal-labs/incremental-watcher`    | File watcher observation                           |
-| rust       | —                         | Rust-side observation (see `bindings/rust`)        |
+| rust       | —                                      | Rust-side observation (see `bindings/rust`)        |
 
 Each adapter is a standalone package with its own `package.json` (or `Cargo.toml` for Rust). Most are `@frontal-labs/incremental-*` TypeScript packages built with `tsc -b` and tested with `node --test`.
 

@@ -184,7 +184,10 @@ async function main() {
     });
     const session = new Session(proc);
     const t0 = process.hrtime.bigint();
-    await session.request("hello", { protocol: 1, client: { name: "shared-file", version: "0.1.0" } });
+    await session.request("hello", {
+      protocol: 1,
+      client: { name: "shared-file", version: "0.1.0" },
+    });
     await session.request("stats", {});
     loadSamples.push(Number(process.hrtime.bigint() - t0) / 1_000_000);
 

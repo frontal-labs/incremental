@@ -35,7 +35,11 @@ import {
 } from "./planner.js";
 import { envHashes, VOLATILE_ENV } from "./shared.js";
 import { projectGraph, testCommand } from "./inputs.js";
-import { buildObservation, type FileResult, type TraceEvent } from "@frontal-labs/incremental-vitest";
+import {
+  buildObservation,
+  type FileResult,
+  type TraceEvent,
+} from "@frontal-labs/incremental-vitest";
 
 export interface RunOptions {
   root: string;

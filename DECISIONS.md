@@ -505,7 +505,6 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - **Status.** Narrowed to worker directory listings. Closing it needs a way to observe these reads from inside the worker.
 - **Strict check (2026-11-08).** With the `index.html` and `tsconfig.json` exclusions removed, the Linux container (Node 22, strace, amd64) passed 23 of 23, including the comparison, so those two exclusions are gone from the test.
 
-
 ## Shared-file benchmark and open blockers (2026-11-08)
 
 - **Shared-file benchmark.** `benchmarks/shared-file.mjs` (`make bench-shared-file`) measures one change to a file every task reads. 5000 tasks with 120 reads each: the shared change invalidates all 5000 (median query 63 ms); a rarely read leaf invalidates 65 (2 ms). Index 70.8 MB, store 151 MB. The read sets are synthetic. The session helper moved to `benchmarks/lib/session.mjs`, shared with warm-plan.

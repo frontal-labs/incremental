@@ -5,7 +5,12 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
-import { repoRoot, type ChangeSet, type Config, type Context } from "@frontal-labs/incremental-client";
+import {
+  repoRoot,
+  type ChangeSet,
+  type Config,
+  type Context,
+} from "@frontal-labs/incremental-client";
 import { EXCLUDED_DIRS, TEST_FILE, VITEST_VERSION, isTrackedEnv, sha256 } from "./shared.js";
 
 // Repo-relative paths of the files under root that satisfy the predicate,
