@@ -1,5 +1,5 @@
 {
-  "name": "@incremental/biome",
+  "name": "@frontal-labs/incremental-biome",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -17,7 +17,7 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@incremental/client": "file:../../bindings/node"
+    "@frontal-labs/incremental-client": "file:../../bindings/node"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",

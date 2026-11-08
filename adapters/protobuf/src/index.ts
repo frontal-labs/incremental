@@ -1,4 +1,4 @@
-// @incremental/protobuf: the protoc and buf adapter (spec/adapters/protobuf.md).
+// @frontal-labs/incremental-protobuf: the protoc and buf adapter (spec/adapters/protobuf.md).
 export {
   bufVersion,
   classifyDeps,

@@ -1,4 +1,4 @@
-// @incremental/typescript: the TypeScript project adapter (spec/adapters/typescript.md).
+// @frontal-labs/incremental-typescript: the TypeScript project adapter (spec/adapters/typescript.md).
 export {
   checkProject,
   configChain,

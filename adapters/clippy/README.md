@@ -1,8 +1,8 @@
-# @incremental/clippy
+# @frontal-labs/incremental-clippy
 
 The Cargo/Clippy adapter, built from `spec/adapters/clippy.md`. It runs
 `cargo clippy -p <crate> --all-targets` for each workspace member, observes the
-run, and drives the engine through `@incremental/client`.
+run, and drives the engine through `@frontal-labs/incremental-client`.
 
 ```
 incremental-clippy run [--base REF] [--json] [--all] [--store DIR] [--root DIR] [--target-dir DIR] [--timeout MS]

@@ -1,5 +1,5 @@
 {
-  "name": "@incremental/turbo",
+  "name": "@frontal-labs/incremental-turbo",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -17,8 +17,8 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@incremental/client": "file:../../bindings/node",
-    "@incremental/vitest": "file:../vitest"
+    "@frontal-labs/incremental-client": "file:../../bindings/node",
+    "@frontal-labs/incremental-vitest": "file:../vitest"
   },
   "devDependencies": {
     "@types/node": "22.20.5",

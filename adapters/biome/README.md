@@ -1,4 +1,4 @@
-# @incremental/biome
+# @frontal-labs/incremental-biome
 
 Biome adapter for incremental, following `spec/adapters/biome.md`. One task per file that `biome check` processes. Task id: `biome check <repo-relative path>`.
 

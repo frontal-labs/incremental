@@ -1,7 +1,14 @@
 // The config adapter runner (spec/adapters/config.md). Records one observation per task
 // with the declared inputs of globalInputs plus the paths the task declares, and queries
 // the plan with the config from incremental.config.json. A test drives it through connect().
-import type { incremental, Change, Context, Observation, Outcome, Plan } from "@incremental/client";
+import type {
+  incremental,
+  Change,
+  Context,
+  Observation,
+  Outcome,
+  Plan,
+} from "@frontal-labs/incremental-client";
 import { affectedConfig, declaredInputs, globalInputFiles, loadConfig } from "./config.js";
 
 export interface TaskSpec {

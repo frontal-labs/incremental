@@ -160,6 +160,24 @@ Read these with care:
 - **Raw runs everything** (utils too). It is always correct and never selective.
 - **Incremental** runs exactly the affected three, from a store warmed at the base. Its run includes the Vitest recorder, which adds cost per test file.
 
+### Shared file (`make bench-shared-file`)
+
+`benchmarks/shared-file.mjs` builds a store of 5000 tasks, each reading 120 files (synthetic, seeded read sets: every task reads `src/shared/core.ts`, 70% of the other reads come from its own package and 30% from the whole repo with a Zipf-like skew). It then asks for the plan of two single-file changes. Output: `benchmarks/results/shared-file.json`, run 2026-11-08, 3 iterations of 5 queries per change.
+
+| Measure                                 | Value                                                      |
+| --------------------------------------- | ---------------------------------------------------------- |
+| Read set per task                       | 120 files (all tasks)                                      |
+| Distinct files read                     | 5001                                                       |
+| Index size (`tg.idx`)                   | 70.8 MB                                                    |
+| Store size (whole directory)            | 151.1 MB                                                   |
+| Shared change (`src/shared/core.ts`)    | 5000 of 5000 tasks invalidated, median query 63.4 ms       |
+| Leaf change (`src/pkg-33/module-60.ts`) | 65 of 5000 tasks invalidated (the least-read file), 2.0 ms |
+| Process load (spawn, hello, store load) | median 1252 ms (range 630 to 1350 ms across iterations)    |
+
+- The index is about 14 KB per task at 120 reads. It scales with the total number of read entries, not with the number of distinct files.
+- The plan for the shared change is exact: the script fails if the invalidated count differs from the number of readers.
+- The read sets are synthetic. The index size and invalidation counts depend on how many files real tasks read, so the real-repository replay is the number to trust for read-set size. Load times vary a lot between runs on this machine; treat them as rough.
+
 ## Known issues
 
 Resolved on 2026-11-05:

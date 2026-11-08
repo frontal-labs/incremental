@@ -5,7 +5,7 @@ import { spawn } from "node:child_process";
 import { closeSync, existsSync, mkdirSync, openSync, readFileSync, rmSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import type { Context, Input, Observation, Outcome } from "@incremental/client";
+import type { Context, Input, Observation, Outcome } from "@frontal-labs/incremental-client";
 
 export interface TraceEvent {
   k: string;

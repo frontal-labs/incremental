@@ -10,7 +10,7 @@
     "incremental-replay": "dist/src/index.js"
   },
   "dependencies": {
-    "@incremental/client": "file:../../bindings/node"
+    "@frontal-labs/incremental-client": "file:../../bindings/node"
   },
   "devDependencies": {
     "@types/node": "22.20.5",

@@ -1,4 +1,4 @@
-# @incremental/pnpm
+# @frontal-labs/incremental-pnpm
 
 The pnpm workspace adapter (spec/adapters/pnpm.md, status draft). It runs each workspace package script as a task through the incremental client and the real engine.
 

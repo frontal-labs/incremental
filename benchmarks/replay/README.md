@@ -1,6 +1,6 @@
 # Replay driver (benchmarks/replay)
 
-Replays a sequence of commits through the incremental engine and measures **false skips** against ground truth, using the real adapter (git change source + `@incremental/client` over `core/dist/incremental serve` + `incremental-vitest run`) plus plain vitest runs for ground truth.
+Replays a sequence of commits through the incremental engine and measures **false skips** against ground truth, using the real adapter (git change source + `@frontal-labs/incremental-client` over `core/dist/incremental serve` + `incremental-vitest run`) plus plain vitest runs for ground truth.
 
 Spec: **replay**, benchmark **bench**.
 

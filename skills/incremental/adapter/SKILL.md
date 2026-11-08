@@ -20,7 +20,7 @@ An adapter answers two questions for the engine: what does each task depend on, 
 ## Node client flow
 
 ```ts
-import { connect, repoRoot } from "@incremental/client";
+import { connect, repoRoot } from "@frontal-labs/incremental-client";
 
 const root = repoRoot;
 const client = await connect({ root });

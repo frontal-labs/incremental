@@ -1,4 +1,4 @@
-// M10 (PLAN §12.4): every path the strace oracle sees must be in the Vitest
+// Recorder completeness (PLAN §12.4): every path the strace oracle sees must be in the Vitest
 // recorder's input set, for every fixture test file. Zero gaps.
 //
 // Runs on Linux only (strace). On other platforms, and when strace or a built
@@ -39,7 +39,7 @@ const vitestBin = (() => {
 const haveStrace = spawnSync("strace", ["--version"], { encoding: "utf8" }).status === 0;
 const built = existsSync(PRELOAD) && vitestBin.length > 0 && existsSync(vitestBin);
 // Linux with strace and a built Vitest adapter: run the comparison. Otherwise skip.
-const m10 = process.platform === "linux" && haveStrace && built ? test : test.skip;
+const comparisonTest = process.platform === "linux" && haveStrace && built ? test : test.skip;
 
 // The fixture's test files, sorted (CR-001: 7 in core, 7 in app). Kept local
 // so this test does not import the Vitest adapter's test helpers.
@@ -149,9 +149,9 @@ function recorderPaths(events: TraceEvent[], dir: string): Set<string> {
   return paths;
 }
 
-// Oracle events the recorder does not record, excluded from M10 and listed here
-// so the gap stays visible. Each is a read that Node or Vite makes outside the
-// public fs functions the recorder patches:
+// Oracle events the recorder does not record, excluded from the comparison so the gap stays
+// visible. Each is a read that Node or Vite makes outside the public fs functions the recorder
+// patches. CI on Linux (the authoritative run) shows all of them; a local container did not.
 // - `index.html` probes: Vite's HTML fallback check, made by a worker.
 // - `tsconfig.json` probes: Vite's tsconfig lookup, which walks up from each file.
 // - doubled-root probes: Vite resolves the test file under the repo root a second time.
@@ -160,16 +160,13 @@ function recorderPaths(events: TraceEvent[], dir: string): Set<string> {
 function isKnownGap(e: StraceEvent, rootPid: number): boolean {
   if (e.kind === "probe" && path.basename(e.path).startsWith("index.html")) return true;
   if (e.kind === "probe" && path.basename(e.path) === "tsconfig.json") return true;
-  // Probes of the test repo's own path with its root doubled, made by Vite's
-  // module resolution (the file and its extension candidates). Not made through
-  // a patched fs call or the Node resolve hook.
-  if (e.kind === "probe" && /^tmp\/bp-m10-repo-[^/]+\//.test(e.path)) return true;
-  if (e.kind === "dir" && e.pid !== rootPid) return true;
-  return false;
+  // Probes of the test repo's own path with its root doubled, made by Vite's module resolution.
+  if (e.kind === "probe" && /^tmp\/oracle-fixture-repo-[^/]+\//.test(e.path)) return true;
+  return e.kind === "dir" && e.pid !== rootPid;
 }
 
-m10(
-  "M10: every strace-oracle path is in the recorder's input set, per fixture test file",
+comparisonTest(
+  "every strace-oracle path is in the recorder's input set, per fixture test file",
   async () => {
     const env = { ...process.env, NODE_ENV: "test" };
     // Diagnostics for a gap: the root pid, every pid in the trace, and each
@@ -183,10 +180,10 @@ m10(
     }> = [];
 
     for (const task of FIXTURE_TESTS) {
-      const dir = mkdtempSync(path.join(os.tmpdir(), "bp-m10-repo-"));
+      const dir = mkdtempSync(path.join(os.tmpdir(), "oracle-fixture-repo-"));
       try {
         cpSync(FIXTURE, dir, { recursive: true, verbatimSymlinks: true });
-        const work = mkdtempSync(path.join(os.tmpdir(), "bp-m10-work-"));
+        const work = mkdtempSync(path.join(os.tmpdir(), "oracle-fixture-work-"));
         try {
           // The recorder's observation for this task.
           const recEvents = await recordTask(dir, task, work, 1, env);
@@ -219,7 +216,7 @@ m10(
           // directory listings (test discovery) are deliberately not task
           // inputs (PLAN 11.2), so dirs from that pid are excluded. Files and
           // probes from it are inputs, as are all events from forked workers.
-          // `exec` events are process observations (for @incremental/process),
+          // `exec` events are process observations (for @frontal-labs/incremental-process),
           // not file reads: the Node recorder deliberately does not intercept
           // execve, so they are not part of the recorder-completeness comparison.
           const oraclePaths = new Set<string>();
@@ -259,7 +256,7 @@ m10(
       gaps.length,
       0,
       [
-        `M10 gaps (oracle paths missing from the recorder's inputs): ${gaps.length} task(s)`,
+        `recorder gaps (oracle paths missing from the recorder's inputs): ${gaps.length} task(s)`,
         ...gaps.flatMap((g) => [
           `${g.task}: rootPid=${g.rootPid} tracePids=[${g.tracePids.join(",")}] missing=${g.missing.length}`,
           ...g.missingEvents.slice(0, 40).map((line) => `  ${line}`),

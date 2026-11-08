@@ -1,4 +1,4 @@
-// @incremental/ruff: the ruff file adapter (spec/adapters/ruff.md).
+// @frontal-labs/incremental-ruff: the ruff file adapter (spec/adapters/ruff.md).
 export {
   checkFile,
   configChain,

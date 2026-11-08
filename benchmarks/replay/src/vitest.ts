@@ -5,6 +5,10 @@ import { spawnSync } from "node:child_process";
 import { VITEST_BIN, VITEST_RUN } from "./paths.js";
 import type { GtResult, RunReport } from "./types.js";
 
+// One Vitest run (ground truth or recorded) may take this long. A run over a few hundred test
+// files starts one Vitest process per file, which is slow on a loaded machine.
+const RUN_TIMEOUT_MS = 3_600_000;
+
 // Ground truth at the current worktree state: a plain vitest run with no
 // recorder, so it never touches the store.
 export function groundTruth(repo: string): { results: GtResult[]; allPassed: boolean } {
@@ -22,7 +26,7 @@ export function groundTruth(repo: string): { results: GtResult[]; allPassed: boo
       "--reporter=json",
       `--outputFile=${report}`,
     ],
-    { encoding: "utf8", timeout: 900_000 },
+    { encoding: "utf8", timeout: RUN_TIMEOUT_MS },
   );
   if (r.error !== undefined)
     throw new Error(`ground-truth vitest failed to start: ${r.error.message}`);
@@ -80,7 +84,7 @@ export function runRecorded(repo: string, store: string): RunReport {
     {
       cwd: repo,
       encoding: "utf8",
-      timeout: 900_000,
+      timeout: RUN_TIMEOUT_MS,
       maxBuffer: 64 * 1024 * 1024,
       env: { ...process.env, NODE_ENV: "test" },
     },

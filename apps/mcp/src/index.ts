@@ -1,4 +1,4 @@
-// @incremental/mcp: the MCP server over stdio (bin incremental-mcp).
+// @frontal-labs/incremental-mcp: the MCP server over stdio (bin incremental-mcp).
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { startServer } from "./server.js";

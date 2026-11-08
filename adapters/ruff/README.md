@@ -1,4 +1,4 @@
-# @incremental/ruff
+# @frontal-labs/incremental-ruff
 
 The ruff adapter: one task per file that `ruff check` checks. Spec: `spec/adapters/ruff.md`.
 
@@ -33,7 +33,7 @@ Exit codes follow the TypeScript adapter: 0 advanced and clean, 1 advanced with 
 
 ## Dependencies
 
-`@incremental/client` (local, `../../bindings/node`), plus the dev dependencies `typescript` 5.9.3 and `@types/node` 22.20.5, the same versions as the TypeScript adapter. Ruff itself is an external binary (`INCREMENTAL_RUFF` or `ruff` on PATH).
+`@frontal-labs/incremental-client` (local, `../../bindings/node`), plus the dev dependencies `typescript` 5.9.3 and `@types/node` 22.20.5, the same versions as the TypeScript adapter. Ruff itself is an external binary (`INCREMENTAL_RUFF` or `ruff` on PATH).
 
 ## Tests
 

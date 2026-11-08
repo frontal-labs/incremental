@@ -1,4 +1,4 @@
-// @incremental/strace: native strace oracle (PLAN §11.5, E5). Linux only.
+// @frontal-labs/incremental-strace: native strace oracle (PLAN §11.5, E5). Linux only.
 //
 // `runOracle` runs a command under
 //
@@ -490,7 +490,7 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
   return { events, summary, rootPid };
 }
 
-// runOracle in the shape @incremental/fs expects (OracleRun): the summary lists.
+// runOracle in the shape @frontal-labs/incremental-fs expects (OracleRun): the summary lists.
 export async function runOracleSummary(command: string[], opts: RunOptions): Promise<OracleResult> {
   return (await runOracle(command, opts)).summary;
 }

@@ -36,4 +36,4 @@ The adapter is not in the conformance suite . The cases below are intended check
 
 ## Open questions
 
-- None open. Whether `config` should be a separate adapter was answered by building it as one (`@incremental/config`, DECISIONS 2026-11-03).
+- None open. Whether `config` should be a separate adapter was answered by building it as one (`@frontal-labs/incremental-config`, DECISIONS 2026-11-03).

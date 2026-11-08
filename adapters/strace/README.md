@@ -1,4 +1,4 @@
-# @incremental/strace: native strace oracle (Linux)
+# @frontal-labs/incremental-strace: native strace oracle (Linux)
 
 Native recorder for Linux: runs a command under `strace` and reports the paths
 it touches, as `file`, `dir`, `probe` and `exec` inputs. It is the oracle that
@@ -34,22 +34,22 @@ fix the recorder, or set the capability false and log it in `FRICTION.md`.
 - `src/oracle.ts` — `runOracle(command, opts)` spawns strace and parses its
   log; `parseStraceLog(text, opts)` parses strace output text without starting
   any process (testable on any platform).
-- `tests/` — parser unit tests (all platforms) and the M10 fixture comparison
+- `tests/` — parser unit tests (all platforms) and the recorder-completeness fixture comparison
   (Linux only): every oracle path must be in the Vitest recorder's input set.
 
 ## Verify
 
 ```
-make test-oracle   # Linux only: parser tests + M10 fixture comparison
+make test-oracle   # Linux only: parser tests + recorder-completeness fixture comparison
 ```
 
 It runs inside `make linux-gate` (Docker, `docker/Dockerfile.linux` installs
-`strace`). On macOS the parser tests run and the M10 test skips.
+`strace`). On macOS the parser tests run and the recorder-completeness test skips.
 
 ## Consumers
 
-- `@incremental/fs` — `recordOracle` runs a command under the strace oracle on
+- `@frontal-labs/incremental-fs` — `recordOracle` runs a command under the strace oracle on
   Linux and records the observed files, dirs and probes (caps: probes/dirs
   true, env false). On macOS only declared inputs are available.
-- `@incremental/process` — `runTask` with `oracle: true` runs the command under
+- `@frontal-labs/incremental-process` — `runTask` with `oracle: true` runs the command under
   the strace oracle on Linux (child-process executions visible via `execve`).

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Replay driver: replays a sequence of commits through the engine and measures
 // false skips against ground truth, using the real adapter (git change source
-// + @incremental/client over core/dist/incremental serve + incremental-vitest
+// + @frontal-labs/incremental-client over core/dist/incremental serve + incremental-vitest
 // run) plus plain vitest runs for ground truth.
 //
 //   commits_processed        commits walked, oldest -> newest
@@ -21,7 +21,7 @@ import { cpSync, mkdtempSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
-import { connect } from "@incremental/client";
+import { connect } from "@frontal-labs/incremental-client";
 
 import { applyEdit, editSequenceFor } from "./edits.js";
 import { ENGINE, FIXTURE, ROOT } from "./paths.js";
@@ -33,7 +33,7 @@ import type { FalseSkip, Flaky } from "./types.js";
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
-  const sequence = editSequenceFor(path.resolve(args.repo ?? FIXTURE));
+  const sequence = editSequenceFor(path.resolve(args.repo ?? FIXTURE), args.commits, args.sources);
   const commitsN = args.commits ?? sequence.length;
   const work = mkdtempSync(path.join(os.tmpdir(), "bp-replay-"));
   const repo = path.join(work, "repo");

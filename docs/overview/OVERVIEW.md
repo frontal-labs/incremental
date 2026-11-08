@@ -22,7 +22,7 @@ Key components:
 
 - **Core**: log, store, index, policy, plan generation, protocol server, verification
 - **CLI**: thin binding over protocol (`incremental` binary, built from `core/src/main.goose`)
-- **Bindings** (`bindings/`): Node client (`@incremental/client`, typed protocol client with process supervision), Python, and Rust
+- **Bindings** (`bindings/`): Node client (`@frontal-labs/incremental-client`, typed protocol client with process supervision), Python, and Rust
 - **Adapters** (`adapters/`): recorders and drivers for Vitest (recorder/planner), git (change sets), strace (oracle), MCP server, and the build and test tools listed in `adapters/README.md`
 - **Conformance**: Language-neutral test suite ensuring byte-identical behavior
 

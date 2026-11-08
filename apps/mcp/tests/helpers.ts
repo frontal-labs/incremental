@@ -14,7 +14,7 @@ import {
   type Input,
   type Observation,
   type Plan,
-} from "@incremental/client";
+} from "@frontal-labs/incremental-client";
 import { buildContext, sha256 } from "../src/context.js";
 import { defaultGitBinary } from "../src/git.js";
 

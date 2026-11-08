@@ -1,4 +1,4 @@
-# Incremental Engine
+# Incremental Compute Engine
 
 ![Frontal Banner](./banner.jpg)
 
@@ -73,12 +73,12 @@ Measured on macOS (arm64), 2026-11-05. Full tables, the methodology and the know
 
 **Warm query latency** (`benchmarks/warm-plan.mjs`, 1,000 queries × 3 iterations, each query invalidates exactly one task):
 
-| Tasks   | Per-query p50 | Per-query p99 | Process load (median) |
-| ------- | ------------- | ------------- | --------------------- |
-| 10,000  | 0.100 ms      | 0.650 ms      | 38 ms                 |
-| 100,000 | 0.093 ms      | 0.661 ms      | 394 ms                |
+| Tasks   | Per-query p50 | Per-query p99 | Process load (median)         |
+| ------- | ------------- | ------------- | ----------------------------- |
+| 10,000  | 0.100 ms      | 0.650 ms      | 38 ms                         |
+| 100,000 | 0.093 ms      | 0.661 ms      | 394 ms (before the index fix) |
 
-The warm query target (p50 under 5 ms and p99 under 20 ms at 100k tasks) is met. The cold CLI target (under 300 ms at 100k tasks) is **not** met: loading 100k observations takes about 394 ms.
+The warm query target (p50 under 5 ms and p99 under 20 ms at 100k tasks) is met. The cold CLI target (under 300 ms at 100k tasks) is **not yet confirmed**. Loading 100k observations took about 394 ms before the index-load fix. After it, a cold `stats` on the same store took 99 ms wall (hyperfine median, 30 runs) at machine load about 55. That figure is not final: re-measure on an idle machine before quoting it (see BENCHMARKS.md, Known issues).
 
 **Replay accuracy** (`make bench-replay`, 10 commits per fixture): zero false skips across the default fixture and the Nx, Turborepo and Bazel monorepo fixtures. The sample is small: ten commits give a rule-of-three upper bound of 30%, so this shows no false skip was found, not that the rate is low.
 

@@ -1,0 +1,49 @@
+name: Publish packages
+
+# Publishes the Node client and the TypeScript adapters to GitHub Packages
+# (npm.pkg.github.com, scope @frontal-labs). Runs when a GitHub release is published,
+# or by hand with a dry run. See scripts/publish-github-packages.mjs.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run npm publish --dry-run for every package (no upload)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish to GitHub Packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@frontal-labs"
+      - name: Install and build the client and adapters
+        run: |
+          for d in bindings/node adapters/bazel adapters/biome adapters/clippy adapters/config adapters/env adapters/fs adapters/nx adapters/playwright adapters/pnpm adapters/process adapters/protobuf adapters/ruff adapters/strace adapters/turbo adapters/turbopack adapters/typescript adapters/vitest adapters/watcher; do
+            (cd "$d" && npm install --no-audit --no-fund && npm run build)
+          done
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.dry_run }}" = "true" ]; then
+            node scripts/publish-github-packages.mjs --dry-run
+          else
+            node scripts/publish-github-packages.mjs
+          fi
