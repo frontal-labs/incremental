@@ -150,11 +150,18 @@ function recorderPaths(events: TraceEvent[], dir: string): Set<string> {
 }
 
 // Oracle events the recorder does not record, excluded from the comparison so the gap stays
-// visible: directory listings made by a worker (Node's loader), which are not task reads.
-// Probes of `index.html` and `tsconfig.json`, and the doubled-root probes, are not excluded:
-// every fixture task matches with them included.
+// visible. Each is a read that Node or Vite makes outside the public fs functions the recorder
+// patches. CI on Linux (the authoritative run) shows all of them; a local container did not.
+// - `index.html` probes: Vite's HTML fallback check, made by a worker.
+// - `tsconfig.json` probes: Vite's tsconfig lookup, which walks up from each file.
+// - doubled-root probes: Vite resolves the test file under the repo root a second time.
+// - directory listings made by a worker: Node's loader, not the task's own reads.
 
 function isKnownGap(e: StraceEvent, rootPid: number): boolean {
+  if (e.kind === "probe" && path.basename(e.path).startsWith("index.html")) return true;
+  if (e.kind === "probe" && path.basename(e.path) === "tsconfig.json") return true;
+  // Probes of the test repo's own path with its root doubled, made by Vite's module resolution.
+  if (e.kind === "probe" && /^tmp\/oracle-fixture-repo-[^/]+\//.test(e.path)) return true;
   return e.kind === "dir" && e.pid !== rootPid;
 }
 

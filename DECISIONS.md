@@ -498,12 +498,11 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 ## Recorder completeness: known gaps (2026-11-07)
 
 - **Finding.** The fixture comparison (strace oracle against the recorder) found on Linux CI reads the recorder did not record: module-resolution probes (now recorded through a resolve hook, `module.registerHooks`, Node 22.15+, including `file:` URL specifiers), and `package.json` lookups above each loaded file (now recorded when the file is read). The repo-root-doubled entries (the old temp-dir names) were absolute paths with the repo root doubled, from a `file:` URL specifier; they are now recorded too.
-- **Doubled-root probes: closed (2026-11-08).** The exclusion for the `oracle-fixture-repo-…` probes was removed. Linux amd64 (Docker, Rosetta), the fixture comparison over all 14 tasks passed with it removed and 0 gaps; the strace unit tests pass 23/23.
-- **Still not recorded.** One category remains, and the comparison excludes it so the gap stays visible:
-  - Directory listings made by a worker (Node's loader). The root process's listings were already excluded as test discovery.
-- **Risk.** A new directory entry listed by a worker does not invalidate a task through these reads. Tasks that depend on them need a re-run.
-- **Status.** Narrowed to worker directory listings. Closing it needs a way to observe these reads from inside the worker.
-- **Strict check (2026-11-08).** With the `index.html` and `tsconfig.json` exclusions removed, the Linux container (Node 22, strace, amd64) passed 23 of 23, including the comparison, so those two exclusions are gone from the test.
+- **Reopened (2026-11-08).** The doubled-root probes, `index.html` and `tsconfig.json` probes were removed from the exclusions after one local Linux container passed without them. CI on Linux then failed with all three (14 tasks). CI is the authoritative environment, so the exclusions are back.
+- **Still not recorded.** The comparison excludes these so each gap stays visible: `index.html` and `tsconfig.json` probes, the doubled-root probes, and directory listings made by a worker (Node's loader). The root process's listings were already excluded as test discovery.
+- **Risk.** A new `index.html` or directory entry does not invalidate a task through these reads. Tasks that depend on them need a re-run.
+- **Status.** Open. Closing these needs a way to observe the reads from inside the worker.
+- **Local strict check (2026-11-08), superseded.** One Linux container passed 23 of 23 with the exclusions removed. CI did not, so this does not show the gaps are closed.
 
 ## Shared-file benchmark and open blockers (2026-11-08)
 
