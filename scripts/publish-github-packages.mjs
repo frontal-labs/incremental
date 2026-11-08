@@ -32,11 +32,11 @@ function readJson(file) {
   return JSON.parse(readFileSync(file, "utf8"));
 }
 
-// The package directories to publish, relative to the repo root.
 // Adapters for tools outside the Node ecosystem are not published: they stay in the repo and in
 // the tests, but are not npm packages in the sense this registry serves.
 const NOT_PUBLISHED = new Set(["bazel", "clippy", "protobuf", "ruff"]);
 
+// The package directories to publish, relative to the repo root.
 function candidateDirs() {
   const dirs = ["bindings/node"];
   const adapters = path.join(ROOT, "adapters");
