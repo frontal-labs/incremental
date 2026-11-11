@@ -9,7 +9,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
-import type { Context, Outcome } from "@frontal-labs/incremental-client";
+import type { Context, Outcome } from "@incremental/client";
 
 // Directories the walk never enters. Matches the TypeScript and Vitest walkers.
 const SKIP_DIRS = new Set([

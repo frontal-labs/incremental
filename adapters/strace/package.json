@@ -1,7 +1,6 @@
 {
-  "name": "@frontal-labs/incremental-strace",
+  "name": "@incremental/strace",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "main": "dist/src/oracle.js",
   "types": "dist/src/oracle.d.ts",

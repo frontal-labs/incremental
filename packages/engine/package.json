@@ -1,0 +1,27 @@
+{
+  "name": "@incremental/engine",
+  "version": "0.1.0",
+  "description": "Prebuilt native binaries for the Incremental compute engine",
+  "type": "module",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "bin/",
+    "prebuilds/"
+  ],
+  "bin": {
+    "incremental": "./bin/incremental.js"
+  },
+  "scripts": {
+    "install": "node install.js",
+    "prebuild": "node scripts/build-prebuilds.mjs"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "os": ["darwin", "linux"],
+  "cpu": ["arm64", "x64"]
+}

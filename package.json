@@ -1,5 +1,5 @@
 {
-  "name": "@frontal-labs/incremental-root",
+  "name": "@incremental/root",
   "version": "0.0.0",
   "private": true,
   "description": "High-performance incremental computation engine for building dependency-driven systems.",

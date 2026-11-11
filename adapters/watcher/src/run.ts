@@ -7,7 +7,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
-import { defaultEngine } from "@frontal-labs/incremental-client";
+import { defaultEngine } from "@incremental/client";
 import { type CycleReport, ConfigError, Session, type TaskDef } from "./session.js";
 
 export interface WatchOptions {

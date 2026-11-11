@@ -8,7 +8,7 @@
 import { createHash } from "node:crypto";
 import { lstatSync, readdirSync, readFileSync, realpathSync, watch, type FSWatcher } from "node:fs";
 import path from "node:path";
-import type { Change } from "@frontal-labs/incremental-client";
+import type { Change } from "@incremental/client";
 
 function sha256(data: Buffer): string {
   return createHash("sha256").update(data).digest("hex");

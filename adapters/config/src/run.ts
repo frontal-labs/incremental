@@ -8,7 +8,7 @@ import type {
   Observation,
   Outcome,
   Plan,
-} from "@frontal-labs/incremental-client";
+} from "@incremental/client";
 import { affectedConfig, declaredInputs, globalInputFiles, loadConfig } from "./config.js";
 
 export interface TaskSpec {

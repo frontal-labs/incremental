@@ -6,7 +6,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import type { Input } from "@frontal-labs/incremental-client";
+import type { Input } from "@incremental/client";
 import { buildScriptWatches, depInfoFor, parseDepInfo } from "./depinfo.js";
 import type { Member, Message, Workspace } from "./cargo.js";
 

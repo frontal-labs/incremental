@@ -3,7 +3,7 @@
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { repoRoot, type ChangeSet, type Context } from "@frontal-labs/incremental-client";
+import { repoRoot, type ChangeSet, type Context } from "@incremental/client";
 import { ABSENT, hashOrAbsent } from "./shared.js";
 
 export function turboBin(): string {

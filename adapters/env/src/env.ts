@@ -2,7 +2,7 @@
 // variable becomes an `env` input with value_hash, and "unset" for a missing variable.
 // env_all records a snapshot of every variable. Values are hashed, never stored.
 import { createHash } from "node:crypto";
-import type { Context, Input } from "@frontal-labs/incremental-client";
+import type { Context, Input } from "@incremental/client";
 
 export const ENV_RUNNER = "env@0.1.0";
 export const UNSET = "unset";
