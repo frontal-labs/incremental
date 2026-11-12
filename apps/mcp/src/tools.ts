@@ -1,11 +1,11 @@
-// The three MCP tools of PLAN 11.8, over the Node client (@frontal-labs/incremental-client).
+// The three MCP tools of PLAN 11.8, over the Node client (@incremental/client).
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import {
   isIncrementalError,
   type incremental,
   type Observation,
-} from "@frontal-labs/incremental-client";
+} from "@incremental/client";
 import { buildContext, envHashes } from "./context.js";
 import { changeSet } from "./git.js";
 

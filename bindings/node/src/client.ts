@@ -1,9 +1,10 @@
-// @frontal-labs/incremental-client: process supervision and the protocol v1 methods
+// @incremental/client: process supervision and the protocol v1 methods
 // (plans/PLAN.md 10.1, 9.3, 9.8). The client spawns `incremental serve`, speaks
 // one JSON object per line, matches answers by id, and runs requests one at a
 // time in arrival order.
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { existsSync } from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { incrementalError } from "./errors.js";
@@ -60,7 +61,23 @@ export function repoRoot(): string {
 }
 
 export function defaultEngine(): string {
-  return process.env.INCREMENTAL_ENGINE || path.join(repoRoot(), "core", "dist", "incremental");
+  // 1. INCREMENTAL_ENGINE env var (explicit override)
+  const env = process.env.INCREMENTAL_ENGINE;
+  if (env) return env;
+
+  // 2. Resolve via @incremental/engine package (bundled prebuilt binary).
+  //    Use createRequire so this works synchronously without top-level await.
+  try {
+    const require = createRequire(import.meta.url);
+    const { enginePath } = require("@incremental/engine");
+    const resolved = enginePath();
+    if (resolved && existsSync(resolved)) return resolved;
+  } catch {
+    // @incremental/engine not installed or cannot resolve; fall through.
+  }
+
+  // 3. Dev-mode fallback: core/dist/incremental relative to the incremental repo root
+  return path.join(repoRoot(), "core", "dist", "incremental");
 }
 
 export function defaultStore(): string {

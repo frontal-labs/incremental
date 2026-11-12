@@ -1,7 +1,6 @@
 {
-  "name": "@frontal-labs/incremental-nx",
+  "name": "@incremental/nx",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -17,8 +16,8 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@frontal-labs/incremental-client": "file:../../bindings/node",
-    "@frontal-labs/incremental-vitest": "file:../vitest"
+    "@incremental/client": "file:../../bindings/node",
+    "@incremental/vitest": "file:../vitest"
   },
   "devDependencies": {
     "@types/node": "22.20.5",

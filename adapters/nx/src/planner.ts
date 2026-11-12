@@ -8,7 +8,7 @@ import {
   type ChangeSet,
   type Config,
   type Context,
-} from "@frontal-labs/incremental-client";
+} from "@incremental/client";
 import { ABSENT, hashOrAbsent } from "./shared.js";
 
 // Runs `nx show projects --affected --base=` and returns the affected

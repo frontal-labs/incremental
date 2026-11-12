@@ -1,4 +1,4 @@
-// @frontal-labs/incremental-playwright: the Playwright test adapter (spec/adapters/playwright.md).
+// @incremental/playwright: the Playwright test adapter (spec/adapters/playwright.md).
 export {
   allPackageJsons,
   contextFor,

@@ -8,7 +8,7 @@ import type {
   Observation,
   Outcome,
   Plan,
-} from "@frontal-labs/incremental-client";
+} from "@incremental/client";
 import { type Env, envInputs, queryEnv } from "./env.js";
 
 export interface EnvTask {

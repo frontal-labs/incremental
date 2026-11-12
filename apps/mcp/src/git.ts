@@ -3,8 +3,8 @@
 import { execFile } from "node:child_process";
 import path from "node:path";
 import { promisify } from "node:util";
-import { repoRoot } from "@frontal-labs/incremental-client";
-import type { Change, ChangeSet } from "@frontal-labs/incremental-client";
+import { repoRoot } from "@incremental/client";
+import type { Change, ChangeSet } from "@incremental/client";
 
 const execFileAsync = promisify(execFile);
 

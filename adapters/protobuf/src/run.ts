@@ -27,7 +27,7 @@ import {
   type Observation,
   type Outcome,
   type Plan,
-} from "@frontal-labs/incremental-client";
+} from "@incremental/client";
 import {
   bufVersion,
   checkBuf,

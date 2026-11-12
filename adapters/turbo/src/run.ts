@@ -23,7 +23,7 @@ import {
   type Observation,
   type Outcome,
   type Plan,
-} from "@frontal-labs/incremental-client";
+} from "@incremental/client";
 import {
   contextFor,
   gitChangeSet,
@@ -38,7 +38,7 @@ import {
   buildObservation,
   type FileResult,
   type TraceEvent,
-} from "@frontal-labs/incremental-vitest";
+} from "@incremental/vitest";
 import { createRequire } from "node:module";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 
@@ -266,11 +266,11 @@ interface RunOut extends TaskRun {
   exitCode: number | null;
 }
 
-// The recorder's preload file, from the installed @frontal-labs/incremental-vitest package.
+// The recorder's preload file, from the installed @incremental/vitest package.
 function preloadPath(): string {
   const req = createRequire(import.meta.url);
   return path.join(
-    path.dirname(req.resolve("@frontal-labs/incremental-vitest/package.json")),
+    path.dirname(req.resolve("@incremental/vitest/package.json")),
     "dist",
     "src",
     "preload.js",

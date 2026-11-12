@@ -1,12 +1,16 @@
 {
-  "name": "@frontal-labs/incremental-client",
+  "name": "@incremental/client",
   "version": "0.1.0",
-  "private": true,
+  "description": "Node.js client for the Incremental Compute Engine protocol v1",
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
+  "bin": {
+    "incremental-client": "./bin/client.js"
+  },
   "files": [
-    "dist/src"
+    "dist/src",
+    "bin/"
   ],
   "scripts": {
     "build": "tsc-rs -b",
@@ -15,6 +19,9 @@
   "license": "Apache-2.0",
   "engines": {
     "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@incremental/engine": "file:../../packages/engine"
   },
   "devDependencies": {
     "@types/node": "22.20.5",

@@ -4,9 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Publish to npm (`@incremental/*`)
+
+- All packages migrated from `@frontend-labs/*` (GitHub Packages) to `@incremental/*` (npmjs.org):
+  - `@incremental/engine` — native prebuilt engine binaries (darwin-arm64, linux-x64)
+  - `@incremental/client` — protocol v1 client; auto-resolves the engine binary via `@incremental/engine`
+  - `@incremental/vitest` — Vitest adapter (1 test file = 1 task)
+  - `@incremental/bazel` — Bazel adapter
+  - `@incremental/nx` — Nx adapter
+  - `@incremental/turbo` — Turbo adapter
+  - `@incremental/turbopack` — Turbopack adapter
+  - `@incremental/typescript` — TypeScript adapter
+  - `@incremental/biome`, `@incremental/clippy`, `@incremental/config`, `@incremental/env`,
+    `@incremental/fs`, `@incremental/playwright`, `@incremental/pnpm`, `@incremental/process`,
+    `@incremental/protobuf`, `@incremental/ruff`, `@incremental/strace`, `@incremental/watcher`
+  - `@incremental/sdk` — metapackage (client + engine + vitest)
+- New `scripts/publish-npm-packages.mjs` publishes all 22 packages in dependency order to npmjs.org.
+- New `.github/workflows/publish-npm.yml` publishes on GitHub release or via `workflow_dispatch`.
+- Consumers install once: `npm install @incremental/client @incremental/engine @incremental/vitest`
+  — no `INCREMENTAL_ENGINE` path setup required; `defaultEngine()` auto-resolves from `@incremental/engine`.
+- `@incremental/client` `defaultEngine()` now resolves: `INCREMENTAL_ENGINE` env → `@incremental/engine`
+  prebuilt binary → dev-mode `core/dist/incremental` fallback.
+- Engine binary bundled in package via `prebuilds/` with postinstall download fallback from GitHub Releases.
+
+### Engine
+
 - Engine in Goose: log, index image, stat cache, compaction, multi-writer refresh, CLI, protocol v1, reverse indexes.
 - Conformance suite: 40 cases; differential fuzz against an independent reference (30,000 queries).
-- TypeScript client (`@incremental/client`), Python client (`incremental`), Vitest recorder and planner, MCP server.
 - Git change source (`incremental-git changes`).
 - Open: CR-002 and CR-003 open (see spec/CHANGE_REQUESTS.md).
 - LICENSE: added as an identical copy of LICENSE.md (Apache-2.0). `make release-check` verifies LICENSE.md exists; LICENSE.md is the canonical source.

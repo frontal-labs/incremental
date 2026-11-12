@@ -1,0 +1,22 @@
+{
+  "name": "@incremental/sdk",
+  "version": "0.1.0",
+  "description": "Incremental Compute Engine SDK - client, engine, and common adapters",
+  "type": "module",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "scripts": {},
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@incremental/client": "file:../../bindings/node",
+    "@incremental/engine": "file:../../packages/engine",
+    "@incremental/vitest": "file:../adapters/vitest"
+  }
+}

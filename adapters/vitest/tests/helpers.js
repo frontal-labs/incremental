@@ -13,7 +13,7 @@ import {
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { defaultEngine } from "@frontal-labs/incremental-client";
+import { defaultEngine } from "@incremental/client";
 const here = path.dirname(fileURLToPath(import.meta.url));
 // dist/test -> the adapter root (adapters/vitest).
 export const ADAPTER = path.resolve(here, "..", "..");

@@ -1,113 +1,29 @@
 {
-  "timestamp": "2026-11-05T23:35:45.108Z",
-  "runs": 5,
+  "timestamp": "2026-11-08T18:03:43.805Z",
+  "runs": 3,
   "engine": "core/dist/incremental serve (new process per run)",
   "change_source": "adapters/git/dist/incremental-git changes",
   "results": [
     {
-      "target": "monorepos/nx",
-      "changed_file": "packages/shared/src/index.ts",
-      "tests": 4,
-      "expected_invalid": 3,
-      "plan_invalid": 3,
-      "plan_skipped": 1,
+      "target": "desktop/stress-monorepo",
+      "changed_file": "packages/apps/apps-0074/src/index.ts",
+      "tests": 10002,
+      "expected_invalid": 9464,
+      "plan_invalid": 9464,
+      "plan_skipped": 538,
       "plan_fallback": null,
       "matches_import_graph": true,
       "missing": [],
       "extra": [],
       "cold_e2e_ms": {
-        "median": 145.342375,
-        "min": 127.685625,
-        "max": 382.42825
+        "median": 1706.176209,
+        "min": 771.128208,
+        "max": 1761.16275
       },
-      "changes_ms_median": 138.335917,
-      "spawn_hello_ms_median": 6.754708,
-      "plan_ms_median": 0.419958,
-      "runs": 5
-    },
-    {
-      "target": "monorepos/turborepo",
-      "changed_file": "packages/shared/src/index.ts",
-      "tests": 4,
-      "expected_invalid": 3,
-      "plan_invalid": 3,
-      "plan_skipped": 1,
-      "plan_fallback": null,
-      "matches_import_graph": true,
-      "missing": [],
-      "extra": [],
-      "cold_e2e_ms": {
-        "median": 143.307542,
-        "min": 136.682125,
-        "max": 183.624084
-      },
-      "changes_ms_median": 137.4095,
-      "spawn_hello_ms_median": 7.619834,
-      "plan_ms_median": 0.439917,
-      "runs": 5
-    },
-    {
-      "target": "monorepos/bazel",
-      "changed_file": "packages/shared/src/index.ts",
-      "tests": 4,
-      "expected_invalid": 3,
-      "plan_invalid": 3,
-      "plan_skipped": 1,
-      "plan_fallback": null,
-      "matches_import_graph": true,
-      "missing": [],
-      "extra": [],
-      "cold_e2e_ms": {
-        "median": 165.203208,
-        "min": 144.079,
-        "max": 203.109708
-      },
-      "changes_ms_median": 148.799041,
-      "spawn_hello_ms_median": 6.857291,
-      "plan_ms_median": 0.421375,
-      "runs": 5
-    },
-    {
-      "target": "fixture",
-      "changed_file": "packages/core/src/math.ts",
-      "tests": 6,
-      "expected_invalid": 2,
-      "plan_invalid": 2,
-      "plan_skipped": 4,
-      "plan_fallback": null,
-      "matches_import_graph": true,
-      "missing": [],
-      "extra": [],
-      "cold_e2e_ms": {
-        "median": 144.054084,
-        "min": 131.942917,
-        "max": 146.328458
-      },
-      "changes_ms_median": 136.034666,
-      "spawn_hello_ms_median": 6.763125,
-      "plan_ms_median": 0.487458,
-      "runs": 5
-    },
-    {
-      "target": "adapters/vitest/fixtures/repo",
-      "changed_file": "packages/core/src/leaf.ts",
-      "tests": 14,
-      "expected_invalid": 2,
-      "plan_invalid": 2,
-      "plan_skipped": 12,
-      "plan_fallback": null,
-      "matches_import_graph": true,
-      "missing": [],
-      "extra": [],
-      "cold_e2e_ms": {
-        "median": 148.044875,
-        "min": 145.767458,
-        "max": 157.469917
-      },
-      "changes_ms_median": 141.117708,
-      "spawn_hello_ms_median": 6.542625,
-      "plan_ms_median": 0.366375,
-      "runs": 5
+      "changes_ms_median": 1170.219958,
+      "spawn_hello_ms_median": 148.905166,
+      "plan_ms_median": 176.922167,
+      "runs": 3
     }
   ]
 }

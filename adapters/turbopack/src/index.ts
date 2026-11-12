@@ -1,4 +1,4 @@
-// @frontal-labs/incremental-turbopack: the Turbopack app adapter (spec/adapters/turbopack.md).
+// @incremental/turbopack: the Turbopack app adapter (spec/adapters/turbopack.md).
 export {
   buildApp,
   envHashes,

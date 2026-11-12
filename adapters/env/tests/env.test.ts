@@ -12,7 +12,7 @@ import {
   type incremental,
   type Context,
   type Plan,
-} from "@frontal-labs/incremental-client";
+} from "@incremental/client";
 import { contextFor, planEnv, recordTasks, type Env, type EnvTask } from "../src/index.js";
 
 interface Fixture {

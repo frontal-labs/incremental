@@ -26,7 +26,7 @@ import {
   type Observation,
   type Outcome,
   type Plan,
-} from "@frontal-labs/incremental-client";
+} from "@incremental/client";
 import { buildObservation, runFile, type FileResult } from "./record.js";
 import {
   contextFor,

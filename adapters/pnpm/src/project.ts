@@ -6,7 +6,7 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, realpathSync } from "node:fs";
 import path from "node:path";
-import type { Context, Input } from "@frontal-labs/incremental-client";
+import type { Context, Input } from "@incremental/client";
 
 // Directories the walk never enters. Build output (dist) is not skipped: a
 // dependent reads its dependency's output.

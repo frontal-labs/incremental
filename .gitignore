@@ -11,6 +11,7 @@ pnpm-store/
 dist/
 build/
 *.tsbuildinfo
+packages/*/package-lock.json
 
 # Python and Rust caches and build output
 __pycache__/

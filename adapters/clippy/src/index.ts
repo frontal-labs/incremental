@@ -1,4 +1,4 @@
-// @frontal-labs/incremental-clippy: the Cargo/Clippy adapter (spec/adapters/clippy.md).
+// @incremental/clippy: the Cargo/Clippy adapter (spec/adapters/clippy.md).
 export { clippy, toolchain, workspaceOf, CargoError } from "./cargo.js";
 export type { ClippyRun, Member, Message, Workspace } from "./cargo.js";
 export { buildScriptWatches, depInfoFor, parseDepInfo } from "./depinfo.js";

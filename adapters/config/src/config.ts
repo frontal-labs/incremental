@@ -4,7 +4,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
-import type { Config, Context, Input } from "@frontal-labs/incremental-client";
+import type { Config, Context, Input } from "@incremental/client";
 
 export const CONFIG_FILE = "incremental.config.json";
 export const CONFIG_RUNNER = "config@0.1.0";

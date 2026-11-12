@@ -26,7 +26,7 @@ import {
   type Observation,
   type Outcome,
   type Plan,
-} from "@frontal-labs/incremental-client";
+} from "@incremental/client";
 import { clippy, CargoError, toolchain, workspaceOf, type ClippyRun } from "./cargo.js";
 import { inside, memberTasks, observeTask, sha256, taskId } from "./project.js";
 

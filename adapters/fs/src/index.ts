@@ -1,4 +1,4 @@
-// @frontal-labs/incremental-fs: the generic file-read recorder (spec/adapters/fs.md, PLAN 11.1).
+// @incremental/fs: the generic file-read recorder (spec/adapters/fs.md, PLAN 11.1).
 //
 // There is no syscall tracer on macOS, so this recorder observes only the
 // declared inputs of a task. Reads that are not declared are not observed. The
@@ -14,7 +14,7 @@ import type {
   Input,
   Observation,
   Outcome,
-} from "@frontal-labs/incremental-client";
+} from "@incremental/client";
 
 export const FS_VERSION = "0.1.0";
 
@@ -45,7 +45,7 @@ export interface Recorded {
 }
 
 // The signature of a strace oracle runner, injected by the caller so that
-// @frontal-labs/incremental-fs has no hard dependency on @frontal-labs/incremental-strace (the oracle is
+// @incremental/fs has no hard dependency on @incremental/strace (the oracle is
 // Linux-only). The runner observes one command and returns the paths it
 // touched under the configured roots (PLAN §11.5).
 export interface OracleRunOptions {
