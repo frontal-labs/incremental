@@ -49,6 +49,10 @@ interface JsonReport {
     assertionResults?: Array<{ status?: string }>;
   }>;
   unhandledErrors?: unknown[];
+  success?: boolean;
+  numTotalTests?: number;
+  numPassedTests?: number;
+  numFailedTests?: number;
 }
 
 function readEvents(file: string): TraceEvent[] {
@@ -75,6 +79,31 @@ function readReport(file: string): JsonReport | null {
   }
 }
 
+// Finds the nearest vitest.config.* file walking up from the test file's
+// directory to the repo root. Returns the absolute path, or null when no
+// package-level config exists (the root config is used instead).
+export function findNearestConfig(root: string, task: string): string | null {
+  let dir = path.dirname(path.join(root, task));
+  const rootReal = path.resolve(root);
+  while (true) {
+    for (const name of [
+      "vitest.config.ts",
+      "vitest.config.mts",
+      "vitest.config.js",
+      "vitest.config.mjs",
+      "vitest.config.cjs",
+      "vitest.config.cts",
+    ]) {
+      const candidate = path.join(dir, name);
+      if (existsSync(candidate)) return candidate;
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir || parent === rootReal || !dir.startsWith(rootReal)) break;
+    dir = parent;
+  }
+  return null;
+}
+
 // Runs one test file in its own Vitest process with the recorder preloaded.
 export function runFile(opts: RunFileOptions): Promise<FileResult> {
   mkdirSync(opts.workDir, { recursive: true });
@@ -85,12 +114,35 @@ export function runFile(opts: RunFileOptions): Promise<FileResult> {
   rmSync(reportFile, { force: true });
   rmSync(traceFile, { force: true });
 
+  // In a monorepo each package ships its own vitest.config.* with the right
+  // include patterns, environment and aliases. The root config usually only
+  // covers repo-level tests, so a domain test file is invisible to it. Find
+  // the nearest package-level config and run Vitest from that directory so
+  // its include patterns resolve correctly (PLAN 11.3 adapter pass-through).
+  const config = findNearestConfig(opts.root, opts.task);
+
+  let cwd: string;
+  let taskArg: string;
+  let rootArg: string;
+  if (config !== null) {
+    // Run from the package directory that owns the config so that the
+    // include globs (e.g. "tests/**/*.test.ts") resolve relative to it.
+    cwd = path.dirname(config);
+    taskArg = path.relative(cwd, path.join(opts.root, opts.task));
+    rootArg = cwd;
+  } else {
+    // No package-level config: use the repo root as before.
+    cwd = opts.root;
+    taskArg = opts.task;
+    rootArg = opts.root;
+  }
+
   const args = [
     opts.vitestBin,
     "run",
-    opts.task,
+    taskArg,
     "--root",
-    opts.root,
+    rootArg,
     "--pool=forks",
     "--reporter=json",
     `--outputFile=${reportFile}`,
@@ -108,7 +160,7 @@ export function runFile(opts: RunFileOptions): Promise<FileResult> {
   const started = Date.now();
   return new Promise<FileResult>((resolve) => {
     const fd = openSync(logFile, "w");
-    const child = spawn(process.execPath, args, { cwd: opts.root, env, stdio: ["ignore", fd, fd] });
+    const child = spawn(process.execPath, args, { cwd, env, stdio: ["ignore", fd, fd] });
     let killed = false;
     const timer = setTimeout(() => {
       killed = true;
@@ -135,21 +187,35 @@ export function runFile(opts: RunFileOptions): Promise<FileResult> {
       if (spawnFailed) problem = "the test process could not start";
       else if (timedOut) problem = "the task timed out";
       else if (events.length === 0 && !existsSync(traceFile)) problem = "no trace was written";
-      if (report === null || tr === undefined) {
+      if (report === null) {
         outcome = "error";
         problem ??= "no report was written (the test process crashed)";
-      } else if (
-        tr.status === "passed" &&
-        code === 0 &&
-        (report.unhandledErrors?.length ?? 0) === 0
-      ) {
+      } else if (tr !== undefined) {
+        // testResults[0] exists: use its per-file status.
+        if (
+          tr.status === "passed" &&
+          code === 0 &&
+          (report.unhandledErrors?.length ?? 0) === 0
+        ) {
+          outcome = "pass";
+        } else if (tr.assertionResults?.some((a) => a.status === "failed")) {
+          outcome = "fail";
+        } else {
+          outcome = "error";
+          problem ??=
+            `the test file failed without test results: ${tr.message ?? "no message"}`.slice(0, 500);
+        }
+      } else if (code === 0 && (report.success ?? false) && (report.numTotalTests ?? 0) > 0) {
+        // testResults is empty but the top-level summary says the run
+        // succeeded with tests. This happens with some Vitest versions that
+        // omit per-file entries from the JSON reporter.
         outcome = "pass";
-      } else if (tr.assertionResults?.some((a) => a.status === "failed")) {
+      } else if (code !== 0 || (report.success ?? true) === false) {
         outcome = "fail";
+        problem ??= `vitest exited ${code}: ${JSON.stringify(report).slice(0, 300)}`;
       } else {
         outcome = "error";
-        problem ??=
-          `the test file failed without test results: ${tr.message ?? "no message"}`.slice(0, 500);
+        problem ??= "the test file produced no results";
       }
       if (timedOut || spawnFailed) outcome = "error";
       return { task: opts.task, outcome, durationMs, events, problem, exitCode: code };
