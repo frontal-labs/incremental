@@ -14,11 +14,11 @@ npm install @incremental/sdk
 
 ## What's included
 
-| Package | Purpose |
-|---------|---------|
+| Package               | Purpose                                       |
+| --------------------- | --------------------------------------------- |
 | `@incremental/client` | Protocol v1 client for the Incremental engine |
-| `@incremental/engine` | Prebuilt native engine binary |
-| `@incremental/vitest` | Vitest adapter (1 test file = 1 task) |
+| `@incremental/engine` | Prebuilt native engine binary                 |
+| `@incremental/vitest` | Vitest adapter (1 test file = 1 task)         |
 
 ## Exports
 
@@ -54,7 +54,7 @@ const client = await connect({
 
 const plan = await client.affected(
   { baseline: "HEAD~1", head: "HEAD", changes: [] },
-  { baseline: "HEAD~1", context: {}, verify: false, policy: "balanced" }
+  { baseline: "HEAD~1", context: {}, verify: false, policy: "balanced" },
 );
 
 console.log(`Invalidated: ${plan.tasks.length} of ${plan.total_tasks}`);
