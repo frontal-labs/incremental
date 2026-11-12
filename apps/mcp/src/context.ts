@@ -14,7 +14,7 @@ export const RUNNER = "vitest@4.1.12";
 export const LOCKFILES = ["pnpm-lock.yaml", "package-lock.json", "yarn.lock"] as const;
 
 export function sha256(data: string | Uint8Array): string {
-  return "sha256:" + createHash("sha256").update(data).digest("hex");
+  return `sha256:${createHash("sha256").update(data).digest("hex")}`;
 }
 
 // Hash of a repo file, or ABSENT when it does not exist.

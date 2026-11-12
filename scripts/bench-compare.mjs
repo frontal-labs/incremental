@@ -17,7 +17,7 @@
 // Output JSON to benchmarks/results/comparison.json.
 
 import { spawnSync } from "node:child_process";
-import { statSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 

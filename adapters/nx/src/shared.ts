@@ -35,7 +35,7 @@ export function envHashes(env: NodeJS.ProcessEnv): Record<string, string> {
 }
 
 export function sha256Str(data: string | Uint8Array): string {
-  return "sha256:" + createHash("sha256").update(data).digest("hex");
+  return `sha256:${createHash("sha256").update(data).digest("hex")}`;
 }
 
 // The hash of a file, or ABSENT when it does not exist.

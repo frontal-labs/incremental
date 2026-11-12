@@ -118,7 +118,7 @@ function gitChangeSet(root: string, ref: string): GitChangeSet {
 // The context (PLAN 8.4). Ruff reads no lock file, package.json or tsconfig, so
 // those reserved keys are fixed to "absent". Environment reads and directory
 // listings are not observed, so those capabilities are false (README.md).
-export function contextFor(root: string): Context {
+export function contextFor(_root: string): Context {
   return {
     lockfile: "absent",
     tsconfig: "absent",
@@ -387,7 +387,7 @@ function printText(r: RunReport): void {
       lines.push(`  ${t.outcome} ${t.task}${t.problem ? ` (${t.problem})` : ""}`);
   lines.push(r.advanced ? `advanced to ${r.headEnd}` : `not advanced: ${r.notAdvanced.join("; ")}`);
   lines.push(`exit ${r.exit}`);
-  process.stdout.write(lines.join("\n") + "\n");
+  process.stdout.write(`${lines.join("\n")}\n`);
 }
 
 export async function main(argv: string[]): Promise<number> {
@@ -400,7 +400,7 @@ export async function main(argv: string[]): Promise<number> {
   }
   try {
     const report = await runAdapter(parsed.opts);
-    if (parsed.json) process.stdout.write(JSON.stringify(report) + "\n");
+    if (parsed.json) process.stdout.write(`${JSON.stringify(report)}\n`);
     else printText(report);
     return report.exit;
   } catch (e) {
@@ -408,7 +408,7 @@ export async function main(argv: string[]): Promise<number> {
       e instanceof UsageError ? "invalid_params" : isIncrementalError(e) ? e.code : "internal";
     const message = e instanceof Error ? e.message : String(e);
     if (parsed.json)
-      process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
+      process.stdout.write(`${JSON.stringify({ ok: false, error: { code, message } })}\n`);
     process.stderr.write(`incremental ruff: ${message}\n`);
     return e instanceof UsageError ? 2 : 4;
   }

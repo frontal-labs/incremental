@@ -153,8 +153,8 @@ export async function main(argv: string[]): Promise<number> {
     await session.open();
     for (let n = 1; opts.cycles === 0 || n <= opts.cycles; n++) {
       const report = await session.cycle();
-      if (opts.json) process.stdout.write(JSON.stringify(report) + "\n");
-      else process.stdout.write(describe(n, report) + "\n");
+      if (opts.json) process.stdout.write(`${JSON.stringify(report)}\n`);
+      else process.stdout.write(`${describe(n, report)}\n`);
       if (report.results.some((t) => t.outcome === "fail")) code = 1;
       // Each cycle walks the whole tree, so the wait is at least ten times that
       // walk: the check never takes more than about a tenth of the time, however

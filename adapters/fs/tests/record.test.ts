@@ -16,7 +16,6 @@ import {
   recordOracle,
   type CheckResult,
   type OracleFileTask,
-  type OracleResult,
   type OracleRun,
 } from "../src/index.js";
 

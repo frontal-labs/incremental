@@ -85,7 +85,7 @@ function comparePlan(plan, expect) {
   return diffs;
 }
 
-function appendStoreRecords(store, c) {
+function appendStoreRecords(_store, c) {
   // store.append messages are applied after store.from, through the protocol.
   return (c.store.append ?? []).map((m, i) => ({ id: 1000 + i, ...m }));
 }
@@ -125,7 +125,7 @@ function runCase(c) {
     const act = run.responses.find((r) => r.id === base);
     const after = run.responses.find((r) => r.id === base + 1);
     const diffs = [];
-    if (!act || !act.error || act.error.code !== c.expect.error)
+    if (!act?.error || act.error.code !== c.expect.error)
       diffs.push(`error: want ${c.expect.error} got ${JSON.stringify(act)}`);
     if (
       c.expect.baseline_after !== undefined &&
@@ -169,7 +169,7 @@ function runCase(c) {
   const q1 = affectedRequest(base, c);
   const run = serve(store, wt, [q1]);
   const got = run.responses.find((r) => r.id === base);
-  if (!got || !got.result) return { status: "FAIL", detail: `no plan: ${run.lines.join(" | ")}` };
+  if (!got?.result) return { status: "FAIL", detail: `no plan: ${run.lines.join(" | ")}` };
 
   const diffs = comparePlan(got.result, c.expect);
 

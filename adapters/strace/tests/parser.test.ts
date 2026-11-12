@@ -7,7 +7,7 @@ import path from "node:path";
 import { test } from "node:test";
 import { parseStraceLog, type OracleResult, type StraceEvent } from "../src/oracle.js";
 
-const O_EXCLUDED = ["node_modules", ".git", ".incremental"];
+const _O_EXCLUDED = ["node_modules", ".git", ".incremental"];
 
 function line(pid: number, sys: string, args: string, result: string): string {
   return `${pid} ${sys}(${args}) = ${result}`;
@@ -169,7 +169,7 @@ test("statx success reports the file; newfstatat failure reports a probe", () =>
   const root = mkdtempSync(path.join(os.tmpdir(), "bp-strace-"));
   try {
     writeFileSync(path.join(root, "sx.txt"), "x");
-    const gone = path.join(root, "nf.txt");
+    const _gone = path.join(root, "nf.txt");
     mkdirSync(path.join(root, "src"));
     const s = summaryOf(
       [

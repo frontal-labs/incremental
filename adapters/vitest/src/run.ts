@@ -387,7 +387,7 @@ function printText(r: RunReport): void {
       : `not advanced: ${r.notAdvanced.join("; ") || "shadow mode"}`,
   );
   lines.push(`exit ${r.exit}`);
-  process.stdout.write(lines.join("\n") + "\n");
+  process.stdout.write(`${lines.join("\n")}\n`);
 }
 
 export async function main(argv: string[]): Promise<number> {
@@ -400,7 +400,7 @@ export async function main(argv: string[]): Promise<number> {
   }
   try {
     const report = await runAdapter(parsed.opts);
-    if (parsed.json) process.stdout.write(JSON.stringify(report) + "\n");
+    if (parsed.json) process.stdout.write(`${JSON.stringify(report)}\n`);
     else printText(report);
     return report.exit;
   } catch (e) {
@@ -408,7 +408,7 @@ export async function main(argv: string[]): Promise<number> {
       e instanceof UsageError ? "invalid_params" : isIncrementalError(e) ? e.code : "internal";
     const message = e instanceof Error ? e.message : String(e);
     if (parsed.json)
-      process.stdout.write(JSON.stringify({ ok: false, error: { code, message } }) + "\n");
+      process.stdout.write(`${JSON.stringify({ ok: false, error: { code, message } })}\n`);
     process.stderr.write(`incremental vitest: ${message}\n`);
     return e instanceof UsageError ? 2 : 4;
   }

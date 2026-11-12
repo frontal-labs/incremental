@@ -10,7 +10,7 @@ export const UNSET = "unset";
 export type Env = Record<string, string | undefined>;
 
 export function valueHash(value: string | undefined): string {
-  return value === undefined ? UNSET : "sha256:" + createHash("sha256").update(value).digest("hex");
+  return value === undefined ? UNSET : `sha256:${createHash("sha256").update(value).digest("hex")}`;
 }
 
 // Hash map of the variables that are set, for the names given (the query's `env`).

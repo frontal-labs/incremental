@@ -384,12 +384,7 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
       if (fd === undefined) return;
       const info = fds.get(pid)?.get(fd);
       // A successful directory read is a dir input of the task.
-      if (
-        info !== undefined &&
-        info.isDir &&
-        result.ok &&
-        (result.fd === undefined || result.fd >= 0)
-      ) {
+      if (info?.isDir && result.ok && (result.fd === undefined || result.fd >= 0)) {
         add("dir", pid, info.real);
       }
       return;
@@ -477,7 +472,7 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
     exec: "execs",
   };
   for (const e of events) {
-    const key = e.kind + "\0" + e.path;
+    const key = `${e.kind}\0${e.path}`;
     if (!seen.has(key)) {
       seen.add(key);
       const bucket = summary[kindToKey[e.kind]];

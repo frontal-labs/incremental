@@ -81,7 +81,7 @@ function readSetFor(i, reads, random) {
       set.add(modulePath(pkg, Math.floor(random() * MODULES_PER_PACKAGE)));
     } else {
       // Zipf-like: index = floor(pool^u) puts most picks on the low indices.
-      const g = Math.min(poolSize - 1, Math.floor(Math.pow(poolSize, random())) - 1);
+      const g = Math.min(poolSize - 1, Math.floor(poolSize ** random()) - 1);
       const p = Math.floor(g / MODULES_PER_PACKAGE);
       set.add(modulePath(p, g % MODULES_PER_PACKAGE));
     }

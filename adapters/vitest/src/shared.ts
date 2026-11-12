@@ -22,7 +22,7 @@ export function isTrackedEnv(name: string): boolean {
 }
 
 export function sha256(data: string | Uint8Array): string {
-  return "sha256:" + createHash("sha256").update(data).digest("hex");
+  return `sha256:${createHash("sha256").update(data).digest("hex")}`;
 }
 
 // Test files the adapter discovers (PLAN 6.7 testGlobs, as a pattern).

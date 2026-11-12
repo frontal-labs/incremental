@@ -104,7 +104,7 @@ let refRun = 0;
 for (const f of files) {
   const c = JSON.parse(fs.readFileSync(path.join(casesDir, f), "utf8"));
   if (c.id + ".json" !== f) fail(`${f}: id ${c.id} does not match the file name`);
-  if (!c.desc || !c.mode || !c.store || !c.store.from) fail(`${f}: missing desc, mode or store`);
+  if (!c.desc || !c.mode || !c.store?.from) fail(`${f}: missing desc, mode or store`);
   if (!(protocolLevel(c) || !c.query)) {
     const messages = [...readMessages(c.store.from), ...(c.store.append ?? [])];
     const state = buildState(messages);
@@ -241,8 +241,8 @@ if (!fs.existsSync(engine)) {
     ["response.json", res[1], schema("response.json")],
     ["response.json", res[7], schema("response.json")],
     ["plan.json", res[4] && { ...res[4].result }, schema("plan.json")],
-    ["stats.json", res[5] && res[5].result, schema("stats.json")],
-    ["explanation.json", res[6] && res[6].result, schema("explanation.json")],
+    ["stats.json", res[5]?.result, schema("stats.json")],
+    ["explanation.json", res[6]?.result, schema("explanation.json")],
     ["error.json", res[7]?.error, schema("error.json")],
   ];
   for (const [name, value, s] of checks) {

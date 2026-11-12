@@ -73,7 +73,7 @@ function rawServe(
   lines: string[],
 ): { status: number | null; responses: Record<string, unknown>[] } {
   const r = spawnSync(ENGINE, ["serve", "--store", store, "--root", root], {
-    input: lines.join("\n") + "\n",
+    input: `${lines.join("\n")}\n`,
     encoding: "utf8",
   });
   const responses = r.stdout

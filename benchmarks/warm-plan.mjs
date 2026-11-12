@@ -125,7 +125,7 @@ async function main() {
       // Verify exactly one task was invalidated.
       const plan = res;
       if (!plan || !Array.isArray(plan.tasks) || plan.tasks.length !== 1) {
-        die(`expected 1 invalidated task, got ${plan && plan.tasks ? plan.tasks.length : "none"}`);
+        die(`expected 1 invalidated task, got ${plan?.tasks ? plan.tasks.length : "none"}`);
       }
     }
     perQuerySamples.push(queryMs.reduce((a, b) => a + b, 0) / queryMs.length);

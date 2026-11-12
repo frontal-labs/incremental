@@ -44,13 +44,4 @@ RUN pnpm install --frozen-lockfile
 RUN make build
 RUN for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/strace adapters/biome adapters/clippy adapters/bazel adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbopack adapters/watcher benchmarks/replay apps/mcp; do (cd "$d" && npm install --no-audit --no-fund); done
 
-# Wire GHCR to NPM: install the published @incremental packages from npm so the
-# container can run against the published client/adapters rather than only the
-# local build. Overrides the file: workspace deps with the published versions.
-RUN npm install --registry=https://registry.npmjs.org \
-  @incremental/client@0.1.0 \
-  @incremental/vitest@0.1.0 \
-  @incremental/git@0.1.0 \
-  --no-audit --no-fund
-
 CMD ["make", "all-tests", "test-python", "test-git", "test-fuzz"]

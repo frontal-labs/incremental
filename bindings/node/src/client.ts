@@ -411,7 +411,7 @@ class IncrementalClient implements incremental {
       }, timeoutMs);
       run.pending.set(id, { method, resolve, reject, timer });
       const line = params === undefined ? { id, method } : { id, method, params };
-      run.proc.stdin.write(JSON.stringify(line) + "\n");
+      run.proc.stdin.write(`${JSON.stringify(line)}\n`);
     });
   }
 

@@ -18,7 +18,6 @@ import path from "node:path";
 import {
   connect,
   defaultEngine,
-  isIncrementalError,
   type Change,
   type Fallback,
   type Input,
@@ -35,11 +34,7 @@ import {
 } from "./planner.js";
 import { envHashes, VOLATILE_ENV } from "./shared.js";
 import { projectGraph, testCommand } from "./inputs.js";
-import {
-  buildObservation,
-  type FileResult,
-  type TraceEvent,
-} from "@incremental/vitest";
+import { buildObservation, type FileResult, type TraceEvent } from "@incremental/vitest";
 
 export interface RunOptions {
   root: string;
@@ -127,9 +122,9 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
   const nxBin = process.env.INCREMENTAL_NX || "nx";
 
   // Get the ground-truth baseline from HEAD.
-  let head0: GitChangeSet;
+  let _head0: GitChangeSet;
   try {
-    head0 = gitChangeSet(root, "HEAD");
+    _head0 = gitChangeSet(root, "HEAD");
   } catch (e) {
     throw new UsageError(e instanceof Error ? e.message : String(e));
   }
@@ -246,7 +241,7 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     const advanced = pass && !error && cs !== null && !dirtyEnd;
     if (advanced && cs !== null && cs.head !== stored) await client.advance(cs.head, stored);
     const headEnd = cs?.head ?? null;
-    const baseline = cs?.baseline ?? null;
+    const _baseline = cs?.baseline ?? null;
 
     await client.close();
     return {

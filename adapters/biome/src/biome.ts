@@ -85,7 +85,7 @@ export function processedFiles(root: string, targets: string[], timeoutMs: numbe
     if (line.startsWith("  - ")) out.push(line.slice(4).trim());
     else if (line.trim() !== "") inBlock = false;
   }
-  return out.filter((f) => !f.startsWith(STORE_DIR + "/")).sort();
+  return out.filter((f) => !f.startsWith(`${STORE_DIR}/`)).sort();
 }
 
 export interface Diagnostic {

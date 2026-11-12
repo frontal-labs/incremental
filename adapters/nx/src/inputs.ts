@@ -46,14 +46,14 @@ export interface TestCommand {
 export function testCommand(root: string, projectRoot: string): TestCommand {
   const projectFile = path.join(root, projectRoot, "project.json");
   if (existsSync(projectFile)) {
-    const target = (JSON.parse(readFileSync(projectFile, "utf8")).targets ?? {}).test;
+    const target = JSON.parse(readFileSync(projectFile, "utf8")).targets?.test;
     const command = target?.options?.command;
     if (typeof command === "string")
       return { command, cwd: path.join(root, target.options.cwd ?? projectRoot) };
   }
   const pkgFile = path.join(root, projectRoot, "package.json");
   if (existsSync(pkgFile)) {
-    const script = (JSON.parse(readFileSync(pkgFile, "utf8")).scripts ?? {}).test;
+    const script = JSON.parse(readFileSync(pkgFile, "utf8")).scripts?.test;
     if (typeof script === "string") return { command: script, cwd: path.join(root, projectRoot) };
   }
   throw new Error(`no test command for the project at ${projectRoot}`);

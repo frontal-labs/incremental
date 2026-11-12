@@ -31,9 +31,9 @@ before(() => {
   // The prime run: no baseline yet, so every test runs and the baseline becomes HEAD.
   const prime = runCli(repo, store);
   assert.equal(prime.status, 0, `prime run failed: ${prime.stderr} ${JSON.stringify(prime.out)}`);
-  assert.equal(prime.out?.["advanced"], true, "the prime run must advance the baseline");
+  assert.equal(prime.out?.advanced, true, "the prime run must advance the baseline");
   assert.equal(
-    (prime.out?.["results"] as unknown[] | undefined)?.length,
+    (prime.out?.results as unknown[] | undefined)?.length,
     14,
     "the prime run must run all 14 tests",
   );
@@ -52,8 +52,8 @@ function compareStep(
 ): string[] {
   if (out === null) return [`no JSON output (exit ${status}): ${stderr.slice(-800)}`];
   const problems: string[] = [];
-  const plan = (out["plan"] ?? null) as Record<string, unknown> | null;
-  const results = out["results"] as Array<{ task: string; outcome: string }>;
+  const plan = (out.plan ?? null) as Record<string, unknown> | null;
+  const results = out.results as Array<{ task: string; outcome: string }>;
   const expect = step.expect;
   const check = (field: string, want: unknown, got: unknown): void => {
     if (JSON.stringify(want) !== JSON.stringify(got)) {
@@ -62,20 +62,20 @@ function compareStep(
   };
   if (step.query !== undefined) {
     const want = sortChanges(step.query.changes as Change[]);
-    const got = sortChanges(out["changes"] as Change[]);
+    const got = sortChanges(out.changes as Change[]);
     check("changes", want, got);
   }
   if (plan === null) return [...problems, "no plan in the output"];
-  check("tasks", normTasks(expect.tasks), normTasks(plan["tasks"] as never));
-  check("unobserved", expect.unobserved, plan["unobserved"]);
-  check("ignored", expect.ignored, plan["ignored"]);
-  check("deleted_tasks", expect.deleted_tasks, plan["deleted_tasks"]);
-  check("fallback", expect.fallback, plan["fallback"]);
-  check("confidence", expect.confidence, plan["confidence"]);
+  check("tasks", normTasks(expect.tasks), normTasks(plan.tasks as never));
+  check("unobserved", expect.unobserved, plan.unobserved);
+  check("ignored", expect.ignored, plan.ignored);
+  check("deleted_tasks", expect.deleted_tasks, plan.deleted_tasks);
+  check("fallback", expect.fallback, plan.fallback);
+  check("confidence", expect.confidence, plan.confidence);
   check("ran", [...expect.ran].sort(), results.map((r) => r.task).sort());
-  check("exit", expect.exit, out["exit"]);
+  check("exit", expect.exit, out.exit);
   check("status", expect.exit, status);
-  check("advanced", expect.advanced, out["advanced"]);
+  check("advanced", expect.advanced, out.advanced);
   for (const [task, outcome] of Object.entries(expect.outcomes ?? {})) {
     const got = results.find((r) => r.task === task)?.outcome;
     check(`outcome ${task}`, outcome, got);

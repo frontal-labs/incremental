@@ -50,15 +50,11 @@ test("shadow mode runs everything, reports the skips, and writes nothing", () =>
     const r = runCli(repo, store, ["--shadow"]);
     assert.equal(r.status, 0, `shadow run failed: ${r.stderr}`);
     const out = r.out as Record<string, unknown>;
-    assert.equal(out["mode"], "shadow");
-    assert.equal(out["advanced"], false);
-    assert.equal(
-      (out["results"] as unknown[]).length,
-      FIXTURE_TESTS.length,
-      "shadow runs every test",
-    );
+    assert.equal(out.mode, "shadow");
+    assert.equal(out.advanced, false);
+    assert.equal((out.results as unknown[]).length, FIXTURE_TESTS.length, "shadow runs every test");
     assert.deepEqual(
-      (out["wouldSkip"] as string[]).sort(),
+      (out.wouldSkip as string[]).sort(),
       FIXTURE_TESTS.filter(
         (t) =>
           ![
@@ -79,7 +75,7 @@ test("shadow mode runs everything, reports the skips, and writes nothing", () =>
     const next = runCli(repo, store);
     assert.equal(next.status, 0, `next run failed: ${next.stderr}`);
     const planned = (
-      (next.out as Record<string, unknown>)["plan"] as { tasks: Array<{ id: string }> }
+      (next.out as Record<string, unknown>).plan as { tasks: Array<{ id: string }> }
     ).tasks.map((t) => t.id);
     assert.deepEqual(planned.sort(), [
       "packages/core/test/leaf-a.test.ts",
@@ -97,8 +93,8 @@ test("a dirty worktree runs, is not advanced (exit 7), and advances once committ
     applyEdits(repo, LEAF_EDIT); // not committed: the worktree is dirty
     const first = runCli(repo, store);
     assert.equal(first.status, 7, `dirty run must exit 7: ${first.stderr}`);
-    assert.equal((first.out as Record<string, unknown>)["advanced"], false);
-    assert.equal((first.out as Record<string, unknown>)["dirty"], true);
+    assert.equal((first.out as Record<string, unknown>).advanced, false);
+    assert.equal((first.out as Record<string, unknown>).dirty, true);
     const baselineAfterDirty = stats(store).baseline;
     assert.equal(
       baselineAfterDirty,
@@ -112,7 +108,7 @@ test("a dirty worktree runs, is not advanced (exit 7), and advances once committ
     const second = runCli(repo, store);
     assert.equal(second.status, 7, `second dirty run must exit 7: ${second.stderr}`);
     const tasks = (
-      (second.out as Record<string, unknown>)["plan"] as {
+      (second.out as Record<string, unknown>).plan as {
         tasks: Array<{ id: string; reasons: string[] }>;
       }
     ).tasks;
@@ -136,7 +132,7 @@ test("a dirty worktree runs, is not advanced (exit 7), and advances once committ
     commitAll(repo);
     const clean = runCli(repo, store);
     assert.equal(clean.status, 0, `clean run must exit 0: ${clean.stderr}`);
-    assert.equal((clean.out as Record<string, unknown>)["advanced"], true);
+    assert.equal((clean.out as Record<string, unknown>).advanced, true);
     assert.notEqual(stats(store).baseline, baselineAfterDirty);
   } finally {
     rmSync(dir, { recursive: true, force: true });

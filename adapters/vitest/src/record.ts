@@ -79,9 +79,9 @@ function readReport(file: string): JsonReport | null {
 export function runFile(opts: RunFileOptions): Promise<FileResult> {
   mkdirSync(opts.workDir, { recursive: true });
   const base = path.join(opts.workDir, String(opts.index));
-  const reportFile = base + ".report.json";
-  const traceFile = base + ".trace.ndjson";
-  const logFile = base + ".log";
+  const reportFile = `${base}.report.json`;
+  const traceFile = `${base}.trace.ndjson`;
+  const logFile = `${base}.log`;
   rmSync(reportFile, { force: true });
   rmSync(traceFile, { force: true });
 

@@ -137,7 +137,7 @@ export function listSourceFiles(repo: string): string[] {
 // that imports it fails, and the engine must invalidate them, or it is a false skip.
 export function generatedEditSequence(repo: string, count: number, dirs: string[] = []): Edit[] {
   const inScope = (f: string): boolean =>
-    dirs.length === 0 || dirs.some((d) => f === d || f.startsWith(d.replace(/\/+$/, "") + "/"));
+    dirs.length === 0 || dirs.some((d) => f === d || f.startsWith(`${d.replace(/\/+$/, "")}/`));
   const sources = listSourceFiles(repo).filter(inScope);
   if (sources.length === 0)
     throw new Error(`no source files found under ${repo} for ${dirs.join(", ") || "the repo"}`);

@@ -34,11 +34,7 @@ import {
   turboBin,
 } from "./planner.js";
 import { envHashes, VOLATILE_ENV } from "./shared.js";
-import {
-  buildObservation,
-  type FileResult,
-  type TraceEvent,
-} from "@incremental/vitest";
+import { buildObservation, type FileResult, type TraceEvent } from "@incremental/vitest";
 import { createRequire } from "node:module";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 

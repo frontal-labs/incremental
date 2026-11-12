@@ -1,6 +1,5 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { ROOT } from "./paths.js";
 import type { Flaky, FalseSkip, ReplayReport } from "./types.js";
 
 export function median(xs: number[]): number | null {
@@ -51,6 +50,6 @@ export function buildReport({
 
 export function writeReport(report: ReplayReport, out: string): void {
   mkdirSync(path.dirname(out), { recursive: true });
-  writeFileSync(out, JSON.stringify(report, null, 2) + "\n");
+  writeFileSync(out, `${JSON.stringify(report, null, 2)}\n`);
   console.log(JSON.stringify(report, null, 2));
 }

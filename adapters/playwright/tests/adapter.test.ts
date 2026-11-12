@@ -140,7 +140,7 @@ test("an edit to one test file invalidates only that test", async () => {
   const { root, store, base } = makeRepo();
   try {
     await run(root, store);
-    write(root, "pure/a.spec.ts", PURE_A + "// edited\n");
+    write(root, "pure/a.spec.ts", `${PURE_A}// edited\n`);
     commit(root, "edit a");
     const r = await run(root, store);
     assert.ok(r.selected.includes("pure/a.spec.ts"), r.selected.join(", "));
@@ -191,7 +191,7 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
   const { root, store, base } = makeRepo();
   try {
     await run(root, store);
-    write(root, "pure/a.spec.ts", PURE_A + "// uncommitted\n");
+    write(root, "pure/a.spec.ts", `${PURE_A}// uncommitted\n`);
     const r = await run(root, store);
     assert.equal(r.advanced, false);
     assert.equal(r.exit, 7);

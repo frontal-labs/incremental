@@ -20,7 +20,7 @@ export class ConfigError extends Error {
 }
 
 export function sha256(data: Buffer | string): string {
-  return "sha256:" + createHash("sha256").update(data).digest("hex");
+  return `sha256:${createHash("sha256").update(data).digest("hex")}`;
 }
 
 // incremental.config.json at the root (PLAN 6.7). A missing file is an empty config.

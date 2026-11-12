@@ -69,7 +69,7 @@ export class Session {
     }
   }
   onLine(msg) {
-    const p = this.pending && this.pending.get(msg.id);
+    const p = this.pending?.get(msg.id);
     if (p) {
       this.pending.delete(p.id);
       clearTimeout(p.timer);

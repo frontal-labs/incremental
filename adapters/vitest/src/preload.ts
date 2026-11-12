@@ -84,7 +84,7 @@ function install(out: string): void {
     const outer = busy;
     busy = true;
     try {
-      realAppend(out, JSON.stringify({ ...rec, pid: process.pid, tid }) + "\n");
+      realAppend(out, `${JSON.stringify({ ...rec, pid: process.pid, tid })}\n`);
     } catch (err) {
       process.stderr.write(`incremental recorder: cannot write trace: ${String(err)}\n`);
     } finally {
@@ -107,7 +107,7 @@ function install(out: string): void {
       }
     }
     const rel = path.relative(root, real);
-    if (rel === "" || rel === ".." || rel.startsWith(".." + path.sep) || path.isAbsolute(rel))
+    if (rel === "" || rel === ".." || rel.startsWith(`..${path.sep}`) || path.isAbsolute(rel))
       return null;
     const parts = rel.split(path.sep);
     if (parts.some((s) => EXCLUDED_DIRS.includes(s))) return null;
@@ -155,20 +155,20 @@ function install(out: string): void {
       isFile = st.isFile();
       isDir = st.isDirectory();
     } catch {
-      emit("p:" + rel, { k: "probe", p: rel });
+      emit(`p:${rel}`, { k: "probe", p: rel });
       return;
     }
-    if (isFile && kind !== "list" && !seen.has("f:" + rel)) {
+    if (isFile && kind !== "list" && !seen.has(`f:${rel}`)) {
       let hash: string;
       try {
         hash = sha256(realRead(abs));
       } catch {
         hash = "unreadable";
       }
-      emit("f:" + rel, { k: "file", p: rel, h: hash });
+      emit(`f:${rel}`, { k: "file", p: rel, h: hash });
       noteAncestorManifests(abs);
     } else if (isDir && kind === "list" && isTaskProcess) {
-      emit("d:" + rel, { k: "dir", p: rel });
+      emit(`d:${rel}`, { k: "dir", p: rel });
     }
   }
 
@@ -274,7 +274,7 @@ function install(out: string): void {
     noteAccess(target, "stat");
     for (const ext of PROBE_EXTENSIONS) {
       noteAccess(target + ext, "stat");
-      noteAccess(path.join(target, "index" + ext), "stat");
+      noteAccess(path.join(target, `index${ext}`), "stat");
     }
   };
   if (typeof Module.registerHooks === "function") {
@@ -367,7 +367,7 @@ function install(out: string): void {
   const written = new Set<string>();
   function noteEnv(name: string): void {
     if (!isTrackedEnv(name) || written.has(name)) return;
-    emit("e:" + name, { k: "env", n: name, h: baseline[name] ?? "unset" });
+    emit(`e:${name}`, { k: "env", n: name, h: baseline[name] ?? "unset" });
   }
   process.env = new Proxy(origEnv, {
     get(target, key) {

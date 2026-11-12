@@ -87,7 +87,7 @@ export function walk(
   return out;
 }
 
-function kindOf(abs: string): Kind | null {
+function _kindOf(abs: string): Kind | null {
   try {
     const st = lstatSync(abs);
     return st.isFile() ? "file" : st.isDirectory() ? "dir" : "other";

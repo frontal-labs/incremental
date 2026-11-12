@@ -42,7 +42,7 @@ export function enginePath() {
   throw new Error(
     "Could not locate the Incremental engine binary. " +
       "Set INCREMENTAL_ENGINE to the path of the `incremental` executable, " +
-      "or install @incremental/engine which bundles prebuilt binaries."
+      "or install @incremental/engine which bundles prebuilt binaries.",
   );
 }
 

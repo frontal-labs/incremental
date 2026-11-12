@@ -7,13 +7,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import {
-  connect,
-  defaultEngine,
-  type incremental,
-  type Context,
-  type Plan,
-} from "@incremental/client";
+import { connect, defaultEngine, type incremental, type Context } from "@incremental/client";
 import { contextFor } from "../src/index.js";
 
 interface Fixture {
@@ -68,10 +62,10 @@ test("affected projects from nx are passed to incremental as declared tasks", as
       const context = contextFor(f.root);
       // app and web both depend on shared/src/index.ts
       await recordTask(c, "projects/app", BASE, context, [
-        { kind: "file", path: "projects/shared/src/index.ts", hash: "sha256:" + "0".repeat(64) },
+        { kind: "file", path: "projects/shared/src/index.ts", hash: `sha256:${"0".repeat(64)}` },
       ]);
       await recordTask(c, "projects/web", BASE, context, [
-        { kind: "file", path: "projects/shared/src/index.ts", hash: "sha256:" + "0".repeat(64) },
+        { kind: "file", path: "projects/shared/src/index.ts", hash: `sha256:${"0".repeat(64)}` },
       ]);
       const plan = await c.affected(
         { baseline: BASE, changes: [{ path: "projects/shared/src/index.ts", status: "modified" }] },
@@ -107,10 +101,10 @@ test("unaffected projects are not invalidated", async () => {
       const context = contextFor(f.root);
       // app depends on shared, utils does not
       await recordTask(c, "projects/app", BASE, context, [
-        { kind: "file", path: "projects/shared/src/index.ts", hash: "sha256:" + "0".repeat(64) },
+        { kind: "file", path: "projects/shared/src/index.ts", hash: `sha256:${"0".repeat(64)}` },
       ]);
       await recordTask(c, "projects/utils", BASE, context, [
-        { kind: "file", path: "projects/utils/src/formatter.ts", hash: "sha256:" + "0".repeat(64) },
+        { kind: "file", path: "projects/utils/src/formatter.ts", hash: `sha256:${"0".repeat(64)}` },
       ]);
       const plan = await c.affected(
         { baseline: BASE, changes: [{ path: "projects/shared/src/index.ts", status: "modified" }] },
