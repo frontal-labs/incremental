@@ -36,7 +36,7 @@ function downloadFromReleases() {
     execFileSync("curl", ["-fsSL", "-o", binaryPath(), url], { stdio: "inherit" });
     execFileSync("chmod", ["+x", binaryPath()], { stdio: "inherit" });
     console.log(`@incremental/engine: downloaded binary for ${triple}`);
-  } catch (_err) {
+  } catch {
     console.warn(
       `@incremental/engine: could not download prebuilt binary for ${triple} from GitHub Releases. ` +
         "You may need to build the engine locally with `make build` or set INCREMENTAL_ENGINE manually.",
