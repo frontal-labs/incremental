@@ -38,11 +38,7 @@ function readJson(file) {
 
 // Package directories to publish, in dependency order.
 // The engine must go first (client depends on it), then client, then adapters, then sdk.
-const PUBLISH_ORDER = [
-  "packages/engine",
-  "bindings/node",
-  "packages/sdk",
-];
+const PUBLISH_ORDER = ["packages/engine", "bindings/node", "packages/sdk"];
 
 function candidateDirs() {
   const dirs = [...PUBLISH_ORDER];
@@ -101,9 +97,14 @@ function publishManifest(p, byName) {
   // Ensure files list includes dist and bin
   const files = new Set(manifest.files ?? []);
   if (p.dir.includes("engine")) {
-    files.add("bin/"); files.add("prebuilds/"); files.add("index.js"); files.add("index.d.ts"); files.add("install.js");
+    files.add("bin/");
+    files.add("prebuilds/");
+    files.add("index.js");
+    files.add("index.d.ts");
+    files.add("install.js");
   } else if (p.dir.includes("sdk")) {
-    files.add("index.js"); files.add("index.d.ts");
+    files.add("index.js");
+    files.add("index.d.ts");
   } else {
     files.add("dist/src");
     if (existsSync(path.join(ROOT, p.dir, "bin"))) files.add("bin/");
@@ -167,7 +168,8 @@ function publish(p, manifest, userConfig) {
 }
 
 function main() {
-  if (!process.env.NODE_AUTH_TOKEN) die("NODE_AUTH_TOKEN is not set (a token with publish access to @incremental)");
+  if (!process.env.NODE_AUTH_TOKEN)
+    die("NODE_AUTH_TOKEN is not set (a token with publish access to @incremental)");
   const packages = loadPackages();
   const byName = new Map(packages.map((p) => [p.name, p]));
   const userConfig = path.join(ROOT, ".npmrc");

@@ -33,17 +33,13 @@ function downloadFromReleases() {
 
   try {
     mkdirSync(prebuiltDir(), { recursive: true });
-    execFileSync(
-      "curl",
-      ["-fsSL", "-o", binaryPath(), url],
-      { stdio: "inherit" }
-    );
+    execFileSync("curl", ["-fsSL", "-o", binaryPath(), url], { stdio: "inherit" });
     execFileSync("chmod", ["+x", binaryPath()], { stdio: "inherit" });
     console.log(`@incremental/engine: downloaded binary for ${triple}`);
-  } catch (err) {
+  } catch (_err) {
     console.warn(
       `@incremental/engine: could not download prebuilt binary for ${triple} from GitHub Releases. ` +
-        "You may need to build the engine locally with \`make build\` or set INCREMENTAL_ENGINE manually."
+        "You may need to build the engine locally with `make build` or set INCREMENTAL_ENGINE manually.",
     );
   }
 }
@@ -55,7 +51,9 @@ function main() {
     return;
   }
 
-  console.log(`@incremental/engine: no prebuilt binary for ${targetTriple()}, attempting download...`);
+  console.log(
+    `@incremental/engine: no prebuilt binary for ${targetTriple()}, attempting download...`,
+  );
   downloadFromReleases();
 }
 
