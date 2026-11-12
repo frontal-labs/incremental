@@ -35,4 +35,4 @@ Exit codes: 0 advanced and all passed; 1 advanced and a test failed; 2 usage; 4 
 
 - `@playwright/test` 1.64.1 (exact; released 2026-10-14, before the 2-week cutoff of 2026-10-20 for 2026-11-03).
 - `typescript` 5.9.3, `@types/node` 22.20.5 (as the other adapters).
-- `@frontal-labs/incremental-client` as `file:../../bindings/node`.
+- `@incremental/client` as `file:../../bindings/node`.

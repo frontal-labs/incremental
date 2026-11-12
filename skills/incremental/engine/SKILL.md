@@ -57,7 +57,7 @@ A query fails over to a fallback (`context_changed`, P2) when a reserved context
 ## Node client
 
 ```ts
-import { connect, isIncrementalError } from "@frontal-labs/incremental-client";
+import { connect, isIncrementalError } from "@incremental/client";
 
 const client = await connect({ root: process.cwd }); // store: $INCREMENTAL_STORE or <repo>/.incremental
 try {

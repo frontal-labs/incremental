@@ -42,6 +42,6 @@ RUN pnpm install --frozen-lockfile
 
 # Build the engine and Node packages from source.
 RUN make build
-RUN for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/strace adapters/biome adapters/clippy adapters/bazel adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbopack adapters/watcher benchmarks/replay apps/mcp; do (cd "$d" && npm install --no-audit --no-fund); done
+RUN for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/strace adapters/biome adapters/clippy adapters/bazel adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbopack adapters/watcher benchmarks/replay mcp; do (cd "$d" && npm install --no-audit --no-fund); done
 
 CMD ["make", "all-tests", "test-python", "test-git", "test-fuzz"]

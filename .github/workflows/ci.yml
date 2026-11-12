@@ -44,7 +44,7 @@ jobs:
         run: |
           # Root install provides node_modules/.bin/tsc-rs, which the build target uses for benchmarks/replay.
           pnpm install --frozen-lockfile --ignore-scripts
-          for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/biome adapters/clippy adapters/bazel adapters/nx adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbo adapters/turbopack adapters/watcher apps/mcp; do
+          for d in bindings/node adapters/vitest adapters/typescript adapters/config adapters/env adapters/fs adapters/process adapters/biome adapters/clippy adapters/bazel adapters/nx adapters/playwright adapters/pnpm adapters/protobuf adapters/ruff adapters/turbo adapters/turbopack adapters/watcher mcp; do
             (cd "$d" && npm install --no-audit --no-fund)
           done
       - name: All tests

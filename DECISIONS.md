@@ -519,4 +519,4 @@ The per-query cost is linear in tasks: every query walks all tasks, and sorts th
 - **Docker.** Docker Desktop was restarted. The daemon works again. neo4j exited during the restart and was started again.
 - **Valibot replay.** The driver now generates edits for repos that are not the fixtures (`--sources` limits them to a directory). The scratch copy of valibot runs 63 test files (methods and utils: 63 files, 451 tests). Ground truth on the full suite passed (280 files, 3,232 tests). The replay recorder starts one Vitest process per file, about 15 to 30 seconds each on this machine under load, so a 100-commit replay is not feasible in one session. The recorded run for 3 commits was still in its first pass after 45 minutes.
 - **Test environment.** The adapter Vitest needs jsdom to run valibot, so jsdom 27.2.0 is installed without saving in `adapters/vitest/node_modules`. This is local, not tracked.
-- **Lockfiles.** Regenerated for the new names: root pnpm-lock.yaml, apps/mcp, and every adapter package-lock.json.
+- **Lockfiles.** Regenerated for the new names: root pnpm-lock.yaml, mcp, and every adapter package-lock.json.

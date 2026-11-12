@@ -173,7 +173,7 @@ bench-shared-file: build
 	@echo "PASS bench-shared-file"
 
 test-mcp: build
-	@cd apps/mcp && npm test >../../logs/test-mcp.log 2>&1 || { tail -30 ../../logs/test-mcp.log; echo "FAIL test-mcp"; exit 1; }
+	@cd mcp && npm test >../logs/test-mcp.log 2>&1 || { tail -30 ../logs/test-mcp.log; echo "FAIL test-mcp"; exit 1; }
 	@echo "PASS test-mcp"
 
 test-python: build

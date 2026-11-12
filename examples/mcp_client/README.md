@@ -121,7 +121,7 @@ User: "Which tests are affected by my recent changes?"
 
 MCP Client → incremental-mcp: `affected_tasks({verify: true})`
 
-incremental-mcp → incremental engine (via @frontal-labs/incremental-client):
+incremental-mcp → incremental engine (via @incremental/client):
 
 1. `hello` handshake → `{protocol: 1, engine: {...}, capabilities: [...], store: ".incremental"}`
 2. Build ChangeSet from git (baseline → HEAD)
@@ -141,4 +141,4 @@ MCP Client → User:
 
 - `docs/adapters/ADAPTERS.md` — MCP server (E8) tools and behavior.
 - `docs/spec/PROTOCOL.md` — Protocol v1 methods the MCP server forwards.
-- `apps/mcp/` — the actual MCP server implementation (`@frontal-labs/incremental-mcp`).
+- `mcp/` — the actual MCP server implementation (`@incremental/mcp`).

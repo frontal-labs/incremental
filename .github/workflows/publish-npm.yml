@@ -7,7 +7,8 @@ name: Publish to npm
 #   1. @incremental/engine   (native prebuilt binaries)
 #   2. @incremental/client   (protocol v1 client)
 #   3. @incremental/* adapters (vitest, bazel, nx, turbo, etc.)
-#   4. @incremental/sdk      (metapackage)
+#   4. @incremental/mcp      (MCP server)
+#   5. @incremental/sdk      (metapackage)
 
 on:
   release:
@@ -55,7 +56,7 @@ jobs:
           chmod +x packages/engine/prebuilds/$TRIPLE/incremental
       - name: Install and build all TypeScript packages
         run: |
-          for d in bindings/node adapters/biome adapters/bazel adapters/clippy adapters/config adapters/env adapters/fs adapters/nx adapters/playwright adapters/pnpm adapters/process adapters/protobuf adapters/ruff adapters/strace adapters/turbo adapters/turbopack adapters/typescript adapters/vitest adapters/watcher packages/engine packages/sdk; do
+          for d in bindings/node adapters/biome adapters/bazel adapters/clippy adapters/config adapters/env adapters/fs adapters/nx adapters/playwright adapters/pnpm adapters/process adapters/protobuf adapters/ruff adapters/strace adapters/turbo adapters/turbopack adapters/typescript adapters/vitest adapters/watcher mcp packages/engine packages/sdk; do
             if [ -f "$d/package.json" ]; then
               (cd "$d" && npm install --no-audit --no-fund && npm run build 2>/dev/null || true)
             fi

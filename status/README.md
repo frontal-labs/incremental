@@ -9,7 +9,7 @@ Machine-readable verification status for incremental milestones (E1–E10 per th
 | `status/ADAPTERS.json`         | Adapters (`test-vitest`, `test-adapters`, ...)                   | E4 verify                          |
 | `status/BENCH.json`            | Benchmark replay                                                 | Benchmark replay status            |
 | `status/BENCHMARKS.json`       | Benchmarks                                                       | Benchmarks status                  |
-| `status/BINDINGS.json`         | Node (`@frontal-labs/incremental-client`), Python, Rust bindings | E3 verify (TS), E9 verify (Python) |
+| `status/BINDINGS.json`         | Node (`@incremental/client`), Python, Rust bindings | E3 verify (TS), E9 verify (Python) |
 | `status/CORE.json`             | Core engine (Goose)                                              | E2 verify                          |
 | `status/SPEC_CONFORMANCE.json` | Spec conformance suite                                           | E1 verify                          |
 
