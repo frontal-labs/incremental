@@ -1,6 +1,6 @@
 {
   "name": "@incremental/sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Incremental Compute Engine SDK - client, engine, and common adapters",
   "type": "module",
   "main": "index.js",
@@ -15,8 +15,8 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@incremental/client": "file:../../bindings/node",
-    "@incremental/engine": "file:../../packages/engine",
-    "@incremental/vitest": "file:../adapters/vitest"
+    "@incremental/client": "^0.1.0",
+    "@incremental/engine": "^0.1.0",
+    "@incremental/vitest": "^0.1.0"
   }
 }

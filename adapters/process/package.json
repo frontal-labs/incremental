@@ -16,9 +16,9 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@incremental/client": "file:../../bindings/node",
-    "@incremental/fs": "file:../fs",
-    "@incremental/strace": "file:../strace"
+    "@incremental/client": "^0.1.0",
+    "@incremental/fs": "^0.1.0",
+    "@incremental/strace": "^0.1.0"
   },
   "devDependencies": {
     "@types/node": "22.20.5",
