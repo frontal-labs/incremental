@@ -6,7 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { connect, type incremental } from "@frontal-labs/incremental-client";
+import { connect, type incremental } from "@incremental/client";
 import { defaultGitBinary } from "./git.js";
 import { registerTools } from "./tools.js";
 

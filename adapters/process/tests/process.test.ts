@@ -7,8 +7,8 @@ import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { createRequire } from "node:module";
-import { connect, defaultEngine, type incremental } from "@frontal-labs/incremental-client";
-import { contextFor, oracleContext } from "@frontal-labs/incremental-fs";
+import { connect, defaultEngine, type incremental } from "@incremental/client";
+import { contextFor, oracleContext } from "@incremental/fs";
 import { main } from "../src/cli.js";
 import { runTasks, type TaskConfig } from "../src/index.js";
 
@@ -203,7 +203,7 @@ test("the CLI exits 0 when every task passes and 1 when one fails", async () => 
 });
 
 linux("oracle: a strace-traced command records its file reads as inputs", async () => {
-  const { runOracleSummary } = requireStrace("@frontal-labs/incremental-strace") as {
+  const { runOracleSummary } = requireStrace("@incremental/strace") as {
     runOracleSummary: (command: string[], opts: unknown) => Promise<unknown>;
   };
   const f = await fixture({

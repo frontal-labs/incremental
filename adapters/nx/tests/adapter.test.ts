@@ -13,7 +13,7 @@ import {
   type incremental,
   type Context,
   type Plan,
-} from "@frontal-labs/incremental-client";
+} from "@incremental/client";
 import { contextFor } from "../src/index.js";
 
 interface Fixture {

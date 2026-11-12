@@ -1,5 +1,5 @@
 {
-  "name": "@frontal-labs/incremental-mcp",
+  "name": "@incremental/mcp",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -17,7 +17,7 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@frontal-labs/incremental-client": "file:../../bindings/node",
+    "@incremental/client": "file:../../bindings/node",
     "@modelcontextprotocol/sdk": "1.32.2",
     "zod": "4.6.7"
   },

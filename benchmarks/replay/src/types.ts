@@ -1,4 +1,4 @@
-import type { Plan } from "@frontal-labs/incremental-client";
+import type { Plan } from "@incremental/client";
 
 export interface CliArgs {
   repo?: string;

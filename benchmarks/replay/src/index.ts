@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Replay driver: replays a sequence of commits through the engine and measures
 // false skips against ground truth, using the real adapter (git change source
-// + @frontal-labs/incremental-client over core/dist/incremental serve + incremental-vitest
+// + @incremental/client over core/dist/incremental serve + incremental-vitest
 // run) plus plain vitest runs for ground truth.
 //
 //   commits_processed        commits walked, oldest -> newest
@@ -21,7 +21,7 @@ import { cpSync, mkdtempSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
-import { connect } from "@frontal-labs/incremental-client";
+import { connect } from "@incremental/client";
 
 import { applyEdit, editSequenceFor } from "./edits.js";
 import { ENGINE, FIXTURE, ROOT } from "./paths.js";

@@ -11,7 +11,7 @@ import { join } from "node:path";
 import { platform, arch } from "node:process";
 import { execFileSync } from "node:child_process";
 
-const PACKAGE_DIR = join(import.meta.dirname, "..");
+const PACKAGE_DIR = import.meta.dirname;
 const BINARY_NAME = "incremental";
 
 function targetTriple() {
@@ -59,7 +59,4 @@ function main() {
   downloadFromReleases();
 }
 
-main().catch((err) => {
-  console.error(`@incremental/engine install failed: ${err.message}`);
-  process.exit(1);
-});
+main();

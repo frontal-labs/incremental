@@ -216,7 +216,7 @@ comparisonTest(
           // directory listings (test discovery) are deliberately not task
           // inputs (PLAN 11.2), so dirs from that pid are excluded. Files and
           // probes from it are inputs, as are all events from forked workers.
-          // `exec` events are process observations (for @frontal-labs/incremental-process),
+          // `exec` events are process observations (for @incremental/process),
           // not file reads: the Node recorder deliberately does not intercept
           // execve, so they are not part of the recorder-completeness comparison.
           const oraclePaths = new Set<string>();

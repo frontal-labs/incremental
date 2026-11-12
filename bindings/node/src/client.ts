@@ -1,4 +1,4 @@
-// @frontal-labs/incremental-client: process supervision and the protocol v1 methods
+// @incremental/client: process supervision and the protocol v1 methods
 // (plans/PLAN.md 10.1, 9.3, 9.8). The client spawns `incremental serve`, speaks
 // one JSON object per line, matches answers by id, and runs requests one at a
 // time in arrival order.

@@ -15,8 +15,8 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@incremental/client": "^0.1.0",
-    "@incremental/engine": "^0.1.0",
-    "@incremental/vitest": "^0.1.0"
+    "@incremental/client": "file:../../bindings/node",
+    "@incremental/engine": "file:../../packages/engine",
+    "@incremental/vitest": "file:../adapters/vitest"
   }
 }
