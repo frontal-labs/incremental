@@ -60,7 +60,7 @@ Any recorder must:
 
 Workspace packages reached via `node_modules` symlinks resolve to real location. Recorder records real path; `exclude` applied to real paths. Fixture includes workspace-symlink shape (conformance V07).
 
-## Strace Oracle (Linux) — `adapters/strace`, package `@frontal-labs/incremental-strace`
+## Strace Oracle (Linux) — `adapters/strace`, package `@incremental/strace`
 
 ```bash
 strace -f -e trace=openat,open,openat2,stat,newfstatat,statx,access,faccessat,faccessat2,getdents64,readlink,readlinkat,execve -o <file> -- <cmd>
@@ -72,8 +72,8 @@ strace -f -e trace=openat,open,openat2,stat,newfstatat,statx,access,faccessat,fa
 
 Consumers:
 
-- `@frontal-labs/incremental-fs` — `recordOracle(client, spec, baseline, runOracle)` runs a command under the oracle on Linux and records observed files/dirs/probes (`caps: {probes: true, dirs: true, env: false}`).
-- `@frontal-labs/incremental-process` — `runTask` with `oracle: true` runs the command under the oracle on Linux (child processes visible via `execve`).
+- `@incremental/fs` — `recordOracle(client, spec, baseline, runOracle)` runs a command under the oracle on Linux and records observed files/dirs/probes (`caps: {probes: true, dirs: true, env: false}`).
+- `@incremental/process` — `runTask` with `oracle: true` runs the command under the oracle on Linux (child processes visible via `execve`).
 
 ## Adapter Loop Contract
 

@@ -4,8 +4,8 @@
 //
 //   NODE_AUTH_TOKEN=<token with write:packages> node scripts/publish-github-packages.mjs [--dry-run]
 //
-// Packages: bindings/node and every adapters/*/ with a package.json. apps/mcp and
-// benchmarks/replay are not published. Each package is published in dependency
+// Packages: bindings/node and every adapters/*/ with a package.json.
+// benchmarks/replay is not published. Each package is published in dependency
 // order (the client first). For each one, this script:
 //   - removes "private", sets publishConfig, repository and the "files" list;
 //   - replaces "file:" dependencies on workspace packages with their version;

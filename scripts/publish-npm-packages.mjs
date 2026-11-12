@@ -7,7 +7,8 @@
 //   1. @incremental/engine     (native binary prebuilds)
 //   2. @incremental/client     (protocol client, depends on engine)
 //   3. @incremental/* adapters (vitest, bazel, nx, turbo, etc.)
-//   4. @incremental/sdk        (metapackage: client + engine + vitest)
+//   4. @incremental/mcp        (MCP server, depends on client)
+//   5. @incremental/sdk        (metapackage: client + engine + vitest)
 //
 // For each package this script:
 //   - removes "private", sets publishConfig (access: public)
@@ -38,7 +39,7 @@ function readJson(file) {
 
 // Package directories to publish, in dependency order.
 // The engine must go first (client depends on it), then client, then adapters, then sdk.
-const PUBLISH_ORDER = ["packages/engine", "bindings/node", "packages/sdk"];
+const PUBLISH_ORDER = ["packages/engine", "bindings/node", "mcp", "packages/sdk"];
 
 function candidateDirs() {
   const dirs = [...PUBLISH_ORDER];

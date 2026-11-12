@@ -215,7 +215,18 @@ fn main() {
         store_dir.append(av[si]);
     } else {
         var from_env: u8[>..] = [];
-        if env("INCREMENTAL_STORE", from_env) { store_dir.append(from_env); } else { store_dir.append(".incremental"); }
+        if env("INCREMENTAL_STORE", from_env) {
+            store_dir.append(from_env);
+        } else {
+            // A positional argument (not a flag) is the store directory.
+            for i in av.len - 2 {
+                if av[i + 2].len > 0 && av[i + 2][0] != '-' {
+                    store_dir.append(av[i + 2]);
+                    break;
+                }
+            }
+            if store_dir.len == 0 { store_dir.append(".incremental"); }
+        }
     }
     var root: u8[>..] = [];
     let ri = opt_index(av, "--root");
