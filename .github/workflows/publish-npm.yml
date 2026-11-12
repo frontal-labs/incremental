@@ -47,6 +47,12 @@ jobs:
           echo "GOOSE_HOME=$PWD/.toolchain/goose-home" >> "$GITHUB_ENV"
       - name: Build engine binary
         run: make build
+      - name: Copy engine binary to prebuilds for this platform
+        run: |
+          TRIPLE="$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)"
+          mkdir -p packages/engine/prebuilds/$TRIPLE
+          cp core/dist/incremental packages/engine/prebuilds/$TRIPLE/incremental
+          chmod +x packages/engine/prebuilds/$TRIPLE/incremental
       - name: Install and build all TypeScript packages
         run: |
           for d in bindings/node adapters/biome adapters/bazel adapters/clippy adapters/config adapters/env adapters/fs adapters/nx adapters/playwright adapters/pnpm adapters/process adapters/protobuf adapters/ruff adapters/strace adapters/turbo adapters/turbopack adapters/typescript adapters/vitest adapters/watcher packages/engine packages/sdk; do

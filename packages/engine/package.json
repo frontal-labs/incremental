@@ -22,6 +22,6 @@
   "engines": {
     "node": ">=22.0.0"
   },
-  "os": ["darwin", "linux"],
-  "cpu": ["arm64", "x64"]
+  "os": ["darwin"],
+  "cpu": ["arm64"]
 }
