@@ -4,27 +4,27 @@ Adapters are the dataplane of incremental: they observe what tasks read, list, p
 
 ## Adapters in this directory
 
-| Adapter    | Package                       | Purpose                                            |
-| ---------- | ----------------------------- | -------------------------------------------------- |
-| bazel      | `@incremental/bazel`          | Bazel build observation                            |
-| biome      | `@incremental/biome`          | Biome lint/format observation                      |
-| clippy     | `@incremental/clippy`         | Rust clippy observation                            |
-| config     | `@incremental/config`         | Configuration observation                          |
-| env        | `@incremental/env`            | Environment variable observation                   |
-| fs         | `@incremental/fs`             | Filesystem observation                             |
-| git        | `@incremental/git`            | Git change sets (built with the Goose toolchain)   |
-| playwright | `@incremental/playwright`     | Playwright test observation                        |
-| pnpm       | `@incremental/pnpm`           | pnpm workspace observation                         |
-| process    | `@incremental/process`        | Process invocation observation                     |
-| protobuf   | `@incremental/protobuf`       | Protobuf observation                               |
-| ruff       | `@incremental/ruff`           | Ruff lint observation                              |
-| turbopack  | `@incremental/turbopack`      | Turbopack observation                              |
-| typescript | `@incremental/typescript`     | TypeScript compile observation                     |
-| nx         | `@incremental/nx`             | Nx project observation (recorder, nx graph)        |
-| turbo      | `@incremental/turbo`          | Turborepo package observation (recorder, turbo ls) |
-| vitest     | `@incremental/vitest`         | Vitest recorder and planner (V01-V16)              |
-| watcher    | `@incremental/watcher`        | File watcher observation                           |
-| rust       | —                             | Rust-side observation (see `bindings/rust`)        |
+| Adapter    | Package                   | Purpose                                            |
+| ---------- | ------------------------- | -------------------------------------------------- |
+| bazel      | `@incremental/bazel`      | Bazel build observation                            |
+| biome      | `@incremental/biome`      | Biome lint/format observation                      |
+| clippy     | `@incremental/clippy`     | Rust clippy observation                            |
+| config     | `@incremental/config`     | Configuration observation                          |
+| env        | `@incremental/env`        | Environment variable observation                   |
+| fs         | `@incremental/fs`         | Filesystem observation                             |
+| git        | `@incremental/git`        | Git change sets (built with the Goose toolchain)   |
+| playwright | `@incremental/playwright` | Playwright test observation                        |
+| pnpm       | `@incremental/pnpm`       | pnpm workspace observation                         |
+| process    | `@incremental/process`    | Process invocation observation                     |
+| protobuf   | `@incremental/protobuf`   | Protobuf observation                               |
+| ruff       | `@incremental/ruff`       | Ruff lint observation                              |
+| turbopack  | `@incremental/turbopack`  | Turbopack observation                              |
+| typescript | `@incremental/typescript` | TypeScript compile observation                     |
+| nx         | `@incremental/nx`         | Nx project observation (recorder, nx graph)        |
+| turbo      | `@incremental/turbo`      | Turborepo package observation (recorder, turbo ls) |
+| vitest     | `@incremental/vitest`     | Vitest recorder and planner (V01-V16)              |
+| watcher    | `@incremental/watcher`    | File watcher observation                           |
+| rust       | —                         | Rust-side observation (see `bindings/rust`)        |
 
 Each adapter is a standalone package with its own `package.json` (or `Cargo.toml` for Rust). Most are `@incremental/*` TypeScript packages built with `tsc -b` and tested with `node --test`.
 

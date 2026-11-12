@@ -29,9 +29,9 @@ Notes:
 
 | Item               | Version | Released     | Pin date   | 14-day rule              | Source                                                    |
 | ------------------ | ------- | ------------ | ---------- | ------------------------ | --------------------------------------------------------- |
-| zod                | 4.6.7   | 2026-10-12   | 2026-11-04 | Yes                      | npm view zod@4.6.7 time (mcp/package.json)           |
+| zod                | 4.6.7   | 2026-10-12   | 2026-11-04 | Yes                      | npm view zod@4.6.7 time (mcp/package.json)                |
 | zod-to-json-schema | 3.25.2  | 2026-03-27   | 2026-11-04 | Yes                      | npm view zod-to-json-schema@3.25.2 time (transitive, mcp) |
-| ajv-formats        | 3.0.1   | not verified | 2026-11-04 | presumed (2.x line, old) | transitive, mcp/package-lock.json                    |
+| ajv-formats        | 3.0.1   | not verified | 2026-11-04 | presumed (2.x line, old) | transitive, mcp/package-lock.json                         |
 | @biomejs/biome     | 2.5.15  | 2026-09-30   | 2026-11-03 | Yes                      | npm view @biomejs/biome@2.5.15 time                       |
 | @playwright/test   | 1.64.1  | 2026-10-14   | 2026-11-03 | Yes                      | npm view @playwright/test@1.64.1 time                     |
 | next               | 16.4.2  | 2026-10-15   | 2026-11-03 | Yes                      | npm view next@16.4.2 time                                 |
