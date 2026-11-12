@@ -29,6 +29,11 @@ All notable changes to this project will be documented in this file.
 
 ### Engine
 
+- `@incremental/engine` 0.1.2 published: `init` now accepts a positional store
+  directory argument (in addition to `--store` / `INCREMENTAL_STORE`). The
+  `main()` CLI scanner in `core/src/main.goose` previously ignored positional
+  args and defaulted to `.incremental`, so `init <dir>` silently created the
+  store in the CWD instead of the requested path.
 - Engine in Goose: log, index image, stat cache, compaction, multi-writer refresh, CLI, protocol v1, reverse indexes.
 - Conformance suite: 40 cases; differential fuzz against an independent reference (30,000 queries).
 - Git change source (`incremental-git changes`).
