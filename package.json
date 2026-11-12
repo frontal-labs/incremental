@@ -50,28 +50,5 @@
     "nx": "^24.0.4",
     "tsc-rs": "0.8.0",
     "turbo": "^2.11.10"
-  },
-  "workspaces": [
-    "bindings/node",
-    "packages/engine",
-    "packages/sdk",
-    "adapters/biome",
-    "adapters/bazel",
-    "adapters/clippy",
-    "adapters/config",
-    "adapters/env",
-    "adapters/fs",
-    "adapters/nx",
-    "adapters/playwright",
-    "adapters/pnpm",
-    "adapters/process",
-    "adapters/protobuf",
-    "adapters/ruff",
-    "adapters/strace",
-    "adapters/turbo",
-    "adapters/turbopack",
-    "adapters/typescript",
-    "adapters/vitest",
-    "adapters/watcher"
-  ]
+  }
 }
