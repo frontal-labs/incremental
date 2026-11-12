@@ -67,4 +67,4 @@ status/*.tmp
 # Generated demo repo for local adapter work
 # ---------------------------------------
 fixture/
-packages/sdk/
+
