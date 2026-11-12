@@ -14,7 +14,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { platform, arch } from "node:process";
 
-const PACKAGE_DIR = join(import.meta.dirname, "..");
+const PACKAGE_DIR = import.meta.dirname;
 
 function prebuiltPath() {
   return join(PACKAGE_DIR, "prebuilds", `${platform}-${arch}`, "incremental");
