@@ -48,8 +48,11 @@ jobs:
           echo "GOOSE_HOME=$PWD/.toolchain/goose-home" >> "$GITHUB_ENV"
       - name: Install root dependencies
         run: npm install --no-audit --no-fund
-      - name: Build engine binary
-        run: make build
+      - name: Build engine binary (native only)
+        run: |
+          mkdir -p core/dist adapters/git/dist
+          "$GOOSE_DIR/goose" build core/src/main.goose -o core/dist/incremental
+          "$GOOSE_DIR/goose" build adapters/git/src/changes.goose -o adapters/git/dist/incremental-git
       - name: Copy engine binary to prebuilds for this platform
         run: |
           TRIPLE="$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)"
