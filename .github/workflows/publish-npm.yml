@@ -46,6 +46,8 @@ jobs:
           tar -xzf goose.tar.gz -C .toolchain/goose
           echo "GOOSE_DIR=$PWD/.toolchain/goose/goose-v2026.3-linux-x64" >> "$GITHUB_ENV"
           echo "GOOSE_HOME=$PWD/.toolchain/goose-home" >> "$GITHUB_ENV"
+      - name: Install root dependencies
+        run: npm install --no-audit --no-fund
       - name: Build engine binary
         run: make build
       - name: Copy engine binary to prebuilds for this platform
