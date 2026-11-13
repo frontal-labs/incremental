@@ -17,7 +17,7 @@
 //
 // The package must be built first (`make build` and each adapter's `npm run build`).
 
-import { execFileSync } from "node:child_process";
+import { execFileSync, execSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -168,6 +168,19 @@ function publish(p, manifest, userConfig) {
   if (failure !== null) die(`npm publish failed for ${p.name}: ${failure}`);
 }
 
+// Check if a version is already published on npm.
+function isPublished(name, version) {
+  try {
+    execSync(`npm view "${name}@${version}" version`, {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function main() {
   if (!process.env.NODE_AUTH_TOKEN)
     die("NODE_AUTH_TOKEN is not set (a token with publish access to @incremental)");
@@ -176,6 +189,10 @@ function main() {
   const userConfig = path.join(ROOT, ".npmrc");
   for (const p of packages) {
     if (aborted) die("interrupted; packages published so far are listed above");
+    if (!dryRun && isPublished(p.name, p.version)) {
+      console.log(`skip ${p.name}@${p.version} (already published)`);
+      continue;
+    }
     publish(p, publishManifest(p, byName), userConfig);
   }
 }

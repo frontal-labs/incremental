@@ -1,6 +1,6 @@
 {
   "name": "@incremental/client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Node.js client for the Incremental Compute Engine protocol v1",
   "type": "module",
   "main": "dist/src/index.js",
