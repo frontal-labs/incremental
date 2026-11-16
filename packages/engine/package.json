@@ -1,6 +1,6 @@
 {
   "name": "@incremental/engine",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Prebuilt native binaries for the Incremental compute engine",
   "type": "module",
   "main": "index.js",
@@ -8,6 +8,7 @@
   "files": [
     "index.js",
     "index.d.ts",
+    "install.js",
     "bin/",
     "prebuilds/"
   ],

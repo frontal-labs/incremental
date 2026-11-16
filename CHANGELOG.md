@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Engine (`@incremental/engine` 0.1.3)
+
+- Ships a `darwin-x64` prebuild alongside `darwin-arm64`, so Intel Macs work out
+  of the box (the published 0.1.2 tarball was arm64-only, and its `cpu` field
+  refused non-arm64 installs).
+- `install.js` is now bundled in the package (it was missing from the 0.1.2
+  tarball, so the `"install"` script pointed at a nonexistent file). It reads
+  the version from `package.json` instead of a hardcoded `0.1.0`, and a failed
+  download is a warning, not an install failure.
+- `enginePath()` raises a self-diagnosing error when the current platform is
+  unsupported: which prebuilds are bundled and how to provide the missing one
+  (`make build` + `INCREMENTAL_ENGINE`, or wait for a prebuild).
+- `bin/incremental.js` fails fast with the same error before spawning, instead
+  of surfacing the native binary's flag-parsing errors.
+- `scripts/build-prebuilds.mjs` builds and stages a prebuild for a target
+  triple; the publish workflow builds each supported prebuild on a matching
+  runner (Goose compiles with the host C compiler, so no cross-targeting).
+- linux-x64 prebuild is bundled; linux-arm64 and win32 installs resolve at
+  runtime via `install.js` downloads from GitHub Releases
+  (`incremental-<platform>-<arch>` assets).
+
 ### Publish to npm (`@incremental/*`)
 
 - All packages migrated from `@frontend-labs/*` (GitHub Packages) to `@incremental/*` (npmjs.org):

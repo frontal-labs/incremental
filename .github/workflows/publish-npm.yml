@@ -24,10 +24,45 @@ permissions:
   contents: read
 
 jobs:
+  # Builds the native engine binary on a runner matching each npm triple.
+  # Goose compiles its generated C with the host compiler, so a darwin-x64
+  # binary can only be built on a darwin-x64 host (Rosetta); cross-targeting
+  # is not supported. linux-arm64 is listed in the engine's os/cpu fields and
+  # served by install.js downloads (see packages/engine/install.js) rather
+  # than a bundled prebuild.
+  engine-prebuilds:
+    name: Build engine prebuild (${{ matrix.triple }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - triple: darwin-arm64
+            runs-on: macos-latest
+          - triple: darwin-x64
+            runs-on: macos-13
+          - triple: linux-x64
+            runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runs-on }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+      - name: Build and stage engine prebuild
+        working-directory: packages/engine
+        run: node scripts/build-prebuilds.mjs --target ${{ matrix.triple }}
+      - uses: actions/upload-artifact@59ac26a606356a59d1cafd71c86132b7c256cd11 # v4
+        with:
+          name: engine-prebuild-${{ matrix.triple }}
+          path: packages/engine/prebuilds/${{ matrix.triple }}/incremental
+          if-no-files-found: error
+
   publish:
     name: Publish @incremental/* to npm
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    needs: engine-prebuilds
     permissions:
       contents: read
     steps:
@@ -38,6 +73,24 @@ jobs:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
           scope: "@incremental"
+      - name: Download engine prebuilds
+        uses: actions/download-artifact@08c560bc5b4e77a57eeea008e168e633dfaa7140 # v4
+        with:
+          pattern: engine-prebuild-*
+          path: prebuild-artifacts
+          merge-multiple: true
+      - name: Stage prebuilds for the npm tarball
+        run: |
+          mkdir -p packages/engine/prebuilds
+          for f in prebuild-artifacts/incremental; do
+            [ -f "$f" ] || continue
+            # prebuild-artifacts/<triple>/incremental -> <triple>
+            TRIPLE="$(basename "$(dirname "$f")")"
+            mkdir -p "packages/engine/prebuilds/$TRIPLE"
+            cp "$f" "packages/engine/prebuilds/$TRIPLE/incremental"
+            chmod +x "packages/engine/prebuilds/$TRIPLE/incremental"
+          done
+          ls -l packages/engine/prebuilds/*/incremental
       - name: Install Goose toolchain (Linux x64, v2026.3)
         run: |
           mkdir -p .toolchain/goose
@@ -48,17 +101,10 @@ jobs:
           echo "GOOSE_HOME=$PWD/.toolchain/goose-home" >> "$GITHUB_ENV"
       - name: Install root dependencies
         run: npm install --no-audit --no-fund
-      - name: Build engine binary (native only)
+      - name: Build git adapter binary (native only)
         run: |
           mkdir -p core/dist adapters/git/dist
-          "$GOOSE_DIR/goose" build core/src/main.goose -o core/dist/incremental
           "$GOOSE_DIR/goose" build adapters/git/src/changes.goose -o adapters/git/dist/incremental-git
-      - name: Copy engine binary to prebuilds for this platform
-        run: |
-          TRIPLE="$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)"
-          mkdir -p packages/engine/prebuilds/$TRIPLE
-          cp core/dist/incremental packages/engine/prebuilds/$TRIPLE/incremental
-          chmod +x packages/engine/prebuilds/$TRIPLE/incremental
       - name: Install and build all TypeScript packages
         run: |
           for d in bindings/node adapters/biome adapters/bazel adapters/clippy adapters/config adapters/env adapters/fs adapters/nx adapters/playwright adapters/pnpm adapters/process adapters/protobuf adapters/ruff adapters/strace adapters/turbo adapters/turbopack adapters/typescript adapters/vitest adapters/watcher mcp packages/engine packages/sdk; do

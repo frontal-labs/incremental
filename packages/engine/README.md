@@ -26,12 +26,17 @@ npm install @incremental/engine
 
 ## Supported platforms
 
-| Platform | Arch  | Status                       |
-| -------- | ----- | ---------------------------- |
-| darwin   | arm64 | ✅ Prebuilt binary included  |
-| darwin   | x64   | Build locally (`make build`) |
-| linux    | x64   | Build locally (`make build`) |
-| linux    | arm64 | Build locally (`make build`) |
+| Platform | Arch  | Status                         |
+| -------- | ----- | ------------------------------ |
+| darwin   | arm64 | ✅ Prebuilt binary included    |
+| darwin   | x64   | ✅ Prebuilt binary included    |
+| linux    | x64   | Available via GitHub Releases* |
+| linux    | arm64 | Available via GitHub Releases* |
+
+\* `install.js` downloads the `incremental-<platform>-<arch>` asset from the
+latest GitHub Release at install time when no prebuild is bundled; you can
+also build locally with `make build` and point `INCREMENTAL_ENGINE` at the
+result.
 
 ## Building the binary
 

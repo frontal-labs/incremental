@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@incremental/client": "^0.1.1",
-    "@incremental/engine": "^0.1.2",
+    "@incremental/engine": "^0.1.3",
     "@incremental/vitest": "^0.1.2"
   }
 }
