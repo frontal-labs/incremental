@@ -22,7 +22,7 @@
     "@types/node": "22.20.5",
     "@types/react": "19.2.8",
     "@types/react-dom": "19.2.3",
-    "next": "16.4.2",
+    "next": "16.4.5",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "tsc-rs": "0.8.0"
