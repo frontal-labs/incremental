@@ -1,6 +1,6 @@
 {
   "name": "@incremental/strace",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "type": "module",
   "main": "dist/src/oracle.js",
   "types": "dist/src/oracle.d.ts",
