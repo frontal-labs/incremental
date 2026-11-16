@@ -192,18 +192,17 @@ export function runFile(opts: RunFileOptions): Promise<FileResult> {
         problem ??= "no report was written (the test process crashed)";
       } else if (tr !== undefined) {
         // testResults[0] exists: use its per-file status.
-        if (
-          tr.status === "passed" &&
-          code === 0 &&
-          (report.unhandledErrors?.length ?? 0) === 0
-        ) {
+        if (tr.status === "passed" && code === 0 && (report.unhandledErrors?.length ?? 0) === 0) {
           outcome = "pass";
         } else if (tr.assertionResults?.some((a) => a.status === "failed")) {
           outcome = "fail";
         } else {
           outcome = "error";
           problem ??=
-            `the test file failed without test results: ${tr.message ?? "no message"}`.slice(0, 500);
+            `the test file failed without test results: ${tr.message ?? "no message"}`.slice(
+              0,
+              500,
+            );
         }
       } else if (code === 0 && (report.success ?? false) && (report.numTotalTests ?? 0) > 0) {
         // testResults is empty but the top-level summary says the run
