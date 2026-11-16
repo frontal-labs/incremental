@@ -1,6 +1,6 @@
 {
   "name": "@incremental/nx",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -16,8 +16,8 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@incremental/client": "^0.1.0",
-    "@incremental/vitest": "^0.1.0"
+    "@incremental/client": "^0.1.3",
+    "@incremental/vitest": "^0.1.3"
   },
   "devDependencies": {
     "@types/node": "22.20.5",
