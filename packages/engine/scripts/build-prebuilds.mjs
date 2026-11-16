@@ -16,7 +16,15 @@
 // prebuilds/<target>/incremental with +x.
 
 import { execFileSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, chmodSync, renameSync, rmSync, statSync } from "node:fs";
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  chmodSync,
+  renameSync,
+  rmSync,
+  statSync,
+} from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import process from "node:process";
@@ -43,7 +51,8 @@ function parseArgs(argv) {
     else if (a.startsWith("--target=")) target = a.slice("--target=".length);
     else die(`unknown argument: ${a}`);
   }
-  if (!SUPPORTED_TARGETS.includes(target)) die(`unsupported target: ${target} (supported: ${SUPPORTED_TARGETS.join(", ")})`);
+  if (!SUPPORTED_TARGETS.includes(target))
+    die(`unsupported target: ${target} (supported: ${SUPPORTED_TARGETS.join(", ")})`);
   return target;
 }
 
@@ -55,8 +64,7 @@ function ensureGoose(target) {
   const bin = gooseBinaryFor(target);
   if (existsSync(bin)) return bin;
   const asset = GOOSE_ASSET_NAME[target] ?? target;
-  const url =
-    `https://github.com/aardappel/goose/releases/download/${GOOSE_VERSION}/goose-${GOOSE_VERSION}-${asset}.tar.gz`;
+  const url = `https://github.com/aardappel/goose/releases/download/${GOOSE_VERSION}/goose-${GOOSE_VERSION}-${asset}.tar.gz`;
   console.log(`build-prebuilds: fetching Goose toolchain for ${target} from ${url}`);
   const toolchainParent = join(ROOT, ".toolchain", "goose");
   mkdirSync(toolchainParent, { recursive: true });
@@ -88,7 +96,10 @@ function main() {
   console.log(`build-prebuilds: building engine for ${target}`);
   execFileSync(goose, ["build", join(ROOT, "core", "src", "main.goose"), "-o", ENGINE], {
     stdio: "inherit",
-    env: { ...process.env, GOOSE_HOME: process.env.GOOSE_HOME || join(ROOT, ".toolchain", "goose-home") },
+    env: {
+      ...process.env,
+      GOOSE_HOME: process.env.GOOSE_HOME || join(ROOT, ".toolchain", "goose-home"),
+    },
   });
 
   const destDir = join(PACKAGE_DIR, "prebuilds", target);
