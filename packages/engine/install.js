@@ -61,7 +61,9 @@ function main() {
     console.log(`@incremental/engine: prebuilt binary found for ${targetTriple}`);
     return;
   }
-  console.log(`@incremental/engine: no prebuilt binary for ${targetTriple}, attempting download...`);
+  console.log(
+    `@incremental/engine: no prebuilt binary for ${targetTriple}, attempting download...`,
+  );
   downloadFromReleases();
 }
 
