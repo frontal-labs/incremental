@@ -1,15 +1,18 @@
 SHELL := /bin/bash
 UNAME_S := $(shell uname -s | tr '[:upper:]' '[:lower:]')
 UNAME_M := $(shell uname -m)
-# Normalize uname -m to the Goose dir suffix (x86_64→x64, aarch64→arm64)
+# Normalize uname -m to the Goose dir suffix.
+# macOS x86_64 uses "x64" (goose-v2026.3-darwin-x64); Linux x86_64 keeps "x86_64"
+# (goose-v2026.3-linux-x86_64) to match the installer path in scripts/fetch-goose.sh.
+UNAME_SM := $(UNAME_S)-$(UNAME_M)
 GOOSE_ARCH := $(UNAME_M)
-ifeq ($(GOOSE_ARCH),x86_64)
+ifeq ($(UNAME_SM),darwin-x86_64)
 GOOSE_ARCH := x64
 endif
-ifeq ($(GOOSE_ARCH),amd64)
+ifeq ($(UNAME_SM),darwin-amd64)
 GOOSE_ARCH := x64
 endif
-ifeq ($(GOOSE_ARCH),aarch64)
+ifeq ($(UNAME_SM),linux-aarch64)
 GOOSE_ARCH := arm64
 endif
 GOOSE_DIR ?= $(CURDIR)/.toolchain/goose/goose-v2026.3-$(UNAME_S)-$(GOOSE_ARCH)
