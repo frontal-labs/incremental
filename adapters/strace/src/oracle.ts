@@ -427,8 +427,8 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
   };
 
   for (const rawLine of text.split("\n")) {
-    const line = rawLine.trimEnd();
-    const m = /^\s*(\d+)\s+([a-z_][a-z0-9_]*)\(/.exec(line);
+    const line = rawLine.trim();
+    const m = /^(\d+)\s+([a-z_][a-z0-9_]*)\(/.exec(line);
     if (m !== null) {
       const pid = Number(m[1] ?? "");
       if (rootPid === -1) rootPid = pid;
@@ -450,7 +450,7 @@ export function parseStraceLog(text: string, opts: ParseOptions): ParsedLog {
       }
     } else {
       // A resumed syscall line: `pid <... sys resumed>) = result`.
-      const resumed = /^\s*(\d+)\s+<\.{3}\s+([a-z_][a-z0-9_]*)\s+resumed>\)\s*=\s*(.*)$/.exec(line);
+      const resumed = /^(\d+)\s+<\.{3}\s+([a-z_][a-z0-9_]*)\s+resumed>\)\s*=\s*(.*)$/.exec(line);
       if (resumed !== null) {
         const pid = Number(resumed[1] ?? "");
         const sys = resumed[2] ?? "";
