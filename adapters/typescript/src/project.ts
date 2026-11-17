@@ -58,7 +58,8 @@ function normalizeJsonc(text: string): string {
     const ch = chars[i] ?? "";
     if (inString) {
       out.push(ch);
-      if (ch === "\\" && i + 1 < n) i += 1; // skip escaped char
+      if (ch === "\\" && i + 1 < n)
+        i += 1; // skip escaped char
       else if (ch === quote) inString = false;
       continue;
     }
@@ -154,8 +155,10 @@ export function configChain(configAbs: string): ConfigChain {
     let parsed: unknown;
     try {
       parsed = JSON.parse(normalizeJsonc(readFileSync(file, "utf8")));
-    } catch (err: any) {
-      throw new ProjectError(`cannot read ${file}: ${err?.message ?? String(err)}`);
+    } catch (err) {
+      throw new ProjectError(
+        `cannot read ${file}: ${err instanceof Error ? err.message : String(err)}`,
+      );
     }
     const config = parsed as { extends?: string | string[]; references?: unknown[] };
     if (Array.isArray(config.references) && config.references.length > 0) references = true;
