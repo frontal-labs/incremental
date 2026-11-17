@@ -1,7 +1,7 @@
 #!/bin/sh
 # Fetches the pinned Goose toolchain (v2026.3) into .toolchain/goose/ and checks
 # its SHA-256 before extracting. Used by `make setup` on a fresh clone.
-# Platforms: macos-arm64 and linux-x64 (the release has no linux-arm64 build).
+# Platforms: macos-arm64, macos-x64 and linux-x64 (the release has no linux-arm64 build).
 set -eu
 VERSION=v2026.3
 case "$(uname -s)-$(uname -m)" in
@@ -9,6 +9,11 @@ case "$(uname -s)-$(uname -m)" in
     PLATFORM=macos-arm64
     DIR=darwin-arm64
     SHA256=2ffaaf46b3edde27aed03fcd9ebe73e9b6639cac30d8a6915f7dc00795b7aedf
+    ;;
+  Darwin-x86_64)
+    PLATFORM=macos-x64
+    DIR=darwin-x64
+    SHA256=3c7f2895f3dcab5f39ee52808446b00688b975620d1d27e23694dd22b82abfe7
     ;;
   Linux-x86_64)
     PLATFORM=linux-x64
