@@ -2,11 +2,18 @@
 // through the real engine and incremental-git (spec/adapters/typescript.md).
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
-import { discoverProjects, programFiles, runAdapter, type RunReport } from "../src/index.js";
+import {
+  discoverProjects,
+  isTypescriptFile,
+  programFiles,
+  runAdapter,
+  type RunReport,
+} from "../src/index.js";
 
 const GIT_ENV = {
   ...process.env,
@@ -166,4 +173,22 @@ test("an uncommitted change leaves the baseline in place and exits 7", async () 
   } finally {
     cleanup(root);
   }
+});
+
+test("isTypescriptFile recognises the compiler's own files", () => {
+  // A path inside the typescript package is a compiler file (excluded from
+  // inputs). Resolve through the same mechanism the adapter uses so this holds
+  // for both the TS 5.9 layout and the TS 7 (tsgo) platform-package layout.
+  const req = createRequire(import.meta.url);
+  const tsMain = path.join(
+    path.dirname(req.resolve("typescript/package.json")),
+    "lib",
+    "version.cjs",
+  );
+  if (existsSync(tsMain)) {
+    assert.ok(isTypescriptFile(tsMain), `expected ${tsMain} to be a TypeScript file`);
+  }
+  // A path outside the TypeScript packages is not.
+  const outside = path.join(os.tmpdir(), "not-typescript.ts");
+  assert.ok(!isTypescriptFile(outside), `expected ${outside} to not be a TypeScript file`);
 });

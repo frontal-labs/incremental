@@ -28,7 +28,10 @@ import os from "node:os";
 import path from "node:path";
 
 // Directories that are never recorded or discovered (PLAN 6.7 default exclude).
-export const EXCLUDED_DIRS: readonly string[] = ["node_modules", ".git", ".incremental"];
+// `.vitest` is the Vitest cache dir (its JSON report and transform cache), written by the
+// test runner, not read by a task — the same class as `.incremental` (the adapter's own
+// state). Must match adapters/vitest/src/shared.ts.
+export const EXCLUDED_DIRS: readonly string[] = ["node_modules", ".git", ".incremental", ".vitest"];
 
 // The syscall set from PLAN §11.5.
 export const STRACE_TRACE =

@@ -296,16 +296,19 @@ test("excluded directory parts are dropped", () => {
     mkdirSync(path.join(root, "node_modules", "pkg"), { recursive: true });
     mkdirSync(path.join(root, ".git"), { recursive: true });
     mkdirSync(path.join(root, ".incremental"), { recursive: true });
+    mkdirSync(path.join(root, ".vitest", "json"), { recursive: true });
     writeFileSync(path.join(root, "node_modules", "pkg", "index.js"), "x");
     writeFileSync(path.join(root, ".git", "config"), "x");
     writeFileSync(path.join(root, ".incremental", "log"), "x");
+    writeFileSync(path.join(root, ".vitest", "json", "output.json"), "x");
     writeFileSync(path.join(root, "keep.ts"), "x");
     const s = summaryOf(
       [
         openRead(1, path.join(root, "node_modules", "pkg", "index.js"), 3),
         openRead(1, path.join(root, ".git", "config"), 4),
         openRead(1, path.join(root, ".incremental", "log"), 5),
-        openRead(1, path.join(root, "keep.ts"), 6),
+        openRead(1, path.join(root, ".vitest", "json", "output.json"), 6),
+        openRead(1, path.join(root, "keep.ts"), 7),
       ],
       root,
     );
