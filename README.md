@@ -94,6 +94,10 @@ These are cold CLI runs on small fixtures. Incremental's warm query is not the s
 
 Reproduce with `make bench` (after `make build`). It writes the raw outputs to `benchmarks/results/`.
 
+## Performance
+
+The engine query is cheap: a warm `affected` plan is about 0.1 ms per query at 10,000 tasks and stays sub-millisecond at 100,000 (table above). The real cost users see is per invocation, not per query. For the Vitest adapter, measured on macOS x86_64, Node v22.23.2: a warm `incremental-vitest run` costs about 2.5 s of fixed overhead even when nothing changed, and each selected test file costs about 1 s of Vitest cold start (one process per file, run in parallel). A plan-and-report `--shadow` run is about 0.5 s. Incremental wins when the test set is large and a change invalidates only a few files — a 1-file edit in the 14-file fixture runs 3 files in about 2.7 s versus about 7.5 s for a full re-run; with no changes it costs the overhead and runs nothing, and a fallback or `--all` costs the same as the underlying runner plus the overhead. See the `Performance` section of `adapters/vitest/README.md` for the full profile and methodology.
+
 ## Limits 
 
 - Non-file inputs (time, network, randomness) are not observed. A task that depends on them is not protected by the engine; re-run it when they matter.

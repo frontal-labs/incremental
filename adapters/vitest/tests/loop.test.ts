@@ -41,7 +41,7 @@ const LEAF_EDIT: Edit[] = [
   { op: "write", path: "packages/core/src/leaf.ts", content: "export const LEAF: number = 3;\n" },
 ];
 
-test("shadow mode runs everything, reports the skips, and writes nothing", () => {
+test("shadow mode plans and reports, runs nothing, and writes nothing", () => {
   const { dir, repo, store } = copyPrimed();
   try {
     applyEdits(repo, LEAF_EDIT);
@@ -52,7 +52,21 @@ test("shadow mode runs everything, reports the skips, and writes nothing", () =>
     const out = r.out as Record<string, unknown>;
     assert.equal(out.mode, "shadow");
     assert.equal(out.advanced, false);
-    assert.equal((out.results as unknown[]).length, FIXTURE_TESTS.length, "shadow runs every test");
+    assert.equal(out.observed, 0, "shadow records no observations");
+    assert.equal((out.results as unknown[]).length, 0, "shadow runs no test file");
+    assert.deepEqual(
+      (out.selected as string[]).sort(),
+      [
+        "packages/core/test/leaf-a.test.ts",
+        "packages/core/test/leaf-b.test.ts",
+        "packages/core/test/worker.test.ts",
+      ],
+      "shadow reports the selection the plan would run",
+    );
+    assert.ok(
+      (out.plan as { tasks: unknown[] } | null) !== null,
+      "shadow still produces the plan",
+    );
     assert.deepEqual(
       (out.wouldSkip as string[]).sort(),
       FIXTURE_TESTS.filter(
