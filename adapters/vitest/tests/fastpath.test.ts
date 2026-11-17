@@ -12,7 +12,15 @@
 //   - non-empty selection -> exactly 2 calls (start and end dirty checks)
 // Counted with an INCREMENTAL_GIT wrapper that tallies invocations.
 import assert from "node:assert/strict";
-import { chmodSync, cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  chmodSync,
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
@@ -72,7 +80,17 @@ function primedAtHead(): { dir: string; repo: string; store: string } {
 // Compiles to adapters/vitest/dist/tests/..., so four levels up is the
 // repository root (where adapters/git/dist/incremental-git lives).
 const here = path.dirname(fileURLToPath(import.meta.url));
-const GIT_SOURCE = path.resolve(here, "..", "..", "..", "..", "adapters", "git", "dist", "incremental-git");
+const GIT_SOURCE = path.resolve(
+  here,
+  "..",
+  "..",
+  "..",
+  "..",
+  "adapters",
+  "git",
+  "dist",
+  "incremental-git",
+);
 
 // Runs the adapter CLI through a counting wrapper around the real git change
 // source and returns the number of `incremental-git changes` invocations.
@@ -84,10 +102,7 @@ function runCounted(
 ): { res: ReturnType<typeof runCli>; calls: number } {
   const callsFile = path.join(dir, "git-calls.txt");
   const wrapper = path.join(dir, "count-git.sh");
-  writeFileSync(
-    wrapper,
-    `#!/bin/sh\necho x >> ${callsFile}\nexec ${GIT_SOURCE} "$@"\n`,
-  );
+  writeFileSync(wrapper, `#!/bin/sh\necho x >> ${callsFile}\nexec ${GIT_SOURCE} "$@"\n`);
   chmodSync(wrapper, 0o755);
   const res = runCli(repo, store, extra, { INCREMENTAL_GIT: wrapper });
   const calls = existsSync(callsFile)
@@ -137,7 +152,11 @@ test("dirty worktree at the baseline: the fast path is not taken", () => {
   const { dir, repo, store } = primedAtHead();
   try {
     applyEdits(repo, [
-      { op: "write", path: "packages/core/src/leaf.ts", content: "export const LEAF: number = 9;\n" },
+      {
+        op: "write",
+        path: "packages/core/src/leaf.ts",
+        content: "export const LEAF: number = 9;\n",
+      },
     ]); // not committed: the worktree is dirty
     const { res, calls } = runCounted(dir, repo, store);
     assert.notEqual(res.status, 0, "a dirty worktree must run the real loop");
@@ -227,10 +246,15 @@ test("T-16: two git change calls when nothing runs, three when tests run", () =>
   // defeated (HEAD != store baseline) but the changeset from the baseline to
   // HEAD is empty, so the plan selects nothing and the end dirty check is
   // skipped: exactly two git change-source calls.
+  // worker.test.ts is excluded: a task that starts a worker thread is always
+  // recorded dirty, so the plan would re-select it on every run.
   const c1 = copyPrimed();
   try {
     git(c1.repo, ["commit", "-q", "--allow-empty", "-m", "bump"]);
-    const { res, calls } = runCounted(c1.dir, c1.repo, c1.store);
+    const { res, calls } = runCounted(c1.dir, c1.repo, c1.store, [
+      "--exclude",
+      "packages/core/test/worker.test.ts",
+    ]);
     assert.equal(res.status, 0, `empty selection must exit 0: ${res.stderr}`);
     assert.ok(!res.stderr.includes("no changes since last run"), "no skip on an empty plan");
     assert.equal((res.out?.results as unknown[]).length, 0, "nothing was selected");
@@ -245,7 +269,11 @@ test("T-16: two git change calls when nothing runs, three when tests run", () =>
   const c2 = copyPrimed();
   try {
     applyEdits(c2.repo, [
-      { op: "write", path: "packages/core/src/leaf.ts", content: "export const LEAF: number = 4;\n" },
+      {
+        op: "write",
+        path: "packages/core/src/leaf.ts",
+        content: "export const LEAF: number = 4;\n",
+      },
     ]);
     commitAll(c2.repo); // clean, HEAD moved past the store baseline
     const { res, calls } = runCounted(c2.dir, c2.repo, c2.store);
