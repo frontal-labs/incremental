@@ -63,10 +63,7 @@ test("shadow mode plans and reports, runs nothing, and writes nothing", () => {
       ],
       "shadow reports the selection the plan would run",
     );
-    assert.ok(
-      (out.plan as { tasks: unknown[] } | null) !== null,
-      "shadow still produces the plan",
-    );
+    assert.ok((out.plan as { tasks: unknown[] } | null) !== null, "shadow still produces the plan");
     assert.deepEqual(
       (out.wouldSkip as string[]).sort(),
       FIXTURE_TESTS.filter(
