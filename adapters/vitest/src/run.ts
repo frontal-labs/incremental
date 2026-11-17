@@ -11,7 +11,7 @@
 //
 // Exit codes: 0 ok and advanced; 1 a test failed (advanced when allowed);
 // 2 usage or engine error; 7 ran but the baseline was not advanced.
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, readFileSync } from "node:fs";
 import { existsSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import os from "node:os";
@@ -67,6 +67,10 @@ export interface TaskRun {
 }
 
 export interface RunReport {
+  // T-05: true when the fast path proved there is nothing to run and the
+  // engine was never started. All the other fields below carry their empty
+  // values for that case.
+  skipped: boolean;
   mode: "run" | "all" | "shadow";
   root: string;
   stored: string | null;
@@ -124,9 +128,98 @@ function ensureStore(store: string): void {
     throw new UsageError(`cannot create the store at ${store}: ${(r.stderr || "").trim()}`);
 }
 
+// True when a plain `git status --porcelain` reports nothing (tracked or
+// untracked) for the worktree at root. Conservative: any git failure is false.
+function worktreeClean(root: string): boolean {
+  const r = spawnSync("git", ["-C", root, "status", "--porcelain", "--untracked-files=all"], {
+    encoding: "utf8",
+  });
+  return r.error === undefined && r.status === 0 && r.stdout.trim() === "";
+}
+
+// The store's baseline commit: the value of the last {"r":"baseline"} record
+// of the store log, or null when the store has no baseline yet. Returns false
+// when the log cannot be read or contains a corrupt baseline record.
+function storeBaseline(store: string): { ok: boolean; baseline: string | null } {
+  let raw: string;
+  try {
+    raw = readFileSync(path.join(store, "tg.log"), "utf8");
+  } catch {
+    return { ok: false, baseline: null };
+  }
+  for (const line of raw.split("\n")) {
+    if (line.trim() === "") continue;
+    let rec: { r?: string; value?: string };
+    try {
+      rec = JSON.parse(line) as { r?: string; value?: string };
+    } catch {
+      return { ok: false, baseline: null };
+    }
+    if (rec.r === "baseline")
+      return typeof rec.value === "string"
+        ? { ok: true, baseline: rec.value }
+        : { ok: false, baseline: null };
+  }
+  return { ok: true, baseline: null };
+}
+
+// T-05 skip-when-clean fast path. Returns true when it is provably safe to
+// report "no changes since last run" and skip the whole loop: the worktree is
+// clean AND the store's baseline equals the current HEAD, so the plan from the
+// store baseline to HEAD is empty and nothing can have been forgotten. Any
+// uncertainty (no git repo, git failure, missing or corrupt store, no
+// baseline) returns false and the normal path runs.
+export function tryFastExit(root: string, store: string): boolean {
+  if (!worktreeClean(root)) return false;
+  const b = storeBaseline(store);
+  if (!b.ok || b.baseline === null) return false;
+  const r = spawnSync("git", ["-C", root, "rev-parse", "HEAD"], { encoding: "utf8" });
+  if (r.error !== undefined || r.status !== 0) return false;
+  return b.baseline === r.stdout.trim();
+}
+
+// The report of the fast-exit path: an empty plan, nothing selected, nothing
+// observed, nothing advanced, exit 0.
+function skipReport(root: string, store: string): RunReport {
+  return {
+    skipped: true,
+    mode: "run",
+    root,
+    stored: null,
+    base: null,
+    head: "",
+    headEnd: "",
+    dirty: false,
+    changes: [],
+    plan: null,
+    fallback: null,
+    gitError: null,
+    selected: [],
+    discovered: [],
+    wouldSkip: [],
+    results: [],
+    observed: 0,
+    advanced: false,
+    notAdvanced: [],
+    exit: 0,
+  };
+}
+
 export async function runAdapter(opts: RunOptions): Promise<RunReport> {
   const root = path.resolve(opts.root);
   const store = path.resolve(opts.store);
+
+  // T-05 skip-when-clean fast path: when the worktree is clean and the store
+  // baseline is exactly HEAD, the plan is provably empty. Report the skip
+  // without spawning the engine, loading the store or running discovery.
+  // Conservative: tryFastExit returns false on any uncertainty, and the
+  // explicit modes (--all, --shadow, --base) must run for real.
+  if (!opts.all && !opts.shadow && opts.base === undefined && tryFastExit(root, store)) {
+    const r = skipReport(root, store);
+    process.stdout.write("incremental: no changes since last run, skipping\n");
+    return r;
+  }
+
   ensureStore(store);
 
   // The environment the tests run in. NODE_ENV defaults to "test", as Vitest
@@ -221,7 +314,10 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       }),
     );
 
-    const end = gitChangeSet(root, "HEAD");
+    // T-16: head0 is the dirty check. Re-run it only when tests actually ran,
+    // because a test run can mutate the worktree (fixtures writing files) or
+    // move HEAD; with an empty selection the first check is still the truth.
+    const end = files.length > 0 ? gitChangeSet(root, "HEAD") : head0;
     const dirty = end.dirty;
     const headEnd = end.head;
     const allRan = files.every((f) => f.outcome !== "error");
@@ -263,6 +359,7 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     else exit = failed ? 1 : 0;
 
     return {
+      skipped: false,
       mode: opts.shadow ? "shadow" : opts.all ? "all" : "run",
       root,
       stored,
@@ -362,6 +459,10 @@ export function parseArgs(argv: string[]): ParsedArgs {
 }
 
 function printText(r: RunReport): void {
+  if (r.skipped) {
+    // The skip message was already printed by runAdapter.
+    return;
+  }
   const counts: Record<Outcome, number> = { pass: 0, fail: 0, error: 0, none: 0 };
   for (const t of r.results) counts[t.outcome]++;
   const lines = [
@@ -400,8 +501,11 @@ export async function main(argv: string[]): Promise<number> {
   }
   try {
     const report = await runAdapter(parsed.opts);
-    if (parsed.json) process.stdout.write(`${JSON.stringify(report)}\n`);
-    else printText(report);
+    // The fast path already printed its skip message.
+    if (!report.skipped) {
+      if (parsed.json) process.stdout.write(`${JSON.stringify(report)}\n`);
+      else printText(report);
+    }
     return report.exit;
   } catch (e) {
     const code =
