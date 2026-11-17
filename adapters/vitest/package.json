@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@types/node": "22.20.5",
-    "vitest": "4.1.12",
+    "vitest": "5.1.0",
     "tsc-rs": "0.8.0"
   }
 }
