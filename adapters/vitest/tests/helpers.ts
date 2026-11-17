@@ -133,6 +133,8 @@ export function applyEdits(dir: string, edits: Edit[]): Record<string, string> {
 export interface CliResult {
   status: number | null;
   out: Record<string, unknown> | null;
+  // stdout as printed (JSON on the normal path, empty on hard errors).
+  stdout: string;
   stderr: string;
 }
 
@@ -160,7 +162,7 @@ export function runCli(
   } catch {
     out = null;
   }
-  return { status: r.status, out, stderr: r.stderr };
+  return { status: r.status, out, stdout: r.stdout ?? "", stderr: r.stderr ?? "" };
 }
 
 export function stats(store: string): {

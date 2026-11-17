@@ -127,6 +127,7 @@ function ensureStore(store: string): void {
 export async function runAdapter(opts: RunOptions): Promise<RunReport> {
   const root = path.resolve(opts.root);
   const store = path.resolve(opts.store);
+
   ensureStore(store);
 
   // The environment the tests run in. NODE_ENV defaults to "test", as Vitest
@@ -221,11 +222,21 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
       }),
     );
 
-    const end = gitChangeSet(root, "HEAD");
+    // T-16: head0 is the dirty check. Re-run it only when tests actually ran,
+    // because a test run can mutate the worktree (fixtures writing files) or
+    // move HEAD; with an empty selection the first check is still the truth.
+    const end = files.length > 0 ? gitChangeSet(root, "HEAD") : head0;
     const dirty = end.dirty;
     const headEnd = end.head;
     const allRan = files.every((f) => f.outcome !== "error");
-    const canAdvance = !opts.shadow && allRan && !dirty && headEnd === head0.head;
+    // The base change set is read after head0, so HEAD may have moved in
+    // between; advance only when that snapshot names the same commit.
+    const canAdvance =
+      !opts.shadow &&
+      allRan &&
+      !dirty &&
+      headEnd === head0.head &&
+      (cs === null || cs.head === head0.head);
 
     // Observations are relative to the store baseline. Before a first advance
     // the baseline is null, and the observations name the commit they were
@@ -253,7 +264,8 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
         if (f.outcome === "error")
           notAdvanced.push(`error: ${f.task}${f.problem ? ` (${f.problem})` : ""}`);
       if (dirty) notAdvanced.push("the worktree is dirty at the end of the run");
-      if (headEnd !== head0.head) notAdvanced.push("HEAD moved during the run");
+      if (headEnd !== head0.head || (cs !== null && cs.head !== head0.head))
+        notAdvanced.push("HEAD moved during the run");
     }
     const failed = files.some((f) => f.outcome === "fail");
     const errored = files.some((f) => f.outcome === "error");
