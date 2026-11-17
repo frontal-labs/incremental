@@ -264,7 +264,8 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
         if (f.outcome === "error")
           notAdvanced.push(`error: ${f.task}${f.problem ? ` (${f.problem})` : ""}`);
       if (dirty) notAdvanced.push("the worktree is dirty at the end of the run");
-      if (headEnd !== head0.head) notAdvanced.push("HEAD moved during the run");
+      if (headEnd !== head0.head || (cs !== null && cs.head !== head0.head))
+        notAdvanced.push("HEAD moved during the run");
     }
     const failed = files.some((f) => f.outcome === "fail");
     const errored = files.some((f) => f.outcome === "error");
