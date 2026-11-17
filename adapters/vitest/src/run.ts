@@ -11,7 +11,7 @@
 //
 // Exit codes: 0 ok and advanced; 1 a test failed (advanced when allowed);
 // 2 usage or engine error; 7 ran but the baseline was not advanced.
-import { mkdtempSync, readFileSync } from "node:fs";
+import { mkdtempSync } from "node:fs";
 import { existsSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import os from "node:os";
@@ -229,7 +229,14 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     const dirty = end.dirty;
     const headEnd = end.head;
     const allRan = files.every((f) => f.outcome !== "error");
-    const canAdvance = !opts.shadow && allRan && !dirty && headEnd === head0.head;
+    // The base change set is read after head0, so HEAD may have moved in
+    // between; advance only when that snapshot names the same commit.
+    const canAdvance =
+      !opts.shadow &&
+      allRan &&
+      !dirty &&
+      headEnd === head0.head &&
+      (cs === null || cs.head === head0.head);
 
     // Observations are relative to the store baseline. Before a first advance
     // the baseline is null, and the observations name the commit they were

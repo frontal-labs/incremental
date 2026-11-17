@@ -4,28 +4,11 @@
 //   - non-empty selection -> exactly 3 calls (start, base, and end dirty checks)
 // Counted with an INCREMENTAL_GIT wrapper that tallies invocations.
 import assert from "node:assert/strict";
-import {
-  chmodSync,
-  cpSync,
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { chmodSync, cpSync, existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
-import {
-  FIXTURE_TESTS,
-  applyEdits,
-  commitAll,
-  fixtureReady,
-  git,
-  makeRepo,
-  runCli,
-  tmp,
-} from "./helpers.js";
+import { applyEdits, commitAll, fixtureReady, git, makeRepo, runCli, tmp } from "./helpers.js";
 
 let template = "";
 
@@ -76,7 +59,9 @@ function runCounted(
 ): { res: ReturnType<typeof runCli>; calls: number } {
   const callsFile = path.join(dir, "git-calls.txt");
   const wrapper = path.join(dir, "count-git.sh");
-  writeFileSync(wrapper, `#!/bin/sh\necho x >> ${callsFile}\nexec ${GIT_SOURCE} "$@"\n`);
+  // Single-quoted so a checkout path with spaces still works.
+  const q = (p: string) => `'${p.replace(/'/g, `'\\''`)}'`;
+  writeFileSync(wrapper, `#!/bin/sh\necho x >> ${q(callsFile)}\nexec ${q(GIT_SOURCE)} "$@"\n`);
   chmodSync(wrapper, 0o755);
   const res = runCli(repo, store, extra, { INCREMENTAL_GIT: wrapper });
   const calls = existsSync(callsFile)
@@ -109,7 +94,7 @@ test("T-16: two git change calls when nothing runs, three when tests run", () =>
     ]);
     assert.equal(res.status, 0, `empty selection must exit 0: ${res.stderr}`);
     assert.ok(!res.stderr.includes("no changes since last run"), "no skip on an empty plan");
-    assert.equal((res.out?.results as unknown[]).length, 0, "nothing was selected");
+    assert.equal(((res.out?.results ?? []) as unknown[]).length, 0, "nothing was selected");
     assert.equal(res.out?.advanced, true, "an empty selection advances to HEAD");
     assert.equal(calls, 2, "an empty selection makes exactly two git change calls");
   } finally {
@@ -130,7 +115,7 @@ test("T-16: two git change calls when nothing runs, three when tests run", () =>
     commitAll(c2.repo); // clean, HEAD moved past the store baseline
     const { res, calls } = runCounted(c2.dir, c2.repo, c2.store);
     assert.equal(res.status, 0, `run failed: ${res.stderr}`);
-    assert.ok((res.out?.results as unknown[]).length > 0, "the plan selected tests");
+    assert.ok(((res.out?.results ?? []) as unknown[]).length > 0, "the plan selected tests");
     assert.equal(calls, 3, "a run with selected tests makes exactly three git change calls");
   } finally {
     rmSync(c2.dir, { recursive: true, force: true });
