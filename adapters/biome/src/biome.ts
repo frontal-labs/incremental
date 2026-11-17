@@ -9,7 +9,6 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
-import ts from "typescript";
 
 // The engine store lives under the repo. Biome checks it (it is not ignored), but it
 // is not a task.
@@ -126,6 +125,62 @@ export interface ConfigInputs {
 const CONFIG_NAMES = ["biome.json", "biome.jsonc"];
 const isRelative = (target: string): boolean => target.startsWith("./") || target.startsWith("../");
 
+// biome.json / biome.jsonc are JSONC (comments and trailing commas allowed).
+// TypeScript 7 (tsgo) no longer exposes readConfigFile, so parse the config
+// ourselves: strip comments and trailing commas outside strings, then JSON.parse.
+function normalizeJsonc(text: string): string {
+  const chars = text.split("");
+  const n = chars.length;
+  const out: string[] = [];
+  const commas: number[] = [];
+  let inString = false;
+  let quote = "";
+  for (let i = 0; i < n; i += 1) {
+    const ch = chars[i] ?? "";
+    if (inString) {
+      out.push(ch);
+      if (ch === "\\" && i + 1 < n) i += 1;
+      else if (ch === quote) inString = false;
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      inString = true;
+      quote = ch;
+      out.push(ch);
+      continue;
+    }
+    if (ch === "/" && (chars[i + 1] ?? "") === "/") {
+      i += 1;
+      while (i < n && (chars[i] ?? "") !== "\n") i += 1;
+      continue;
+    }
+    if (ch === "/" && (chars[i + 1] ?? "") === "*") {
+      i += 2;
+      while (i + 1 < n && !((chars[i] ?? "") === "*" && (chars[i + 1] ?? "") === "/")) i += 1;
+      i = Math.min(i + 1, n - 1);
+      out.push(" ");
+      continue;
+    }
+    out.push(ch);
+    if (ch === ",") commas.push(out.length - 1);
+  }
+  for (const idx of commas) {
+    let j = idx + 1;
+    while (j < out.length && /\s/.test(out[j] ?? "")) j += 1;
+    if ((out[j] ?? "") === "}" || (out[j] ?? "") === "]") out[idx] = " ";
+  }
+  return out.join("");
+}
+
+function parseJsonc(abs: string, rel: string): Record<string, unknown> {
+  const raw = readFileSync(abs, "utf8");
+  try {
+    return JSON.parse(normalizeJsonc(raw)) as Record<string, unknown>;
+  } catch (e) {
+    throw new BiomeError(`cannot parse ${rel}: ${(e as Error).message}`);
+  }
+}
+
 export function configInputs(root: string, fileAbs: string): ConfigInputs {
   const files = new Set<string>();
   const unhashable = new Set<string>();
@@ -133,13 +188,7 @@ export function configInputs(root: string, fileAbs: string): ConfigInputs {
     const rel = relPath(root, abs);
     if (files.has(rel)) return;
     files.add(rel);
-    const read = ts.readConfigFile(abs, ts.sys.readFile);
-    if (read.error !== undefined) {
-      throw new BiomeError(
-        `cannot read ${rel}: ${ts.flattenDiagnosticMessageText(read.error.messageText, "\n")}`,
-      );
-    }
-    const config = read.config as { extends?: string | string[]; plugins?: string[] };
+    const config = parseJsonc(abs, rel) as { extends?: string | string[]; plugins?: string[] };
     const targets = [
       ...(config.extends === undefined
         ? []
