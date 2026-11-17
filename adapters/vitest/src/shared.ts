@@ -4,7 +4,10 @@
 import { createHash } from "node:crypto";
 
 // Directories that are never recorded or discovered (PLAN 6.7 default exclude).
-export const EXCLUDED_DIRS: readonly string[] = ["node_modules", ".git", ".incremental"];
+// `.vitest` is the Vitest cache dir (its JSON report and transform cache), written by the
+// test runner, not read by a task — the same class as `.incremental` (the adapter's own
+// state). Must match adapters/strace/src/oracle.ts.
+export const EXCLUDED_DIRS: readonly string[] = ["node_modules", ".git", ".incremental", ".vitest"];
 
 // Environment names that are not tracked: the adapter's own variables, the
 // variables Vitest injects into its workers, and NODE_OPTIONS (which carries
