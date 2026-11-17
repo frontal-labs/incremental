@@ -133,8 +133,7 @@ export function applyEdits(dir: string, edits: Edit[]): Record<string, string> {
 export interface CliResult {
   status: number | null;
   out: Record<string, unknown> | null;
-  // stdout as printed (JSON on the normal path, the fast-path skip message on
-  // the fast path, empty on hard errors).
+  // stdout as printed (JSON on the normal path, empty on hard errors).
   stdout: string;
   stderr: string;
 }
