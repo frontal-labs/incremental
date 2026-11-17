@@ -3,6 +3,7 @@ export {
   checkProject,
   configChain,
   discoverProjects,
+  isTypescriptFile,
   packageJsonsFor,
   programFiles,
   typescriptVersion,

@@ -4,7 +4,7 @@
 // the tsconfig extends chain. Everything read is hashed at observation time.
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, realpathSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 
@@ -24,6 +24,37 @@ const req = createRequire(import.meta.url);
 // (PLAN 8.4), so it names the compiler that actually ran the project.
 export const TS_PACKAGE_DIR = path.dirname(req.resolve("typescript/package.json"));
 
+// Every directory whose files are shipped inside the TypeScript packages the
+// compiler loads: the typescript package itself and, since 7.0 (tsgo), the
+// platform package it delegates to, e.g. @typescript/typescript-darwin-arm64.
+// The platform package is an optionalDependency of typescript, installed by
+// pnpm as a symlinked sibling under the @typescript scope next to typescript
+// itself. Paths are resolved through symlinks so that tsc's output (which
+// reports the real, resolved path) matches the prefix.
+const TS_PKG_DIRS: string[] = (() => {
+  const dirs = [realpathSync(TS_PACKAGE_DIR)];
+  const scope = path.join(path.dirname(TS_PACKAGE_DIR), "@typescript");
+  try {
+    for (const entry of readdirSync(scope, { withFileTypes: true })) {
+      // pnpm links platform packages as symlinks into the scope directory.
+      if (!entry.isDirectory() && !entry.isSymbolicLink()) continue;
+      const dir = path.join(scope, entry.name);
+      if (!existsSync(path.join(dir, "package.json"))) continue;
+      const dep = JSON.parse(readFileSync(path.join(dir, "package.json"), "utf8")) as {
+        name?: string;
+      };
+      if (dep.name?.startsWith("@typescript/typescript-")) {
+        const resolved = realpathSync(dir);
+        if (!dirs.includes(resolved)) dirs.push(resolved);
+      }
+    }
+  } catch {
+    // No @typescript scope (pre-7.0 layout or non-pnpm install); the typescript
+    // package dir alone is enough.
+  }
+  return dirs;
+})();
+
 export function tscEntry(): string {
   return path.join(TS_PACKAGE_DIR, "bin", "tsc");
 }
@@ -33,6 +64,19 @@ export function typescriptVersion(): string {
     version: string;
   };
   return pkg.version;
+}
+
+// True for absolute paths that live inside one of the TypeScript packages
+// (typescript or its platform binary). Their contents are pinned by the
+// runner version in the context, so they are not individual inputs.
+export function isTypescriptFile(abs: string): boolean {
+  let resolved = abs;
+  try {
+    resolved = realpathSync(abs);
+  } catch {
+    // The file no longer exists; compare the unresolved path as-is.
+  }
+  return TS_PKG_DIRS.some((dir) => resolved.startsWith(dir + path.sep));
 }
 
 export function sha256(data: Buffer | string): string {

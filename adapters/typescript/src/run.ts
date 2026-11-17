@@ -33,10 +33,10 @@ import {
   checkProject,
   configChain,
   discoverProjects,
+  isTypescriptFile,
   packageJsonsFor,
   relPath,
   sha256,
-  TS_PACKAGE_DIR,
   typescriptVersion,
 } from "./project.js";
 
@@ -159,7 +159,7 @@ function inputsFor(
   let dirty = chain.references || chain.unhashable.length > 0;
   const files = new Set<string>(chain.files);
   for (const f of listed) {
-    if (!f.startsWith(TS_PACKAGE_DIR + path.sep)) {
+    if (!isTypescriptFile(f)) {
       if (f.startsWith(root + path.sep)) {
         files.add(f);
       } else {
