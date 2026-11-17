@@ -27,6 +27,8 @@ const REGISTRY = "https://registry.npmjs.org";
 const REPOSITORY = "https://github.com/frontal-labs/incremental.git";
 const SCOPE_PREFIX = "@incremental/";
 const dryRun = process.argv.includes("--dry-run");
+const otpIdx = process.argv.indexOf("--otp");
+const otp = otpIdx !== -1 ? process.argv[otpIdx + 1] : null;
 
 function die(msg) {
   console.error(`publish: ${msg}`);
@@ -151,6 +153,7 @@ function publish(p, manifest, userConfig) {
     writeFileSync(file, JSON.stringify(manifest, null, 2) + "\n");
     const args = ["publish", "--registry", REGISTRY, "--userconfig", userConfig];
     if (dryRun) args.push("--dry-run");
+    if (otp) args.push(`--otp=${otp}`);
     const out = execFileSync("npm", args, {
       cwd: path.join(ROOT, p.dir),
       encoding: "utf8",
