@@ -199,16 +199,19 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     }
     if (!opts.shadow) for (const t of [...deleted].sort()) await client.forget(t);
 
-    const runAll = opts.all || opts.shadow || plan === null || plan.fallback !== null;
+    const runAll = opts.all || plan === null || plan.fallback !== null;
     const planned = new Set((plan?.tasks ?? []).map((t) => t.id));
     const selected = runAll
       ? discovered
       : [...planned].filter((t) => discovered.includes(t)).sort();
     const wouldSkip = plan === null ? [] : discovered.filter((t) => !planned.has(t));
+    // Shadow mode reports the selection the plan would run, but executes no
+    // test file (and records nothing).
+    const toRun = opts.shadow ? [] : selected;
 
     const workDir = mkdtempSync(path.join(os.tmpdir(), "incremental-vitest-"));
     const preloadPath = fileURLToPath(new URL("./preload.js", import.meta.url));
-    const files: FileResult[] = await mapPool(selected, opts.jobs, (task, i) =>
+    const files: FileResult[] = await mapPool(toRun, opts.jobs, (task, i) =>
       runFile({
         root,
         task,
