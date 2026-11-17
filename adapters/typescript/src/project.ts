@@ -7,7 +7,6 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
-import ts from "typescript";
 
 // Directories the walk never enters. Matches the Vitest walker's intent.
 const SKIP_DIRS = new Set(["node_modules", ".git", "dist", ".incremental", ".toolchain"]);
@@ -38,6 +37,58 @@ export function typescriptVersion(): string {
 
 export function sha256(data: Buffer | string): string {
   return createHash("sha256").update(data).digest("hex");
+}
+
+// tsconfig.json is JSONC: it allows // and /* */ comments, trailing commas,
+// and single-quoted keys/values in some editors. TypeScript 7 (tsgo) no longer
+// exposes the JS config-parsing API (readConfigFile / sys /
+// flattenDiagnosticMessageText), so parse the config ourselves. Only the
+// extends and references fields matter here, so a conservative normalizer is
+// enough: strip comments and trailing commas outside of strings, then
+// JSON.parse. (Single quotes are rare in committed tsconfig files and would be
+// surfaced by a parse error, which configChain reports as ProjectError.)
+function normalizeJsonc(text: string): string {
+  const chars = text.split("");
+  const n = chars.length;
+  const out: string[] = [];
+  const commas: number[] = [];
+  let inString = false;
+  let quote = "";
+  for (let i = 0; i < n; i += 1) {
+    const ch = chars[i] ?? "";
+    if (inString) {
+      out.push(ch);
+      if (ch === "\\" && i + 1 < n) i += 1; // skip escaped char
+      else if (ch === quote) inString = false;
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      inString = true;
+      quote = ch;
+      out.push(ch);
+      continue;
+    }
+    if (ch === "/" && (chars[i + 1] ?? "") === "/") {
+      i += 1;
+      while (i < n && (chars[i] ?? "") !== "\n") i += 1;
+      continue;
+    }
+    if (ch === "/" && (chars[i + 1] ?? "") === "*") {
+      i += 2;
+      while (i + 1 < n && !((chars[i] ?? "") === "*" && (chars[i + 1] ?? "") === "/")) i += 1;
+      i = Math.min(i + 1, n - 1);
+      out.push(" ");
+      continue;
+    }
+    out.push(ch);
+    if (ch === ",") commas.push(out.length - 1);
+  }
+  for (const idx of commas) {
+    let j = idx + 1;
+    while (j < out.length && /\s/.test(out[j] ?? "")) j += 1;
+    if ((out[j] ?? "") === "}" || (out[j] ?? "") === "]") out[idx] = " ";
+  }
+  return out.join("");
 }
 
 export function relPath(root: string, abs: string): string {
@@ -100,13 +151,13 @@ export function configChain(configAbs: string): ConfigChain {
   const visit = (file: string): void => {
     if (files.includes(file)) return;
     files.push(file);
-    const read = ts.readConfigFile(file, ts.sys.readFile);
-    if (read.error !== undefined) {
-      throw new ProjectError(
-        `cannot read ${file}: ${ts.flattenDiagnosticMessageText(read.error.messageText, "\n")}`,
-      );
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(normalizeJsonc(readFileSync(file, "utf8")));
+    } catch (err: any) {
+      throw new ProjectError(`cannot read ${file}: ${err?.message ?? String(err)}`);
     }
-    const config = read.config as { extends?: string | string[]; references?: unknown[] };
+    const config = parsed as { extends?: string | string[]; references?: unknown[] };
     if (Array.isArray(config.references) && config.references.length > 0) references = true;
     const ext =
       config.extends === undefined
