@@ -1,7 +1,18 @@
 SHELL := /bin/bash
 UNAME_S := $(shell uname -s | tr '[:upper:]' '[:lower:]')
 UNAME_M := $(shell uname -m)
-GOOSE_DIR ?= $(CURDIR)/.toolchain/goose/goose-v2026.3-$(UNAME_S)-$(UNAME_M)
+# Normalize uname -m to the Goose dir suffix (x86_64→x64, aarch64→arm64)
+GOOSE_ARCH := $(UNAME_M)
+ifeq ($(GOOSE_ARCH),x86_64)
+GOOSE_ARCH := x64
+endif
+ifeq ($(GOOSE_ARCH),amd64)
+GOOSE_ARCH := x64
+endif
+ifeq ($(GOOSE_ARCH),aarch64)
+GOOSE_ARCH := arm64
+endif
+GOOSE_DIR ?= $(CURDIR)/.toolchain/goose/goose-v2026.3-$(UNAME_S)-$(GOOSE_ARCH)
 GOOSE := $(GOOSE_DIR)/goose
 export GOOSE_HOME := $(CURDIR)/.toolchain/goose-home
 ENGINE := core/dist/incremental
@@ -12,7 +23,7 @@ INCREMENTAL_BENCH_REPO ?= $(CURDIR)/fixture
 # Every run log goes to logs/ at the project root (git-ignored).
 LOGS := logs
 $(shell mkdir -p $(LOGS))
-.PHONY: fixture-e2e setup skills build test-git test-fuzz check-spec test-core test-policy test-protocol test-bindings test-vitest test-oracle test-e2e bench-smoke bench bench-cold test-mcp test-python release-check all-tests status loc linux-gate test-adapters test-typescript test-rust format lint fmt-check
+.PHONY: doctor fixture-e2e setup skills build test-git test-fuzz check-spec test-core test-policy test-protocol test-bindings test-vitest test-oracle test-e2e bench-smoke bench bench-cold test-mcp test-python release-check all-tests status loc linux-gate test-adapters test-typescript test-rust format lint fmt-check
 
 # Platform-specific test lists.
 IS_LINUX := $(filter linux,$(UNAME_S))
@@ -27,6 +38,22 @@ ALL_TESTS_LINUX := $(ALL_TESTS_NON_LINUX) test-oracle
 define NOT_BUILT
 	@echo "$(1) is not implemented in this repository yet (see DECISIONS.md)"; echo "FAIL $(1)"; exit 1
 endef
+
+doctor:
+	@echo "GOOSE = $(GOOSE)"
+	@if [ -x "$(GOOSE)" ]; then echo "OK: Goose binary found"; else \
+		echo "MISSING: Goose toolchain not found at $(GOOSE)"; \
+		echo "  Platform: $(UNAME_S)-$(UNAME_M) (Goose dir suffix: $(GOOSE_ARCH))"; \
+		if [ "$(UNAME_S)" = "darwin" ] && [ "$(UNAME_M)" = "arm64" ]; then \
+			echo "  Run scripts/fetch-goose.sh (make setup) to install the pinned Goose v2026.3 toolchain."; \
+		elif [ "$(UNAME_S)" = "linux" ] && [ "$(UNAME_M)" = "x86_64" ]; then \
+			echo "  Run scripts/fetch-goose.sh (make setup) to install the pinned Goose v2026.3 toolchain."; \
+		elif [ "$(UNAME_S)" = "darwin" ] && [ "$(GOOSE_ARCH)" = "x64" ]; then \
+			echo "  Run scripts/fetch-goose.sh (make setup) to install the pinned Goose v2026.3 toolchain (macos-x64)."; \
+		else \
+			echo "  No pinned Goose v2026.3 release exists for $(UNAME_S)-$(UNAME_M) yet (supported: darwin-arm64, darwin-x86_64, linux-x86_64)."; \
+		fi; \
+	 fi
 
 setup: skills
 	@test -x $(GOOSE) || scripts/fetch-goose.sh || { echo "FAIL setup"; exit 1; }
