@@ -275,15 +275,23 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     const workDir = mkdtempSync(path.join(os.tmpdir(), "incremental-vitest-"));
     const preloadPath = fileURLToPath(new URL("./preload.js", import.meta.url));
     const poolSize = Math.max(1, Math.floor(opts.pool ?? 1));
-    const runBatched = async (tasks: readonly string[]): Promise<FileResult[]> => {
+    // Artifact indices must be unique across the whole run: concurrent batches
+    // and the mixed-config per-file fallback all write into the same workDir,
+    // so deriving an index from position within one batch collides (two
+    // batches both index their first task as 1001). The scheduler's batch
+    // index b gives each batch its own namespace, and a run-wide fallback
+    // counter keeps fallback spawns unique across batches.
+    let fallbackIndex = 1001;
+    const runBatched = async (tasks: readonly string[], b: number): Promise<FileResult[]> => {
       // runBatch throws when the batch mixes package-level configs; fall back
       // to one Vitest spawn per file in that case.
+      const batchBase = b * 1000;
       try {
         return await runBatch({
           root,
           task: tasks[0] ?? "",
           workDir,
-          index: tasks[0] ? 1000 + tasks.indexOf(tasks[0]) + 1 : 0,
+          index: tasks[0] ? batchBase + 1 : 0,
           env,
           timeoutMs: opts.timeoutMs,
           vitestBin: vitest,
@@ -293,12 +301,14 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
         });
       } catch (err) {
         if (err instanceof Error && err.message.startsWith("runBatch:")) {
+          const base = fallbackIndex;
+          fallbackIndex += tasks.length;
           return mapPool(tasks, 1, (task, i) =>
             runFile({
               root,
               task,
               workDir,
-              index: 1000 + i + 1,
+              index: base + i,
               env,
               timeoutMs: opts.timeoutMs,
               vitestBin: vitest,
@@ -331,7 +341,7 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
                 toRun.slice(b * poolSize, (b + 1) * poolSize),
               ),
               opts.jobs,
-              (tasks) => runBatched(tasks),
+              (tasks, b) => runBatched(tasks, b),
             )
           ).flat();
 

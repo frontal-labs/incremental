@@ -39,7 +39,7 @@ kind         [0]      [1]      [2]      median
 prime        21298    —        —        21298  (one-time; fresh store, 13 files)
 full         81682    66441    58248    66441  (13 sequential spawns)
 pool(4)      27818    27688    21265    27688  (4+4+4+1 spawns; batches sequential)
-pool(13)     14735    11282     7097     7097  (1 spawn for all 13 files)
+pool(13)     14735    11282     7097    11282  (1 spawn for all 13 files)
 fast          723       694      222       694  (T-05; no engine)
 shadow       1058       887      368       887  (full path; 0 re-runs)
 
@@ -47,7 +47,7 @@ All runs: exit 0, advanced=true, 13/13 files ran (full and pool), 0 re-runs (fas
 
 ## Key numbers
 
-pool(13) vs full (median):  7097 ms vs 66441 ms  →  ~9.4× faster
+pool(13) vs full (median): 11282 ms vs 66441 ms  →  ~5.9× faster
 pool(4)  vs full (median): 27688 ms vs 66441 ms  →  ~2.4× faster
 fast    vs full (median):    694 ms vs 66441 ms  →  ~96× faster (no-op)
 shadow  vs full (median):    887 ms vs 66441 ms  →  ~75× faster (no-op)
@@ -119,14 +119,14 @@ Concrete proof (from store log at /var/folders/kz/.../t07-fTGrNe/store/tg.log,
 
 ## Verdict
 
-The shared pool is ~9× faster for a full cold-start run on the fixture
-(pool(13): ~7 s vs ~66 s sequential per-file), and the win is real and
+The shared pool is ~6× faster for a full cold-start run on the fixture
+(pool(13): ~11 s vs ~66 s sequential per-file), and the win is real and
 consistent across all 3 iterations. However, the prototype breaks per-file
 access recording in the forks pool: all files in a batch share the same
 input set, so a change to one file cross-invalidates its batch siblings.
 
 This violates the ticket's acceptance criterion. The shared pool is not
-adoptable without per-worker trace attribution. The ~9× speedup is a strong
+adoptable without per-worker trace attribution. The ~6× speedup is a strong
 motivation for pursuing that fix (likely via Vitest's threads pool, which
 gives each worker a distinct pid and thus a distinct trace file), but the
 correctness requirement must be met before committing to the design.

@@ -217,16 +217,30 @@ function matchEntry(
       : { kind: "none" };
   }
   const absTask = path.resolve(root, task);
+  // The name may be absolute or relative to the vitest root (the cwd the batch
+  // was spawned from). An exact path match (resolved against cwd, then against
+  // the repo root) wins over everything else: an earlier basename match must
+  // not shadow a later exact entry when two files share a basename (a/x.test.ts
+  // and b/x.test.ts in the same batch).
   for (const e of results) {
     const cand = e.name;
     if (cand === undefined) continue;
-    // The name may be absolute or relative to the vitest root (the cwd the
-    // batch was spawned from). Try cwd first; a relative name that is not
-    // under cwd may still be relative to the repo root.
     if (path.resolve(cwd, cand) === absTask) return { kind: "entry", entry: e };
     if (path.resolve(root, cand) === absTask) return { kind: "entry", entry: e };
-    if (path.basename(cand) === path.basename(absTask)) return { kind: "entry", entry: e };
   }
+  // No exact match: a basename match is a fallback only when it identifies
+  // exactly one report entry; with several entries sharing the basename the
+  // attribution is ambiguous and the caller records a missing entry.
+  let byBase: NonNullable<JsonReport["testResults"]>[number] | null = null;
+  let baseCount = 0;
+  for (const e of results) {
+    const cand = e.name;
+    if (cand === undefined) continue;
+    if (path.basename(cand) !== path.basename(absTask)) continue;
+    byBase = e;
+    baseCount++;
+  }
+  if (baseCount === 1 && byBase !== null) return { kind: "entry", entry: byBase };
   return { kind: "none" };
 }
 
@@ -397,7 +411,12 @@ export function runBatch(opts: RunBatchOptions): Promise<FileResult[]> {
               code === 0 &&
               (report?.success ?? false) &&
               (report?.numTotalTests ?? 0) > 0,
-            codeIsFailForThis: code !== 0 && m.kind === "entry" && m.entry.status === "passed",
+            // The exit code is shared by every file in the spawn: it says this
+            // file failed only when its own entry failed. A non-zero exit with
+            // a passed entry (another file in the batch failed) must not fail
+            // this file, and a missing entry with a failed report cannot be
+            // attributed to any file.
+            codeIsFailForThis: code !== 0 && m.kind === "entry" && m.entry.status === "failed",
           });
           return {
             task,
@@ -449,18 +468,27 @@ function pidEventsFor(byPid: Map<number, TraceEvent[]>, task: string): TraceEven
   for (const [pid, events] of byPid) {
     if (events.some((ev) => ev.k === "file" && ev.p === task)) taskPids.add(pid);
   }
-  if (taskPids.size === 1) {
-    const [only] = taskPids;
-    return only === undefined ? [] : (byPid.get(only) ?? []);
-  }
+  const exact = taskPids.size === 1;
   const union = new Map<string, TraceEvent>();
   for (const [pid, events] of byPid) {
-    // The Vitest main process (not a fork) writes the config-load trace; it is
-    // shared boot cost, not an input of any single task, so it is excluded
-    // from the per-file observations. A main-process trace contains no "file"
-    // event for a test file.
-    if (!taskPids.has(pid) && !events.some((ev) => ev.k === "file" && ev.p?.endsWith(".test.")))
-      continue;
+    if (exact) {
+      // When one pid holds the exact "file" event for the task, that pid is the
+      // worker that ran it. But a task process that spawned a subprocess,
+      // worker thread, or read env/probe in a sibling pid records markers
+      // (incomplete, worker, env, probe) in its own trace; those must be
+      // preserved so buildObservation does not store a clean observation that
+      // missed them. Include every task-process event; use the exact trace
+      // only when no other task process exists.
+      if (!taskPids.has(pid) && !events.some((ev) => ev.k === "file" && ev.p?.endsWith(".test.")))
+        continue;
+    } else {
+      // The Vitest main process (not a fork) writes the config-load trace; it is
+      // shared boot cost, not an input of any single task, so it is excluded
+      // from the per-file observations. A main-process trace contains no "file"
+      // event for a test file.
+      if (!taskPids.has(pid) && !events.some((ev) => ev.k === "file" && ev.p?.endsWith(".test.")))
+        continue;
+    }
     for (const ev of events) {
       const key = `${ev.k}:${ev.p ?? ev.n ?? ""}:${ev.h ?? ""}`;
       if (!union.has(key)) union.set(key, ev);

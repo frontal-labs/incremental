@@ -69,7 +69,12 @@ const run = (args, env = {}) => {
   const ms = Number(process.hrtime.bigint() - t0) / 1e6;
   return { ms, status: r.status, out: r.stdout ?? "", err: r.stderr ?? "" };
 };
-const summary = (label, r) => {
+// The fixture has 13 test files; worker.test.ts is excluded on every run, so
+// a full/pool run must execute exactly EXPECTED_FILES files, and a fast/shadow
+// run must execute exactly 0.
+const EXPECTED_FILES = 13;
+const fails = [];
+const summary = (label, r, expectRan) => {
   let parsed = null;
   try {
     parsed = JSON.parse(r.out);
@@ -77,14 +82,34 @@ const summary = (label, r) => {
     /* not json */
   }
   const results = parsed?.results;
-  const ran = Array.isArray(results) ? results.length : (parsed?.selected?.length ?? "?");
+  const ran = Array.isArray(results) ? results.length : (parsed?.selected?.length ?? null);
   const notAdvanced = parsed?.notAdvanced?.length
     ? ` notAdvanced=${JSON.stringify(parsed.notAdvanced)}`
     : "";
   console.log(
     `${label}\t${r.ms.toFixed(0)} ms\texit ${r.status}\tran=${ran}\tadvanced=${parsed?.advanced}${notAdvanced}`,
   );
-  if (r.status !== 0) console.error(r.err.slice(-2000));
+  // A measured sample is only valid when the run completed its workflow:
+  // exit 0 (advanced) and the expected file count. Anything else — a timeout
+  // (status null), an unexpected exit code, a missing or short result list —
+  // is recorded and aborts the harness with a nonzero exit.
+  const ok =
+    r.status === 0 &&
+    ran !== null &&
+    ran === expectRan &&
+    (parsed?.advanced ?? false) === true;
+  if (!ok) {
+    fails.push(`${label}: exit=${r.status} ran=${ran} expected=${expectRan} advanced=${parsed?.advanced}`);
+    if (r.status !== 0 || r.err) console.error(`${label} stderr:\n${r.err.slice(-2000)}`);
+  }
+};
+const finish = () => {
+  if (fails.length > 0) {
+    console.error(`# t07-bench: ${fails.length} failed measurement(s):`);
+    for (const f of fails) console.error(`  - ${f}`);
+    process.exit(1);
+  }
+  process.exit(0);
 };
 
 console.error(`# t07-bench: dir=${dir}`);
@@ -135,7 +160,7 @@ for (let i = 0; i < n; i++) {
   //     the adapter's default fan-out across CPUs (which already parallelizes
   //     per-file runs and swamps the shared-pool benefit).
   const full = run(["--all", "--jobs", "1"]);
-  summary(`full[${i}]`, full);
+  summary(`full[${i}]`, full, EXPECTED_FILES);
   // (c) shared-pool: same dirty state, N files per spawn. Each run re-baselines
   //     to the same HEAD, so the state is identical across pool sizes.
   //     --jobs 1 runs the batches sequentially: concurrent `vitest run` spawns
@@ -143,13 +168,13 @@ for (let i = 0; i < n; i++) {
   //     (T-07 finding 2). Sequential isolates the timing measurement.
   for (const p of POOLS) {
     if (p === 1) continue; // identical to full; skip to save time
-    summary(`pool[${i}](${p})`, run(["--all", "--pool", String(p), "--jobs", "1"]));
+    summary(`pool[${i}](${p})`, run(["--all", "--pool", String(p), "--jobs", "1"]), EXPECTED_FILES);
   }
   // (d) no-op measurements (true no-ops: HEAD == baseline, clean worktree).
   const fast = run([]); // fast path: T-05, no engine
-  summary(`fast[${i}]`, fast);
+  summary(`fast[${i}]`, fast, 0);
   const shadow = run(["--shadow"]); // full path, engine consulted, 0 re-runs
-  summary(`shadow[${i}]`, shadow);
+  summary(`shadow[${i}]`, shadow, 0);
   // (e) restore the pre-edit state for the next iteration.
   git(["reset", "--hard", "-q", "HEAD~1"]);
 }
