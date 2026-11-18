@@ -35,13 +35,41 @@ const PROBE_EXTENSIONS = [
   ".jsx",
 ];
 
-const OUT = process.env.INCREMENTAL_TRACE_OUT;
-const RECORD = OUT !== undefined && OUT !== "";
+// INCREMENTAL_TRACE_OUT is either a single file (one task, one process) or a
+// directory (batch mode: several tasks share one Vitest spawn, and every
+// process appends to <dir>/<pid>.ndjson so each worker's trace stays its own).
+const OUT_RAW = process.env.INCREMENTAL_TRACE_OUT;
+const RECORD = OUT_RAW !== undefined && OUT_RAW !== "";
+let OUT: string | null = null;
+if (RECORD) {
+  const raw = OUT_RAW as string;
+  try {
+    // lstat: a dangling symlink to the trace file is a regular file for
+    // appendFileSync's purposes; statSync would throw and we would wrongly
+    // treat it as a directory, appending to <link>.ndjson.
+    const st = fs.lstatSync(raw);
+    OUT = st.isDirectory() ? path.join(raw, `${process.pid}.ndjson`) : raw;
+  } catch {
+    // Directory mode: the runner created the trace directory before the
+    // spawn. A plain file path in file mode would have thrown lstat, but the
+    // runner always rmSync's the trace file first, so a missing path here is
+    // either the fresh file (file mode) or ... nothing: in file mode the
+    // runner removes the old file, so lstat throwing means "fresh file" for
+    // file mode and "missing directory" for directory mode. The directory can
+    // only be missing if the runner failed to create it, which the caller
+    // detects through the missing trace later. Prefer the directory form when
+    // the raw path looks like one (it exists on the record, checked below).
+    OUT = raw;
+  }
+  // File mode with a missing file is the normal fresh case; keep the path.
+  // Directory mode is confirmed by existence; if the directory is gone, the
+  // append below fails per-event and the trace is flagged missing.
+}
 // Worker processes and worker threads run the task's own code. Only they
 // count directory listings and subprocesses as inputs of the task.
 const isTaskProcess = typeof process.send === "function" || !wt.isMainThread;
 
-if (RECORD) install(OUT as string);
+if (OUT !== null) install(OUT);
 
 // The baseline environment the main process recorded (env_base), or null.
 function readBaseline(

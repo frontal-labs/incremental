@@ -30,7 +30,7 @@ import {
   type Outcome,
   type Plan,
 } from "@incremental/client";
-import { buildObservation, runFile, type FileResult } from "./record.js";
+import { buildObservation, runBatch, runFile, type FileResult } from "./record.js";
 import {
   contextFor,
   discoverTests,
@@ -61,6 +61,13 @@ export interface RunOptions {
   // adapter's pinned Vitest).
   vitestArgs: string[];
   vitest?: string;
+  // T-07 shared-pool prototype: when >1, run test files in batches this large
+  // in one Vitest spawn instead of one spawn per file. Batch N shares the Vite
+  // config load / Vitest boot cost; every file still gets its own fork (the
+  // forks pool) and its own trace + observation, so per-file invalidation is
+  // unchanged. Only active for single-config repos; mixed monorepos fall back
+  // to one file per spawn.
+  pool?: number;
 }
 
 export interface TaskRun {
@@ -267,19 +274,67 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
 
     const workDir = mkdtempSync(path.join(os.tmpdir(), "incremental-vitest-"));
     const preloadPath = fileURLToPath(new URL("./preload.js", import.meta.url));
-    const files: FileResult[] = await mapPool(toRun, opts.jobs, (task, i) =>
-      runFile({
-        root,
-        task,
-        workDir,
-        index: i + 1,
-        env,
-        timeoutMs: opts.timeoutMs,
-        vitestBin: vitest,
-        preloadPath,
-        vitestArgs: opts.vitestArgs,
-      }),
-    );
+    const poolSize = Math.max(1, Math.floor(opts.pool ?? 1));
+    const runBatched = async (tasks: readonly string[]): Promise<FileResult[]> => {
+      // runBatch throws when the batch mixes package-level configs; fall back
+      // to one Vitest spawn per file in that case.
+      try {
+        return await runBatch({
+          root,
+          task: tasks[0] ?? "",
+          workDir,
+          index: tasks[0] ? 1000 + tasks.indexOf(tasks[0]) + 1 : 0,
+          env,
+          timeoutMs: opts.timeoutMs,
+          vitestBin: vitest,
+          preloadPath,
+          vitestArgs: opts.vitestArgs,
+          tasks,
+        });
+      } catch (err) {
+        if (err instanceof Error && err.message.startsWith("runBatch:")) {
+          return mapPool(tasks, 1, (task, i) =>
+            runFile({
+              root,
+              task,
+              workDir,
+              index: 1000 + i + 1,
+              env,
+              timeoutMs: opts.timeoutMs,
+              vitestBin: vitest,
+              preloadPath,
+              vitestArgs: opts.vitestArgs,
+            }),
+          );
+        }
+        throw err;
+      }
+    };
+    const files: FileResult[] =
+      poolSize <= 1 || toRun.length === 0
+        ? await mapPool(toRun, opts.jobs, (task, i) =>
+            runFile({
+              root,
+              task,
+              workDir,
+              index: i + 1,
+              env,
+              timeoutMs: opts.timeoutMs,
+              vitestBin: vitest,
+              preloadPath,
+              vitestArgs: opts.vitestArgs,
+            }),
+          )
+        : await (
+            await mapPool(
+              Array.from(
+                { length: Math.ceil(toRun.length / poolSize) },
+                (_, b) => toRun.slice(b * poolSize, (b + 1) * poolSize),
+              ),
+              opts.jobs,
+              (tasks) => runBatched(tasks),
+            )
+          ).flat();
 
     // T-16: head0 is the dirty check. Re-run it only when tests actually ran,
     // because a test run can mutate the worktree (fixtures writing files) or
@@ -375,7 +430,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
   const [cmd, ...rest] = argv;
   if (cmd !== "run")
     throw new UsageError(
-      "usage: incremental-vitest run [--base REF] [--json] [--all] [--jobs N] [--shadow] [--store DIR] [--root DIR] [--include GLOB]... [--exclude GLOB]... [--vitest-arg ARG]... [--vitest FILE]",
+      "usage: incremental-vitest run [--base REF] [--json] [--all] [--jobs N] [--shadow] [--store DIR] [--root DIR] [--include GLOB]... [--exclude GLOB]... [--vitest-arg ARG]... [--vitest FILE] [--pool N]",
     );
   const opts: RunOptions = {
     root: process.cwd(),
@@ -422,6 +477,10 @@ export function parseArgs(argv: string[]): ParsedArgs {
       opts.vitestArgs.push(value());
     } else if (a === "--vitest") {
       opts.vitest = value();
+    } else if (a === "--pool") {
+      const n = Number(value());
+      if (!Number.isInteger(n) || n < 1) throw new UsageError("--pool needs a positive integer");
+      opts.pool = n;
     } else {
       throw new UsageError(`unknown option ${a}`);
     }
