@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       full:
-        description: "Run full benchmarksmark suite"
+        description: "Run full benchmarks suite"
         required: false
         default: "false"
         type: boolean
@@ -21,34 +21,70 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          bun-version: "2.2"
+          node-version: "22"
+      - name: Install Goose toolchain (Linux x64, v2026.3)
+        run: |
+          mkdir -p .toolchain/goose
+          curl -fsSL --retry 5 --retry-all-errors --retry-delay 10 -o goose.tar.gz https://github.com/aardappel/goose/releases/download/v2026.3/goose-v2026.3-linux-x64.tar.gz
+          echo "06ac30284338269d3996d457412bf4f2b47c1f9a5601de65b6317187fe78d5c9  goose.tar.gz" | sha256sum -c -
+          tar -xzf goose.tar.gz -C .toolchain/goose
+          echo "GOOSE_DIR=$PWD/.toolchain/goose/goose-v2026.3-linux-x64" >> "$GITHUB_ENV"
+      - name: Install adapter tools (pnpm)
+        run: npm install -g pnpm@9.0.0
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Run benchmarks smoke
-        run: make benchmarks-smoke
+        run: make bench-smoke
 
   benchmarks:
-    name: Full benchmarksmark
+    name: Full benchmarks
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.full == 'true' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          bun-version: "2.2"
-      - name: Run benchmarks
-        run: make benchmarks
-
-  benchmarksmark-kill-test:
-    name: Benchmark kill test
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-        with:
-          bun-version: "2.2"
+          node-version: "22"
+      - name: Install Goose toolchain (Linux x64, v2026.3)
+        run: |
+          mkdir -p .toolchain/goose
+          curl -fsSL --retry 5 --retry-all-errors --retry-delay 10 -o goose.tar.gz https://github.com/aardappel/goose/releases/download/v2026.3/goose-v2026.3-linux-x64.tar.gz
+          echo "06ac30284338269d3996d457412bf4f2b47c1f9a5601de65b6317187fe78d5c9  goose.tar.gz" | sha256sum -c -
+          tar -xzf goose.tar.gz -C .toolchain/goose
+          echo "GOOSE_DIR=$PWD/.toolchain/goose/goose-v2026.3-linux-x64" >> "$GITHUB_ENV"
+      - name: Install adapter tools (pnpm, bazelisk)
+        run: npm install -g pnpm@9.0.0 @bazel/bazelisk@1.28.1
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Run benchmarks (committed fixture)
+        # Replay the committed vitest fixture (10 commits) and the warm-plan
+        # stages. These are the monorepo-independent parts of `make bench`.
+        run: |
+          node benchmarks/replay/dist/src/index.js --repo adapters/vitest/fixtures/repo --commits 10 --out benchmarks/results/replay.json
+          node benchmarks/warm-plan.mjs 10000 1000 >benchmarks/results/warm-plan.json
+          node benchmarks/warm-plan.mjs 100000 1000 >benchmarks/results/warm-plan-100k.json
+      - name: Run monorepo benchmarks (if fixtures present)
+        # `make bench`'s monorepo loop and `scripts/bench-compare.mjs` need the
+        # monorepos/* gitlinks. Without a .gitmodules mapping the checkout
+        # cannot fetch them, so this step runs only when they are present
+        # (e.g. a local dispatch with the fixtures checked out).
+        if: ${{ hashFiles('monorepos/nx/.git') != '' && hashFiles('monorepos/turborepo/.git') != '' && hashFiles('monorepos/bazel/.git') != '' }}
+        run: |
+          sh scripts/fixture-install.sh
+          for m in nx turborepo bazel; do
+            node benchmarks/replay/dist/src/index.js --repo monorepos/$m --commits 10 --out benchmarks/results/replay-$m.json
+          done
+          node scripts/bench-compare.mjs 10
+      - name: Summarize benchmark results
+        run: node scripts/bench-summary.mjs
+      - name: Run fixture e2e (if fixtures present)
+        # fixture-e2e.sh skips fixtures whose checkout is absent, so it passes
+        # vacuously without them; it exercises the adapters on a machine that
+        # has the fixtures checked out.
+        if: ${{ hashFiles('monorepos/nx/.git') != '' || hashFiles('monorepos/bazel/.git') != '' }}
+        run: make fixture-e2e

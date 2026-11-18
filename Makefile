@@ -224,7 +224,7 @@ release-check: all-tests
 	@echo "PASS release-check"
 
 status:
-	@node -e 'const fs=require("fs");const rows=fs.readdirSync("status").filter(f=>f.endsWith(".json")).sort().map(f=>{const j=JSON.parse(fs.readFileSync("status/"+f,"utf8"));return "- status/"+f+": "+j.id+" "+j.state+(j.notes?" ("+j.notes+")":"")});fs.writeFileSync("STATUS.md","# STATUS\n"+rows.join("\n")+"\n")'
+	@node -e 'const fs=require("fs");const rows=fs.readdirSync("status").filter(f=>f.endsWith(".json")).sort().map(f=>{const j=JSON.parse(fs.readFileSync("status/"+f,"utf8"));return "- status/"+f+": "+j.id+" "+j.state+(j.notes?" ("+j.notes+")":"")});fs.writeFileSync("STATUS.md","# STATUS\n\n"+rows.join("\n")+"\n")'
 	@echo "PASS status"
 
 loc:

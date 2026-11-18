@@ -1,0 +1,57 @@
+# CI workflow fixes, 2026-11-18 (status + benchmarks)
+#
+# Problem: after the docs commit cbbe273, two workflows failed on main:
+#   1. Status workflow (run 44210120154): oven-sh/setup-bun@v2 failed with
+#      "No Bun release found matching version '2.2'".
+#   2. Format & Lint (run 44210120071): STATUS.md failed biome format —
+#      the `make status` generator wrote "# STATUS\n- ..." with no blank
+#      line after the heading; biome requires one.
+#
+# Also pre-existing (Bench workflow had never passed: runs 43889244278 and
+# 42641721342 failed): benchmarks.yml called `make benchmarks-smoke` and
+# `make benchmarks` — neither target exists in the Makefile (real targets:
+# `bench-smoke`, `bench`). The benchmarksmark-kill-test job was truncated
+# (no run: step) after the Gate 0/1 removal in c9c45e3. All jobs used the
+# unresolvable bun-version "2.2".
+#
+# Fixes:
+#   - Makefile `status:` target: generator now writes "# STATUS\n\n"
+#     (blank line after heading); STATUS.md regenerated; `npx biome format`
+#     and `npx biome check` both clean.
+#   - .github/workflows/status.yml: setup-bun -> setup-node@v7.1.0
+#     node-version "22" (make status only needs node; matches ci.yml).
+#   - .github/workflows/benchmarks.yml: rewritten.
+#       * benchmarks-smoke (scheduled, Mon 06:00): Node 22 + Goose v2026.3
+#         (linux-x64, sha256-verified, same as ci.yml) + pnpm install
+#         --frozen-lockfile --ignore-scripts + `make bench-smoke`.
+#       * benchmarks (manual dispatch, full=true): Node 22 + Goose +
+#         pnpm + bazelisk. Runs the monorepo-independent stages
+#         (committed-fixture replay 10 commits, warm-plan 10k/100k,
+#         bench-summary.mjs) unconditionally; the monorepo-dependent
+#         stages (fixture-install, monorepo replay loop, bench-compare)
+#         and fixture-e2e run only when the monorepos/* fixtures are
+#         present (hashFiles guard).
+#       * Removed the truncated benchmarksmark-kill-test job (its gate0
+#         criteria were deliberately removed in c9c45e3).
+#
+# Why the full job is split: `make bench` hard-fails when the monorepos/*
+# fixtures are absent (the monorepo loop and bench-compare.mjs both exit
+# non-zero on missing fixtures). The monorepos/* entries are gitlinks
+# (mode 160000) with no .gitmodules mapping, so a plain GitHub checkout
+# cannot fetch them. The split lets the full job pass in CI (committed
+# fixture only) and run the full suite on a machine that has the fixtures
+# checked out.
+#
+# Local verification (macOS, cbbe273 + these changes):
+#   $ make status
+#   PASS status
+#   $ npx biome format STATUS.md
+#   Checked 1 file. No fixes applied.
+#   $ npx biome check STATUS.md
+#   Checked 1 file. No fixes applied.
+#   $ python3 -c "import yaml; yaml.safe_load(open('.github/workflows/benchmarks.yml'))"
+#   OK (both workflow files parse; jobs: benchmarks-smoke, benchmarks / status)
+#
+# Not verifiable locally: Linux CI runs (goose build, pnpm frozen install,
+# bench-smoke on the committed fixture) — covered by the push to main;
+# the Bench scheduled job will also run next Monday 06:00 UTC.
