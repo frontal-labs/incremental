@@ -327,9 +327,8 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
           )
         : await (
             await mapPool(
-              Array.from(
-                { length: Math.ceil(toRun.length / poolSize) },
-                (_, b) => toRun.slice(b * poolSize, (b + 1) * poolSize),
+              Array.from({ length: Math.ceil(toRun.length / poolSize) }, (_, b) =>
+                toRun.slice(b * poolSize, (b + 1) * poolSize),
               ),
               opts.jobs,
               (tasks) => runBatched(tasks),

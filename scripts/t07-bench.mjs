@@ -50,9 +50,13 @@ const dir = mkdtempSync(path.join(os.tmpdir(), "t07-"));
 const repo = path.join(dir, "repo");
 const store = path.join(dir, "store");
 const git = (args) =>
-  spawnSync("git", ["-C", repo, "-c", "user.name=test", "-c", "user.email=test@example.com", ...args], {
-    encoding: "utf8",
-  });
+  spawnSync(
+    "git",
+    ["-C", repo, "-c", "user.name=test", "-c", "user.email=test@example.com", ...args],
+    {
+      encoding: "utf8",
+    },
+  );
 const RUN_ARGS_BASE = ["run", "--root", repo, "--store", store, "--json", "--exclude", WORKER];
 const run = (args, env = {}) => {
   const t0 = process.hrtime.bigint();
@@ -74,8 +78,12 @@ const summary = (label, r) => {
   }
   const results = parsed?.results;
   const ran = Array.isArray(results) ? results.length : (parsed?.selected?.length ?? "?");
-  const notAdvanced = parsed?.notAdvanced?.length ? ` notAdvanced=${JSON.stringify(parsed.notAdvanced)}` : "";
-  console.log(`${label}\t${r.ms.toFixed(0)} ms\texit ${r.status}\tran=${ran}\tadvanced=${parsed?.advanced}${notAdvanced}`);
+  const notAdvanced = parsed?.notAdvanced?.length
+    ? ` notAdvanced=${JSON.stringify(parsed.notAdvanced)}`
+    : "";
+  console.log(
+    `${label}\t${r.ms.toFixed(0)} ms\texit ${r.status}\tran=${ran}\tadvanced=${parsed?.advanced}${notAdvanced}`,
+  );
   if (r.status !== 0) console.error(r.err.slice(-2000));
 };
 
@@ -93,7 +101,9 @@ git(["commit", "-q", "-m", "fixture"]);
   } catch {
     /* */
   }
-  console.log(`prime\t${r.ms.toFixed(0)} ms\texit ${r.status}\tadvanced=${parsed?.advanced}\tobserved=${parsed?.observed}`);
+  console.log(
+    `prime\t${r.ms.toFixed(0)} ms\texit ${r.status}\tadvanced=${parsed?.advanced}\tobserved=${parsed?.observed}`,
+  );
   if (r.status !== 0) {
     console.error(r.err.slice(-3000));
     process.exit(1);

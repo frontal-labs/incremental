@@ -212,11 +212,9 @@ function matchEntry(
   if (report === null) return { kind: "none" };
   const results = report.testResults ?? [];
   if (results.length === 0) {
-    return (
-      report.success === true && (report.numTotalTests ?? 0) > 0
-        ? { kind: "summary" }
-        : { kind: "none" }
-    );
+    return report.success === true && (report.numTotalTests ?? 0) > 0
+      ? { kind: "summary" }
+      : { kind: "none" };
   }
   const absTask = path.resolve(root, task);
   for (const e of results) {
@@ -344,8 +342,7 @@ export function runBatch(opts: RunBatchOptions): Promise<FileResult[]> {
   const taskArgs: string[] = [];
   if (config !== null) {
     cwd = path.dirname(config);
-    for (const t of tasks)
-      taskArgs.push(path.relative(cwd, path.join(opts.root, t)));
+    for (const t of tasks) taskArgs.push(path.relative(cwd, path.join(opts.root, t)));
     rootArg = cwd;
   } else {
     cwd = opts.root;
@@ -375,7 +372,9 @@ export function runBatch(opts: RunBatchOptions): Promise<FileResult[]> {
     child.on("error", () => {
       clearTimeout(timer);
       closeSync(fd);
-      resolve(all(tasks, "error", "the test process could not start", Date.now() - started, null, []));
+      resolve(
+        all(tasks, "error", "the test process could not start", Date.now() - started, null, []),
+      );
     });
     child.on("close", (code) => {
       clearTimeout(timer);
@@ -414,7 +413,14 @@ export function runBatch(opts: RunBatchOptions): Promise<FileResult[]> {
   });
 }
 
-function all(tasks: readonly string[], outcome: Outcome, problem: string, durationMs: number, code: number | null, events: TraceEvent[]): FileResult[] {
+function all(
+  tasks: readonly string[],
+  outcome: Outcome,
+  problem: string,
+  durationMs: number,
+  code: number | null,
+  events: TraceEvent[],
+): FileResult[] {
   return tasks.map((task) => ({ task, outcome, durationMs, events, problem, exitCode: code }));
 }
 
@@ -445,7 +451,7 @@ function pidEventsFor(byPid: Map<number, TraceEvent[]>, task: string): TraceEven
   }
   if (taskPids.size === 1) {
     const [only] = taskPids;
-    return only === undefined ? [] : byPid.get(only) ?? [];
+    return only === undefined ? [] : (byPid.get(only) ?? []);
   }
   const union = new Map<string, TraceEvent>();
   for (const [pid, events] of byPid) {
