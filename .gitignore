@@ -63,8 +63,5 @@ status/*.tmp
 .env.*.local
 .env.production.local
 
-# ---------------------------------------
-# Generated demo repo for local adapter work
-# ---------------------------------------
-fixture/
+
 

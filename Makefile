@@ -19,10 +19,10 @@ GOOSE_DIR ?= $(CURDIR)/.toolchain/goose/goose-v2026.3-$(UNAME_S)-$(GOOSE_ARCH)
 GOOSE := $(GOOSE_DIR)/goose
 export GOOSE_HOME := $(CURDIR)/.toolchain/goose-home
 ENGINE := core/dist/incremental
-# Real Vitest monorepo used by the replay benchmark. Defaults to the in-repo
-# fixture (runnable out of the box, 6 test files with real dependencies);
+# Real Vitest monorepo used by the replay benchmark. Defaults to the committed
+# vitest fixture (runnable out of the box, packages with real dependencies);
 # override with another Vitest monorepo such as /Users/gabrielfonseca/Desktop/os.
-INCREMENTAL_BENCH_REPO ?= $(CURDIR)/fixture
+INCREMENTAL_BENCH_REPO ?= $(CURDIR)/adapters/vitest/fixtures/repo
 # Every run log goes to logs/ at the project root (git-ignored).
 LOGS := logs
 $(shell mkdir -p $(LOGS))
