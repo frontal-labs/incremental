@@ -29,15 +29,7 @@ import {
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
-import {
-  applyEdits,
-  commitAll,
-  fixtureReady,
-  git,
-  makeRepo,
-  runCli,
-  tmp,
-} from "./helpers.js";
+import { applyEdits, commitAll, fixtureReady, git, makeRepo, runCli, tmp } from "./helpers.js";
 
 let template = "";
 
@@ -111,18 +103,10 @@ test("T-05: clean no-op run skips the engine (0 git calls after head0, exit 0)",
     ]);
     assert.equal(res.status, 0, `fast path should exit 0: ${res.stderr}`);
     assert.equal(res.out?.advanced, true, "fast path reports advanced: true");
-    assert.equal(
-      ((res.out?.results ?? []) as unknown[]).length,
-      0,
-      "nothing was run",
-    );
+    assert.equal(((res.out?.results ?? []) as unknown[]).length, 0, "nothing was run");
     // The fast path makes exactly ONE git change call (head0 dirty check) and
     // then skips the engine entirely. The full path would make 2 (head0 + base).
-    assert.equal(
-      calls,
-      1,
-      `fast path should make exactly 1 git change call (head0), got ${calls}`,
-    );
+    assert.equal(calls, 1, `fast path should make exactly 1 git change call (head0), got ${calls}`);
   } finally {
     rmSync(c.dir, { recursive: true, force: true });
   }
@@ -169,18 +153,18 @@ test("T-05: an env change prevents the skip", () => {
   try {
     // The prime run recorded env observations with the prime-run's env.
     // Change TG_FIXTURE_MODE so the env check fails and forces the full path.
-    const { res, calls } = runCounted(c.dir, c.repo, c.store, [
-      "--exclude",
-      "packages/core/test/worker.test.ts",
-    ], {
-      TG_FIXTURE_MODE: "changed-value-for-t05",
-    });
+    const { res, calls } = runCounted(
+      c.dir,
+      c.repo,
+      c.store,
+      ["--exclude", "packages/core/test/worker.test.ts"],
+      {
+        TG_FIXTURE_MODE: "changed-value-for-t05",
+      },
+    );
     assert.equal(res.status, 0, `run should exit 0: ${res.stderr}`);
     // The full path makes at least 2 git calls.
-    assert.ok(
-      calls >= 2,
-      `env change should force the full path (>=2 git calls), got ${calls}`,
-    );
+    assert.ok(calls >= 2, `env change should force the full path (>=2 git calls), got ${calls}`);
     // The env tests should be re-selected (their env inputs changed).
     const results = (res.out?.results ?? []) as Array<{ task: string }>;
     const envTestRan = results.some(
@@ -231,7 +215,9 @@ test("T-05: a stored fail outcome prevents the skip", () => {
     // Build a fail observation from the existing pass observation for
     // util.test.ts: same context and inputs, outcome changed to "fail".
     const logPath = path.join(c.store, "tg.log");
-    const logLines = readFileSync(logPath, "utf8").split("\n").filter((l) => l.trim());
+    const logLines = readFileSync(logPath, "utf8")
+      .split("\n")
+      .filter((l) => l.trim());
     let baseObs: Record<string, unknown> | null = null;
     for (const line of logLines) {
       const rec = JSON.parse(line);
@@ -249,10 +235,7 @@ test("T-05: a stored fail outcome prevents the skip", () => {
     ]);
     assert.equal(res.status, 0, `run should exit 0: ${res.stderr}`);
     // The full path makes at least 2 git calls (head0 + base).
-    assert.ok(
-      calls >= 2,
-      `stored fail should force the full path (>=2 git calls), got ${calls}`,
-    );
+    assert.ok(calls >= 2, `stored fail should force the full path (>=2 git calls), got ${calls}`);
   } finally {
     rmSync(c.dir, { recursive: true, force: true });
   }

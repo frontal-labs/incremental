@@ -97,7 +97,11 @@ function readStore(
       const task = rec.task as string | undefined;
       const obsBaseline = rec.baseline as string | undefined;
       const outcome = rec.outcome as string | undefined;
-      if (typeof task !== "string" || typeof obsBaseline !== "string" || typeof outcome !== "string")
+      if (
+        typeof task !== "string" ||
+        typeof obsBaseline !== "string" ||
+        typeof outcome !== "string"
+      )
         continue;
 
       const inputs = Array.isArray(rec.inputs)
@@ -120,20 +124,13 @@ function readStore(
 function hasDeletedTestFiles(changes: Change[]): boolean {
   for (const c of changes) {
     if (c.status === "deleted" && TEST_FILE.test(c.path)) return true;
-    if (
-      c.status === "renamed" &&
-      c.old_path !== undefined &&
-      TEST_FILE.test(c.old_path)
-    )
+    if (c.status === "renamed" && c.old_path !== undefined && TEST_FILE.test(c.old_path))
       return true;
   }
   return false;
 }
 
-function envMatches(
-  observation: StoreObservation,
-  currentEnv: NodeJS.ProcessEnv,
-): boolean {
+function envMatches(observation: StoreObservation, currentEnv: NodeJS.ProcessEnv): boolean {
   for (const input of observation.inputs) {
     if (input.kind === "env") {
       const name = typeof input.name === "string" ? input.name : null;
