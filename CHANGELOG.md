@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Vitest adapter (`@incremental/vitest`)
+
+- T-05 fast path (issue #38): a no-op run with a clean worktree, matching
+  baseline, and no dirty/fail/env-changed observations now skips the engine
+  spawn entirely, reading the store log directly in JS. `--all`, `--shadow`,
+  and `--base` stay on the full path. New module `src/fastpath.ts`; five
+  regression tests in `tests/t05-fastpath.test.ts`.
+
 ### Engine (`@incremental/engine` 0.1.3)
 
 - Ships a `darwin-x64` prebuild alongside `darwin-arm64`, so Intel Macs work out
