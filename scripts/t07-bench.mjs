@@ -94,12 +94,11 @@ const summary = (label, r, expectRan) => {
   // (status null), an unexpected exit code, a missing or short result list —
   // is recorded and aborts the harness with a nonzero exit.
   const ok =
-    r.status === 0 &&
-    ran !== null &&
-    ran === expectRan &&
-    (parsed?.advanced ?? false) === true;
+    r.status === 0 && ran !== null && ran === expectRan && (parsed?.advanced ?? false) === true;
   if (!ok) {
-    fails.push(`${label}: exit=${r.status} ran=${ran} expected=${expectRan} advanced=${parsed?.advanced}`);
+    fails.push(
+      `${label}: exit=${r.status} ran=${ran} expected=${expectRan} advanced=${parsed?.advanced}`,
+    );
     if (r.status !== 0 || r.err) console.error(`${label} stderr:\n${r.err.slice(-2000)}`);
   }
 };

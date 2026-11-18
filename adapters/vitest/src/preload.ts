@@ -419,7 +419,10 @@ function install(out: string): void {
       // (separate from the PID-specific <pid>.ndjson event files) that every
       // task process reads back (preload.ts readBaseline).
       try {
-        writeFileSync(path.join(path.dirname(out), "env_base.json"), JSON.stringify({ s: initial }));
+        writeFileSync(
+          path.join(path.dirname(out), "env_base.json"),
+          JSON.stringify({ s: initial }),
+        );
       } catch (err) {
         process.stderr.write(`incremental recorder: cannot write env_base: ${String(err)}\n`);
       }
