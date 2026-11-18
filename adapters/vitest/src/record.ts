@@ -244,6 +244,20 @@ function matchEntry(
   return { kind: "none" };
 }
 
+// True when the report names a concrete failure: at least one file entry with
+// a failed status or a failed assertion. A non-zero exit with a report that
+// explains the failure is attributable to the failed file(s); a non-zero exit
+// with no such entry is a run-level error (for example a global-setup teardown
+// that throws while every test passes) and must not be swallowed.
+function reportExplainsFailure(report: JsonReport | null): boolean {
+  if (report === null) return false;
+  for (const e of report.testResults ?? []) {
+    if (e.status === "failed") return true;
+    if (e.assertionResults?.some((a) => a.status === "failed")) return true;
+  }
+  return false;
+}
+
 // Derives the per-file outcome from a report entry (shared by runFile and
 // runBatch). `code` is the spawn exit code; for a batch, a nonzero code with
 // an all-passed entry still counts as a pass for that file (another file in
@@ -395,6 +409,15 @@ export function runBatch(opts: RunBatchOptions): Promise<FileResult[]> {
       closeSync(fd);
       const report = readReport(reportFile);
       const byPid = readTracesByPid(traceDir);
+      // A non-zero batch exit with no failed report entry is a run-level error
+      // (for example a global-setup teardown that throws while every test
+      // passes; Vitest's JSON reporter does not include that in the file
+      // statuses). It must not be attributed to any single file, but it must
+      // not be swallowed either: at least one file is marked failed so the
+      // runner exits non-zero and does not advance the baseline. When another
+      // entry in the batch explains the failure, the remaining passed entries
+      // keep their pass outcome.
+      const unexplained = code !== null && code !== 0 && !reportExplainsFailure(report);
       resolve(
         tasks.map((task) => {
           const m = matchEntry(report, opts.root, cwd, task);
@@ -418,12 +441,20 @@ export function runBatch(opts: RunBatchOptions): Promise<FileResult[]> {
             // attributed to any file.
             codeIsFailForThis: code !== 0 && m.kind === "entry" && m.entry.status === "failed",
           });
+          // The batch exited non-zero and no entry in the report explains it:
+          // mark this file failed so the run does not advance the baseline and
+          // does not exit 0 as if nothing went wrong.
+          const finalOutcome = unexplained && outcome === "pass" ? "fail" : outcome;
+          const finalProblem =
+            unexplained && outcome === "pass"
+              ? `vitest exited ${code} but no report entry failed (run-level error)`
+              : problem;
           return {
             task,
-            outcome,
+            outcome: finalOutcome,
             durationMs: Date.now() - started,
             events,
-            problem,
+            problem: finalProblem,
             exitCode: code,
           };
         }),
@@ -479,15 +510,12 @@ function pidEventsFor(byPid: Map<number, TraceEvent[]>, task: string): TraceEven
       // preserved so buildObservation does not store a clean observation that
       // missed them. Include every task-process event; use the exact trace
       // only when no other task process exists.
-      if (!taskPids.has(pid) && !events.some((ev) => ev.k === "file" && ev.p?.endsWith(".test.")))
-        continue;
+      if (!taskPids.has(pid) && !isTaskProcessTrace(events)) continue;
     } else {
-      // The Vitest main process (not a fork) writes the config-load trace; it is
-      // shared boot cost, not an input of any single task, so it is excluded
-      // from the per-file observations. A main-process trace contains no "file"
-      // event for a test file.
-      if (!taskPids.has(pid) && !events.some((ev) => ev.k === "file" && ev.p?.endsWith(".test.")))
-        continue;
+      // No single pid owns the task's "file" event: union every task-process
+      // trace (the Vitest main process included in batch mode, see
+      // isTaskProcessTrace). A non-task pid is dropped.
+      if (!taskPids.has(pid) && !isTaskProcessTrace(events)) continue;
     }
     for (const ev of events) {
       const key = `${ev.k}:${ev.p ?? ev.n ?? ""}:${ev.h ?? ""}`;
@@ -495,6 +523,17 @@ function pidEventsFor(byPid: Map<number, TraceEvent[]>, task: string): TraceEven
     }
   }
   return [...union.values()];
+}
+
+// True when the trace belongs to a task process: a worker (records a "file"
+// event for the test file it ran) or the Vitest main process in batch mode
+// (records the shared config-load and resolution traces). A pid that recorded
+// at least one "file" or "probe" event participated in module resolution and
+// must be kept so its reads become inputs of the tasks (PLAN 11.1: extra
+// inputs only ever skip less, never skip more). A pid that only recorded
+// directory listings (the test-discovery glob) is dropped.
+function isTaskProcessTrace(events: TraceEvent[]): boolean {
+  return events.some((ev) => ev.k === "file" || ev.k === "probe");
 }
 
 // Builds the observation for a finished task (PLAN 9.5). Inputs are the

@@ -74,7 +74,7 @@ const run = (args, env = {}) => {
 // run must execute exactly 0.
 const EXPECTED_FILES = 13;
 const fails = [];
-const summary = (label, r, expectRan) => {
+const summary = (label, r, expectRan, opts = { shadow: false }) => {
   let parsed = null;
   try {
     parsed = JSON.parse(r.out);
@@ -90,11 +90,12 @@ const summary = (label, r, expectRan) => {
     `${label}\t${r.ms.toFixed(0)} ms\texit ${r.status}\tran=${ran}\tadvanced=${parsed?.advanced}${notAdvanced}`,
   );
   // A measured sample is only valid when the run completed its workflow:
-  // exit 0 (advanced) and the expected file count. Anything else — a timeout
-  // (status null), an unexpected exit code, a missing or short result list —
-  // is recorded and aborts the harness with a nonzero exit.
-  const ok =
-    r.status === 0 && ran !== null && ran === expectRan && (parsed?.advanced ?? false) === true;
+  // exit 0 and the expected file count. For non-shadow runs the run must also
+  // have advanced the baseline (advanced===true); shadow runs legitimately
+  // return advanced=false (advancement is disabled in shadow mode), so the
+  // check is skipped for them.
+  const advancedOk = opts.shadow ? true : (parsed?.advanced ?? false) === true;
+  const ok = r.status === 0 && ran !== null && ran === expectRan && advancedOk;
   if (!ok) {
     fails.push(
       `${label}: exit=${r.status} ran=${ran} expected=${expectRan} advanced=${parsed?.advanced}`,
@@ -173,7 +174,7 @@ for (let i = 0; i < n; i++) {
   const fast = run([]); // fast path: T-05, no engine
   summary(`fast[${i}]`, fast, 0);
   const shadow = run(["--shadow"]); // full path, engine consulted, 0 re-runs
-  summary(`shadow[${i}]`, shadow, 0);
+  summary(`shadow[${i}]`, shadow, 0, { shadow: true });
   // (e) restore the pre-edit state for the next iteration.
   git(["reset", "--hard", "-q", "HEAD~1"]);
 }
