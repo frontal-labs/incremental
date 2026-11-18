@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 // `incremental-vitest run`: the Vitest adapter loop (PLAN 10.4, 11.3).
 //
+//   T-05 fast path: if the store proves the plan is empty (baseline == HEAD,
+//       clean worktree, no dirty/fail/env-mismatch observations, no deleted
+//       test files), exit 0 immediately without spawning the engine.
 //   B    = store baseline
 //   ch   = ChangeSet from B to the worktree (incremental-git)
 //   plan = affected(ch, context, env, declared tests)
@@ -40,6 +43,7 @@ import {
   selectTests,
   type GitChangeSet,
 } from "./planner.js";
+import { fastPathCheck } from "./fastpath.js";
 import { TEST_FILE } from "./shared.js";
 
 export interface RunOptions {
@@ -145,6 +149,58 @@ export async function runAdapter(opts: RunOptions): Promise<RunReport> {
     head0 = gitChangeSet(root, "HEAD");
   } catch (e) {
     throw new UsageError(e instanceof Error ? e.message : String(e));
+  }
+
+  // T-05 fast path: when the store proves the plan is empty, skip the engine
+  // spawn entirely. Only active for plain runs (no --base, --all, or --shadow)
+  // on a clean worktree where the baseline matches HEAD.
+  if (!opts.base && !opts.all && !opts.shadow) {
+    const fast = fastPathCheck({
+      root,
+      store,
+      head: head0.head,
+      dirty: head0.dirty,
+      changes: head0.changes,
+      context,
+      env,
+      envHashes: hashes,
+    });
+    if (fast.skip) {
+      return {
+        mode: "run",
+        root,
+        stored: head0.head,
+        base: head0.head,
+        head: head0.head,
+        headEnd: head0.head,
+        dirty: false,
+        changes: [],
+        plan: {
+          protocol: 1,
+          baseline: head0.head,
+          graph_version: "",
+          verify: false,
+          tasks: [],
+          total_tasks: discovered.length,
+          skipped: 0,
+          unobserved: [],
+          ignored: [],
+          deleted_tasks: [],
+          fallback: null,
+          confidence: "high",
+        },
+        fallback: null,
+        gitError: null,
+        selected: [],
+        discovered,
+        wouldSkip: discovered,
+        results: [],
+        observed: 0,
+        advanced: true,
+        notAdvanced: [],
+        exit: 0,
+      };
+    }
   }
 
   const client = await connect({

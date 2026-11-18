@@ -1,0 +1,23 @@
+# T-05 (issue #38): skip-when-clean fast path with store checks
+Command: node --test dist/tests/t05-fastpath.test.js (5 regression tests)
+          node --test dist/tests/*.test.js (full vitest adapter suite, 27 tests)
+          node ./conformance/run.mjs (40 conformance cases)
+Date: 2026-11-18T11:29:52Z
+Base commit: 9bc5a8f (branch t05-fast-path)
+--- output (t05-fastpath) ---
+ok 1 - T-05: clean no-op run skips the engine (0 git calls after head0, exit 0)
+ok 2 - T-05: a dirty observation prevents the skip
+ok 3 - T-05: an env change prevents the skip
+ok 4 - T-05: a deleted test file prevents the skip
+ok 5 - T-05: a stored fail outcome prevents the skip
+# tests 5
+# pass 5
+# fail 0
+--- output (full vitest adapter suite) ---
+# tests 27
+# pass 27
+# fail 0
+--- output (conformance) ---
+cases: 40 pass, 0 fail, 0 skip
+PASS test-policy
+PASS
