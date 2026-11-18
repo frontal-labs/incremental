@@ -1,0 +1,58 @@
+# T-08 (issue #40): persistent engine daemon — design doc
+
+Date: 2026-11-18
+Base commit: dad7455 (main)
+
+Deliverable: docs/spec/DAEMON.md (new design proposal), indexed in docs/README.md.
+This ticket's acceptance criterion is the written design — no code was written.
+
+## What the design covers (per the issue's acceptance list)
+
+- CLI: `incremental daemon start | status | stop` (additive subcommand; `serve` unchanged) — DAEMON.md §4
+- Bindings: opt-in daemon mode in Node (`ConnectOptions.mode`), Rust (`Config.mode`),
+  Python (`DaemonTransport`); default stays child-process `serve`; `$INCREMENTAL_DAEMON`
+  env var drives mode selection — DAEMON.md §9
+- Protocol: protocol v1 unchanged on the wire; additive `hello` daemon identity;
+  multi-connection serve loop with per-request log re-read and store-lock-serialized
+  writes — DAEMON.md §7
+- Failure handling: absent daemon (auto-start / `daemon_absent`), stale daemon
+  (crash or orphaned socket → clean + auto-start, reusing `tg.lock`'s pid/start-time
+  staleness rule), wedged-but-alive daemon (`daemon_busy`, never killed or duplicated),
+  concurrent starters (O_EXCL lock + bind race, loser attaches to winner),
+  store-lock interleave with CLI writers, client disconnect — DAEMON.md §8
+
+## Benchmark (defined; to be run at implementation time)
+
+No-op full-path run on the committed vitest fixture, `--shadow` (bypasses the T-05 fast
+path so the store is actually consulted):
+
+  without daemon: Node process start + engine spawn + store load + query
+  with daemon:    the same run with a resident daemon
+
+Target: with-daemon < ~500 ms. Measured at implementation time and recorded here
+(appended), not at design time — running the benchmark now would measure a feature
+that does not exist.
+
+## Claims cross-checked against the code
+
+- `core/src/protocol.goose`: serve loop re-reads the log per request (`refresh_log` in
+  `handle`, line 418); every write path takes `lock_acquire` (`tg.lock`); `ping` is a
+  protocol v1 method; error code set matches docs/spec/PROTOCOL.md.
+- `bindings/node/src/client.ts`: the client appends `--store <store> --root <root>` to
+  the serve command (spawnRun, line 319); `connect` defaults the command to
+  `[defaultEngine(), "serve"]` (line 448) — the daemon design keeps the same identity.
+- `bindings/rust/src/lib.rs`: same spawn pattern (`serve --store <store> --root <root>`).
+- `docs/spec/PROTOCOL.md`: v1 method table includes `ping` (health check) and
+  `shutdown`; the new daemon_* error codes are client-side discovery outcomes, not
+  engine wire codes, so the v1 error table stays intact.
+
+## No test suite run
+
+Docs-only change: no engine, binding, or adapter code modified. The conformance suite
+(which drives `serve` over stdio) is unaffected.
+
+## Status
+
+Open until implementation: engine `daemon` subcommand + socket transport, conformance
+cases for the failure paths (attach / stale takeover / concurrent starters /
+`daemon_busy`), binding modes, adapter opt-in, and the §10 benchmark run.

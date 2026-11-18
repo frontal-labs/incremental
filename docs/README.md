@@ -12,6 +12,7 @@ This directory contains comprehensive documentation for the Incremental project,
 | [spec/FORMAT.md](spec/FORMAT.md)                                                 | Store layout, log format, records, graph_version, stat cache, lock, compaction   |
 | [spec/DATA_MODEL.md](spec/DATA_MODEL.md)                                         | Core concepts, terms, input kinds, observation and ChangeSet schemas             |
 | [spec/CONFIGURATION.md](spec/CONFIGURATION.md)                                   | Config file, environment variables, CLI options, defaults                        |
+| [spec/DAEMON.md](spec/DAEMON.md)                                                 | Persistent engine daemon design (T-08): CLI, socket transport, discovery, failure handling |
 | [adapters/ADAPTERS.md](adapters/ADAPTERS.md)                                     | Adapter types, recorder contract, Vitest adapter, git source, strace oracle, MCP |
 | [../adapters/README.md](../adapters/README.md)                                   | The built adapters under `adapters/`, one row each                               |
 | [conformance/CONFORMANCE_AND_TESTING.md](conformance/CONFORMANCE_AND_TESTING.md) | Conformance suite, test cases (C01-C40, V01-V16), guarantees, testing commands   |

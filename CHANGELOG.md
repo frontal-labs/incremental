@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Docs
+
+- T-08 persistent engine daemon design (issue #40): new `docs/spec/DAEMON.md`
+  design proposal covering the `incremental daemon start|status|stop` CLI,
+  store-scoped Unix-socket transport with lock-file discovery, protocol v1
+  compatibility (additive `hello` daemon identity, multi-connection serve
+  loop), opt-in daemon modes for the Node/Rust/Python bindings, and
+  stale/absent/concurrent-starter failure handling. Design only — no code
+  changes in this entry.
+
 ### Vitest adapter (`@incremental/vitest`)
 
 - T-05 fast path (issue #38): a no-op run with a clean worktree, matching
