@@ -260,9 +260,7 @@ export function plan(state, q, root = ".") {
           if (cur !== i.value_hash) addR(id, "env_changed:" + i.name);
         }
         if (i.kind === "volatile") {
-          const attestation = Object.hasOwn(volatile, i.name)
-            ? volatile[i.name]
-            : "changed";
+          const attestation = Object.hasOwn(volatile, i.name) ? volatile[i.name] : "changed";
           if (attestation !== "stable") addR(id, "volatile:" + i.name);
         }
         if (i.kind === "env_all") {
