@@ -67,9 +67,17 @@ core/dist/incremental affected --store $STORE --changes changes.json --baseline 
 
 The last command prints a plan. It lists `src/math.test.ts` with the reason `reads:src/math.ts`, and `skipped` is 0. Two other commands are `stats` (store summary) and `serve` (protocol v1 over stdio). See `examples/cli_workflow/README.md` for the full walkthrough and `spec/PROTOCOL.md` for the protocol.
 
+## Performance
+
+**The number that matters is per-invocation cost, not per-query cost.** A single `incremental-vitest run` pays about **2.5 s of fixed overhead** even when nothing changed and no test file is executed (Node start and imports, spawning the engine, loading the store, and the git change-set queries), and each selected test file then costs about **1 s** of Vitest cold start (one process per file, run in parallel). A plan-and-report `--shadow` run is about 0.5 s. The engine's own warm `affected` query is about 0.1 ms — the engine is not the bottleneck; the overhead and the per-file runner cost are what you actually feel.
+
+Measured on macOS x86_64, Node v22.23.2, against the 14-file fixture. Incremental wins when the test set is large and a change invalidates only a few files: a 1-file edit runs 3 of 14 files in about 2.7 s (plus 3 files of Vitest work) versus about 7.5 s for a full re-run. The no-op case (nothing changed) costs the ~2.5 s overhead and runs nothing, so the win starts at one or more invalidated files; a fallback or `--all` costs the same as the underlying runner plus the overhead. See the `Performance` section of [`adapters/vitest/README.md`](./adapters/vitest/README.md) for the full profile and methodology.
+
 ## Benchmarks
 
-Measured on macOS (arm64), 2026-11-05. Full tables, the methodology and the known issues are in [`BENCHMARKS.md`](./BENCHMARKS.md).
+Full tables, the methodology and the known issues are in [`BENCHMARKS.md`](./BENCHMARKS.md). Measured on macOS (arm64), 2026-11-05.
+
+**Replay accuracy** (`make bench-replay`, 10 commits per fixture): zero false skips across the default fixture and the Nx, Turborepo and Bazel monorepo fixtures. The sample is small: ten commits give a rule-of-three upper bound of 30%, so this shows no false skip was found, not that the rate is low.
 
 **Warm query latency** (`benchmarks/warm-plan.mjs`, 1,000 queries × 3 iterations, each query invalidates exactly one task):
 
@@ -79,8 +87,6 @@ Measured on macOS (arm64), 2026-11-05. Full tables, the methodology and the know
 | 100,000 | 0.093 ms      | 0.661 ms      | 394 ms (before the index fix) |
 
 The warm query target (p50 under 5 ms and p99 under 20 ms at 100k tasks) is met. The cold CLI target (under 300 ms at 100k tasks) is **not yet confirmed**. Loading 100k observations took about 394 ms before the index-load fix. After it, a cold `stats` on the same store took 99 ms wall (hyperfine median, 30 runs) at machine load about 55. That figure is not final: re-measure on an idle machine before quoting it (see BENCHMARKS.md, Known issues).
-
-**Replay accuracy** (`make bench-replay`, 10 commits per fixture): zero false skips across the default fixture and the Nx, Turborepo and Bazel monorepo fixtures. The sample is small: ten commits give a rule-of-three upper bound of 30%, so this shows no false skip was found, not that the rate is low.
 
 **Comparison with other tools** (`node scripts/bench-compare.mjs 10`): affected-detection on the 4-package monorepo fixtures, median of 10 runs.
 
@@ -93,10 +99,6 @@ The warm query target (p50 under 5 ms and p99 under 20 ms at 100k tasks) is met.
 These are cold CLI runs on small fixtures. Incremental's warm query is not the same operation, so do not read a ratio between these rows as a speedup.
 
 Reproduce with `make bench` (after `make build`). It writes the raw outputs to `benchmarks/results/`.
-
-## Performance
-
-The engine query is cheap: a warm `affected` plan is about 0.1 ms per query at 10,000 tasks and stays sub-millisecond at 100,000 (table above). The real cost users see is per invocation, not per query. For the Vitest adapter, measured on macOS x86_64, Node v22.23.2: a warm `incremental-vitest run` costs about 2.5 s of fixed overhead even when nothing changed, and each selected test file costs about 1 s of Vitest cold start (one process per file, run in parallel). A plan-and-report `--shadow` run is about 0.5 s. Incremental wins when the test set is large and a change invalidates only a few files — a 1-file edit in the 14-file fixture runs 3 files in about 2.7 s versus about 7.5 s for a full re-run; with no changes it costs the overhead and runs nothing, and a fallback or `--all` costs the same as the underlying runner plus the overhead. See the `Performance` section of `adapters/vitest/README.md` for the full profile and methodology.
 
 ## Limits 
 

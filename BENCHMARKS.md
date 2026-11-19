@@ -1,6 +1,10 @@
 # Benchmarks
 
-Benchmark harnesses and results for Incremental. Benchmarks measure whether the engine's invalidation answers match ground truth across replayed commits (replay), and how long a warm plan takes (warm-plan latency). Comparison timings against other tools are in the last section, and they have known validity problems (see Known issues).
+Benchmark harnesses and results for Incremental. The harnesses measure three things: whether the engine's invalidation answers match ground truth across replayed commits (replay), how long a warm plan takes (warm-plan latency), and how a cold end-to-end run breaks down by component.
+
+**Read the warm-query numbers with the per-invocation cost in mind.** The engine's warm `affected` query is about 0.1 ms at 10k tasks (sub-millisecond at 100k). That is not what a user feels: a real `incremental-vitest run` pays about 2.5 s of fixed overhead per invocation (Node start, engine spawn, store load, git change-set queries) plus about 1 s per selected test file, before the sub-millisecond query even runs. The honest top-line number is per-invocation cost, and it is what the README's Performance section leads with. The warm-query table below is an engine-level figure: it shows the query stays cheap as the store grows, and that the engine is not the bottleneck.
+
+Comparison timings against other tools are in the last section, and they have known validity problems (see Known issues).
 
 ## Contents
 
