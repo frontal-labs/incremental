@@ -67,7 +67,7 @@ incremental daemon stop    [--store <store>] [--force]
 - `status` prints `daemon <pid> alive since <start-time> socket <path>` or
   `no daemon` / `stale (pid <pid> not running)`. Exit codes: 0 = reachable,
   3 = not running (matching `store_missing`), 5 = a fresh daemon already holds
-   the lock (matching `lock_busy`/`tg.lock`).
+  the lock (matching `lock_busy`/`tg.lock`).
 - `stop` sends `shutdown` (graceful) or SIGTERM. `--force` sends SIGKILL.
 
 The adapter's `run` command gains one flag:
@@ -119,9 +119,9 @@ flipped), it does, in order, each step cheap:
      (best-effort) → spawn child `serve`.
    - Store mismatch (§5) → spawn child `serve`.
 2. **Probe the socket** with a single `ping` (the method already exists in
-     protocol v1), budgeted at **250 ms** total connect+ping. The 250 ms budget
-     is deliberately small: a local unix socket round trip is sub-millisecond,
-     so anything slower means the daemon is wedged.
+   protocol v1), budgeted at **250 ms** total connect+ping. The 250 ms budget
+   is deliberately small: a local unix socket round trip is sub-millisecond,
+   so anything slower means the daemon is wedged.
    - `hello` + `pong` in budget → use the daemon connection.
    - Timeout / ECONNREFUSED / non-JSON → remove the lock (best-effort) →
      spawn child `serve`.
@@ -164,17 +164,17 @@ or SIGTERM. (On a stdio child, `shutdown` still stops the process, as today.)
 
 ## 8. Failure handling
 
-| Case | Detection | Client behavior |
-|---|---|---|
-| Daemon never started | lock missing | spawn child `serve` (silent fallback) |
-| Lock stale (pid gone / reused) | pid + start-time check | remove lock, spawn child `serve` |
-| Store mismatch | lock `store` ≠ client store | spawn child `serve` (hard no-connect) |
-| Socket connect refused | ECONNREFUSED within 250 ms | remove lock, spawn child `serve` |
-| Probe `ping` timeout | >250 ms no `pong` | remove lock, spawn child `serve` |
-| Daemon dies mid-run | transport error on a request | retry once on child `serve`, remove lock |
-| Daemon wedged (accepts but never answers a request) | per-request default 10 s timeout | retry once on child `serve`, remove lock |
-| `daemon start` while a fresh daemon runs | fresh `tg.daemon.lock` | exit 5 `lock_busy`, print the live daemon's pid |
-| Two `daemon start` racing on a stale lock | `O_EXCL` create + pid verify | loser detects the winner's fresh lock, exits 0 (`daemon already running`) |
+| Case                                                | Detection                        | Client behavior                                                           |
+| --------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------- |
+| Daemon never started                                | lock missing                     | spawn child `serve` (silent fallback)                                     |
+| Lock stale (pid gone / reused)                      | pid + start-time check           | remove lock, spawn child `serve`                                          |
+| Store mismatch                                      | lock `store` ≠ client store      | spawn child `serve` (hard no-connect)                                     |
+| Socket connect refused                              | ECONNREFUSED within 250 ms       | remove lock, spawn child `serve`                                          |
+| Probe `ping` timeout                                | >250 ms no `pong`                | remove lock, spawn child `serve`                                          |
+| Daemon dies mid-run                                 | transport error on a request     | retry once on child `serve`, remove lock                                  |
+| Daemon wedged (accepts but never answers a request) | per-request default 10 s timeout | retry once on child `serve`, remove lock                                  |
+| `daemon start` while a fresh daemon runs            | fresh `tg.daemon.lock`           | exit 5 `lock_busy`, print the live daemon's pid                           |
+| Two `daemon start` racing on a stale lock           | `O_EXCL` create + pid verify     | loser detects the winner's fresh lock, exits 0 (`daemon already running`) |
 
 **Recovery is always "spawn a child"**, which is exactly today's path, so a
 broken daemon can never make a run fail that would have succeeded without
@@ -191,7 +191,7 @@ which is the intended "forget this daemon" gesture.
 request that writes (`observe`, `observe_many`, `advance`, `forget`) acquires
 `tg.lock` per request, exactly as a child `serve` does, so a daemon and a
 child-spawned run can never write the store concurrently. A daemon and a
-second process can both be *connected* at once, but the store lock serializes
+second process can both be _connected_ at once, but the store lock serializes
 their writes; reads are safe without it. This is why "one daemon per store"
 is safe without any new engine-side multiplexing.
 
@@ -224,6 +224,7 @@ healthy daemon) completes in **< 500 ms** end-to-end from the adapter's
 `run` entrypoint, measured wall time.
 
 Method: reuse the existing `benchmarks/` harness. Add a `daemon` scenario that:
+
 1. starts a daemon for the stress-monorepo store,
 2. runs a no-op `run --daemon` N=20 times,
 3. reports median/p95.

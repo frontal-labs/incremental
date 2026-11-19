@@ -1,0 +1,140 @@
+# T-07 (issue #39): per-file cold-start benchmark — shared-pool evaluation
+
+Date: 2026-11-18
+Base commit: 271b3eb (main)
+Fixture: adapters/vitest/fixtures/repo (13 test files; worker.test.ts excluded
+          on every run so its worker-thread observation stays clean)
+Harness: scripts/t07-bench.mjs (n=3 runs per kind)
+
+Deliverable: measured wall-time table + verdict on whether per-file Vitest
+spawns can be shared while keeping per-file access recording correct.
+
+## Load caveat (read first)
+
+The machine was under extreme load during this measurement
+(`uptime` load average ~94 on 10 CPUs; many other processes running).
+Absolute values below are heavily inflated upper bounds. The relative
+shape — pool(13) vs full, fast vs full — is still valid because all runs
+share the same machine state within each iteration. A quiet-machine
+re-measurement is a follow-up ticket.
+
+## Measurement method
+
+Each iteration of the harness:
+  1. Edit `packages/core/src/util.ts` (append one comment line) and commit.
+  2. `full`   — `run --all --jobs 1`: one Vitest spawn per file, re-baselines to HEAD.
+  3. `pool(P)` — `run --all --pool P --jobs 1`: P files share one spawn, same dirty state.
+  4. `fast`   — no-op run (T-05 fast path; no engine spawned).
+  5. `shadow` — no-op run with `--shadow` (full path; engine consulted, 0 re-runs).
+  6. Reset the edit.
+
+`--jobs 1` on both `full` and `pool` isolates the spawn-sharing effect
+(one spawn per file vs one spawn per batch) from the adapter's default
+parallel fan-out across CPUs, which already parallelizes per-file runs and
+would swamp the shared-pool benefit.
+
+## Wall time (ms), n=3
+
+kind         [0]      [1]      [2]      median
+prime        21298    —        —        21298  (one-time; fresh store, 13 files)
+full         81682    66441    58248    66441  (13 sequential spawns)
+pool(4)      27818    27688    21265    27688  (4+4+4+1 spawns; batches sequential)
+pool(13)     14735    11282     7097    11282  (1 spawn for all 13 files)
+fast          723       694      222       694  (T-05; no engine)
+shadow       1058       887      368       887  (full path; 0 re-runs)
+
+All runs: exit 0, advanced=true, 13/13 files ran (full and pool), 0 re-runs (fast, shadow).
+
+## Key numbers
+
+pool(13) vs full (median): 11282 ms vs 66441 ms  →  ~5.9× faster
+pool(4)  vs full (median): 27688 ms vs 66441 ms  →  ~2.4× faster
+fast    vs full (median):    694 ms vs 66441 ms  →  ~96× faster (no-op)
+shadow  vs full (median):    887 ms vs 66441 ms  →  ~75× faster (no-op)
+
+The shared-pool win is real: one Vitest spawn amortizes the ~5 s cold start
+(Vite server init, module graph build, worker pool bootstrap) across all 13
+files instead of paying it 13 times.
+
+## Correctness: per-file attribution in the forks pool
+
+The ticket's acceptance criterion is that "a change in one file invalidates
+only that file." The shared-pool prototype breaks this in the Vitest forks
+pool.
+
+Root cause: in the forks pool, the main process (not the workers) performs
+all test-file reads. Workers emit only env/probe events. `pidEventsFor` in
+`record.ts` finds no per-file candidate in the worker events and falls back
+to the union of events from all pids in the process group — the entire batch.
+Every file in a batch therefore receives the same input set: the union of
+reads across all files in that spawn.
+
+Concrete proof (from store log at /var/folders/kz/.../t07-fTGrNe/store/tg.log,
+221 observations across 13 tasks × 17 runs each):
+
+  Per-file runs (pool=1, i.e. one spawn per file):
+    Each file gets its own distinct input set (171–174 inputs).
+    util.test.ts:  172–173 inputs, includes packages/core/src/util.ts
+    leaf-a.test.ts: 173 inputs, does NOT include util.ts
+    → a change to util.ts invalidates only util.test.ts. Correct.
+
+  Pool(13) runs (one spawn for all 13 files):
+    All 13 files share the IDENTICAL 191-input set (one distinct set across
+    all 39 pool(13) observations).
+    → a change to util.ts invalidates all 13 files. Cross-invalidation.
+
+  Pool(4) runs (4 files per spawn, 4 batches):
+    Files within the same batch share an inflated batch-union set
+    (175/179 inputs, depending on which 4 files landed together).
+    → a change to one file cross-invalidates up to 3 siblings in its batch.
+
+## Findings and fixes applied during measurement
+
+1. `rmSync` ENOENT crash: `rmSync(traceDir, { recursive: true })` threw ENOENT
+   for a missing path on Node v22.23.4. Fixed to `{ recursive: true, force: true }`
+   in `record.ts` (`runBatch`).
+
+2. `vitestBin` must be the JS entry (`vitest.mjs`), not the `.bin/vitest` shell
+   wrapper. The shell wrapper re-invokes Node in a way that breaks the preload
+   hook's process detection.
+
+3. `matchEntry` (record.ts ~203) hardened: Vitest 5's JSON reporter writes
+   absolute test-file names. `matchEntry` now resolves candidates via
+   `path.resolve(cwd, cand)` and `path.resolve(root, cand)` before matching.
+
+4. Pool(4) parallel flake: with the default `--jobs 10`, concurrent `vitest run`
+   batches on the same project race on shared Vite/forks state → batches exit
+   without producing a JSON report → "the test file produced no results",
+   exit 7, varying error count. `--jobs 1` (sequential) is 100% stable.
+   This is a Vitest/Vite concurrency limitation, not an adapter bug. The
+   shared-pool design should run batches sequentially or use separate Vite
+   server instances per batch.
+
+5. Union-trace attribution break: `pidEventsFor` in the forks pool returns the
+   union of all pids when no per-file candidate is found. This is the root
+   cause of the cross-invalidation described above. A fix would require
+   per-worker trace attribution (e.g. Vitest's `--pool=threads` where each
+   worker is a separate process with its own pid, or a per-file trace-file
+   naming convention that the adapter can map back to tasks).
+
+## Verdict
+
+The shared pool is ~6× faster for a full cold-start run on the fixture
+(pool(13): ~11 s vs ~66 s sequential per-file), and the win is real and
+consistent across all 3 iterations. However, the prototype breaks per-file
+access recording in the forks pool: all files in a batch share the same
+input set, so a change to one file cross-invalidates its batch siblings.
+
+This violates the ticket's acceptance criterion. The shared pool is not
+adoptable without per-worker trace attribution. The ~6× speedup is a strong
+motivation for pursuing that fix (likely via Vitest's threads pool, which
+gives each worker a distinct pid and thus a distinct trace file), but the
+correctness requirement must be met before committing to the design.
+
+Follow-ups:
+- Quiet-machine re-measurement of all wall-time numbers (load avg ~94 here).
+- Investigate Vitest `--pool=threads` for per-worker trace attribution.
+- If threads pool preserves the per-file distinction, re-measure pool(13)
+  wall time and confirm per-file inputs are distinct.
+- Resolve the Vitest/Vite concurrent-spawn race (sequential batches or
+  separate Vite instances) before enabling `--jobs > 1` with `--pool`.

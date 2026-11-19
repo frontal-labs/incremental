@@ -10,7 +10,7 @@
 // Every observed access is appended to INCREMENTAL_TRACE_OUT as one JSON line
 // at the moment it happens (synchronously), so a crashing test keeps the
 // reads it made before the crash (PLAN 11.6).
-import fs from "node:fs";
+import fs, { writeFileSync } from "node:fs";
 import cp from "node:child_process";
 import Module from "node:module";
 import path from "node:path";
@@ -35,20 +35,71 @@ const PROBE_EXTENSIONS = [
   ".jsx",
 ];
 
-const OUT = process.env.INCREMENTAL_TRACE_OUT;
-const RECORD = OUT !== undefined && OUT !== "";
+// INCREMENTAL_TRACE_OUT is either a single file (one task, one process) or a
+// directory (batch mode: several tasks share one Vitest spawn, and every
+// process appends to <dir>/<pid>.ndjson so each worker's trace stays its own).
+// In directory mode the main process also writes env_base to a shared file
+// (<dir>/env_base.json) that every task process can read, because in
+// directory mode the per-process event files do not share the main's baseline.
+const OUT_RAW = process.env.INCREMENTAL_TRACE_OUT;
+const RECORD = OUT_RAW !== undefined && OUT_RAW !== "";
+let OUT: string | null = null;
+let DIR_MODE = false;
+if (RECORD) {
+  const raw = OUT_RAW as string;
+  try {
+    // lstat: a dangling symlink to the trace file is a regular file for
+    // appendFileSync's purposes; statSync would throw and we would wrongly
+    // treat it as a directory, appending to <link>.ndjson.
+    const st = fs.lstatSync(raw);
+    if (st.isDirectory()) {
+      OUT = path.join(raw, `${process.pid}.ndjson`);
+      DIR_MODE = true;
+    } else {
+      OUT = raw;
+    }
+  } catch {
+    // Directory mode: the runner created the trace directory before the
+    // spawn. A plain file path in file mode would have thrown lstat, but the
+    // runner always rmSync's the trace file first, so a missing path here is
+    // either the fresh file (file mode) or ... nothing: in file mode the
+    // runner removes the old file, so lstat throwing means "fresh file" for
+    // file mode and "missing directory" for directory mode. The directory can
+    // only be missing if the runner failed to create it, which the caller
+    // detects through the missing trace later. Prefer the directory form when
+    // the raw path looks like one (it exists on the record, checked below).
+    OUT = raw;
+    DIR_MODE = false;
+  }
+  // File mode with a missing file is the normal fresh case; keep the path.
+  // Directory mode is confirmed by existence; if the directory is gone, the
+  // append below fails per-event and the trace is flagged missing.
+}
 // Worker processes and worker threads run the task's own code. Only they
 // count directory listings and subprocesses as inputs of the task.
 const isTaskProcess = typeof process.send === "function" || !wt.isMainThread;
 
-if (RECORD) install(OUT as string);
+if (OUT !== null) install(OUT);
 
 // The baseline environment the main process recorded (env_base), or null.
+// In file mode the main and the workers share the same event file, so the
+// baseline is scanned out of the trace. In directory mode each process has its
+// own event file, so the main process writes the baseline to the shared file
+// <dir>/env_base.json and the workers read it from there (the main's own event
+// file would be invisible to them).
 function readBaseline(
   out: string,
+  dirMode: boolean,
   read: (file: string, enc: BufferEncoding) => string,
 ): Record<string, string> | null {
   try {
+    if (dirMode) {
+      const shared = JSON.parse(read(path.join(path.dirname(out), "env_base.json"), "utf8")) as {
+        s?: Record<string, string>;
+      };
+      if (shared.s !== undefined) return shared.s;
+      return null;
+    }
     for (const line of read(out, "utf8").split("\n")) {
       if (line.includes('"env_base"')) {
         const e = JSON.parse(line) as { k?: string; s?: Record<string, string> };
@@ -56,7 +107,7 @@ function readBaseline(
       }
     }
   } catch {
-    // no trace yet: the caller falls back to its own environment
+    // no baseline yet: the caller falls back to its own environment
   }
   return null;
 }
@@ -358,10 +409,24 @@ function install(out: string): void {
   }
   let baseline: Record<string, string> = initial;
   if (isTaskProcess) {
-    const fromMain = readBaseline(out, realReadText);
+    const fromMain = readBaseline(out, DIR_MODE, realReadText);
     if (fromMain !== null) baseline = fromMain;
   } else {
     emit("env_base", { k: "env_base", s: initial });
+    if (DIR_MODE) {
+      // Directory mode: workers have their own event file and cannot see the
+      // main process's env_base event, so write the baseline to a shared file
+      // (separate from the PID-specific <pid>.ndjson event files) that every
+      // task process reads back (preload.ts readBaseline).
+      try {
+        writeFileSync(
+          path.join(path.dirname(out), "env_base.json"),
+          JSON.stringify({ s: initial }),
+        );
+      } catch (err) {
+        process.stderr.write(`incremental recorder: cannot write env_base: ${String(err)}\n`);
+      }
+    }
   }
   process.env.INCREMENTAL_RECORDER = "1";
   const written = new Set<string>();
