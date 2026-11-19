@@ -11,6 +11,7 @@ struct Chg { path: Span, status: i64, old: Span }
 // Query resizables, as globals (see store.goose). Reset by query_reset().
 var q_ctx: Kv[>..] = [];
 var q_env: Kv[>..] = [];
+var q_vol: Kv[>..] = [];
 var q_changes: Chg[>..] = [];
 var q_ignore: Span[>..] = [];
 var q_globals: Span[>..] = [];
@@ -29,6 +30,7 @@ struct Query {
 fn query_reset() {
     q_ctx.clear();
     q_env.clear();
+    q_vol.clear();
     q_changes.clear();
     q_ignore.clear();
     q_globals.clear();
@@ -335,9 +337,9 @@ fn plan(st: Store&, q: Query&, root: const u8[:], out: u8[>..]&) {
     write_plan(st, rs, unobserved, ignored, deleted, total, q.verify, out);
 }
 
-// P8, P9 and P2b for the observations that can give a reason without a
-// change: dirty, failed, or with env inputs. Dead entries are dropped from
-// g_standing as they are met.
+// P8, P9, P2b and P12 for the observations that can give a reason without a
+// change: dirty, failed, with env inputs, or with volatile inputs. Dead
+// entries are dropped from g_standing as they are met.
 fn standing_reasons(st: Store&, q: Query&, rs: Rs[>..]&) {
     var w: i64 = 0;
     for i in g_standing.len {
@@ -360,6 +362,13 @@ fn standing_reasons(st: Store&, q: Query&, rs: Rs[>..]&) {
                 }
                 if inp.kind == 4 && env_all_differs(st, q, inp) {
                     add_reason(st, rs, name, "env_all_changed", "");
+                }
+                if inp.kind == 6 {
+                    let qi = kv_find(st, q_vol, 0, q_vol.len, text(st, inp.name));
+                    let att = if qi >= 0 { text(st, q_vol[qi].v) } else { "changed" };
+                    if att != "stable" {
+                        add_reason(st, rs, name, "volatile:", text(st, inp.name));
+                    }
                 }
             }
         }

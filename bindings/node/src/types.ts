@@ -25,7 +25,8 @@ export type Input =
   | { kind: "probe"; path: string }
   | { kind: "declared"; path: string; hash: string }
   | { kind: "env"; name: string; value_hash: string }
-  | { kind: "env_all"; snapshot?: Record<string, string> };
+  | { kind: "env_all"; snapshot?: Record<string, string> }
+  | { kind: "volatile"; name: string };
 
 export type Output = Record<string, unknown>;
 
@@ -72,6 +73,9 @@ export interface AffectedOptions {
   policy?: "balanced" | "conservative"; // default "balanced"
   // Additive fields (docs/spec/POLICY.md section 1, DECISIONS.md D-E1-01).
   env?: Record<string, string>;
+  // Attestation for volatile inputs: {name: "stable" | "changed"}.
+  // Missing names default to "changed" (conservative — the task is rerun).
+  volatile?: Record<string, "stable" | "changed">;
   config?: Config;
   declared_tasks?: string[];
 }

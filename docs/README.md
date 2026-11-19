@@ -15,7 +15,7 @@ This directory contains comprehensive documentation for the Incremental project,
 | [spec/DAEMON.md](spec/DAEMON.md)                                                 | Persistent engine daemon design (T-08): CLI, socket transport, discovery, failure handling |
 | [adapters/ADAPTERS.md](adapters/ADAPTERS.md)                                     | Adapter types, recorder contract, Vitest adapter, git source, strace oracle, MCP           |
 | [../adapters/README.md](../adapters/README.md)                                   | The built adapters under `adapters/`, one row each                                         |
-| [conformance/CONFORMANCE_AND_TESTING.md](conformance/CONFORMANCE_AND_TESTING.md) | Conformance suite, test cases (C01-C40, V01-V16), guarantees, testing commands             |
+| [conformance/CONFORMANCE_AND_TESTING.md](conformance/CONFORMANCE_AND_TESTING.md) | Conformance suite, test cases (C01-C41, V01-V16), guarantees, testing commands             |
 | [benchmarks/BENCHMARKS_AND_GATES.md](benchmarks/BENCHMARKS_AND_GATES.md)         | Benchmark targets, replay methodology                                                      |
 | [development/DEVELOPMENT_GUIDE.md](development/DEVELOPMENT_GUIDE.md)             | Quick start, structure, ground rules, roles, workflow, milestones                          |
 
@@ -25,7 +25,7 @@ This directory contains comprehensive documentation for the Incremental project,
 - **Policy Spec**: [spec/POLICY.md](spec/POLICY.md)
 - **Format Spec**: [spec/FORMAT.md](spec/FORMAT.md)
 - **Schemas**: [spec/schemas/](../spec/schemas/)
-- **Conformance Cases**: [conformance/cases/](../conformance/cases/) (40 cases)
+- **Conformance Cases**: [conformance/cases/](../conformance/cases/) (41 cases)
 - **Makefile**: [Makefile](../Makefile)
 
 ## Key Concepts

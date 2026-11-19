@@ -53,7 +53,8 @@ If `params.protocol` is not 1, reply with `protocol_mismatch` and `data: {"suppo
     { "kind": "dir", "path": "packages/app/plugins" },
     { "kind": "probe", "path": "packages/core/src/helpers.ts" },
     { "kind": "env", "name": "TG_FIXTURE_MODE", "value_hash": "sha256:..." },
-    { "kind": "env_all", "snapshot": { "TG_FIXTURE_MODE": "sha256:..." } }
+    { "kind": "env_all", "snapshot": { "TG_FIXTURE_MODE": "sha256:..." } },
+    { "kind": "volatile", "name": "time" }
   ],
   "outputs": [],
   "outcome": "pass",
@@ -64,6 +65,8 @@ If `params.protocol` is not 1, reply with `protocol_mismatch` and `data: {"suppo
 Required: `task`, `baseline`, `context` (with the reserved keys). `outcome` is `pass`, `fail`, `error`, or `none`.
 
 `env_all.snapshot` is an addition (DECISIONS.md D-E1-02). It holds the full environment hash map at observation time. Without it, `env_all` is treated as changed.
+
+`volatile` is a named input for non-file dependencies the strace oracle cannot observe: `time` (Date.now, clock reads), `network` (HTTP/DNS calls), `random` (Math.random, crypto), or `env:NAME` (an unlisted env var). The task declares it; the caller attests stability via the `volatile` query field.
 
 ## ChangeSet (9.5)
 
@@ -86,9 +89,9 @@ Required: `task`, `baseline`, `context` (with the reserved keys). `outcome` is `
 
 ## affected (9.3, 9.6)
 
-`params`: `{changes: ChangeSet, options: {baseline, context?, verify?, policy?, env?, config?, declared_tasks?}}`.
+`params`: `{changes: ChangeSet, options: {baseline, context?, verify?, policy?, env?, volatile?, config?, declared_tasks?}}`.
 
-`env`, `config`, and `declared_tasks` are additions (DECISIONS.md D-E1-01). Their semantics are in POLICY.md section 1.
+`env`, `volatile`, `config`, and `declared_tasks` are additions (DECISIONS.md D-E1-01). Their semantics are in POLICY.md section 1.
 
 Result (Plan):
 

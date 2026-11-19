@@ -177,6 +177,7 @@ fn read_query(st: Store&, params: json::Node?, q: Query&) {
     q.has_ctx = ctx != null;
     pairs_into(st, ctx, q_ctx, false);
     pairs_into(st, json::member(options, "env"), q_env, true);
+    pairs_into(st, json::member(options, "volatile"), q_vol, true);
     let v, vok = json::as_bool(json::member(options, "verify"));
     q.verify = vok && v;
     let pol, pok = json::as_string(json::member(options, "policy"));

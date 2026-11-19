@@ -199,6 +199,7 @@ class IncrementalClient implements incremental {
       policy: options.policy ?? "balanced",
     };
     if (options.env !== undefined) opts.env = options.env;
+    if (options.volatile !== undefined) opts.volatile = options.volatile;
     if (options.config !== undefined) opts.config = options.config;
     if (options.declared_tasks !== undefined) opts.declared_tasks = options.declared_tasks;
     return this.request("affected", { changes, options: opts }).then(checkPlan);

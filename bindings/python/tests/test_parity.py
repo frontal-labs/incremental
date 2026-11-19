@@ -106,7 +106,7 @@ class TestByteParity(unittest.TestCase):
 
     def test_serve_and_cli_bytes_match_client(self):
         cases = _query_cases()
-        self.assertEqual(len(cases), 36, "expected the 36 query cases of conformance/cases")
+        self.assertEqual(len(cases), 37, "expected the 37 query cases of conformance/cases")
         for case in cases:
             with self.subTest(case=case["id"]):
                 self.__class__.counts["query"] += 1

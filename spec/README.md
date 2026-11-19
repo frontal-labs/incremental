@@ -30,9 +30,9 @@ make check-spec   # schemas, reference policy, coverage matrix (PASS validate.mj
 
 ## Status
 
-Spec conformance status: `status/SPEC_CONFORMANCE.json` (E1 verify — spec docs, 40 cases, general reference (34 query cases agree), coverage matrix, schemas checked against engine responses). Needs Spec sign-off.
+Spec conformance status: `status/SPEC_CONFORMANCE.json` (E1 verify — spec docs, 41 cases, general reference (35 query cases agree), coverage matrix, schemas checked against engine responses). Needs Spec sign-off.
 
-Open items, including CR-002 and CR-003, are in `spec/CHANGE_REQUESTS.md` and `DECISIONS.md`. Full conformance suite: `conformance/` (40 cases C01–C40).
+Open items, including CR-002 and CR-003, are in `spec/CHANGE_REQUESTS.md` and `DECISIONS.md`. Full conformance suite: `conformance/` (41 cases C01–C41).
 
 ## Related
 

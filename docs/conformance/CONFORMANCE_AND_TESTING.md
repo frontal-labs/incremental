@@ -30,7 +30,7 @@ Store is JSONL of protocol messages (`observe`, `advance`, `forget`) setting up 
 
 Runner: `conformance/run.mjs` takes engine serve command, executes cases over protocol, compares plans.
 
-## Core Policy Cases (C01-C40)
+## Core Policy Cases (C01-C41)
 
 | ID  | Case                                                   | Rules             |
 | --- | ------------------------------------------------------ | ----------------- |
@@ -74,6 +74,7 @@ Runner: `conformance/run.mjs` takes engine serve command, executes cases over pr
 | C38 | Index from cache/rebuilt/delta-updated give same plans | G-f               |
 | C39 | Declared input changed                                 | 8.3 declared      |
 | C40 | Two writers serialize; both observations present       | 6.6               |
+| C41 | Volatile input: default is changed, attested stable is skipped | P12             |
 
 Coverage: every rule in 8.2 has >=1 case in each applicable mode. `spec/validate.mjs` fails `make check-spec` if cell empty.
 

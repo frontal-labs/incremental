@@ -6,8 +6,8 @@ The language-neutral conformance suite for incremental Protocol v1 and the polic
 
 | Path                     | Description                                                                                                               |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| `conformance/cases/`     | 40 conformance cases (C01–C40), covering policy rules P0–P11, fallbacks, confidence, verify, and protocol-level behavior. |
-| `conformance/run.mjs`    | Conformance runner: executes the 40 cases through the engine (`core/dist/incremental`).                                   |
+| `conformance/cases/`     | 41 conformance cases (C01–C41), covering policy rules P0–P12, fallbacks, confidence, verify, and protocol-level behavior. |
+| `conformance/run.mjs`    | Conformance runner: executes the 41 cases through the engine (`core/dist/incremental`).                                   |
 | `conformance/fuzz.mjs`   | Differential fuzz against the general reference implementation (3 seeds).                                                 |
 | `conformance/adapters/`  | Adapter-related conformance material.                                                                                     |
 | `conformance/spec/`      | Spec snapshots used by conformance.                                                                                       |
@@ -20,7 +20,7 @@ From the repo root. The engine binary must be built first:
 
 ```sh
 make build
-make test-policy   # 40 conformance cases through the engine (cases: 40 pass)
+make test-policy   # 41 conformance cases through the engine (cases: 41 pass)
 make test-protocol # protocol-level cases C26, C34, C35, C40
 make test-fuzz     # differential fuzz against the reference, 3 seeds
 make check-spec    # schemas, reference policy, coverage matrix
@@ -34,7 +34,7 @@ make check-spec    # schemas, reference policy, coverage matrix
 
 ## Status
 
-All 40 cases pass; 34 query cases agree with the general reference; schemas and reference policy are checked against engine responses.
+All 41 cases pass; 35 query cases agree with the general reference; schemas and reference policy are checked against engine responses.
 
 Evidence: `evidence/E1.txt` (protocol and conformance suite, `make check-spec`) and `evidence/E2.txt` (core engine: `make test-core test-policy test-protocol loc`).
 
