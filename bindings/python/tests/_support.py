@@ -19,7 +19,7 @@ FAKE_ENGINE = os.path.join(HERE, "fake_engine.py")
 if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
-from incremental import IncrementalError, connect  # noqa: E402,F401
+from incremental_client import IncrementalError, connect  # noqa: E402,F401
 
 ENGINE = os.environ.get("INCREMENTAL_ENGINE", os.path.join(REPO, "core", "dist", "incremental"))
 
