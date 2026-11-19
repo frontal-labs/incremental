@@ -59,4 +59,4 @@ Stale if PID dead or PID alive but start time differs (PID reuse). Retry up to 5
 
 ## Compaction
 
-`incremental compact` rewrites log keeping live contexts/paths, latest obs per task, latest baseline. Writes to temp then renames. Not implemented yet.
+`incremental compact` rewrites log keeping the header, live contexts/paths, the latest observation per task, the store context observation (with its `forget` if any), and the baseline. Writes to temp then renames. Takes the store lock, rewrites the log, resets in-memory state, reloads, and rewrites the index.
