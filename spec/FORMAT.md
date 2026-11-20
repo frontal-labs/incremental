@@ -48,4 +48,4 @@ Rules:
 
 ## Compaction (7.4)
 
-`compact` writes a new log to a temp file with the header, live contexts and paths, the latest observation per task, and the latest baseline. It then renames it over `tg.log`. Not implemented in this milestone.
+`compact` writes a new log to a temp file with the header, live contexts and paths, the latest observation per task, the store context observation (with its `forget` if any), and the baseline. It then renames it over `tg.log`. Implemented as `compact_log` in `core/src/protocol.goose` and wired to the `incremental compact` subcommand (`core/src/main.goose`); covered by `core/tests/compact_test.goose` and the Node binding test. It takes the store lock, rewrites the log, resets in-memory state, reloads, and rewrites the index.
