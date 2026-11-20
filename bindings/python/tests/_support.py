@@ -20,8 +20,9 @@ if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
 from incremental_client import IncrementalError, connect  # noqa: E402,F401
+from incremental_client._transport import default_engine  # noqa: E402
 
-ENGINE = os.environ.get("INCREMENTAL_ENGINE", os.path.join(REPO, "core", "dist", "incremental"))
+ENGINE = default_engine()
 
 COMPARED = ("tasks", "unobserved", "ignored", "deleted_tasks", "fallback", "confidence")
 

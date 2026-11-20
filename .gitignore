@@ -14,6 +14,11 @@ build/
 packages/*/package-lock.json
 
 # Python and Rust caches and build output
+bindings/python/incremental_client/prebuilds/
+packages/engine/prebuilds/
+bindings/python/dist/
+bindings/python/build/
+*.egg-info/
 __pycache__/
 *.pyc
 .ruff_cache/

@@ -297,6 +297,10 @@ importers:
         version: 0.8.0
 
   bindings/node:
+    dependencies:
+      '@incremental/engine':
+        specifier: file:../../packages/engine
+        version: link:../../packages/engine
     devDependencies:
       '@types/node':
         specifier: 22.20.5

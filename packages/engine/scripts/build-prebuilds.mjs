@@ -35,6 +35,11 @@ const ROOT = resolve(PACKAGE_DIR, "..", "..");
 const ENGINE = join(ROOT, "core", "dist", "incremental");
 const GOOSE_VERSION = "v2026.3";
 const SUPPORTED_TARGETS = ["darwin-arm64", "darwin-x64", "linux-x64", "linux-arm64"];
+// Goose ships no linux-arm64 toolchain. linux-arm64 is built by the x86_64 Linux
+// Goose with an aarch64 cross C compiler (--cc), so it needs gcc-aarch64-linux-gnu.
+const CROSS_TARGETS = {
+  "linux-arm64": { host: "linux-x64", cc: "/usr/bin/aarch64-linux-gnu-gcc" },
+};
 // Goose release assets are named with `macos` instead of npm's `darwin`.
 const GOOSE_ASSET_NAME = { "darwin-arm64": "macos-arm64", "darwin-x64": "macos-x64" };
 
@@ -91,14 +96,21 @@ function ensureGoose(target) {
 
 function main() {
   const target = parseArgs(process.argv.slice(2));
-  const goose = ensureGoose(target);
+  const cross = CROSS_TARGETS[target];
+  const goose = ensureGoose(cross ? cross.host : target);
   mkdirSync(join(ROOT, "core", "dist"), { recursive: true });
   console.log(`build-prebuilds: building engine for ${target}`);
-  execFileSync(goose, ["build", join(ROOT, "core", "src", "main.goose"), "-o", ENGINE], {
+  const buildArgs = ["build", join(ROOT, "core", "src", "main.goose"), "-o", ENGINE];
+  if (cross) buildArgs.push("--cc", process.env.CROSS_CC || cross.cc);
+  execFileSync(goose, buildArgs, {
     stdio: "inherit",
     env: {
       ...process.env,
       GOOSE_HOME: process.env.GOOSE_HOME || join(ROOT, ".toolchain", "goose-home"),
+      // Lowest macOS the binary runs on; without it the binary needs the SDK's OS (26).
+      ...(target.startsWith("darwin-")
+        ? { MACOSX_DEPLOYMENT_TARGET: process.env.MACOSX_DEPLOYMENT_TARGET || "11.0" }
+        : {}),
     },
   });
 

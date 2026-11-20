@@ -23,7 +23,7 @@ function prebuiltPath() {
 function devPath() {
   // In the incremental monorepo, the binary is built at core/dist/incremental
   // by `make build`. This path is relative to this package's location.
-  return join(PACKAGE_DIR, "..", "core", "dist", "incremental");
+  return join(PACKAGE_DIR, "..", "..", "core", "dist", "incremental");
 }
 
 // Lists the platform-arch directories bundled under prebuilds/ (e.g.

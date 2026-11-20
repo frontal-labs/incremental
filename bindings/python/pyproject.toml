@@ -12,3 +12,7 @@ dependencies = []
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+# Engine prebuild staged by scripts/build_wheel.py (one platform per wheel).
+[tool.setuptools.package-data]
+incremental_client = ["prebuilds/*/incremental"]
