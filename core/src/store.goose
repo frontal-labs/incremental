@@ -968,5 +968,5 @@ fn save_stat_cache(st: Store&, cache_path: const u8[:]) -> bool {
         body.push('}');
     }
     body.push('}');
-    return write_file_atomic(cache_path, body);
+    return write_file(cache_path, body);
 }
