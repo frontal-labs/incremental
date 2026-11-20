@@ -46,7 +46,10 @@ def main() -> int:
     for stale in (DEST, PY_ROOT / "build", *PY_ROOT.glob("*.egg-info")):
         shutil.rmtree(stale, ignore_errors=True)
     (DEST / args.target).mkdir(parents=True)
-    shutil.copy2(binary, DEST / args.target / "incremental")
+    staged = DEST / args.target / "incremental"
+    shutil.copy2(binary, staged)
+    # copy2 keeps the source mode, and downloaded CI artifacts can lose the executable bit.
+    staged.chmod(0o755)
     try:
         subprocess.run(
             [
