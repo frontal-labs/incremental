@@ -4,7 +4,7 @@
 
 mod common;
 
-use incremental::Incremental;
+use incremental_client::Incremental;
 use common::*;
 use serde_json::{json, Value};
 use std::fs::{self, OpenOptions};
