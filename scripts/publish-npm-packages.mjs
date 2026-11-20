@@ -12,7 +12,7 @@
 //
 // For each package this script:
 //   - removes "private", sets publishConfig (access: public)
-//   - replaces "file:" dependencies on workspace packages with their version
+//   - replaces "file:" and "workspace:" dependencies on workspace packages with their version
 //   - runs `npm publish`, then restores the original package.json (also on failure)
 //
 // The package must be built first (`make build` and each adapter's `npm run build`).
@@ -54,6 +54,11 @@ function candidateDirs() {
   return dirs;
 }
 
+// A dependency on another package in this repo: "workspace:" (pnpm) or "file:" (npm).
+function isWorkspaceSpec(spec) {
+  return spec.startsWith("workspace:") || spec.startsWith("file:");
+}
+
 // { dir, name, version, pkg, workspaceDeps } for each publishable package.
 function loadPackages() {
   const found = candidateDirs().map((dir) => {
@@ -65,7 +70,7 @@ function loadPackages() {
   const byName = new Map(found.map((p) => [p.name, p]));
   for (const p of found) {
     p.workspaceDeps = Object.entries(p.pkg.dependencies ?? {})
-      .filter(([, spec]) => spec.startsWith("file:"))
+      .filter(([, spec]) => isWorkspaceSpec(spec))
       .map(([name]) => name);
     for (const dep of p.workspaceDeps) {
       if (!byName.has(dep)) die(`${p.dir}: file dependency ${dep} is not a publishable package`);
@@ -114,12 +119,13 @@ function publishManifest(p, byName) {
   }
   manifest.files = [...files];
 
-  // Replace file: workspace deps with versioned ranges
+  // Replace workspace deps with versioned ranges. npm cannot install "workspace:" or
+  // "file:" specs, so every one is rewritten here.
   for (const field of ["dependencies", "optionalDependencies", "peerDependencies"]) {
     const deps = manifest[field];
     if (!deps) continue;
     for (const [name, spec] of Object.entries(deps)) {
-      if (spec.startsWith("file:")) {
+      if (isWorkspaceSpec(spec)) {
         const target = byName.get(name);
         deps[name] = `^${target.version}`;
       }
