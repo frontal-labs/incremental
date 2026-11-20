@@ -1,0 +1,135 @@
+---
+title: Vitest Adapter
+description: Incremental for Vitest — only affected test files run; the rest skip from certificates.
+icon: TestTube
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [vitest, adapter, test, affected, skip, observe, shadow, performance]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+The Vitest adapter wires Incremental into `vitest run`. On each run, the engine computes which test files are affected by changes since the baseline; only those execute. Everything else skips from its certificate.
+
+## How it works
+
+```text
+vitest run
+    ↓
+Incremental Vitest adapter (preload)
+    ↓
+observe each test file's run (inputs = files read, dirs listed, env)
+    ↓
+advance baseline to current commit
+    ↓
+on next run: compute ChangeSet from git → affected → run invalid files, skip certified
+```
+
+The adapter is both a **recorder** (observes what each test file touches) and a **planner/driver** (computes the change set and decides which files to run or skip).
+
+## Install
+
+```sh
+cd adapters/vitest
+npm install
+```
+
+The adapter is not in the pnpm workspace; it has its own `package.json`.
+
+## Usage
+
+### First run — everything executes (baseline)
+
+```sh
+make build
+STORE=.incremental npm test
+```
+
+All fixture test files run. Each is observed and recorded at baseline `null`.
+
+### Advance baseline
+
+```sh
+core/dist/incremental advance --store $STORE --to abc123 --expected null
+```
+
+### Edit a source file
+
+```sh
+echo "// change" >> examples/cli_workflow/src/math.ts
+```
+
+### Next run — only affected files execute
+
+```sh
+STORE=.incremental npm test
+```
+
+Example output:
+
+```text
+Test Files  3 failed 14 total
+Tests       3 failed 42 total
+Snapshots   0 total
+Time        2.72 s
+
+Incremental: 3 invalid, 11 skipped (affected: src/math.test.ts …)
+```
+
+Only `src/math.test.ts` and its dependents re-ran. The other 11 files skipped from their certificates.
+
+### Shadow run — dry run, no execution
+
+```sh
+STORE=.incremental npm test -- --shadow
+```
+
+Reports what *would* run without executing anything. Useful for CI previews and profiling.
+
+## Performance
+
+The number that matters is **per-invocation cost, not per-query cost**:
+
+| Scenario | Cost |
+|----------|------|
+| No-op run (nothing changed) | ~2.5 s fixed overhead, runs nothing |
+| Engine warm `affected` query | ~0.1 ms |
+| Per selected test file | ~1 s Vitest cold start (one process per file, parallel) |
+| Plan-and-report `--shadow` | ~0.5 s |
+
+Incremental wins when the test set is large and a change invalidates only a few files: a 1-file edit runs 3 of 14 files in ~2.7 s vs ~7.5 s for a full re-run.
+
+Measured on macOS x86_64, Node v22.23.2, against the 14-file fixture. Full profile and methodology: [**Benchmarks**](/benchmarks).
+
+## Configuration
+
+In `incremental.config.json`:
+
+```json
+{
+  "adapters": {
+    "vitest": { "testGlobs": ["**/*.{test,spec}.{ts,tsx,js,jsx,mjs,cjs,mts,cts}"] }
+  }
+}
+```
+
+## Exit codes & behavior
+
+| Scenario | Behavior |
+|----------|----------|
+| No baseline | All files run (no certificates) |
+| No changes since baseline | All files skip from certificates |
+| Some files changed | Changed files + dependents run; rest skip |
+| Verify mode | Every recorded file hashed; slower but safe |
+| `--shadow` | Reports plan without executing |
+
+## Limits
+
+- Non-file inputs (time, network, randomness) are not observed unless declared as `volatile`.
+- A store is per-worktree by default (`<repo>/.incremental`).
+- The first run after a fresh clone has no baseline → full run.
+
+## Next steps
+
+See the [**Tutorial**](/tutorial) for a complete end-to-end walkthrough, and the [**CLI Reference**](/cli) for all commands.

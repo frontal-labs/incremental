@@ -1,0 +1,75 @@
+---
+title: Adapters
+description: Adapter overview — how recorders and drivers connect Vitest, git, strace, and MCP to Incremental.
+icon: Plug
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [adapters, vitest, git, strace, mcp, recorder, driver]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+Adapters are the bridge between Incremental's generic engine and concrete tools (test runners, VCS, observability, AI). Core knows nothing about Vitest, git, or tests — every tool-specific concern lives in an adapter.
+
+## Adapter architecture
+
+```text
+Tool (Vitest run / git commit / MCP request)
+    ↓
+Adapter (recorder + planner + driver)
+    ↓
+Incremental Protocol v1 (JSON Lines over stdio)
+    ↓
+Engine Core
+```
+
+Each adapter plays one or more roles:
+
+| Role | Responsibility |
+|------|----------------|
+| **Recorder** | Observes a task run and records inputs/outputs/outcome via `observe` |
+| **Planner** | Computes a `ChangeSet` from the tool's state and asks `affected` |
+| **Driver** | Runs or skips the tool based on the plan |
+
+## Available adapters
+
+| Adapter | Repository path | Roles | Status |
+|---------|-----------------|-------|--------|
+| **Vitest** | `adapters/vitest/` | Recorder, planner, driver | Stable |
+| **Git** | `adapters/git/` | Planner (change sets) | Stable |
+| **Strace oracle** | `adapters/strace/` | Recorder (syscall observation) | Experimental |
+| **MCP** | `mcp/` | Server (protocol over MCP) | Stable |
+
+## Writing an adapter
+
+An adapter is a thin client over Protocol v1:
+
+1. `spawn` `incremental serve --store … --root …`
+2. Send `hello`; read capabilities
+3. Record observations with `observe` / `observe_many`
+4. Advance baseline with `advance`
+5. Ask `affected` with a `ChangeSet`
+6. Run or skip tasks based on the plan
+7. Close with `shutdown`
+
+See the Node client (`bindings/node`) for a reference implementation with process supervision.
+
+## The recorder contract
+
+A recorder must, for each task run:
+
+1. Capture all inputs the task read (files, dirs, probes, env vars)
+2. Capture outputs produced
+3. Record outcome (`pass` / `fail` / `error` / `none`) and duration
+4. Capture context (tool versions, lockfile hash, env snapshot, capabilities)
+5. Submit via `observe` at the current baseline
+
+> **Soundness:** an observation is only as good as its input capture. Missing an input means a future change to that file will not invalidate the task — a silent skip. When in doubt, record more inputs, not fewer.
+
+## Next steps
+
+- [**Vitest adapter**](/adapters-vitest) — test runner integration
+- [**Git adapter**](/adapters-git) — change-set source
+- [**Strace oracle**](/adapters-strace) — syscall-level observation
+- [**MCP server**](/adapters-mcp) — protocol over MCP

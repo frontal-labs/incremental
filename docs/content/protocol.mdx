@@ -1,0 +1,119 @@
+---
+title: Protocol v1
+description: Incremental Protocol v1 wire format — transport, handshake, methods, error codes.
+icon: Code2
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [protocol, JSON Lines, stdio, hello, observe, affected, methods, error codes]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+Incremental Protocol v1 is the language-neutral wire protocol used between consumers (bindings, adapters, MCP) and the engine core. It runs over **JSON Lines on stdio** (or a unix socket via the daemon).
+
+## Transport
+
+- JSON Lines: one JSON object per line, flushed per line
+- Requests have an integer `id` echoed in responses
+- Each response contains exactly one of `result` or `error`
+- Malformed lines return `{"id": null, "error": {"code": "invalid_params", ...}}` and the loop continues
+- Server budget: 10 seconds per request; never returns a partial plan on timeout
+
+## Handshake
+
+The first request **must** be `hello`:
+
+```json
+{
+  "id": 1,
+  "method": "hello",
+  "params": { "protocol": 1, "client": { "name": "...", "version": "..." } }
+}
+```
+
+Response:
+
+```json
+{
+  "protocol": 1,
+  "engine": { "name": "incremental-core-goose", "version": "0.1.0" },
+  "capabilities": ["probes", "dirs", "env", "verify"],
+  "store": ".incremental"
+}
+```
+
+If the protocol is not supported, the server returns `protocol_mismatch` with `data.supported=[1]` and closes the stream.
+
+## Methods
+
+| Method | Params | Result | Notes |
+|--------|--------|--------|-------|
+| `hello` | `{protocol, client}` | `{protocol, engine, capabilities, store}` | First call |
+| `observe` | `{observation}` | `{accepted: true}` | Record one observation |
+| `observe_many` | `{observations: [...]}` | `{accepted: n}` | Atomic (all or none) |
+| `baseline` | none | `{baseline: string or null}` | Get current baseline |
+| `advance` | `{to, expected}` | `{baseline}` | Compare-and-swap baseline |
+| `affected` | `{changes, options}` | Plan | Compute affected tasks |
+| `explain` | `{task}` | `{task, observation, certificate}` | Explain task status |
+| `forget` | `{task}` | `{forgotten: true}` | Remove task from graph until next observation |
+| `stats` | none | `{tasks, observations, baseline, graph_version}` | Store statistics |
+| `compact` | none | `{before_bytes, after_bytes}` | Not implemented yet |
+| `ping` | none | `{pong: true}` | Health check |
+| `shutdown` | none | `{bye: true}` | Exit after reply |
+
+## Error codes
+
+| Code | Meaning | CLI exit |
+|------|---------|----------|
+| `invalid_params` | Malformed request / schema violation | 2 |
+| `unknown_method` | Method not in v1 | 2 |
+| `protocol_mismatch` | Client protocol unsupported | 2 |
+| `store_missing` | No store at path | 3 |
+| `store_corrupt` | Log record invalid (not truncated tail) | 3 |
+| `lock_busy` | Another writer holds the lock | 5 |
+| `baseline_conflict` | `advance` expected mismatch | 6 |
+| `task_not_found` | `explain`/`forget` on unknown task | 3 |
+
+## Affected request / plan
+
+Request:
+
+```json
+{
+  "id": 4,
+  "method": "affected",
+  "params": {
+    "changes": { "baseline": "...", "head": "...", "changes": [...] },
+    "options": { "baseline": "...", "verify": false, "policy": "balanced", "context": {...} }
+  }
+}
+```
+
+Result: a **Plan** (see [Core Concepts](/concepts#plan-schema)).
+
+## Example session
+
+```text
+C: {"id":1,"method":"hello","params":{"protocol":1,"client":{"name":"vitest","version":"4"}}}
+S: {"protocol":1,"engine":{"name":"incremental-core-goose","version":"0.1.0"},"capabilities":["probes","dirs","env","verify"],"store":".incremental"}
+
+C: {"id":2,"method":"observe","params":{"observation":{"task":"src/a.test.ts","baseline":"abc","dirty":false,"context":{...},"inputs":[...],"outputs":[],"outcome":"pass","duration_ms":120}}}
+S: {"id":2,"result":{"accepted":true}}
+
+C: {"id":3,"method":"affected","params":{"changes":{"baseline":"abc","head":"def","changes":[{"path":"src/a.ts","status":"modified"}]},"options":{"baseline":"abc","context":{...}}}}
+S: {"id":3,"result":{"protocol":1,"baseline":"abc","graph_version":"g_8f3a21c9","verify":false,"tasks":[{"id":"src/a.test.ts","reasons":["reads:src/a.ts"]}],"unobserved":[],"ignored":[],"deleted_tasks":[],"total_tasks":1,"skipped":0,"fallback":null,"confidence":"high"}}
+
+C: {"id":9,"method":"shutdown","params":{}}
+S: {"id":9,"result":{"bye":true}}
+```
+
+## Bindings
+
+The protocol is implemented by thin clients:
+
+- **Node** (`bindings/node` — `@incremental/client`): typed protocol client with process supervision
+- **Python** (`bindings/python`)
+- **Rust** (`bindings/rust`)
+
+Each client `spawn`s `incremental serve --store … --root …`, performs the `hello` handshake, sends `observe`/`baseline`/`affected` requests, and closes with `shutdown` (2 s grace).

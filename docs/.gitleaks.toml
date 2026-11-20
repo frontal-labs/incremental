@@ -1,0 +1,27 @@
+title = "website"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Ignore test fixtures, example env files, and documentation"
+paths = [
+  '''(^|.*/)fixtures(/.*|$)''',
+  '''(^|.*/)testdata(/.*|$)''',
+  '''\.env\.example$''',
+  '''\.env\.sample$''',
+  '''\.env$''',
+  '''README\.md$''',
+  '''AGENTS\.md$''',
+  '''docs/''',
+  '''\.test\.ts$''',
+  '''\.spec\.ts$''',
+  '''test\.env$''',
+  # Vendored agent skills: third-party documentation, pinned to a source repo
+  # and a content hash in `skills-lock.json`, and never application code. Their
+  # prose quotes the sample credentials the upstream docs quote — the Upstash
+  # QStash dev server's, for one, which is a public base64 of
+  # `{"UserID":"defaultUser","Password":"defaultPassword"}` and decodes to
+  # exactly that. Nothing here is ours to leak.
+  '''(^|.*/)skills(/.*|$)''',
+]

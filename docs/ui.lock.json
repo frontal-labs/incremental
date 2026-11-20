@@ -1,0 +1,196 @@
+{
+  "assets": {},
+  "generatedAt": "2026-09-12T11:30:23.520Z",
+  "items": {
+    "breadcrumb": {
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "etag": "W/\"fb9caf632418ae48529150a58b6ead16\"",
+      "files": [
+        {
+          "path": "src/components/breadcrumb.tsx",
+          "registryPath": "registry/default/ui/breadcrumb.tsx",
+          "sha256": "ceec57f53c311e4a23fdac89f9ebe2bc6eaf53a1a5bfe97c61d10560a9059a2e",
+          "sourceSha256": "08a1a8c691a792a00bf949e8ba0d726baff094aa1f3e3fc236a6c09cf0c11143"
+        }
+      ],
+      "registryDependencies": [],
+      "type": "registry:ui"
+    },
+    "button": {
+      "cssVars": {
+        "dark": {
+          "destructive-foreground": "var(--color-red-400)"
+        },
+        "light": {
+          "destructive-foreground": "var(--color-red-700)"
+        }
+      },
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "etag": "W/\"aea0505a8cddd3a4f1777f096cadeab4\"",
+      "files": [
+        {
+          "path": "src/components/button.tsx",
+          "registryPath": "registry/default/ui/button.tsx",
+          "sha256": "b2015a92e9b4998925cb54f3e1f4070584bdfd06f5ab91193a3e7bcbf6b6a2ae",
+          "sourceSha256": "192883cdd97fa1ad9310941317bcc6f99041b13f99db1ef6f535b7f3b50ce9d6"
+        }
+      ],
+      "registryDependencies": [],
+      "type": "registry:ui"
+    },
+    "card": {
+      "dependencies": [],
+      "etag": "W/\"34847ae18021c558529a21543010c757\"",
+      "files": [
+        {
+          "path": "src/components/card.tsx",
+          "registryPath": "registry/default/ui/card.tsx",
+          "sha256": "959cf5f843098cf6cc5177be4b5e1a6a882e7498828cebbdac33dce3e1676389",
+          "sourceSha256": "dc9c95403a792939d3c4fcedca8e3818f5c19d77e2a9e687981f251324c26f7d"
+        }
+      ],
+      "registryDependencies": [],
+      "type": "registry:ui"
+    },
+    "collapsible": {
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "etag": "W/\"79d443cd34bed54341fb97d9979d32b5\"",
+      "files": [
+        {
+          "path": "src/components/collapsible.tsx",
+          "registryPath": "registry/default/ui/collapsible.tsx",
+          "sha256": "0a2b1d6b5caaa6a7c0b8386abb40b5ed153b81b595e99ed661d1bdbcb2cc13f0",
+          "sourceSha256": "a0ba947597baabb02ae72fc04c38ec178a0c50519d2e30b6944dd536edd53c7f"
+        }
+      ],
+      "registryDependencies": [],
+      "type": "registry:ui"
+    },
+    "scroll-area": {
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "etag": "W/\"9871b662b6f0b9e4eb3d239798229f94\"",
+      "files": [
+        {
+          "path": "src/components/scroll-area.tsx",
+          "registryPath": "registry/default/ui/scroll-area.tsx",
+          "sha256": "8fdd0425355fa283d7c9ad2056b2cfaa7d9a3aaffd0aaf3bd8bb723d26822433",
+          "sourceSha256": "119ae30669205fa487f3c3de9a0ae61e855525003a38e582fb65a9eb9f9e4f6f"
+        }
+      ],
+      "registryDependencies": [],
+      "type": "registry:ui"
+    },
+    "select": {
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "etag": "W/\"0d5eaffbd3f6d2dca7b1794ecca14a3e\"",
+      "files": [
+        {
+          "path": "src/components/select.tsx",
+          "registryPath": "registry/default/ui/select.tsx",
+          "sha256": "b82428ad54f42f4835e292e1127ac0455d2659fd29dec082153b84b87a4a6dda",
+          "sourceSha256": "5ef09a54ef3fd1c6066dda8136ceaa37f1acb14e3c1bae44041aaf29cfba04ba"
+        }
+      ],
+      "registryDependencies": [],
+      "type": "registry:ui"
+    },
+    "separator": {
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "etag": "W/\"efb2c1ced882cbe9914b85af31236448\"",
+      "files": [
+        {
+          "path": "src/components/separator.tsx",
+          "registryPath": "registry/default/ui/separator.tsx",
+          "sha256": "24b721e0fc15c643c9c2b7c1328e0bc5a756fa2243bbf201ab6e1a66cdc97841",
+          "sourceSha256": "2dbf52f38d863f726a51345473ff6d3718da1b466f6b60505840665bb8e7233c"
+        }
+      ],
+      "registryDependencies": [],
+      "type": "registry:ui"
+    },
+    "sheet": {
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "etag": "W/\"f57995a7692d7c705fdf61f359fc00e8\"",
+      "files": [
+        {
+          "path": "src/components/sheet.tsx",
+          "registryPath": "registry/default/ui/sheet.tsx",
+          "sha256": "4655bfd5afbb67e9010a54ebd873e42277e3b39b3970db6e71982c1c08f73046",
+          "sourceSha256": "7252e35d40f8eee1f0993bcfde9d5001a7a7647f88d5772d1520de11ff322aba"
+        }
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "type": "registry:ui"
+    },
+    "slider": {
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "etag": "W/\"dfd8889d7cca2099affdb600c428b76f\"",
+      "files": [
+        {
+          "path": "src/components/slider.tsx",
+          "registryPath": "registry/default/ui/slider.tsx",
+          "sha256": "09dc6aee6fce2f1c1afa53b1c054471a28931cf35f23e0a20147a14d33e9ff70",
+          "sourceSha256": "ce255163414da5b12054f617dbe11b3013efcd9d455e2aa477ce2fd045670126"
+        }
+      ],
+      "registryDependencies": [
+        "use-haptics"
+      ],
+      "type": "registry:ui"
+    },
+    "theme-switcher": {
+      "dependencies": [
+        "motion"
+      ],
+      "etag": "W/\"6e7daeaba270a8b6178154f343337677\"",
+      "files": [
+        {
+          "path": "src/components/theme-toggle.tsx",
+          "registryPath": "registry/default/shared/theme-switcher.tsx",
+          "sha256": "2c673dfa19b19a631a1c6110f1a802871594bb80453c5011bd5d962429557115",
+          "sourceSha256": "2a5deb792a8325d9880ae30cd786e35dbfc9812462787771a5612417838ef617"
+        }
+      ],
+      "registryDependencies": [
+        "use-controllable-state"
+      ],
+      "type": "registry:component"
+    }
+  },
+  "packages": {
+    "@base-ui/react": [
+      "breadcrumb",
+      "button",
+      "collapsible",
+      "scroll-area",
+      "select",
+      "separator",
+      "sheet",
+      "slider"
+    ],
+    "motion": [
+      "theme-switcher"
+    ]
+  },
+  "registry": "https://ui.incremental.dev/r",
+  "registryEtag": "W/\"b9a402bfd9978cf3fae968a9f0139978\"",
+  "version": 1
+}

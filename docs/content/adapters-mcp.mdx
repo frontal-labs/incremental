@@ -1,0 +1,60 @@
+---
+title: MCP Server
+description: Incremental MCP server — expose Protocol v1 over the Model Context Protocol.
+icon: Server
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [mcp, server, protocol, model context protocol, ai agent]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+The Incremental MCP server (`mcp/`) exposes Incremental Protocol v1 over the **Model Context Protocol**, so AI agents and MCP clients can query affected tasks, observe runs, and manage stores.
+
+## What it does
+
+The MCP server translates MCP calls into Protocol v1 requests over stdio to `incremental serve`:
+
+| MCP capability | Maps to |
+|----------------|---------|
+| `incremental.affected` | `affected` — compute invalid tasks from a change set |
+| `incremental.observe` | `observe` — record a task observation |
+| `incremental.stats` | `stats` — store summary |
+| `incremental.explain` | `explain` — explain one task |
+
+## Usage
+
+Configure the MCP server in your client (e.g. Claude Desktop, Cursor, Continue):
+
+```json
+{
+  "mcpServers": {
+    "incremental": {
+      "command": "incremental-mcp",
+      "args": ["--store", "/path/to/repo/.incremental"]
+    }
+  }
+}
+```
+
+Then ask your agent:
+
+> "Which tests are affected by the change to `src/math.ts`?"
+
+The agent calls `incremental.affected` and returns the plan.
+
+## Requirements
+
+- `incremental` binary built and on `PATH` (or provide the full path)
+- A store at `--store`
+- MCP client supporting the protocol
+
+## Status
+
+Stable. The MCP server is a separate package under `mcp/` with its own `package.json` and tests (`npm test`).
+
+## Next steps
+
+- [**Protocol v1**](/protocol) — the underlying wire format
+- [**CLI Reference**](/cli) — `incremental serve` (what the MCP server talks to)

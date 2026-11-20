@@ -1,0 +1,69 @@
+---
+title: FAQ
+description: Frequently asked questions about Incremental.
+icon: HelpCircle
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [faq, questions, how it works, soundness, performance]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+## What is Incremental?
+
+Incremental is a high-performance incremental computation engine. It records what each task reads, lists, probes, and writes, stores observations as content-hashed records, and answers: given changes since the last known-good baseline, which tasks are invalid — and why.
+
+## How is Incremental different from Nx / Turbo / Bazel?
+
+Nx, Turbo, and Bazel are build orchestrators with their own task graphs and caching. Incremental is a **generic dependency engine**: it knows nothing about your build tool, test runner, or language. Adapters (Vitest, git, strace, MCP) connect it to your tools. It computes affected tasks from observed inputs, not from declared task graphs.
+
+Its warm `affected` query is ~0.1 ms; the cost you feel is per-invocation overhead (~2.5 s) and per-file runner cold start (~1 s), not the engine.
+
+## Does Incremental ever skip a task silently?
+
+**No.** Soundness first: a task is skipped only if it has a certificate — an observation at the current baseline whose inputs are all unchanged. No certificate → invalid. Unknown/unverifiable input → task invalid, or full fallback.
+
+## What languages are supported?
+
+The engine is language-neutral (Protocol v1 over JSON Lines). Bindings exist for **Node** (`@incremental/client`), **Python**, and **Rust**. Any language can speak Protocol v1.
+
+## Do I need to declare my task graph?
+
+No. Incremental discovers tasks through **observations**: when a task runs, the adapter records what it touched. There is no upfront task-graph declaration.
+
+## What is a certificate?
+
+A certificate is the evidence that makes a skip safe: an observation, valid at the current baseline, whose inputs are all unchanged. If a task has a certificate and none of its inputs changed, it can be skipped.
+
+## What is a baseline?
+
+A baseline is an opaque string naming the state the graph is valid for — usually a git commit SHA. You advance the baseline with `incremental advance --to <sha> --expected <previous-sha>`.
+
+## What happens if I change package.json?
+
+`package.json` is a `globalInput` by default. Any change to a global input triggers a **full fallback**: every task runs, nothing is skipped. You can customize `globalInputs` in `incremental.config.json`.
+
+## Is verify mode needed for CI?
+
+No. Use the default (no `--verify`) for fast CI runs. Enable `--verify` for audits and shared stores where you want to hash every recorded file against `stat.cache`. Verify is slower but catches drift the log alone cannot.
+
+## Can I share one store between worktrees?
+
+A store is per worktree by default (`<repo>/.incremental`). A store shared between worktrees is safe, but a baseline mismatch falls back to running everything.
+
+## What does the engine cost per query?
+
+The warm `affected` query is ~0.1 ms at 100k tasks (p50), ~0.65 ms (p99). The cost you actually feel is per-invocation overhead (~2.5 s) and per-file runner cold start (~1 s).
+
+## Where are the specs?
+
+`specifications` live in `spec/`: `PROTOCOL.md`, `POLICY.md`, `FORMAT.md`, `DATA_MODEL.md`, `CONFIGURATION.md`, `DAEMON.md`. The conformance suite is in `conformance/` (41 cases).
+
+## How do I contribute?
+
+See [**Development Guide**](/development): `make build`, run test targets, open a PR. CI runs `make all-tests` plus lint and typecheck.
+
+## Where do I report a bug?
+
+File an issue at the repository's issue tracker. Include `logs/<target>.log` if a `make` target failed.

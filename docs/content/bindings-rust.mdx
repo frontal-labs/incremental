@@ -1,0 +1,58 @@
+---
+title: Rust Binding
+description: Rust binding for Incremental — Protocol v1 client.
+icon: FileTypeRust
+stage: Preview
+updatedAt: 2026-11-20
+keywords: [rust, binding, client, protocol v1, cargo]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+The Rust binding (`bindings/rust`) is a Protocol v1 client for Rust. It spawns `incremental serve`, performs the handshake, and exposes methods for every protocol method.
+
+## Requirements
+
+- `cargo` (Rust toolchain)
+- `incremental` binary built and on `PATH`
+
+## Install
+
+```sh
+cd bindings/rust
+cargo build
+```
+
+## Quick example
+
+```rust
+use incremental_client::IncrementalClient;
+
+let client = IncrementalClient::new(".incremental", ".").await?;
+client.connect().await?;
+
+let hello = client.hello(HelloParams {
+    protocol: 1,
+    client: ClientInfo { name: "my-app".into(), version: "1.0.0".into() },
+}).await?;
+
+let plan = client.affected(AffectedParams {
+    changes: ChangeSet { baseline: "abc123".into(), head: "def456".into(), changes: vec![...] },
+    options: AffectedOptions { baseline: "abc123".into(), context: serde_json::json!({}) },
+}).await?;
+
+println!("Invalid: {}, Skipped: {}", plan.invalid, plan.skipped);
+
+client.shutdown().await?;
+```
+
+## Status
+
+No status record yet. Build with `cargo build`; there is no `make test-rust` target defined beyond the cargo build. Contributions welcome.
+
+## Next steps
+
+- [**Protocol v1**](/protocol) — wire format reference
+- [**Node Client**](/bindings-node)
+- [**Python Binding**](/bindings-python)

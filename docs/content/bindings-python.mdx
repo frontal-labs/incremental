@@ -1,0 +1,64 @@
+---
+title: Python Binding
+description: Python binding for Incremental — Protocol v1 client.
+icon: FileTypePython
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [python, binding, client, protocol v1]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+The Python binding (`bindings/python`) is a Protocol v1 client for Python. It spawns `incremental serve`, performs the handshake, and exposes methods for every protocol method.
+
+## Requirements
+
+- Python 3.10 or later
+- `incremental` binary built and on `PATH`
+
+## Install
+
+```sh
+cd bindings/python
+pip install -e .
+```
+
+Tests:
+
+```sh
+make test-python
+```
+
+## Quick example
+
+```python
+from incremental import IncrementalClient
+
+client = IncrementalClient(store=".incremental", root=".")
+await client.connect()
+
+await client.hello({
+    "protocol": 1,
+    "client": {"name": "my-app", "version": "1.0.0"},
+})
+
+plan = await client.affected({
+    "changes": {"baseline": "abc123", "head": "def456", "changes": [...]},
+    "options": {"baseline": "abc123", "context": {}},
+})
+
+print("Invalid:", plan["total_tasks"] - plan["skipped"], "Skipped:", plan["skipped"])
+
+await client.shutdown()
+```
+
+## Status
+
+Done (milestone E9, optional). Full test suite via `make test-python`.
+
+## Next steps
+
+- [**Protocol v1**](/protocol) — wire format reference
+- [**Node Client**](/bindings-node)
+- [**Rust Binding**](/bindings-rust)

@@ -1,0 +1,1104 @@
+@custom-variant fixed (&:is(.layout-fixed *));
+
+@theme inline {
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+  /* Height reveals (Collapsible, Accordion, ShowMore). Quadratic ease-out:
+   * `--ease-out` above is quintic and lands ~70% of a 200ms height change in
+   * the first frame, which reads as a snap with a settle. */
+  --ease-disclosure: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  --shadow-menu: var(--cortex-shadow-menu);
+
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  --text-xs: 0.75rem;
+  --text-xs--line-height: calc(1 / 0.75);
+  --text-sm: 0.875rem;
+  --text-sm--line-height: calc(1.25 / 0.875);
+  --text-base: 1rem;
+  --text-base--line-height: 1.5;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: calc(1.75 / 1.125);
+  --text-xl: 1.25rem;
+  --text-xl--line-height: calc(1.75 / 1.25);
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: calc(2 / 1.5);
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 1.2;
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: calc(2.5 / 2.25);
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 1;
+  --text-6xl: 3.75rem;
+  --text-6xl--line-height: 1;
+  --text-7xl: 4.5rem;
+  --text-7xl--line-height: 1;
+  --text-8xl: 6rem;
+  --text-8xl--line-height: 1;
+  --text-9xl: 8rem;
+  --text-9xl--line-height: 1;
+
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  --spacing: 0.25rem;
+
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+
+  --container-3xs: 16rem;
+  --container-2xs: 18rem;
+  --container-xs: 20rem;
+  --container-sm: 24rem;
+  --container-md: 28rem;
+  --container-lg: 32rem;
+  --container-xl: 36rem;
+  --container-2xl: 42rem;
+  --container-3xl: 48rem;
+  --container-4xl: 56rem;
+  --container-5xl: 64rem;
+  --container-6xl: 72rem;
+  --container-7xl: 80rem;
+  --container-8xl: 88rem;
+  --container-9xl: 96rem;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-subtle: var(--subtle);
+  --color-subtle-foreground: var(--subtle-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-code: var(--code);
+  --color-code-foreground: var(--code-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-grid-stroke: var(--chart-grid-stroke);
+  --color-chart-axis-text: var(--chart-axis-text);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-reference-line-stroke: var(--chart-reference-line-stroke);
+  --color-chart-reference-label: var(--chart-reference-label);
+  --color-chart-actual-line: var(--chart-actual-line);
+  --color-chart-forecast-line: var(--chart-forecast-line);
+  --color-chart-tooltip-cursor: var(--chart-tooltip-cursor);
+  --color-chart-pattern-bg: var(--chart-pattern-bg);
+  --color-chart-pattern-stroke: var(--chart-pattern-stroke);
+  --color-chart-bar-fill: var(--chart-bar-fill);
+  --color-chart-bar-fill-secondary: var(--chart-bar-fill-secondary);
+  --color-chart-gradient-start: var(--chart-gradient-start);
+  --color-chart-gradient-end: var(--chart-gradient-end);
+  --color-chart-line-secondary: var(--chart-line-secondary);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+
+  --color-gray-100: var(--cortex-gray-100);
+  --color-gray-200: var(--cortex-gray-200);
+  --color-gray-300: var(--cortex-gray-300);
+  --color-gray-400: var(--cortex-gray-400);
+  --color-gray-500: var(--cortex-gray-500);
+  --color-gray-600: var(--cortex-gray-600);
+  --color-gray-700: var(--cortex-gray-700);
+  --color-gray-800: var(--cortex-gray-800);
+  --color-gray-900: var(--cortex-gray-900);
+  --color-gray-950: var(--cortex-gray-950);
+  --color-gray-1000: var(--cortex-gray-1000);
+
+  --color-gray-alpha-100: var(--cortex-gray-alpha-100);
+  --color-gray-alpha-200: var(--cortex-gray-alpha-200);
+  --color-gray-alpha-300: var(--cortex-gray-alpha-300);
+  --color-gray-alpha-400: var(--cortex-gray-alpha-400);
+  --color-gray-alpha-500: var(--cortex-gray-alpha-500);
+  --color-gray-alpha-600: var(--cortex-gray-alpha-600);
+  --color-gray-alpha-700: var(--cortex-gray-alpha-700);
+  --color-gray-alpha-800: var(--cortex-gray-alpha-800);
+  --color-gray-alpha-900: var(--cortex-gray-alpha-900);
+  --color-gray-alpha-1000: var(--cortex-gray-alpha-1000);
+
+  --color-blue-100: var(--cortex-blue-100);
+  --color-blue-200: var(--cortex-blue-200);
+  --color-blue-300: var(--cortex-blue-300);
+  --color-blue-400: var(--cortex-blue-400);
+  --color-blue-500: var(--cortex-blue-500);
+  --color-blue-600: var(--cortex-blue-600);
+  --color-blue-700: var(--cortex-blue-700);
+  --color-blue-800: var(--cortex-blue-800);
+  --color-blue-900: var(--cortex-blue-900);
+  --color-blue-1000: var(--cortex-blue-1000);
+
+  --color-red-100: var(--cortex-red-100);
+  --color-red-200: var(--cortex-red-200);
+  --color-red-300: var(--cortex-red-300);
+  --color-red-400: var(--cortex-red-400);
+  --color-red-500: var(--cortex-red-500);
+  --color-red-600: var(--cortex-red-600);
+  --color-red-700: var(--cortex-red-700);
+  --color-red-800: var(--cortex-red-800);
+  --color-red-900: var(--cortex-red-900);
+  --color-red-1000: var(--cortex-red-1000);
+
+  --color-amber-100: var(--cortex-amber-100);
+  --color-amber-200: var(--cortex-amber-200);
+  --color-amber-300: var(--cortex-amber-300);
+  --color-amber-400: var(--cortex-amber-400);
+  --color-amber-500: var(--cortex-amber-500);
+  --color-amber-600: var(--cortex-amber-600);
+  --color-amber-700: var(--cortex-amber-700);
+  --color-amber-800: var(--cortex-amber-800);
+  --color-amber-900: var(--cortex-amber-900);
+  --color-amber-1000: var(--cortex-amber-1000);
+
+  --color-green-100: var(--cortex-green-100);
+  --color-green-200: var(--cortex-green-200);
+  --color-green-300: var(--cortex-green-300);
+  --color-green-400: var(--cortex-green-400);
+  --color-green-500: var(--cortex-green-500);
+  --color-green-600: var(--cortex-green-600);
+  --color-green-700: var(--cortex-green-700);
+  --color-green-800: var(--cortex-green-800);
+  --color-green-900: var(--cortex-green-900);
+  --color-green-1000: var(--cortex-green-1000);
+
+  --color-teal-100: var(--cortex-teal-100);
+  --color-teal-200: var(--cortex-teal-200);
+  --color-teal-300: var(--cortex-teal-300);
+  --color-teal-400: var(--cortex-teal-400);
+  --color-teal-500: var(--cortex-teal-500);
+  --color-teal-600: var(--cortex-teal-600);
+  --color-teal-700: var(--cortex-teal-700);
+  --color-teal-800: var(--cortex-teal-800);
+  --color-teal-900: var(--cortex-teal-900);
+  --color-teal-1000: var(--cortex-teal-1000);
+
+  --color-purple-100: var(--cortex-purple-100);
+  --color-purple-200: var(--cortex-purple-200);
+  --color-purple-300: var(--cortex-purple-300);
+  --color-purple-400: var(--cortex-purple-400);
+  --color-purple-500: var(--cortex-purple-500);
+  --color-purple-600: var(--cortex-purple-600);
+  --color-purple-700: var(--cortex-purple-700);
+  --color-purple-800: var(--cortex-purple-800);
+  --color-purple-900: var(--cortex-purple-900);
+  --color-purple-1000: var(--cortex-purple-1000);
+
+  --color-pink-100: var(--cortex-pink-100);
+  --color-pink-200: var(--cortex-pink-200);
+  --color-pink-300: var(--cortex-pink-300);
+  --color-pink-400: var(--cortex-pink-400);
+  --color-pink-500: var(--cortex-pink-500);
+  --color-pink-600: var(--cortex-pink-600);
+  --color-pink-700: var(--cortex-pink-700);
+  --color-pink-800: var(--cortex-pink-800);
+  --color-pink-900: var(--cortex-pink-900);
+  --color-pink-1000: var(--cortex-pink-1000);
+}
+
+:root {
+  --brand: oklch(0.5151 0.2399 257.85);
+  --brand-foreground: oklch(1 0 0);
+
+  --cortex-black: oklch(0 0 0);
+  --cortex-white: oklch(1 0 0);
+
+  --cortex-gray-100: oklch(0.961 0 0);
+  --cortex-gray-200: oklch(0.94 0 0);
+  --cortex-gray-300: oklch(0.925 0 0);
+  --cortex-gray-400: oklch(0.937 0 0);
+  --cortex-gray-500: oklch(0.836 0 0);
+  --cortex-gray-600: oklch(0.732 0 0);
+  --cortex-gray-700: oklch(0.65 0 0);
+  --cortex-gray-800: oklch(0.59 0 0);
+  --cortex-gray-900: oklch(0.42 0 0);
+  --cortex-gray-950: oklch(0.3 0 0);
+  --cortex-gray-1000: oklch(0.205 0 0);
+
+  --cortex-gray-alpha-100: oklch(0 0 0 / 0.05);
+  --cortex-gray-alpha-200: oklch(0 0 0 / 0.081);
+  --cortex-gray-alpha-300: oklch(0 0 0 / 0.1);
+  --cortex-gray-alpha-400: oklch(0 0 0 / 0.08);
+  --cortex-gray-alpha-500: oklch(0 0 0 / 0.21);
+  --cortex-gray-alpha-600: oklch(0 0 0 / 0.24);
+  --cortex-gray-alpha-700: oklch(0 0 0 / 0.44);
+  --cortex-gray-alpha-800: oklch(0 0 0 / 0.51);
+  --cortex-gray-alpha-900: oklch(0 0 0 / 0.7);
+  --cortex-gray-alpha-1000: oklch(0 0 0 / 0.91);
+
+  --cortex-blue-100: oklch(97.32% 0.0141 251.56);
+  --cortex-blue-200: oklch(96.29% 0.0195 250.59);
+  --cortex-blue-300: oklch(94.58% 0.0293 249.85);
+  --cortex-blue-400: oklch(91.58% 0.0473 245.12);
+  --cortex-blue-500: oklch(82.75% 0.0979 248.48);
+  --cortex-blue-600: oklch(73.08% 0.1583 248.13);
+  --cortex-blue-700: oklch(57.61% 0.2508 258.23);
+  --cortex-blue-800: oklch(51.51% 0.2399 257.85);
+  --cortex-blue-900: oklch(53.18% 0.2399 256.99);
+  --cortex-blue-1000: oklch(26.67% 0.1099 254.34);
+
+  --cortex-red-100: oklch(96.5% 0.0223 13.09);
+  --cortex-red-200: oklch(95.41% 0.0299 14.25);
+  --cortex-red-300: oklch(94.33% 0.0369 15.01);
+  --cortex-red-400: oklch(91.51% 0.0471 19.8);
+  --cortex-red-500: oklch(84.47% 0.1018 17.71);
+  --cortex-red-600: oklch(71.12% 0.1881 21.22);
+  --cortex-red-700: oklch(62.56% 0.2524 23.03);
+  --cortex-red-800: oklch(58.19% 0.2482 25.15);
+  --cortex-red-900: oklch(54.99% 0.232 25.29);
+  --cortex-red-1000: oklch(24.8% 0.1041 18.86);
+
+  --cortex-amber-100: oklch(97.48% 0.0331 85.79);
+  --cortex-amber-200: oklch(96.81% 0.0495 90.24);
+  --cortex-amber-300: oklch(95.93% 0.0636 90.52);
+  --cortex-amber-400: oklch(91.02% 0.1322 88.25);
+  --cortex-amber-500: oklch(86.55% 0.1583 79.63);
+  --cortex-amber-600: oklch(80.25% 0.1953 73.59);
+  --cortex-amber-700: oklch(81.87% 0.1969 76.46);
+  --cortex-amber-800: oklch(77.21% 0.1991 64.28);
+  --cortex-amber-900: oklch(52.79% 0.1496 54.65);
+  --cortex-amber-1000: oklch(30.83% 0.099 45.48);
+
+  --cortex-green-100: oklch(97.59% 0.0289 145.42);
+  --cortex-green-200: oklch(96.92% 0.037 147.15);
+  --cortex-green-300: oklch(94.6% 0.0674 144.23);
+  --cortex-green-400: oklch(91.49% 0.0976 146.24);
+  --cortex-green-500: oklch(85.45% 0.1627 146.3);
+  --cortex-green-600: oklch(80.25% 0.214 145.18);
+  --cortex-green-700: oklch(64.58% 0.1746 147.27);
+  --cortex-green-800: oklch(57.81% 0.1507 147.5);
+  --cortex-green-900: oklch(51.75% 0.1453 147.65);
+  --cortex-green-1000: oklch(29.15% 0.1197 147.38);
+
+  --cortex-teal-100: oklch(97.72% 0.0359 186.7);
+  --cortex-teal-200: oklch(97.06% 0.0347 180.66);
+  --cortex-teal-300: oklch(94.92% 0.0478 182.07);
+  --cortex-teal-400: oklch(92.76% 0.0718 183.78);
+  --cortex-teal-500: oklch(86.88% 0.1344 182.42);
+  --cortex-teal-600: oklch(81.5% 0.161 178.96);
+  --cortex-teal-700: oklch(64.92% 0.1572 181.95);
+  --cortex-teal-800: oklch(57.53% 0.1392 181.66);
+  --cortex-teal-900: oklch(52.08% 0.1251 182.93);
+  --cortex-teal-1000: oklch(32.11% 0.0788 179.82);
+
+  --cortex-purple-100: oklch(96.65% 0.0244 312.19);
+  --cortex-purple-200: oklch(96.73% 0.0228 309.8);
+  --cortex-purple-300: oklch(94.85% 0.0364 310.15);
+  --cortex-purple-400: oklch(91.77% 0.0614 312.82);
+  --cortex-purple-500: oklch(81.26% 0.1409 310.8);
+  --cortex-purple-600: oklch(72.07% 0.2083 308.19);
+  --cortex-purple-700: oklch(55.5% 0.3008 306.12);
+  --cortex-purple-800: oklch(48.58% 0.2638 305.73);
+  --cortex-purple-900: oklch(47.18% 0.2579 304);
+  --cortex-purple-1000: oklch(23.96% 0.13 305.66);
+
+  --cortex-pink-100: oklch(95.69% 0.0359 344.62);
+  --cortex-pink-200: oklch(95.71% 0.0321 353.14);
+  --cortex-pink-300: oklch(93.83% 0.0451 356.29);
+  --cortex-pink-400: oklch(91.12% 0.0573 358.82);
+  --cortex-pink-500: oklch(84.28% 0.0915 356.99);
+  --cortex-pink-600: oklch(74.33% 0.1547 0.24);
+  --cortex-pink-700: oklch(63.52% 0.238 1.01);
+  --cortex-pink-800: oklch(59.51% 0.2339 4.21);
+  --cortex-pink-900: oklch(53.5% 0.2058 2.84);
+  --cortex-pink-1000: oklch(26% 0.0977 359);
+
+  --cortex-shadow-background-border: 0 0 0 1px var(--subtle);
+  --cortex-shadow-border-base: 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --cortex-shadow-menu:
+    var(--cortex-shadow-border-base), 0px 1px 1px rgba(0, 0, 0, 0.02),
+    0px 4px 8px -4px rgba(0, 0, 0, 0.04),
+    0px 16px 24px -8px rgba(0, 0, 0, 0.06),
+    var(--cortex-shadow-background-border);
+  --cortex-shadow-small: 0px 2px 2px rgba(0, 0, 0, 0.04);
+  --cortex-shadow-border-small:
+    var(--cortex-shadow-border-base), var(--cortex-shadow-small),
+    var(--cortex-shadow-background-border);
+
+  --radius: 0.5rem;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+
+  --subtle: oklch(0.985 0 0);
+  --subtle-foreground: oklch(0.145 0 0);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.97 0 0);
+
+  --secondary: oklch(0.955 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+
+  --muted: oklch(0.982 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+
+  --accent: oklch(0.94 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.5499 0.232 25.29);
+
+  --warning: oklch(0.769 0.188 70.08);
+  --warning-foreground: oklch(0.733 0.178 64.871);
+  --info: var(--cortex-blue-700);
+  --info-foreground: var(--cortex-blue-900);
+  --success: var(--cortex-green-700);
+  --success-foreground: var(--cortex-green-900);
+
+  --border: oklch(0 0 0 / 8%);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+
+  --chart-grid-stroke: var(--cortex-gray-300);
+  --chart-axis-text: var(--cortex-gray-900);
+  --chart-1: var(--cortex-blue-900);
+  --chart-2: var(--cortex-green-900);
+  --chart-3: var(--cortex-amber-900);
+  --chart-4: var(--cortex-purple-900);
+  --chart-5: var(--cortex-pink-900);
+  --chart-reference-line-stroke: var(--cortex-gray-300);
+  --chart-reference-label: var(--cortex-gray-900);
+  --chart-actual-line: var(--cortex-black);
+  --chart-forecast-line: var(--cortex-gray-900);
+  --chart-tooltip-cursor: color-mix(
+    in srgb,
+    var(--cortex-gray-900) 20%,
+    transparent
+  );
+  --chart-pattern-bg: var(--cortex-white);
+  --chart-pattern-stroke: var(--cortex-gray-900);
+  --chart-bar-fill: var(--cortex-black);
+  --chart-bar-fill-secondary: color-mix(
+    in srgb,
+    var(--cortex-gray-900) 30%,
+    transparent
+  );
+  --chart-gradient-start: var(--cortex-gray-900);
+  --chart-gradient-end: var(--cortex-black);
+  --chart-line-secondary: var(--cortex-gray-900);
+
+  --code: oklch(0.985 0 0);
+  --code-foreground: oklch(0.556 0 0);
+
+  /* Syntax highlighting for MDX code blocks.
+   *
+   * The previous values were four hand-written greys (#171717 / #4a4a4a /
+   * #666666 / #707070) that collapsed the token set: `string` and `keyword` were
+   * the same colour, as were `property` and `entity`. Highlighting technically
+   * ran but distinguished almost nothing — code read as slightly uneven grey.
+   *
+   * Now mapped onto the cortex scales so the palette is the design system's own
+   * and inverts with the theme instead of being two hardcoded sets.
+   *
+   * Step `-900` throughout, and only `-900`. The scales invert between themes,
+   * so a single step has to clear AA on both surfaces. Measured against
+   * `--background` (light / dark):
+   *
+   *          -800            -900
+   *   blue    5.61 / 3.64 ✗   5.19 / 8.29
+   *   green   3.93 / 5.28 ✗   5.07 / 9.60
+   *   amber   2.17 / 9.41 ✗   5.44 / 9.41
+   *   purple  6.99 / 2.94 ✗   7.42 / 7.16
+   *
+   * Every `-800` step fails in one theme or the other; every `-900` passes in
+   * both. This is the same rule `commit.tsx` documents for status colours.
+   *
+   * Four hues, deliberately: keyword, string, type and callable. Punctuation and
+   * identifiers stay `--foreground` and comments are the one recessed token, so
+   * the colour that is present carries meaning rather than decorating.
+   *
+   * Declared in `:root` *and* `.dark` rather than only here. A custom property's
+   * computed value has its `var()` references substituted on the element that
+   * declares it, so a `:root`-only declaration would bake in the light cortex
+   * values and a mid-page `.dark` region — which this package supports via the
+   * `dark` prop on popovers and dialogs — would inherit them.
+   */
+  --sh-keyword: var(--cortex-purple-900);
+  --sh-string: var(--cortex-green-900);
+  --sh-class: var(--cortex-amber-900);
+  --sh-entity: var(--cortex-blue-900);
+  --sh-property: var(--cortex-blue-900);
+  --sh-identifier: var(--foreground);
+  --sh-jsxliterals: var(--foreground);
+  --sh-sign: var(--foreground);
+  --sh-comment: var(--muted-foreground);
+
+  /* Shiki, consumed by the docs' MDX fences and `ComponentSource`. Shiki runs a
+   * `createCssVariablesTheme()` theme that
+   * emits `style="color:var(--shiki-token-<token>)"`, so mapping its token set
+   * onto the design-system tokens above keeps every fenced block consistent.
+   *
+   * Same `:root` *and* `.dark` rule as `--sh-*`: these must be re-declared
+   * wherever the values they reference change. */
+  --shiki-foreground: var(--sh-identifier);
+  --shiki-background: transparent;
+  --shiki-token-keyword: var(--sh-keyword);
+  --shiki-token-string: var(--sh-string);
+  --shiki-token-string-expression: var(--sh-string);
+  --shiki-token-link: var(--sh-string);
+  --shiki-token-constant: var(--sh-class);
+  --shiki-token-function: var(--sh-entity);
+  --shiki-token-parameter: var(--sh-property);
+  --shiki-token-punctuation: var(--sh-sign);
+  --shiki-token-comment: var(--sh-comment);
+
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.965 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --cortex-gray-100: oklch(0.218 0 0);
+  --cortex-gray-200: oklch(0.239 0 0);
+  --cortex-gray-300: oklch(0.281 0 0);
+  --cortex-gray-400: oklch(0.301 0 0);
+  --cortex-gray-500: oklch(0.39 0 0);
+  --cortex-gray-600: oklch(0.623 0 0);
+  --cortex-gray-700: oklch(0.65 0 0);
+  --cortex-gray-800: oklch(0.59 0 0);
+  --cortex-gray-900: oklch(0.706 0 0);
+  --cortex-gray-950: oklch(0.85 0 0);
+  --cortex-gray-1000: oklch(0.946 0 0);
+
+  --cortex-gray-alpha-100: oklch(1 0 0 / 0.07);
+  --cortex-gray-alpha-200: oklch(1 0 0 / 0.09);
+  --cortex-gray-alpha-300: oklch(1 0 0 / 0.13);
+  --cortex-gray-alpha-400: oklch(1 0 0 / 0.14);
+  --cortex-gray-alpha-500: oklch(1 0 0 / 0.24);
+  --cortex-gray-alpha-600: oklch(1 0 0 / 0.51);
+  --cortex-gray-alpha-700: oklch(1 0 0 / 0.54);
+  --cortex-gray-alpha-800: oklch(1 0 0 / 0.47);
+  --cortex-gray-alpha-900: oklch(1 0 0 / 0.61);
+  --cortex-gray-alpha-1000: oklch(1 0 0 / 0.92);
+
+  --cortex-blue-100: oklch(22.17% 0.069 259.89);
+  --cortex-blue-200: oklch(25.45% 0.0811 255.8);
+  --cortex-blue-300: oklch(30.86% 0.1022 255.21);
+  --cortex-blue-400: oklch(34.1% 0.121 254.74);
+  --cortex-blue-500: oklch(38.5% 0.1403 254.4);
+  --cortex-blue-600: oklch(64.94% 0.1982 251.81);
+  --cortex-blue-700: oklch(57.61% 0.2321 258.23);
+  --cortex-blue-800: oklch(51.51% 0.2307 257.85);
+  --cortex-blue-900: oklch(71.7% 0.1648 250.79);
+  --cortex-blue-1000: oklch(96.75% 0.0179 242.42);
+
+  --cortex-red-100: oklch(22.1% 0.0657 15.11);
+  --cortex-red-200: oklch(25.93% 0.0834 19.02);
+  --cortex-red-300: oklch(31.47% 0.1105 20.96);
+  --cortex-red-400: oklch(35.27% 0.1273 21.23);
+  --cortex-red-500: oklch(40.68% 0.1479 23.16);
+  --cortex-red-600: oklch(62.56% 0.2277 23.03);
+  --cortex-red-700: oklch(62.56% 0.2234 23.03);
+  --cortex-red-800: oklch(58.01% 0.227 25.12);
+  --cortex-red-900: oklch(69.96% 0.2136 22.03);
+  --cortex-red-1000: oklch(95.6% 0.0293 6.61);
+
+  --cortex-amber-100: oklch(22.46% 0.0538 76.04);
+  --cortex-amber-200: oklch(24.95% 0.0642 64.78);
+  --cortex-amber-300: oklch(32.34% 0.0837 63.83);
+  --cortex-amber-400: oklch(35.53% 0.0903 66.3);
+  --cortex-amber-500: oklch(41.55% 0.1044 67.98);
+  --cortex-amber-600: oklch(75.04% 0.1737 74.49);
+  --cortex-amber-700: oklch(81.87% 0.1969 76.46);
+  --cortex-amber-800: oklch(77.21% 0.1991 64.28);
+  --cortex-amber-900: oklch(77.21% 0.1991 64.28);
+  --cortex-amber-1000: oklch(96.7% 0.0418 84.59);
+
+  --cortex-green-100: oklch(23.09% 0.0716 149.68);
+  --cortex-green-200: oklch(27.12% 0.0895 150.09);
+  --cortex-green-300: oklch(29.84% 0.096 149.25);
+  --cortex-green-400: oklch(34.39% 0.1039 147.78);
+  --cortex-green-500: oklch(44.19% 0.1484 147.2);
+  --cortex-green-600: oklch(58.11% 0.1815 146.55);
+  --cortex-green-700: oklch(64.58% 0.199 147.27);
+  --cortex-green-800: oklch(57.81% 0.1776 147.5);
+  --cortex-green-900: oklch(73.1% 0.2158 148.29);
+  --cortex-green-1000: oklch(96.76% 0.056 154.18);
+
+  --cortex-teal-100: oklch(22.1% 0.0544 178.74);
+  --cortex-teal-200: oklch(25.06% 0.062 178.76);
+  --cortex-teal-300: oklch(31.5% 0.0767 180.99);
+  --cortex-teal-400: oklch(32.43% 0.0763 180.13);
+  --cortex-teal-500: oklch(43.35% 0.1055 180.97);
+  --cortex-teal-600: oklch(60.71% 0.1485 180.24);
+  --cortex-teal-700: oklch(64.92% 0.1403 181.95);
+  --cortex-teal-800: oklch(57.53% 0.1392 181.66);
+  --cortex-teal-900: oklch(74.56% 0.1765 182.8);
+  --cortex-teal-1000: oklch(96.46% 0.056 180.29);
+
+  --cortex-purple-100: oklch(22.34% 0.0779 316.87);
+  --cortex-purple-200: oklch(25.91% 0.0921 314.41);
+  --cortex-purple-300: oklch(31.98% 0.1219 312.41);
+  --cortex-purple-400: oklch(35.93% 0.1504 309.78);
+  --cortex-purple-500: oklch(40.99% 0.1721 307.92);
+  --cortex-purple-600: oklch(55.5% 0.2191 306.12);
+  --cortex-purple-700: oklch(55.5% 0.2186 306.12);
+  --cortex-purple-800: oklch(48.58% 0.2102 305.73);
+  --cortex-purple-900: oklch(69.87% 0.2037 309.51);
+  --cortex-purple-1000: oklch(96.1% 0.0304 316.46);
+
+  --cortex-pink-100: oklch(22.67% 0.0628 354.73);
+  --cortex-pink-200: oklch(26.2% 0.0859 356.68);
+  --cortex-pink-300: oklch(31.15% 0.1067 355.93);
+  --cortex-pink-400: oklch(32.13% 0.1174 356.71);
+  --cortex-pink-500: oklch(37.01% 0.1453 358.39);
+  --cortex-pink-600: oklch(50.33% 0.2089 4.33);
+  --cortex-pink-700: oklch(63.52% 0.2346 1.01);
+  --cortex-pink-800: oklch(59.51% 0.2429 4.21);
+  --cortex-pink-900: oklch(69.36% 0.2223 3.91);
+  --cortex-pink-1000: oklch(95.74% 0.0326 350.08);
+
+  --cortex-shadow-menu:
+    0 0 0 1px oklch(1 0 0 / 0.1), 0 8px 16px oklch(0 0 0 / 0.4);
+  --cortex-shadow-background-border: 0 0 0 1px var(--subtle);
+  --cortex-shadow-border-base: 0 0 0 1px rgba(255, 255, 255, 0.145);
+  --cortex-shadow-small: 0px 1px 2px rgba(0, 0, 0, 0.16);
+  --cortex-shadow-border-small:
+    var(--cortex-shadow-border-base), var(--cortex-shadow-small),
+    var(--cortex-shadow-background-border);
+
+  --background: oklch(0 0 0);
+  --foreground: oklch(0.985 0 0);
+
+  --subtle: oklch(0.145 0 0);
+  --subtle-foreground: oklch(0.985 0 0);
+
+  --card: oklch(0.125 0 0);
+  --card-foreground: oklch(0.985 0 0);
+
+  --popover: oklch(0.125 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+
+  --primary: oklch(0.97 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+
+  --secondary: oklch(0.2329 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+
+  --muted: oklch(0.22 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+
+  --accent: oklch(0.2582 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+
+  --destructive: oklch(0.5801 0.227 25.12);
+  --destructive-foreground: oklch(0.704 0.191 22.216);
+
+  --warning: oklch(0.769 0.188 70.08);
+  --warning-foreground: oklch(0.893 0.159 67.112);
+  --info: var(--cortex-blue-700);
+  --info-foreground: var(--cortex-blue-400);
+  --success: var(--cortex-green-700);
+  --success-foreground: var(--cortex-green-400);
+
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+
+  --chart-grid-stroke: #1d1d1d;
+  --chart-axis-text: #666666;
+  --chart-1: var(--cortex-blue-900);
+  --chart-2: var(--cortex-green-900);
+  --chart-3: var(--cortex-amber-900);
+  --chart-4: var(--cortex-purple-900);
+  --chart-5: var(--cortex-pink-900);
+  --chart-reference-line-stroke: #333333;
+  --chart-reference-label: #666666;
+  --chart-actual-line: #ffffff;
+  --chart-forecast-line: #999999;
+  --chart-tooltip-cursor: #99999933;
+  --chart-pattern-bg: #0c0c0c;
+  --chart-pattern-stroke: #666666;
+  --chart-bar-fill: white;
+  --chart-bar-fill-secondary: #6666664d;
+  --chart-gradient-start: #666666;
+  --chart-gradient-end: #ffffff;
+  --chart-line-secondary: #999999;
+
+  --code: oklch(0.145 0 0);
+  --code-foreground: oklch(0.708 0 0);
+
+  /* Same expressions as `:root`, re-declared so they recompute against this
+   * element's cortex values — see the note on the light block. The cortex scales
+   * already invert here, so nothing else needs a dark-specific value. */
+  --sh-keyword: var(--cortex-purple-900);
+  --sh-string: var(--cortex-green-900);
+  --sh-class: var(--cortex-amber-900);
+  --sh-entity: var(--cortex-blue-900);
+  --sh-property: var(--cortex-blue-900);
+  --sh-identifier: var(--foreground);
+  --sh-jsxliterals: var(--foreground);
+  --sh-sign: var(--foreground);
+  --sh-comment: var(--muted-foreground);
+  /* Shiki token map — see the `:root` block. */
+  --shiki-foreground: var(--sh-identifier);
+  --shiki-background: transparent;
+  --shiki-token-keyword: var(--sh-keyword);
+  --shiki-token-string: var(--sh-string);
+  --shiki-token-string-expression: var(--sh-string);
+  --shiki-token-link: var(--sh-string);
+  --shiki-token-constant: var(--sh-class);
+  --shiki-token-function: var(--sh-entity);
+  --shiki-token-parameter: var(--sh-property);
+  --shiki-token-punctuation: var(--sh-sign);
+  --shiki-token-comment: var(--sh-comment);
+
+  --sidebar: oklch(0 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    @apply border-border;
+  }
+
+  * {
+    @apply border-border min-w-0;
+  }
+
+  html {
+    text-rendering: optimizelegibility;
+  }
+
+  body {
+    font-family: var(--font-figtree), system-ui, sans-serif;
+    @apply bg-background text-foreground font-normal;
+  }
+
+  ::selection {
+    @apply bg-brand text-brand-foreground;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    @apply text-muted-foreground;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  [type="search"]::-webkit-search-cancel-button,
+  [type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+/* Frontal Cortex text utilities */
+@utility material-small {
+  box-shadow: var(--cortex-shadow-border-small);
+  @apply bg-background rounded-md;
+}
+
+@utility text-label-13 {
+  @apply font-sans leading-[16px] font-normal;
+}
+
+@utility text-label-14-mono {
+  @apply font-mono text-[14px] leading-[20px] font-normal;
+}
+
+@utility text-label-16-mono {
+  @apply font-mono text-[16px] leading-[20px] font-normal;
+}
+
+.loading-ellipsis:after {
+  display: inline-block;
+  width: 0px;
+  overflow: hidden;
+  vertical-align: bottom;
+  content: "\2026"; /* ascii code for the ellipsis character */
+  -webkit-animation: ellipsis steps(4, end) 900ms infinite;
+  animation: ellipsis steps(4, end) 900ms infinite;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+/* Date picker */
+.rdp-tbody .rdp-button {
+  border-radius: 100%;
+}
+
+.aria-selected\:text-accent-foreground[aria-selected="true"] {
+  border-radius: 0px;
+}
+
+/* Height motion for a Base UI disclosure panel — Collapsible, Accordion,
+ * ShowMore. Apply to the panel element itself, alongside its
+ * `h-(--…-panel-height)`, `overflow-hidden` and `ease-out` classes: this
+ * utility owns the transition property and duration only, so the height custom
+ * property (which differs per primitive), the overflow escape hatch and the
+ * easing token stay ordinary utilities a caller can override.
+ *
+ * Why this is a utility and not `transition-[height] duration-200`:
+ *
+ * `tailwindcss-animate` redefines `duration-*` to set `animation-duration` as
+ * well as `transition-duration`. So `duration-200` left a 200ms animation
+ * duration on a panel that declares no animation at all. Base UI probes the
+ * computed style to decide how a panel is animated, and for a panel that mounts
+ * open — where it suppresses the mount animation — a non-zero
+ * `animation-duration` alone is enough to count as "CSS animation present". With
+ * the transition also present it warns that both types are in use. It still
+ * drives the transition, so nothing looked broken; the warning fired on every
+ * such mount.
+ *
+ * This replaces a `[data-slot="…-content"] { animation-duration: 0s }` rule that
+ * addressed the same thing but could not reach it: `CollapsibleContent` spreads
+ * caller props after its own `data-slot`, so every composition built on it
+ * (`tool-content`, `sandbox-content`, `reasoning-content`, `plan-content`,
+ * `sources-content`, `stack-trace-content`, `chain-of-thought-content`) renames
+ * the slot and fell straight out of the selector. Only `show-more-content`, which
+ * sets its slot last, was ever matched. Carrying the fix on the panel's own class
+ * list makes it independent of what slot a caller declares.
+ *
+ * `animation-duration: 0s` is kept rather than relying on the absence of
+ * `duration-*`, so a caller adding one through `className` cannot resurrect the
+ * warning.
+ */
+@utility disclosure-panel {
+  transition-duration: 250ms;
+  transition-property: height;
+  animation-duration: 0s;
+}
+
+/* Raised-surface inner ring.
+ *
+ * The package had two competing elevation recipes: `ring-1 ring-foreground/10`
+ * + `shadow-md` (13 files) and a border + inset highlight + `shadow-lg/5`
+ * (7 files). Menu and DropdownMenu — two dropdown menus — rendered with
+ * visibly different edges as a result.
+ *
+ * This extracts the second, better recipe (it is dark-aware and reads as a real
+ * material rather than a flat outline) so it exists once instead of being
+ * hand-copied. It intentionally provides ONLY the inset highlight; callers keep
+ * their own `border`, background, radius and shadow, because those legitimately
+ * differ between overlay surfaces (`bg-popover`, `shadow-lg/5`) and input
+ * controls (`bg-background`, `shadow-xs`).
+ *
+ * Requires the element to establish a positioning context — the utility sets
+ * `position: relative` itself, so callers need not add it.
+ *
+ * Radius inherits the caller's own `rounded-*` value rather than hardcoding
+ * one. None of these surfaces have an actual CSS `border` eating into their
+ * box, so a fixed radius here always sat ~1px inside the caller's real
+ * corner — invisible at normal size, but a visible double arc at zoom (e.g.
+ * dropdown-menu's rounded-lg content, or the rounded-md sub-content before it
+ * was aligned to match). `frame.tsx` uses `--radius-xl` and keeps its own
+ * inline `before:` classes instead of this utility.
+ */
+@utility surface-ring {
+  position: relative;
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    content: "";
+    border-radius: inherit;
+    box-shadow: 0 1px --theme(--color-black / 4%);
+  }
+
+  &:is(.dark *)::before {
+    box-shadow: 0 -1px --theme(--color-white / 6%);
+  }
+}
+
+@theme {
+  --animate-caret-blink: caret-blink 1.25s ease-out infinite;
+  --animate-skeleton: skeleton 2s -1s infinite linear;
+
+  @keyframes skeleton {
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes caret-blink {
+    0%,
+    70%,
+    100% {
+      opacity: 1;
+    }
+    20%,
+    50% {
+      opacity: 0;
+    }
+  }
+}
+
+/* Empty-state entrance — opt in with `<Empty animateIn>`.
+ *
+ * Empty states are a rare, first-time surface, which is the one frequency tier
+ * where decorative motion earns its cost. Kept in CSS so `empty.tsx` stays a
+ * server component and ships no JS.
+ *
+ * A keyframe animation, not a transition + `@starting-style`. The entrance is
+ * predetermined and runs once on mount — it is never interrupted or reversed —
+ * which is the case keyframes are for. It also avoids a real bug in the
+ * transition version: `transition-delay` set for the stagger persists for the
+ * element's whole life, so any transition a consumer later added to a direct
+ * child (a hover, a focus ring) would inherit a permanent 60/120ms lag.
+ * `animation-delay` applies only to this animation.
+ *
+ * The cubic-bezier is written out because the easing tokens live in
+ * `@theme inline`, which inlines values into utilities and does NOT emit custom
+ * properties to :root — `var(--ease-out)` would be undefined here. The value is
+ * identical to `--ease-out`.
+ *
+ * `backwards` fill mode — deliberately not `both`. `backwards` holds the
+ * from-state through the delay, so staggered children stay hidden until their
+ * turn instead of flashing in first. `both` would add `forwards`, which pins the
+ * final values at animation-origin priority and outranks normal author styles —
+ * so a consumer later changing a child's opacity would silently lose. That is
+ * the same persistence trap this rule exists to avoid.
+ *
+ * The stagger is decorative and never blocks interaction: children are fully
+ * interactive from the first frame; only opacity, translate and scale animate.
+ *
+ * Reduced motion: the global clamp below collapses this to an instant
+ * appearance — correct for an entrance, where the reduced behaviour is
+ * "no movement", not "no element".
+ */
+@keyframes empty-enter {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+    scale: 0.98;
+  }
+}
+
+[data-slot="empty"][data-animate-in] > * {
+  animation: empty-enter 400ms cubic-bezier(0.23, 1, 0.32, 1) backwards;
+}
+
+[data-slot="empty"][data-animate-in] > *:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+[data-slot="empty"][data-animate-in] > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+/* Cap the stagger rather than letting it grow unbounded. Empty composes five
+ * parts, so a 4th+ direct child is reachable; without this they would fall back
+ * to 0ms and animate *before* their older siblings. */
+[data-slot="empty"][data-animate-in] > *:nth-child(n + 4) {
+  animation-delay: 180ms;
+}
+
+/* `--shiki-background` is transparent, but keep the figure in charge of its
+ * own surface even if a caller passes a different theme. The `pre` is the only
+ * thing inside the figure with padding, so it is also the inset the code gets
+ * from the card edges. The inline padding must match the `[data-highlighted-line]`
+ * override below, which re-applies it so the highlight can bleed to the figure
+ * edges while the line text stays aligned with the unhighlighted code. */
+[data-rehype-pretty-code-figure] pre,
+[data-slot="code-block"] pre {
+  margin: 0;
+  padding-block: 0.75rem;
+  padding-inline: 1rem;
+  background-color: transparent;
+}
+
+/* Keeps blank lines from collapsing, so line numbers stay aligned with source. */
+[data-rehype-pretty-code-figure] [data-line],
+[data-slot="code-block"] [data-line] {
+  min-height: 1lh;
+}
+
+/* Highlighted lines bleed to the figure edges — the padding is re-added here so
+ * the marker sits flush against the gutter rather than inside the code inset. */
+[data-rehype-pretty-code-figure] [data-highlighted-line],
+[data-slot="code-block"] [data-highlighted-line] {
+  padding-inline: 1rem;
+  background-color: --alpha(var(--color-foreground) / 6%);
+  box-shadow: inset 2px 0 0 0 var(--foreground);
+}
+
+/* Highlighted words. rehype-pretty-code's `/word/` meta emits
+ * `[data-highlighted-chars]`; Shiki's `[!code word:x]` notation emits
+ * `.highlighted-word`. Same band as a highlighted line, at word scale, so the
+ * two treatments read as one system. */
+[data-rehype-pretty-code-figure] [data-highlighted-chars],
+[data-rehype-pretty-code-figure] .highlighted-word,
+[data-slot="code-block"] [data-highlighted-chars],
+[data-slot="code-block"] .highlighted-word {
+  padding-inline: 0.2em;
+  background-color: --alpha(var(--color-foreground) / 8%);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 1px --alpha(var(--color-foreground) / 10%);
+}
+
+/* Line numbers. `has-data-line-numbers:px-0` on the `pre` already drops the
+ * inset; the gutter is drawn here so the flag actually renders numbers. */
+[data-rehype-pretty-code-figure] [data-line-numbers],
+[data-slot="code-block"] [data-line-numbers] {
+  counter-reset: line;
+}
+
+[data-rehype-pretty-code-figure] [data-line-numbers] > [data-line]::before,
+[data-slot="code-block"] [data-line-numbers] > [data-line]::before {
+  display: inline-block;
+  width: 2.5rem;
+  padding-inline-end: 1rem;
+  color: var(--muted-foreground);
+  text-align: end;
+  user-select: none;
+  content: counter(line);
+  counter-increment: line;
+}
+
+/* Reduced motion.
+ *
+ * Clamp rather than remove. `animation: none` would prevent Base UI and Motion
+ * from receiving animation end events, so elements driven by `data-ending-style`
+ * or AnimatePresence would never unmount. 0.01ms completes imperceptibly while
+ * still firing those events.
+ *
+ * This cannot reach Motion's JS-driven animations (shimmer.tsx, theme-switcher.tsx),
+ * which branch on useReducedMotion() instead.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+
+    /* Narrow the transition to non-movement properties rather than clamping the
+     * duration to zero. Reduced motion means *gentler*, not *none*: opacity and
+     * colour still ease (so the copy-button confirmation and button press still
+     * read as feedback), while transform/translate/scale/height changes apply
+     * instantly.
+     *
+     * Why not `translate: none`: dialogs are centred with `-translate-x-1/2`
+     * (dialog.tsx:85), so neutralising the property outright would throw every
+     * modal into the top-left corner. Removing it from `transition-property`
+     * stops the *animation* without touching the *value*.
+     *
+     * Safe for unmounting: Base UI waits on `element.getAnimations()` promises
+     * (internals/useAnimationsFinished.js), not `transitionend`. A property that
+     * is no longer transitioned simply produces no Animation, so `Promise.all([])`
+     * resolves immediately and the element unmounts at once.
+     */
+    transition-property:
+      opacity, background-color, border-color, color, fill, stroke, box-shadow,
+      outline-color !important;
+    transition-duration: 150ms !important;
+    scroll-behavior: auto !important;
+  }
+}

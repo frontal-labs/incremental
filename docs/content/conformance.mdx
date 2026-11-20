@@ -1,0 +1,91 @@
+---
+title: Conformance & Testing
+description: Conformance suite (41 cases), Vitest adapter cases (V01-V16), guarantees, and testing commands.
+icon: CheckCircle
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [conformance, testing, C01-C41, V01-V16, guarantees, make test]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+Incremental's correctness is guaranteed by a language-neutral **conformance suite** plus per-adapter test cases. All 41 conformance cases pass.
+
+## Conformance suite (C01–C41)
+
+The conformance suite (`conformance/cases/`) ensures byte-identical behavior across all bindings (Node, Python, Rust) and the engine core. Each case specifies:
+
+- Input observations and baseline
+- A change set
+- Expected plan (invalid tasks, reasons, skipped count, confidence)
+
+Cases C01–C41 cover:
+
+| Area | Cases | What's verified |
+|------|-------|-----------------|
+| Soundness / certificates | C01–C10 | Skips only with valid certificates; no silent skips |
+| Baseline invariant | C11–C15 | Compare-and-swap, baseline mismatch → fallback |
+| Policy rules P0–P12 | C16–C30 | Each rule fires correctly; fallback priority |
+| Input kinds | C31–C35 | file, dir, probe, env, env_all, declared |
+| Context changes | C36–C38 | Reserved and fallback context keys |
+| Verify mode | C39–C41 | Stat cache hash checking |
+
+## Vitest adapter cases (V01–V16)
+
+The Vitest adapter's fixture cases (`adapters/vitest/fixtures/cases/`) verify end-to-end behavior:
+
+- V01–V05: Single file change → only affected test runs
+- V06–V10: No changes → all skip from certificates
+- V11–V12: New file → no observation → invalid
+- V13–V14: Deleted file → removed_read / removed_listed
+- V15–V16: Global input change → full fallback
+
+## How conformance is run
+
+Conformance is language-neutral: each binding runs the same case files and must produce byte-identical plans.
+
+```sh
+make check-spec      # validate spec and schemas
+make all-tests       # check-spec, core, policy, protocol, bindings, vitest, oracle, e2e, adapters, mcp
+make test-fuzz       # fuzz testing
+make test-python     # Python binding
+make test-git        # git adapter
+```
+
+Every test target depends on `build`. Pass several targets to one `make` command so the engine is built once: `make test-core test-policy`.
+
+## Test logs
+
+When a target fails, the terminal shows its last 20–30 lines. The full output is in `logs/<target>.log` (git-ignored).
+
+## Guarantees
+
+- **No silent skips:** a task without a valid certificate is always invalid
+- **Deterministic plans:** same input → same output, regardless of ordering
+- **Byte-identical across bindings:** Node, Python, Rust produce identical plans for the same conformance case
+- **Fallback safety:** on any doubt (baseline mismatch, missing context, unobserved input), the engine falls back to running everything rather than skipping incorrectly
+
+## Test targets reference
+
+| Target | Meaning |
+|--------|---------|
+| `test-core` | Engine core |
+| `test-policy` | Policy rules |
+| `test-protocol` | Protocol v1 |
+| `test-bindings` | Node / Python / Rust clients |
+| `test-vitest` | Vitest adapter |
+| `test-oracle` | Strace oracle (Linux only) |
+| `test-e2e` | End-to-end |
+| `test-adapters` | All adapters (git, vitest, strace, mcp, …) |
+| `test-mcp` | MCP server |
+| `test-fuzz` | Fuzz testing |
+| `test-python` | Python binding |
+| `test-git` | Git adapter |
+
+Adapter sub-targets: `test-bazel`, `test-biome`, `test-clippy`, `test-config`, `test-env`, `test-fs`, `test-playwright`, `test-pnpm`, `test-process`, `test-protobuf`, `test-ruff`, `test-turbopack`, `test-watcher`, `test-typescript`, `test-rust`.
+
+## Next steps
+
+- [**Benchmarks**](/benchmarks) — performance targets and replay methodology
+- [**Policy Rules**](/policy) — the rules the conformance suite verifies

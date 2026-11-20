@@ -1,0 +1,4570 @@
+{
+  "Header": {
+    "features": "功能",
+    "resources": "资源",
+    "pricing": "定价",
+    "searchPlaceholder": "搜索文档、更新和页面",
+    "searchButton": "搜索",
+    "quickLinks": "快速链接",
+    "seeAllResults": "查看全部 {count} 条结果",
+    "localeButton": "选择语言",
+    "signIn": "登录",
+    "closeMenu": "关闭菜单",
+    "homeLabel": "Frontal OSS 首页",
+    "noResults": "没有找到与搜索匹配的页面或文档。",
+    "openMenu": "打开菜单",
+    "resultCount": "{count, plural, other {# 个结果}}",
+    "searching": "搜索中…"
+  },
+  "Footer": {
+    "toggleTheme": "切换主题",
+    "lightMode": "浅色模式",
+    "darkMode": "深色模式",
+    "copyright": "© {year} Frontal Labs, Inc. 或其关联公司。",
+    "tagline": "企业 AI 基础设施"
+  },
+  "StartPage": {
+    "hero": {
+      "title": "我们正在构建企业智能的未来",
+      "description": "我们正在构建将企业数据、系统与运营转化为智能软件的基础设施。",
+      "primaryCta": "了解我们的使命",
+      "secondaryCta": "预约演示"
+    },
+    "video": {
+      "playLabel": "播放视频",
+      "closeLabel": "关闭对话框"
+    },
+    "howItWorks": {
+      "title": "工作原理"
+    },
+    "features": {
+      "context": {
+        "title": "所有上下文，统一于一处",
+        "subtitle": "连接你业务已在运行的系统，Frontal 会将它们解析为一个可查询的上下文层。",
+        "mobileSubtitle": "业务所依赖的每个系统，汇入同一个上下文层。",
+        "media": "已接入的系统"
+      },
+      "agents": {
+        "title": "能真正上生产的智能体",
+        "subtitle": "智能体在确定性边界内运行，并在需要判断时相互交接、或移交给人。",
+        "mobileSubtitle": "智能体在既定边界内运行，并支持交接。",
+        "media": "智能体运行"
+      },
+      "observability": {
+        "title": "默认可观测",
+        "subtitle": "每一次运行都被追踪、评估且可归因，让你能证明系统做了什么、为什么这么做。",
+        "mobileSubtitle": "每次运行均可追踪、评估与审计。",
+        "media": "运行链路"
+      }
+    },
+    "videos": {
+      "overview": {
+        "title": "概览",
+        "subtitle": "了解 Frontal 如何把企业的数据、系统与运营转化为智能软件。"
+      },
+      "runtime": {
+        "title": "运行时",
+        "subtitle": "统一的执行环境，涵盖编排、状态与可靠性，从初版原型到生产环境。"
+      },
+      "agents": {
+        "title": "智能体",
+        "subtitle": "在确定性边界内行动的智能体：可调用工具、支持交接，并在关键处引入人工审阅。"
+      },
+      "ontology": {
+        "title": "本体",
+        "subtitle": "业务所依赖实体的共享模型，让每个系统与智能体基于同一套定义进行推理。"
+      },
+      "data": {
+        "title": "数据",
+        "subtitle": "无需迁移即可连接现有系统与数据仓库，并在所有数据源上保持血缘完整。"
+      },
+      "observability": {
+        "title": "可观测性",
+        "subtitle": "为每次运行提供追踪、评估与审计记录，让生产环境中的行为始终可解释。"
+      },
+      "security": {
+        "title": "安全",
+        "subtitle": "经得起企业级审查的治理、访问控制与数据边界。"
+      }
+    },
+    "images": {
+      "dashboardPreview": "Frontal 仪表板预览",
+      "dashboard": "仪表板插图"
+    },
+    "sections": {
+      "platform": {
+        "title": "所有层，同一个平台",
+        "description": "八个层共享同一套上下文、同一套权限和同一条审计轨迹。"
+      },
+      "how": {
+        "title": "工作方式",
+        "description": "接入您已经在用的系统，在其之上构建，并看清每一次运行。"
+      },
+      "useCases": {
+        "title": "团队用 Frontal 构建什么",
+        "description": "几乎每个落地场景中都会出现的四种模式。"
+      },
+      "faq": {
+        "title": "常见问题",
+        "description": "团队在创建第一个工作区之前常问的问题。"
+      },
+      "cta": {
+        "title": "今天就构建第一个工作流",
+        "description": "几分钟即可创建工作区，也欢迎与我们讨论您的使用场景。",
+        "primary": "开始构建",
+        "secondary": "预约演示"
+      }
+    },
+    "useCases": {
+      "support": {
+        "title": "端到端处理客户请求",
+        "description": "读取请求、调取该客户的历史、在权威系统中执行操作，并留下审计轨迹。"
+      },
+      "ops": {
+        "title": "自动化运营的中间地带",
+        "description": "那些因为没有系统真正承接、只能停留在表格和邮箱里的重复流程。"
+      },
+      "analysis": {
+        "title": "回答跨系统的问题",
+        "description": "询问实体、运行、成本或近期变更，得到的是基于真实记录的答案，而不是一张看板。"
+      },
+      "review": {
+        "title": "把判断力用在关键处",
+        "description": "由智能体消化大量常规工作，只把例外连同完整上下文转交给人。"
+      }
+    },
+    "faq": {
+      "what": {
+        "question": "Frontal 究竟是什么？",
+        "answer": "面向企业 AI 的基础设施层。它接入您的数据与系统，在其之上运行智能体和工作流，并记录发生过的一切。"
+      },
+      "replace": {
+        "question": "我们必须替换现有技术栈吗？",
+        "answer": "不必。Frontal 从您已经在运行的系统和数据仓库中读取数据。接入一个数据源就足以开始。"
+      },
+      "trust": {
+        "question": "我们怎么知道智能体做了什么？",
+        "answer": "每次运行都保留输入、工具调用与输出，归属到具体身份，并可导出用于审计。"
+      },
+      "start": {
+        "question": "上手过程是怎样的？",
+        "answer": "创建一个工作区，接入一个系统，然后在其上构建一个工作流或智能体。多数团队一个下午就能完成。"
+      }
+    },
+    "intro": {
+      "title": "真正理解业务的软件",
+      "lead": "多数 AI 工具止步于模型。难的是模型之外的一切：它读取的数据、它触及的系统、它继承的权限，以及它做过什么的记录。",
+      "body": {
+        "a": "Frontal 正是承接其余部分的那一层。接入您已经在用的系统，定义业务真正使用的实体，并构建在与员工相同规则下行动的智能体与工作流。",
+        "b": "没有黑箱。每次运行都保留输入、判断与输出，因此生产环境中发生的一切始终可核查、可解释、可改进。"
+      }
+    }
+  },
+  "Agents": {
+    "meta": {
+      "title": "企业级 AI 智能体",
+      "description": "创建能够理解业务、连接数据、做出决策并在数分钟内于整个组织中执行的智能体。",
+      "ogTitle": "AI 智能体",
+      "ogDescription": "能够理解、决策并执行的智能体"
+    },
+    "hero": {
+      "title": "能够理解、决策并执行的智能体。",
+      "eyebrow": "智能体",
+      "mobileDescription": "构建理解你业务的智能体",
+      "description": "创建智能体，连接你的数据，并在几分钟内完成部署。",
+      "primaryCta": "了解我们的使命",
+      "secondaryCta": "预约演示"
+    },
+    "video": {
+      "playLabel": "播放视频",
+      "closeLabel": "关闭对话框"
+    },
+    "images": {
+      "agentRunAlt": "智能体运行界面",
+      "dashboardPreviewAlt": "Frontal 控制台预览",
+      "dashboardAlt": "控制台示意图"
+    },
+    "videos": {
+      "overview": {
+        "title": "概览",
+        "subtitle": "了解 Frontal 如何将企业数据、系统与运营转化为智能软件。"
+      },
+      "runtime": {
+        "title": "运行时",
+        "subtitle": "用于编排、状态与可靠性的统一执行环境。"
+      },
+      "tools": {
+        "title": "工具",
+        "subtitle": "让智能体以类型化方式访问企业既有系统。"
+      },
+      "handoffs": {
+        "title": "交接",
+        "subtitle": "在智能体与人之间流转工作，并在需要判断处引入人工复核。"
+      },
+      "memory": {
+        "title": "记忆",
+        "subtitle": "跨运行、跨团队持续保留的状态与共享上下文。"
+      },
+      "evaluation": {
+        "title": "评估",
+        "subtitle": "在上线前后，基于真实用例评估智能体的行为。"
+      },
+      "governance": {
+        "title": "治理",
+        "subtitle": "针对每一次操作的访问控制、数据边界与审计记录。"
+      }
+    },
+    "recentHighlights": {
+      "title": "近期亮点",
+      "viewMore": "查看更多文章",
+      "posts": {
+        "thirdEra": {
+          "title": "AI 软件开发的第三个时代",
+          "description": "AI 软件开发的第三个时代正在到来：自主云端智能体开始在更长的时间跨度上承担更大的任务。",
+          "category": "洞察",
+          "date": "2026年2月26日"
+        },
+        "computerUse": {
+          "title": "Cursor 智能体现已能够操作自己的计算机",
+          "description": "云端智能体使用自己创建的软件来验证变更并演示成果。",
+          "category": "产品",
+          "date": "2026年2月24日"
+        },
+        "bugbotAutofix": {
+          "title": "用 Bugbot Autofix 闭合代码评审闭环",
+          "description": "Bugbot Autofix 会启动云端智能体测试你的变更，自动发现并修复 PR 中的问题。",
+          "category": "产品",
+          "date": "2026年2月26日"
+        }
+      }
+    }
+  },
+  "Developers": {
+    "meta": {
+      "title": "开发者",
+      "description": "提供 SDK、类型化 API 以及在你自己的技术栈上基于 Frontal 构建所需的参考资料。",
+      "ogTitle": "开发者",
+      "ogDescription": "在你自己的技术栈上基于 Frontal 构建"
+    },
+    "hero": {
+      "eyebrow": "开发者",
+      "title": "基于 Frontal 构建。",
+      "description": "客户端库、类型化 API，以及今天就能发布首个集成所需的全部参考资料。"
+    },
+    "breadcrumb": "开发者",
+    "nav": {
+      "label": "开发者参考",
+      "browse": "浏览参考文档"
+    },
+    "startHere": "从这里开始"
+  },
+  "Docs": {
+    "meta": {
+      "title": "文档",
+      "ogTitle": "文档",
+      "description": "了解如何在 Frontal 上构建。获取关于智能体、工作流、数据、本体与可观测性等问题的解答。",
+      "ogDescription": "关于 Frontal 你需要知道的一切"
+    },
+    "hero": {
+      "eyebrow": "文档",
+      "title": "需要什么帮助？",
+      "description": "了解如何使用 Frontal 构建智能软件。"
+    },
+    "popularGuides": "热门指南",
+    "browseByTopic": "按主题浏览",
+    "breadcrumb": "文档",
+    "chat": {
+      "thinking": "思考中…",
+      "rateLimitPrefix": "已达到速率限制。请稍后重试，或",
+      "browseDocs": "浏览文档",
+      "rateLimitSuffix": "."
+    },
+    "askAI": "询问 AI",
+    "askAIPrompt": "阅读此页面并回答有关它的问题。",
+    "nav": {
+      "label": "文档",
+      "browse": "浏览文档"
+    },
+    "browseSdks": "查看 SDK",
+    "updated": "更新于 {date}",
+    "pager": "页面导航",
+    "previous": "上一页",
+    "next": "下一页",
+    "closing": {
+      "title": "构建所需的一切",
+      "description": "从快速开始入手，如果缺少内容，请到帮助中心提问。",
+      "help": "获取帮助"
+    },
+    "onThisPage": "本页内容",
+    "actions": "页面操作",
+    "viewMarkdown": "以 Markdown 查看"
+  },
+  "Help": {
+    "meta": {
+      "title": "帮助中心",
+      "description": "提供指南与解答，并在你需要与真人沟通而非查看页面时，直接联系我们的团队。",
+      "ogTitle": "帮助中心",
+      "ogDescription": "Frontal 的指南、解答与支持"
+    },
+    "hero": {
+      "eyebrow": "帮助中心",
+      "title": "需要什么帮助？",
+      "description": "搜索指南、按步骤操作，或直接联系团队。",
+      "contact": "联系我们"
+    },
+    "search": {
+      "label": "搜索帮助文章",
+      "placeholder": "搜索答案",
+      "empty": "没有匹配该搜索的帮助文章。",
+      "viewAll": "查看全部结果"
+    },
+    "categories": {
+      "title": "按主题浏览",
+      "description": "从与你要做的事情最接近的领域开始。",
+      "articleCount": "{count, plural, other {# 篇文章}}",
+      "getting-started": {
+        "label": "快速开始",
+        "description": "创建工作区，邀请团队，设置第一个项目。"
+      },
+      "accounts-and-access": {
+        "label": "账号与访问",
+        "description": "角色、权限、单点登录，以及谁能看到什么。"
+      },
+      "billing": {
+        "label": "账单",
+        "description": "套餐、发票、用量上限，以及如何更改付费内容。"
+      },
+      "data-and-syncs": {
+        "label": "数据与同步",
+        "description": "连接数据源、刷新同步，并了解同步失败时会发生什么。"
+      },
+      "troubleshooting": {
+        "label": "疑难排查",
+        "description": "当智能体、工作流或集成异常时，先检查什么。"
+      },
+      "security-and-privacy": {
+        "label": "安全与隐私",
+        "description": "你的数据存放在哪里、如何受到保护，以及可以申请哪些报告。"
+      }
+    },
+    "popular": {
+      "title": "热门文章",
+      "description": "打开次数最多的答案。"
+    },
+    "channels": {
+      "title": "获取帮助的方式",
+      "description": "当一篇文章还不够时。",
+      "support": {
+        "title": "联系支持团队",
+        "description": "请求会连同你的账号信息一起送达团队。"
+      },
+      "status": {
+        "title": "系统状态",
+        "description": "实时状态与事件历史与本站分开发布。"
+      },
+      "docs": {
+        "title": "开发者文档",
+        "description": "API 参考、SDK 以及在 Frontal 上开发的指南。"
+      }
+    },
+    "faq": {
+      "title": "常见问题",
+      "items": {
+        "contact": {
+          "question": "如何联系支持团队？",
+          "answer": "在工作区中发起请求，它会连同你的账号信息一起送达团队。"
+        },
+        "included": {
+          "question": "我的套餐包含支持吗？",
+          "answer": "每个套餐都包含支持。响应时间取决于套餐和问题的紧急程度。"
+        },
+        "teammates": {
+          "question": "可以把其他人加入我的工作区吗？",
+          "answer": "可以。所有者可以邀请同事，并决定每个人能做什么。"
+        },
+        "status": {
+          "question": "在哪里查看服务是否中断？",
+          "answer": "实时状态与事件历史发布在状态页面，与本站分开。"
+        }
+      }
+    },
+    "cta": {
+      "title": "还是没解决？",
+      "description": "如果在这里找不到答案，团队更希望你告诉我们，而不是自己猜。",
+      "primary": "联系我们",
+      "secondary": "查看系统状态"
+    },
+    "category": {
+      "metaTitle": "{category}帮助",
+      "metaDescription": "关于{category}的指南与解答。",
+      "empty": "这里还没有文章。",
+      "otherTopics": "其他主题",
+      "backToHelp": "全部帮助主题",
+      "articles": "文章"
+    },
+    "article": {
+      "breadcrumb": "帮助",
+      "updated": "更新于 {date}",
+      "related": "相关文章"
+    }
+  },
+  "Learn": {
+    "meta": {
+      "title": "学习",
+      "description": "通过简短的视频课程，学习如何用 Frontal 构建智能软件的引导式课程。",
+      "ogTitle": "学习",
+      "ogDescription": "用 Frontal 构建的引导式课程"
+    },
+    "hero": {
+      "title": "学习 Frontal。",
+      "description": "简短的视频课程，按合理的顺序编排。从头开始，或直接跳到你需要的一课。"
+    },
+    "breadcrumb": "学习",
+    "minutes": "{count} 分钟",
+    "nav": {
+      "label": "课程",
+      "browse": "浏览课程"
+    }
+  },
+  "Releases": {
+    "meta": {
+      "title": "版本发布",
+      "description": "Frontal 的最新更新与改进。了解我们为帮助你交付智能软件所做的工作。",
+      "ogDescription": "我们最近的进展"
+    },
+    "backLink": "← 返回",
+    "pageLabel": "页",
+    "pagination": {
+      "previous": "上一页",
+      "next": "下一页"
+    }
+  },
+  "Authors": {
+    "others": "等其他 +{count} 人"
+  },
+  "Blog": {
+    "meta": {
+      "description": "来自 Frontal 团队的想法、工程笔记与产品思考。",
+      "ogDescription": "想法与工程笔记",
+      "title": "博客"
+    },
+    "pagination": {
+      "next": "下一页",
+      "previous": "上一页"
+    },
+    "archive": {
+      "allCategories": "全部",
+      "searchPosts": "搜索文章",
+      "noMatches": "没有符合搜索条件的文章。"
+    }
+  },
+  "News": {
+    "meta": {
+      "description": "关于 Frontal 的公告、新闻稿与媒体报道。",
+      "ogDescription": "公告与媒体报道",
+      "title": "新闻中心"
+    },
+    "pagination": {
+      "next": "下一页",
+      "previous": "上一页"
+    }
+  },
+  "PostActions": {
+    "label": "文章操作",
+    "askAI": "询问 AI",
+    "askFrontal": "询问 Frontal AI",
+    "askPrompt": "阅读这篇文章，并回答我关于“{title}”的问题。",
+    "listen": "收听",
+    "preparing": "正在准备音频…",
+    "listenFailed": "无法准备音频",
+    "copy": "复制",
+    "copyLink": "复制链接",
+    "copyMarkdown": "复制 Markdown",
+    "linkCopied": "已复制链接",
+    "markdownCopied": "已复制 Markdown",
+    "copyFailed": "复制失败"
+  },
+  "Download": {
+    "hero": {
+      "title": "在工作的每一个层面使用 Frontal。"
+    },
+    "desktop": {
+      "title": "桌面端",
+      "description": "以智能体为核心的体验，配备专注工作所需的工具。",
+      "cta": "下载 macOS 版"
+    },
+    "terminal": {
+      "title": "终端",
+      "description": "在任意终端或脚本中运行智能体，与你惯用的工具协同工作。",
+      "copyLabel": "复制安装命令"
+    },
+    "web": {
+      "title": "Web",
+      "description": "从浏览器、手机，或团队已在使用的工具中启动智能体。",
+      "cta": "在网页端打开 Frontal"
+    }
+  },
+  "Site": {
+    "title": "Frontal：企业级 AI",
+    "description": "Frontal 是面向企业的 AI 平台，用于构建智能软件，将你的数据、AI 代理、工作流和业务系统连接到一个统一的基础设施中。",
+    "chatSuggestions": {
+      "enterpriseDataSecurity": "Frontal 如何处理企业数据、安全和 AI？",
+      "howDoesItWork": "Frontal 如何运作？",
+      "howWouldItWork": "Frontal 在我的公司里会如何运作？",
+      "showMe": "让我看看 Frontal 可以为我的公司做什么。",
+      "whatCanIBuild": "我可以用 Frontal 构建什么？",
+      "whatIsFrontal": "Frontal 是什么？",
+      "whatMakesDifferent": "Frontal 有什么不同？"
+    }
+  },
+  "Error": {
+    "notFound": {
+      "action": "返回首页",
+      "description": "您访问的页面不存在。",
+      "title": "未找到页面"
+    },
+    "unexpected": {
+      "action": "重试",
+      "description": "抱歉，出现了一些问题。",
+      "title": "出现问题"
+    }
+  },
+  "LocaleSelector": {
+    "documentLanguage": "文档语言",
+    "english": "英语"
+  },
+  "Chat": {
+    "clearChat": "清除聊天",
+    "clearFailed": "清除聊天记录失败",
+    "closeChat": "关闭聊天",
+    "console": {
+      "clearFailed": "清除消息失败：",
+      "saveFailed": "保存消息失败："
+    },
+    "drawerTrigger": "向 AI 提问",
+    "historyCleared": "聊天记录已清除",
+    "keyboardTip": "提示：你可以使用以下按键打开和关闭聊天",
+    "sendMessage": "发送消息",
+    "stopGenerating": "停止生成",
+    "title": "向 AI 提问",
+    "unknownError": "未知错误",
+    "copyChat": "复制对话",
+    "chatCopied": "对话已复制到剪贴板",
+    "copyFailed": "复制对话失败",
+    "roleYou": "你",
+    "roleAssistant": "AI"
+  },
+  "Navigation": {
+    "ai": {
+      "benchmark": "基准测试",
+      "evaluation": "评估",
+      "gateway": "AI 网关",
+      "research": "研究",
+      "safety": "安全"
+    },
+    "company": {
+      "brand": "品牌",
+      "careers": {
+        "description": "打造未来",
+        "label": "职业"
+      },
+      "contactSales": "联系销售",
+      "customers": "客户",
+      "enterprise": "企业",
+      "mission": {
+        "description": "构建世界的智能层",
+        "label": "使命"
+      },
+      "news": "新闻",
+      "newsroom": {
+        "description": "公告、媒体报道与公司新闻。",
+        "label": "新闻中心"
+      },
+      "openSource": "开源",
+      "partnerNetwork": "合作伙伴",
+      "pricing": "定价",
+      "pressKit": "媒体资料包",
+      "research": {
+        "description": "推进计算智能科学",
+        "label": "研究"
+      },
+      "startups": "初创企业"
+    },
+    "developers": {
+      "apiReference": "API 参考",
+      "documentation": "文档",
+      "examples": "示例",
+      "sdks": "SDK",
+      "status": "服务状态",
+      "templates": "模板"
+    },
+    "features": {
+      "agents": {
+        "description": "为你的业务提供自主工作",
+        "label": "智能体"
+      },
+      "data": {
+        "description": "让每个决策都有上下文支撑",
+        "label": "数据"
+      },
+      "observability": {
+        "description": "查看每次运行和结果",
+        "label": "可观测性"
+      },
+      "ontology": {
+        "description": "为你的系统建立共享语言",
+        "label": "本体"
+      },
+      "runtime": {
+        "description": "可靠运行智能软件",
+        "label": "运行时"
+      },
+      "security": {
+        "description": "控制、隐私和治理",
+        "label": "安全"
+      },
+      "storage": {
+        "description": "保存 AI 所需的一切",
+        "label": "存储"
+      },
+      "workflows": {
+        "description": "从开始到结束连接工作",
+        "label": "工作流"
+      }
+    },
+    "footer": {
+      "ai": "AI",
+      "brand": "品牌",
+      "company": "公司",
+      "developers": "开发者",
+      "explore": "探索",
+      "features": "功能",
+      "legal": "法律与信任",
+      "products": "产品",
+      "resources": "资源",
+      "solutions": "解决方案",
+      "social": "社交媒体",
+      "tools": "工具"
+    },
+    "footerLabel": "页脚导航",
+    "groups": {
+      "features": {
+        "build": "构建",
+        "context": "上下文",
+        "operate": "运维"
+      },
+      "resources": {
+        "develop": "开发",
+        "tools": "工具",
+        "stayCurrent": "最新动态"
+      }
+    },
+    "legal": {
+      "acceptableUsePolicy": "可接受使用政策",
+      "allDocuments": "全部文档",
+      "cookiePolicy": "Cookie 政策",
+      "dataProcessingAgreement": "数据处理协议",
+      "dataProtectionPolicy": "数据保护政策",
+      "privacyPolicy": "隐私政策",
+      "securityOverview": "安全概览",
+      "subprocessors": "子处理方",
+      "termsOfService": "服务条款"
+    },
+    "mobile": {
+      "ask": "提问",
+      "contactSales": {
+        "description": "与我们的团队讨论您的需求。",
+        "label": "联系销售"
+      }
+    },
+    "products": {
+      "ask": "提问",
+      "cloud": "云服务",
+      "cli": "CLI",
+      "dashboard": "控制台",
+      "download": "下载",
+      "studio": "工作室"
+    },
+    "resources": {
+      "blog": {
+        "description": "创意、工程笔记与产品思考。",
+        "label": "博客"
+      },
+      "cli": {
+        "description": "从终端直接运行面向代理的工作流。",
+        "label": "CLI"
+      },
+      "community": {
+        "description": "加入 Frontal 社区。",
+        "label": "社区"
+      },
+      "computer": {
+        "description": "自动化整个公司的工作。",
+        "label": "计算机"
+      },
+      "documentation": {
+        "description": "了解如何使用 Frontal 构建。",
+        "label": "文档"
+      },
+      "helpCenter": {
+        "description": "查找使用 Frontal 的答案与指南。",
+        "label": "帮助中心"
+      },
+      "learn": "学习",
+      "pricing": "定价",
+      "releases": {
+        "description": "查看 Frontal 的最新动态。",
+        "label": "版本更新"
+      },
+      "sdks": {
+        "description": "使用类型安全的 SDK 更快构建。",
+        "label": "SDK"
+      },
+      "support": "支持"
+    },
+    "search": {
+      "documentation": "文档",
+      "pricing": "定价",
+      "releases": "版本更新"
+    },
+    "solutions": {
+      "customerService": "客户服务",
+      "dataAnalysis": "数据分析",
+      "engineering": "工程",
+      "finance": "财务",
+      "marketing": "市场营销",
+      "operations": "运营",
+      "sales": "销售"
+    },
+    "social": {
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "x": "X",
+      "youtube": "YouTube"
+    },
+    "tools": {
+      "agent": "Frontal Agent",
+      "frameworks": "框架",
+      "plugins": "Frontal 插件"
+    }
+  },
+  "Pricing": {
+    "actions": {
+      "contactSales": "联系销售",
+      "startTrial": "开始试用"
+    },
+    "copy": "平台访问与 PAYG 计算、AI 推理、存储和工作流执行分别计费。Team 适用于一个明确的生产用例；Business 扩展运营规模和控制；Enterprise 则面向基础设施、安全和治理需求进行定制。",
+    "cta": {
+      "description": "与我们的团队讨论你的工作流、基础设施，以及 Frontal 如何融入你的技术栈。",
+      "primary": "开始使用",
+      "secondary": "联系销售",
+      "title": "开始使用 Frontal 构建。"
+    },
+    "customerStories": "客户案例",
+    "faq": {
+      "annual": {
+        "answer": "可以。Team 可按月或按年计费。Business 按年计费，而 Enterprise 合同为年度或根据你的采购要求定制。",
+        "question": "我可以按年付款吗？"
+      },
+      "billing": {
+        "answer": "计算、模型推理、存储以及适用的数据传输使用量都与平台访问分开计量。使用情况会按模型、项目、工作流、环境和资源类型报告，并通过支出控制帮助团队预测和管理消耗。",
+        "question": "哪些资源是单独计费的？"
+      },
+      "platform": {
+        "answer": "平台访问涵盖你所选层级可用的 Frontal 功能，包括工作区、项目、环境、代理、编排、模型、连接器和组织控制。",
+        "question": "平台访问包含什么？"
+      },
+      "plan": {
+        "answer": "Team 适合认真构建并协作交付的团队。Business 适合将 Frontal 作为运营基础设施一部分的公司。Enterprise 适合需要定制部署、治理、安全和支持的组织。",
+        "question": "哪个 Frontal 方案适合我的组织？"
+      },
+      "private": {
+        "answer": "支持。Frontal Cloud 是默认选项，可最快开始，基础设施由 Frontal 运营。Enterprise 客户可针对更严格的数据隔离或合规要求选择专属/隔离云；如果计算和数据必须完全留在自身环境内，则可选择客户 VPC/自托管。具体架构和运维责任由 Enterprise 团队共同确定。",
+        "question": "Frontal 是否支持专属云或客户自托管部署？"
+      },
+      "regional": {
+        "answer": "可以。价格会自动匹配所选语言环境和地区。如果你的组织适用不同的区域价格，可以更新货币选择器。",
+        "question": "你们支持区域定价和货币吗？"
+      },
+      "title": "常见问题"
+    },
+    "hero": {
+      "description": "面向生产的智能能力，平台访问与 PAYG 基础设施分开计费。",
+      "title": "为与你一起扩展而设计。"
+    },
+    "section": {
+      "subtitle": "先从简单开始，当工作流更复杂时再升级。",
+      "title": "符合你构建方式的定价"
+    },
+    "comparison": {
+      "title": "平台按订阅计价，用量按实际计量。",
+      "description": "您的套餐涵盖 Frontal 平台的使用权。计算、推理、存储与工作流消耗在适用时单独计量，并为生产环境提供支出可见性与管控。",
+      "usageTitle": "用量费率",
+      "usageDescription": "Frontal 会在验证客户价值指标、底层基础设施成本、毛利目标与报表模型之后，才公布用量单位与费率。当不同工作负载在模型、工具或算力消耗上差异显著时，我们不会采用统一的按次计价。",
+      "recommended": "推荐",
+      "searchFeatures": "搜索功能",
+      "searchLabel": "搜索套餐功能",
+      "moreInformation": "关于 {feature} 的更多信息",
+      "noMatches": "没有匹配的功能。",
+      "sections": {
+        "network": {
+          "description": "连接各类系统，并通过 Frontal 平台路由智能能力。",
+          "rows": {
+            "serviceConnections": {
+              "label": "服务连接",
+              "tooltip": "将智能体与工作流连接到它们完成实际工作所需的系统、工具与数据源。"
+            },
+            "deploymentRegions": {
+              "label": "部署区域"
+            },
+            "trafficControls": {
+              "label": "流量控制"
+            },
+            "privateNetworking": {
+              "label": "私有网络",
+              "tooltip": "私有网络连通属于基础设施工程，而非平台的默认勾选项。"
+            }
+          },
+          "title": "网络"
+        },
+        "intelligence": {
+          "description": "构建、编排、评估并运维智能软件。",
+          "rows": {
+            "agents": {
+              "label": "智能体"
+            },
+            "agentOrchestration": {
+              "label": "智能体编排",
+              "tooltip": "将智能体、工具、记忆、审批与工作流步骤统一到一个智能工作操作系统中。"
+            },
+            "supportedModels": {
+              "label": "支持的模型"
+            },
+            "modelRouting": {
+              "label": "模型路由"
+            },
+            "agentMemory": {
+              "label": "智能体记忆"
+            },
+            "toolCalling": {
+              "label": "工具调用"
+            },
+            "agentPermissions": {
+              "label": "智能体权限"
+            },
+            "guardrailsAndPolicies": {
+              "label": "护栏与策略"
+            },
+            "workflows": {
+              "label": "工作流"
+            },
+            "workflowComplexity": {
+              "label": "工作流复杂度"
+            },
+            "workflowExecution": {
+              "label": "工作流执行",
+              "tooltip": "执行消耗与平台使用权分开计量。在客户价值指标与单位经济模型得到验证之前，Frontal 不会公布统一的按次费率。"
+            },
+            "humanInTheLoop": {
+              "label": "人工介入"
+            },
+            "evaluation": {
+              "label": "评估"
+            },
+            "continuousEvaluation": {
+              "label": "持续评估",
+              "tooltip": "按准确性、可靠性、工具使用、延迟与成本要求，持续评估生产环境中的表现。"
+            },
+            "benchmarks": {
+              "label": "基准测试"
+            },
+            "scheduledIntelligence": {
+              "label": "定时智能任务"
+            }
+          },
+          "title": "智能"
+        },
+        "data": {
+          "description": "连接、组织并推理支撑智能能力的数据。",
+          "rows": {
+            "dataConnectors": {
+              "label": "数据连接器"
+            },
+            "dataIngestion": {
+              "label": "数据接入"
+            },
+            "dataSynchronization": {
+              "label": "数据同步"
+            },
+            "artifactsAndDocuments": {
+              "label": "制品与文档"
+            },
+            "graphsAndOntology": {
+              "label": "图谱与本体",
+              "tooltip": "描述智能体与应用理解你所在领域时所依赖的实体、关系与业务含义。"
+            },
+            "semanticDataLayer": {
+              "label": "语义数据层"
+            },
+            "dataAccessPolicies": {
+              "label": "数据访问策略"
+            },
+            "dataRetention": {
+              "label": "数据留存"
+            },
+            "dataResidency": {
+              "label": "数据驻留"
+            },
+            "customDataIntegrations": {
+              "label": "定制数据集成"
+            }
+          },
+          "title": "数据"
+        },
+        "compute": {
+          "description": "在可计量的基础设施上运行智能体、应用与工作流。",
+          "rows": {
+            "runtimeCompute": {
+              "label": "运行时算力"
+            },
+            "aiInference": {
+              "label": "AI 推理"
+            },
+            "storage": {
+              "label": "存储"
+            },
+            "executionEnvironments": {
+              "label": "执行环境"
+            },
+            "jobsAndWorkloads": {
+              "label": "作业与工作负载"
+            },
+            "autoscaling": {
+              "label": "自动扩缩容"
+            },
+            "dedicatedCapacity": {
+              "label": "专属容量",
+              "tooltip": "预留容量与性能承诺按工作负载确定，并与平台使用权分开签约。"
+            },
+            "privateIsolatedDeployment": {
+              "label": "专属/隔离云"
+            },
+            "vpcDedicatedInfrastructure": {
+              "label": "客户 VPC / 自托管"
+            }
+          },
+          "title": "算力"
+        },
+        "accessSecurity": {
+          "description": "为人员与系统提供受控的智能工作访问权限。",
+          "rows": {
+            "teams": {
+              "label": "团队",
+              "tooltip": "团队是用于协作、归属、权限与资源访问的组织单元。"
+            },
+            "rbac": {
+              "label": "RBAC"
+            },
+            "apiAccess": {
+              "label": "API 访问"
+            },
+            "sdksAndWebhooks": {
+              "label": "SDK 与 Webhook"
+            },
+            "serviceAccounts": {
+              "label": "服务账户"
+            },
+            "apiKeysAndSecrets": {
+              "label": "API 密钥与机密"
+            },
+            "accessPolicies": {
+              "label": "访问策略"
+            },
+            "ssoSaml": {
+              "label": "SSO / SAML"
+            },
+            "scim": {
+              "label": "SCIM"
+            },
+            "ipAllowlisting": {
+              "label": "IP 白名单"
+            }
+          },
+          "title": "访问与安全"
+        },
+        "compliance": {
+          "description": "明确治理、采购、隐私与可靠性方面的要求。",
+          "rows": {
+            "auditLogs": {
+              "label": "审计日志"
+            },
+            "governanceControls": {
+              "label": "治理控制"
+            },
+            "securityReviews": {
+              "label": "安全评审"
+            },
+            "complianceSupport": {
+              "label": "合规支持"
+            },
+            "dpaPrivacyAgreements": {
+              "label": "DPA / 隐私协议"
+            },
+            "procurementSupport": {
+              "label": "采购支持"
+            },
+            "securityDocumentation": {
+              "label": "安全文档"
+            },
+            "dataProcessingControls": {
+              "label": "数据处理控制"
+            },
+            "contractTerms": {
+              "label": "合同条款"
+            },
+            "sla": {
+              "label": "SLA"
+            },
+            "customLegalRequirements": {
+              "label": "定制法务要求"
+            }
+          },
+          "title": "合规"
+        },
+        "buildDeploy": {
+          "description": "组织工作、管理环境并发布智能应用。",
+          "rows": {
+            "workspaces": {
+              "label": "工作区"
+            },
+            "projects": {
+              "label": "项目"
+            },
+            "environments": {
+              "label": "环境"
+            },
+            "applications": {
+              "label": "应用"
+            },
+            "apis": {
+              "label": "API"
+            },
+            "deployments": {
+              "label": "部署"
+            },
+            "deploymentControls": {
+              "label": "部署控制"
+            },
+            "deploymentApprovals": {
+              "label": "部署审批"
+            },
+            "rollbacks": {
+              "label": "回滚"
+            },
+            "versioning": {
+              "label": "版本管理"
+            },
+            "secretsAndConfiguration": {
+              "label": "机密与配置"
+            },
+            "customDeployment": {
+              "label": "定制部署"
+            },
+            "customIntegrations": {
+              "label": "定制集成"
+            },
+            "infrastructureConfiguration": {
+              "label": "基础设施配置"
+            }
+          },
+          "title": "构建与部署"
+        },
+        "observability": {
+          "description": "同时掌握平台健康度、智能质量与运营表现。",
+          "rows": {
+            "platformObservability": {
+              "label": "平台可观测性"
+            },
+            "intelligenceObservability": {
+              "label": "智能可观测性",
+              "tooltip": "不只看基础设施可用性，而是统一理解智能体、模型、数据与工作流的行为。"
+            },
+            "agentTraces": {
+              "label": "智能体追踪"
+            },
+            "workflowTraces": {
+              "label": "工作流追踪"
+            },
+            "modelObservability": {
+              "label": "模型可观测性"
+            },
+            "evaluationAnalytics": {
+              "label": "评估分析"
+            },
+            "usageAnalytics": {
+              "label": "使用分析"
+            },
+            "costAnalytics": {
+              "label": "成本分析"
+            },
+            "performanceAnalytics": {
+              "label": "性能分析"
+            },
+            "alerts": {
+              "label": "告警"
+            },
+            "dashboards": {
+              "label": "仪表板"
+            },
+            "logRetention": {
+              "label": "日志留存"
+            },
+            "support": {
+              "label": "支持"
+            },
+            "supportResponse": {
+              "label": "支持响应时间"
+            },
+            "solutionsEngineering": {
+              "label": "解决方案工程"
+            },
+            "customerSuccessAndOnboarding": {
+              "label": "客户成功与上手引导"
+            },
+            "technicalAccountManager": {
+              "label": "技术客户经理",
+              "tooltip": "负责架构、落地与运营成效的专属技术伙伴。"
+            }
+          },
+          "title": "可观测性"
+        }
+      },
+      "values": {
+        "included": "包含",
+        "standard": "标准",
+        "regional": "按区域",
+        "custom": "定制",
+        "advanced": "进阶",
+        "multiStep": "多步骤",
+        "multiSystem": "跨系统",
+        "payg": "按量付费",
+        "coreConnectors": "基础连接器",
+        "advancedConnectors": "高级连接器",
+        "extended": "扩展",
+        "30Days": "30 天",
+        "1Year": "1 年",
+        "dedicated": "专属",
+        "monthlyAnnual": "按月 / 按年",
+        "annual": "按年",
+        "annualCustom": "按年 / 定制",
+        "unlimitedCustom": "不限 / 定制",
+        "developmentProduction": "开发 + 生产",
+        "developmentStagingProduction": "开发 + 预发布 + 生产",
+        "businessHours": "工作时间",
+        "priority": "优先",
+        "1BusinessDay": "1 个工作日",
+        "4Hours": "4 小时",
+        "selfServeGuided": "自助 + 指导",
+        "guided": "有指导",
+        "dedicatedWhiteGlove": "专属 / 全程贴身服务"
+      }
+    },
+    "summaries": {
+      "team": {
+        "name": "团队版",
+        "description": "面向构建并运维生产级智能能力的团队。",
+        "price": "$5,000 / 月"
+      },
+      "business": {
+        "name": "商业版",
+        "description": "面向在团队、系统、产品或多套部署间扩展智能能力的组织。",
+        "price": "$15,000 / 月"
+      },
+      "enterprise": {
+        "name": "企业版",
+        "description": "面向私有基础设施、定制安全、治理、支持与大规模签约。",
+        "price": "定制"
+      }
+    }
+  },
+  "Brand": {
+    "meta": {
+      "title": "品牌规范",
+      "description": "用于一致、准确地呈现 Frontal 的资源。",
+      "ogDescription": "用于一致、准确地呈现 Frontal 的资源。"
+    },
+    "hero": {
+      "title": "品牌规范",
+      "description": "用于一致、准确地呈现 Frontal 的资源",
+      "download": "下载品牌资源"
+    },
+    "assets": {
+      "title": "品牌资源",
+      "description": "压缩包内含 SVG 与 PNG 格式的 Frontal 字标与符号、浅色与深色版本、核心色板与字号体系，以及关于安全间距、最小尺寸和应避免的改动等使用说明。",
+      "videoLabel": "Frontal 品牌介绍"
+    }
+  },
+  "Solutions": {
+    "imageAlt": "收件箱界面",
+    "teams": {
+      "customerService": {
+        "description": "连接你的数据源，让 AI 智能体处理客户请求并提供洞察。",
+        "eyebrow": "客户服务",
+        "metaDescription": "使用 Frontal 构建并运行智能客户服务工作流。",
+        "metaTitle": "AI 客户服务工作流",
+        "title": "处理客户请求。",
+        "sections": {
+          "stats": {
+            "title": "客服团队一个季度之后衡量的指标"
+          },
+          "work": {
+            "title": "智能体自己就能结掉的事",
+            "description": "占据队列大部分的那些case。"
+          },
+          "depth": {
+            "title": "它是怎么不越线的",
+            "description": "让一条自动回复站得住脚的那些控制。"
+          },
+          "faq": {
+            "title": "客服负责人的提问",
+            "description": "让智能体回复客户之前，团队会先确认的事。"
+          },
+          "cta": {
+            "title": "清掉那条总在重新堆起来的队列",
+            "description": "接入你们的工单系统，解决第一个case。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "47%",
+            "label": "无需人工即关闭的工单"
+          },
+          "b": {
+            "value": "2m",
+            "label": "首次响应时间中位数"
+          },
+          "c": {
+            "value": "18%",
+            "label": "已解决工单的满意度提升"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "退款与账单",
+            "description": "在你们的政策范围内一路办到底。",
+            "detail": "智能体读订单、支付记录和退款政策，符合条件的直接处理，不符合的往上转。"
+          },
+          "b": {
+            "title": "账号与权限",
+            "description": "由真正掌握答案的系统来回答。",
+            "detail": "密码、席位和权限类问题按你们的身份系统求解，而不是照着一篇过期的帮助文章。"
+          },
+          "c": {
+            "title": "上报",
+            "description": "移交时前置工作已经做完。",
+            "detail": "需要人处理的case送到时，历史已读过、政策已核对，还附上了建议的下一步。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "以政策为依据",
+            "content": "退款、保修和资格规则作为数据源载入。智能体应用当前版本，并在回复里注明依据。"
+          },
+          "b": {
+            "label": "工单系统",
+            "content": "你们的工单和服务平台继续作为权威记录。Frontal 以客服本就拥有的权限写回。"
+          },
+          "c": {
+            "label": "上报规则",
+            "content": "定义哪些必须交到人手上。凡是含糊的、金额大的或超出政策的，都会带着完整背景转出。"
+          },
+          "d": {
+            "label": "语气与语言",
+            "content": "回复遵循你们的文案规范，并用客户的语言作答，复核环节和今天一样。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "客户会知道自己在和智能体对话吗？",
+            "answer": "由你们决定。是否告知是一个设置项，回复会按你们的政策要求呈现。"
+          },
+          "b": {
+            "question": "它解决不了的怎么办？",
+            "answer": "会在历史已读过、政策已核对的状态下上报，接手的人从问题中段进入，而不是从头开始。"
+          },
+          "c": {
+            "question": "它怎么学会我们的政策？",
+            "answer": "作为数据源接入一次即可。更新无需重新训练，就会进入之后的每一次执行。"
+          },
+          "d": {
+            "question": "可以只从一条队列开始吗？",
+            "answer": "可以。多数团队从一条高流量队列起步，等解决率稳住之后再扩大。"
+          }
+        }
+      },
+      "dataAnalysis": {
+        "description": "连接你的数据源，让 AI 智能体分析数据、回答问题并提供洞察。",
+        "eyebrow": "数据分析",
+        "metaDescription": "使用 Frontal 构建并运行智能数据分析工作流。",
+        "metaTitle": "AI 数据分析工作流",
+        "title": "用数据回答问题。",
+        "sections": {
+          "stats": {
+            "title": "排队等答案的代价",
+            "lead": "多数分析团队花在回答重复问题上的时间，超过了花在只有他们能做的分析上的时间。",
+            "description": "Frontal 用你们受治理的模型回答重复问题，把难的那些连同已经备好的背景一起交给分析师。"
+          },
+          "work": {
+            "title": "一个答案是怎么来的",
+            "description": "三个步骤，每一步都可以查看。"
+          },
+          "depth": {
+            "title": "让一个答案可信的前提"
+          },
+          "faq": {
+            "title": "分析团队的提问",
+            "description": "接入数据仓库之前，分析师会先确认的事。"
+          },
+          "cta": {
+            "title": "把数据放到伸手可及的地方",
+            "description": "接入一个数据仓库，问出第一个问题。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "80%",
+            "label": "无需分析师即解决的临时提问"
+          },
+          "b": {
+            "value": "9x",
+            "label": "常规请求的响应提速"
+          },
+          "c": {
+            "value": "1d",
+            "label": "从提问到经复核的答案"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "用日常语言提问",
+            "description": "问题出现在大家本来就工作的地方，并按看板使用的同一套定义求解。"
+          },
+          "b": {
+            "title": "看得到查询语句",
+            "description": "每个答案都展示它跑过的查询，分析师因此能验证、修正或者把它提为正式指标。"
+          },
+          "c": {
+            "title": "把好的沉淀下来",
+            "description": "一个好的临时答案会变成受治理的指标，下一个提问的人拿到的就是复核过的版本。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "受治理的模型",
+            "content": "答案读的是你们的语义层而不是原始表，一个指标因此在任何地方都是同一个意思。"
+          },
+          "b": {
+            "label": "行级安全",
+            "content": "访问遵循数据仓库里已经定义好的策略。智能体绝不会返回提问者本来看不到的数据。"
+          },
+          "c": {
+            "label": "查询成本",
+            "content": "按工作区设定上限。昂贵的查询在执行前先估算，超出预算就会被拦下。"
+          },
+          "d": {
+            "label": "来源",
+            "content": "每个答案都注明所用的模型、查询和执行，任何一个数字都随时可以复核。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "这会取代我们的报表工具吗？",
+            "answer": "不会。它读同一个语义层，凡是需要图表的都会把人交回你们的看板。"
+          },
+          "b": {
+            "question": "怎么避免错误答案？",
+            "answer": "答案建立在受治理的模型之上并始终展示查询，分析师因此能在错误扩散之前发现它。"
+          },
+          "c": {
+            "question": "支持哪些数据仓库？",
+            "answer": "Snowflake、BigQuery、Databricks 和 Postgres，通过你们自己控制的只读连接接入。"
+          },
+          "d": {
+            "question": "谁可以提问？",
+            "answer": "凡是你们授权的人都可以。每个人看得到什么，由你们本就在维护的数仓策略决定。"
+          }
+        }
+      },
+      "engineering": {
+        "description": "为技术团队提供在整个组织中构建、部署、观测并运维 AI 原生系统所需的工具。",
+        "eyebrow": "工程",
+        "metaDescription": "使用 Frontal 构建并运行智能工程工作流。",
+        "metaTitle": "AI 工程工作流",
+        "title": "构建智能基础设施。",
+        "sections": {
+          "stats": {
+            "title": "平台替你们拿掉的部分",
+            "description": "人工智能系统里属于基础设施、而不属于产品的那些部分。"
+          },
+          "work": {
+            "title": "你们用什么来搭建",
+            "description": "团队每天真正接触的界面。"
+          },
+          "depth": {
+            "title": "它是怎么运行的",
+            "description": "你们部署的每一个工作流底下的保证。"
+          },
+          "related": {
+            "title": "技术团队接下来通常会读这几页"
+          },
+          "faq": {
+            "title": "研发团队的提问",
+            "description": "第一次部署之前，开发者会先确认的事。"
+          },
+          "cta": {
+            "title": "部署你们的第一个工作流",
+            "description": "读文档，或者直接在控制台里开始搭建。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "0",
+            "label": "需要你们团队运维的服务器"
+          },
+          "b": {
+            "value": "90%",
+            "label": "每个集成少写的胶水代码"
+          },
+          "c": {
+            "value": "12x",
+            "label": "从原型到生产的提速"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "命令行与开发套件",
+            "description": "本地开发，用同一份代码跑生产，控制台能做的都能写成脚本。"
+          },
+          "b": {
+            "title": "工作流原语",
+            "description": "可持久的步骤、重试和人工检查点都是普通代码，而不是画流程图的功课。"
+          },
+          "c": {
+            "title": "连接器",
+            "description": "面向你们已在运行的系统的带类型客户端，鉴权、翻页和限流都已处理好。"
+          },
+          "d": {
+            "title": "以代码表达的策略",
+            "description": "权限和上限就放在它们所管辖的工作流旁边，走同一套评审。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "运行隔离",
+            "content": "每次执行都拿到一个全新沙箱，依赖已锁定，上限由你们设定。执行之间不留任何东西。"
+          },
+          "b": {
+            "label": "部署",
+            "content": "从你们现有的流水线发布。版本不可变，回滚只是改一个指针，预览环境各自独立。"
+          },
+          "c": {
+            "label": "状态与持久性",
+            "content": "长时间运行的任务能挺过重启。工作流从最后一个已确认的步骤继续，而不是从头再来。"
+          },
+          "d": {
+            "label": "密钥与访问",
+            "content": "凭据在运行时从你们的密钥库解析，绝不会落到代码、日志或链路追踪里。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "支持哪些语言？",
+            "answer": "目前是 TypeScript 和 Python，两者的运行语义完全一致。"
+          },
+          "b": {
+            "question": "能跑在我们自己的云上吗？",
+            "answer": "可以。企业部署运行在你们自己的账户里，控制面由我们代管。"
+          },
+          "c": {
+            "question": "本地开发怎么进行？",
+            "answer": "命令行工具在你们机器上跑的是同一套运行时，工作流在部署前后表现一致。"
+          },
+          "d": {
+            "question": "有没有退路？",
+            "answer": "每层抽象都有。在任意步骤降到普通代码，直接调用你们自己的服务。"
+          }
+        }
+      },
+      "finance": {
+        "description": "连接你的数据源，让 AI 智能体处理财务任务并提供洞察。",
+        "eyebrow": "财务",
+        "metaDescription": "使用 Frontal 构建并运行智能财务工作流。",
+        "metaTitle": "AI 财务工作流",
+        "title": "自动化财务核算。",
+        "sections": {
+          "stats": {
+            "title": "财务团队在第一个季度看到的变化"
+          },
+          "work": {
+            "title": "工作方式随之改变",
+            "description": "四个习惯，取代月末的手忙脚乱。"
+          },
+          "depth": {
+            "title": "Frontal 强制执行的控制"
+          },
+          "faq": {
+            "title": "管理会计的提问",
+            "description": "智能体动总账之前，团队会先确认的事。"
+          },
+          "cta": {
+            "title": "在凭证之上结账",
+            "description": "接入你们的总账，先落地第一条控制。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "6d",
+            "label": "月度结账缩短的天数"
+          },
+          "b": {
+            "value": "94%",
+            "label": "无需人工即对上的对账"
+          },
+          "c": {
+            "value": "40%",
+            "label": "花在电子表格上的时间下降"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "持续对账",
+            "description": "交易一到就与银行和总账记录比对，不必堆到月末再赶。"
+          },
+          "b": {
+            "title": "解释每一处差异",
+            "description": "数字一动，智能体就说明是什么驱动的，并链接背后的凭证。"
+          },
+          "c": {
+            "title": "带着凭证催收",
+            "description": "催收先读真实发票、付款历史和合同条款，然后才落下第一个字。"
+          },
+          "d": {
+            "title": "让痕迹保持完整",
+            "description": "每笔自动分录都带着输入、所用规则和审批人。审计从项目变成一次查询。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "职责分离",
+            "content": "准备分录的智能体不能审批这笔分录。审批会流向你们身份系统里角色合适的人。"
+          },
+          "b": {
+            "label": "重要性阈值",
+            "content": "设定执行需要停下复核的金额。低于阈值的自动入账，凭证照样保留。"
+          },
+          "c": {
+            "label": "原始凭证",
+            "content": "发票、对账单和合同始终与它们支撑的分录相连，复核的人不必四处找底稿。"
+          },
+          "d": {
+            "label": "期间控制",
+            "content": "已结期间拒绝写入。试图记入锁定月份的智能体会明确报错，而不是悄悄调整。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "智能体能记入我们的总账吗？",
+            "answer": "可以，在你们设定的限度内。超过阈值时它会准备好分录并等待审批。"
+          },
+          "b": {
+            "question": "怎么向审计师证明？",
+            "answer": "每次执行都保留输入、所用规则和审批人，可导出为审计师读得懂的记录。"
+          },
+          "c": {
+            "question": "它会读哪些系统？",
+            "answer": "你们的企业资源系统、银行流水、计费平台和文档库作为数据源接入，并继续作为权威记录。"
+          },
+          "d": {
+            "question": "期间中途改规则怎么办？",
+            "answer": "规则有版本。执行始终会说明用的是哪一版，历史因此仍然读得懂。"
+          }
+        }
+      },
+      "marketing": {
+        "description": "连接你的数据源，让 AI 智能体处理营销任务并提供洞察。",
+        "eyebrow": "市场营销",
+        "metaDescription": "使用 Frontal 构建并运行智能营销工作流。",
+        "metaTitle": "AI 营销工作流",
+        "title": "自动化营销工作。",
+        "sections": {
+          "stats": {
+            "title": "时间从哪里回来",
+            "lead": "市场团队几乎要花掉一整周，去重新拼凑公司里本来就存在的背景信息。",
+            "description": "Frontal 去掉了这一步。简报、初稿和复盘都从已接入的数据源开始，工作因此从判断起步，而不是从收集起步。"
+          },
+          "work": {
+            "title": "市场团队能更快交付的部分",
+            "description": "一场活动通常卡住的三个地方。"
+          },
+          "depth": {
+            "title": "把品牌稳住的东西",
+            "description": "每一份初稿都要经过的数据源与检查点。"
+          },
+          "faq": {
+            "title": "市场负责人的提问",
+            "description": "让智能体动笔之前，团队会先确认的事。"
+          },
+          "cta": {
+            "title": "带着背景开始做活动",
+            "description": "接入你们的数据源，给第一个智能体下简报。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "4d",
+            "label": "每份活动简报节省的时间"
+          },
+          "b": {
+            "value": "2x",
+            "label": "每季度能跑的实验数量"
+          },
+          "c": {
+            "value": "71%",
+            "label": "自动生成的复盘占比"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "从数据开始的简报",
+            "description": "简报一开头就是真实的受众、产品和效果背景，而不是一张白纸。"
+          },
+          "b": {
+            "title": "不跑偏的内容",
+            "description": "智能体按你们的定位和语气写作，并标出任何偏离已核准表述的地方。"
+          },
+          "c": {
+            "title": "不用催的复盘",
+            "description": "效果小结会自己从看板读取的同一批数据源里拼出来。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "品牌与表述",
+            "content": "已核准的定位、语气和法务表述作为数据源载入。与之冲突的初稿在复核之前就会被标出。"
+          },
+          "b": {
+            "label": "分析与归因",
+            "content": "数仓表、产品分析和广告平台以只读方式接入，复盘因此与团队本就信任的数字对得上。"
+          },
+          "c": {
+            "label": "内容系统",
+            "content": "你们的内容平台、素材库和本地化工具，按团队现有权限接受写入。"
+          },
+          "d": {
+            "label": "复核与发布",
+            "content": "没有经过你们定义的审批环节，任何东西都不会发布。初稿进入团队现在就在用的复核队列。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "内容会无人监督地发布吗？",
+            "answer": "不会。初稿仍然流向今天负责审批的人。Frontal 缩短的是到达好初稿的路径，不是取消复核。"
+          },
+          "b": {
+            "question": "它怎么知道我们的定位？",
+            "answer": "作为数据源载入一次即可。每次执行都读当前版本，一次更新会同时影响所有初稿。"
+          },
+          "c": {
+            "question": "我们能保留现有工具吗？",
+            "answer": "可以。Frontal 连接你们的内容平台、分析和广告工具，而不是替换它们。"
+          },
+          "d": {
+            "question": "其他语言怎么办？",
+            "answer": "智能体在你们配置的语言里工作，并交给你们已有的本地化复核环节。"
+          }
+        }
+      },
+      "operations": {
+        "description": "连接你的数据源，让 AI 智能体处理运营任务并提供洞察。",
+        "eyebrow": "运营",
+        "metaDescription": "使用 Frontal 构建并运行智能运营工作流。",
+        "metaTitle": "AI 运营工作流",
+        "title": "自动化运营工作。",
+        "sections": {
+          "stats": {
+            "title": "运营团队拿回来的东西"
+          },
+          "work": {
+            "title": "工作实际流去了哪里",
+            "description": "吞掉运营一周时间的两处缺口。"
+          },
+          "depth": {
+            "title": "每个工作流都要声明的内容"
+          },
+          "faq": {
+            "title": "运营负责人的提问",
+            "description": "第一个流程搬过来之前，团队会先确认的事。"
+          },
+          "cta": {
+            "title": "把流程的中间段自动化",
+            "description": "挑一个工作流，把它放进生产环境。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "58%",
+            "label": "无需转手即办结的请求占比"
+          },
+          "b": {
+            "value": "5d",
+            "label": "每人每月节省的时间"
+          },
+          "c": {
+            "value": "3x",
+            "label": "例外处理提速"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "系统之间的转手",
+            "description": "一条横跨采购、工单和审批的请求，不再是一个人在三个页签之间抄字段。"
+          },
+          "b": {
+            "title": "没人认领的例外",
+            "description": "偏离常规路径的case会被接住、查清，并带着完整背景转给该处理的人。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "流程边界",
+            "content": "每个工作流都声明它能触碰哪些系统、能执行哪些动作。声明之外的一律失败，而不是临场发挥。"
+          },
+          "b": {
+            "label": "人工检查点",
+            "content": "审批可以插在任何位置。智能体会停下，交出全部背景，再从决定处继续。"
+          },
+          "c": {
+            "label": "重试与恢复",
+            "content": "失败的步骤按你们的策略重试，并报告停在了哪里，卡住的执行因此始终可见。"
+          },
+          "d": {
+            "label": "归属",
+            "content": "每个工作流都有负责人和上报路径，例外会落到一个人手上，而不是一个队列里。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "我们该从哪些流程开始？",
+            "answer": "从横跨两三个系统、又跑得频繁的那些开始。它们最容易描述，效果也最快验证。"
+          },
+          "b": {
+            "question": "必须先把一切都建模吗？",
+            "answer": "不必。从一个工作流开始。上下文层会随着这个流程需要的系统一起长起来。"
+          },
+          "c": {
+            "question": "我们现有的自动化怎么办？",
+            "answer": "继续跑。Frontal 在合适的地方调用它们，而不是要求你们重做一遍。"
+          },
+          "d": {
+            "question": "怎么知道一次执行做对了？",
+            "answer": "每次执行都保留输入、判断和写入，你可以一步一步回放发生过什么。"
+          }
+        }
+      },
+      "sales": {
+        "description": "连接你的数据源，让 AI 智能体处理销售任务并提供洞察。",
+        "eyebrow": "销售",
+        "metaDescription": "使用 Frontal 构建并运行智能销售工作流。",
+        "metaTitle": "AI 销售工作流",
+        "title": "自动化销售工作。",
+        "sections": {
+          "stats": {
+            "title": "真正看得见的销售管道",
+            "description": "上报的数字和销售更新的记录，终于是同一件事。"
+          },
+          "work": {
+            "title": "销售在 Frontal 上跑的事",
+            "description": "三件吞掉销售一周时间的工作，在你们自己的记录上完成。"
+          },
+          "depth": {
+            "title": "它如何嵌进你们的系统",
+            "description": "Frontal 连到哪里，又被允许在那里做什么。"
+          },
+          "faq": {
+            "title": "销售负责人的提问",
+            "description": "团队在接入客户管理系统之前会先确认的事。"
+          },
+          "cta": {
+            "title": "把一周时间还给销售",
+            "description": "接入你们的客户管理系统，跑起第一个销售智能体。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "62%",
+            "label": "手工维护客户管理系统的时间下降"
+          },
+          "b": {
+            "value": "3x",
+            "label": "每位销售能覆盖的客户数量"
+          },
+          "c": {
+            "value": "24h",
+            "label": "从新线索到合格交接"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "始终最新的准备工作",
+            "description": "智能体在每次通话前，把客户历史、产品使用情况和未结工单汇总成一份简报。"
+          },
+          "b": {
+            "title": "不会掉的跟进",
+            "description": "通话里做出的每个承诺，都会变成有负责人和期限的可追踪任务。"
+          },
+          "c": {
+            "title": "有依据的预测",
+            "description": "管道复盘读的就是销售自己维护的记录，因此数字对得上。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "客户管理系统",
+            "content": "Salesforce、HubSpot 和 Dynamics 作为权威记录接入。Frontal 只在销售本就拥有的权限内读写。"
+          },
+          "b": {
+            "label": "区域与访问",
+            "content": "销售只看得到自己负责的客户。角色来自你们的身份系统，并对每一次执行生效。"
+          },
+          "c": {
+            "label": "通话与邮件数据",
+            "content": "通话平台、共享邮箱和日历汇入上下文层，智能体因此知道之前已经聊过什么。"
+          },
+          "d": {
+            "label": "审计与归因",
+            "content": "智能体写入的每个字段都保留产生它的那次执行，改动过的数字永远追得回来源。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "智能体会不经审核就写入系统吗？",
+            "answer": "只在你们允许的地方。每个动作都受策略约束，超过阈值的一律等待人工批准。"
+          },
+          "b": {
+            "question": "第一个工作流要多久？",
+            "answer": "多数团队接入客户管理系统后，一周内就能跑起一个可用的调研智能体。"
+          },
+          "c": {
+            "question": "这会取代我们的销售工具吗？",
+            "answer": "不会。Frontal 连接它们并在同一批记录上工作，销售继续用惯用的工具。"
+          },
+          "d": {
+            "question": "智能体判断错了怎么办？",
+            "answer": "每次执行都保留输入和判断，你可以查看它读了什么，修正源头，再跑一次。"
+          }
+        }
+      }
+    }
+  },
+  "Features": {
+    "data": {
+      "description": "汇集并组织全企业的数据，构建结构化、可治理的智能系统基础。",
+      "eyebrow": "数据",
+      "metaDescription": "汇集并组织全企业的数据，为 AI 智能体、应用与智能工作流构建结构化、可治理的基础。",
+      "metaTitle": "面向 AI 的统一企业数据",
+      "title": "统一你的企业数据。",
+      "ogTitle": "企业数据",
+      "ogDescription": "统一你的企业数据",
+      "capabilities": {
+        "connectors": {
+          "title": "受管连接器",
+          "description": "从您已在使用的系统中持续、增量地同步记录。"
+        },
+        "warehouse": {
+          "title": "原生对接数据仓库",
+          "description": "直接在数据仓库中读取，无需复制您已经建模好的数据。"
+        },
+        "lineage": {
+          "title": "结构与血缘",
+          "description": "每个字段的类型、来源和最近同步时间都会记录并可查询。"
+        },
+        "resolution": {
+          "title": "实体解析",
+          "description": "描述同一对象的记录会依据您的本体进行匹配与合并。"
+        },
+        "quality": {
+          "title": "质量校验",
+          "description": "每次同步都会跑校验，问题记录在智能体读到之前就已经暴露。"
+        },
+        "governed": {
+          "title": "从源头开始治理",
+          "description": "每个数据源继承它所供给实体的权限，而不是另存一份规则。"
+        }
+      },
+      "specs": {
+        "sources": {
+          "label": "数据源",
+          "content": "受管连接器、您的数据仓库、对象存储与 API。"
+        },
+        "sync": {
+          "label": "同步方式",
+          "content": "全量刷新、增量同步，以及在数据源支持时的变更数据捕获。"
+        },
+        "freshness": {
+          "label": "新鲜度",
+          "content": "按数据源可精确到分钟的调度，并支持按需回补。"
+        },
+        "formats": {
+          "label": "格式",
+          "content": "结构化记录、JSON、CSV、Parquet 以及非结构化文档。"
+        },
+        "lineage": {
+          "label": "血缘",
+          "content": "字段级的来源、转换过程与最近同步时间。"
+        },
+        "volume": {
+          "label": "数据量",
+          "content": "每个数据源可承载数百万条记录，速率上限由您按源设定。"
+        }
+      },
+      "faq": {
+        "move": {
+          "question": "我们的数据必须迁移吗？",
+          "answer": "不必。您可以直接从数据仓库读取，也可以同步到 Frontal，按数据源分别选择。"
+        },
+        "duplicates": {
+          "question": "重复记录如何处理？",
+          "answer": "记录会依据您的本体进行解析，来自三个系统的同一位客户会合并为一个实体，且每个来源仍可追溯。"
+        },
+        "backfill": {
+          "question": "可以回补历史数据吗？",
+          "answer": "可以，按数据源和时间范围随时按需执行。"
+        },
+        "first": {
+          "question": "应该先接入哪个数据源？",
+          "answer": "选那个已经在回答高频问题的源。这样从第一天起就有可对照的结果。"
+        },
+        "quality": {
+          "question": "怎样在问题数据扩散前发现它？",
+          "answer": "每次同步都会执行校验，在记录被解析成实体之前标出不合格的部分。"
+        },
+        "cost": {
+          "question": "让一个数据源保持同步要花多少？",
+          "answer": "首次加载之后只搬运变更过的记录，因此即便是大数据源，日常同步量也很小。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "从源系统到已解析的记录",
+          "description": "记录通过连接器接入，或直接在数据仓库中读取，随后依据您的本体解析为可直接操作的实体。"
+        },
+        "capabilities": {
+          "title": "统一数据让什么成为可能",
+          "description": "当所有系统对“客户是什么”达成一致时，会发生什么改变。"
+        },
+        "specs": {
+          "title": "数据层支持什么"
+        },
+        "faq": {
+          "title": "接入系统之前",
+          "description": "数据团队在把某个数据源指向 Frontal 之前常问的问题。"
+        },
+        "cta": {
+          "title": "接入第一个数据源",
+          "description": "先从一个系统开始，看到解析效果后再接入其余系统。",
+          "primary": "接入数据源",
+          "secondary": "数据文档"
+        }
+      },
+      "how": {
+        "connect": {
+          "title": "接入数据源",
+          "description": "持续同步，或直接在数据仓库中读取而不复制任何数据。",
+          "media": "连接器配置"
+        },
+        "resolve": {
+          "title": "解析为实体",
+          "description": "描述同一对象的记录会被匹配与合并，且每个来源仍然可追溯。",
+          "media": "实体解析"
+        },
+        "serve": {
+          "title": "投入实际使用",
+          "description": "智能体与工作流读取的是已解析的实体，而不是原始表，因此答案能保持一致。",
+          "media": "使用中的实体"
+        }
+      }
+    },
+    "observability": {
+      "description": "通过实时洞察、强大分析与全面可见性，掌握业务表现。",
+      "eyebrow": "可观测性",
+      "metaDescription": "实时监控业务表现、智能体活动与工作流结果，配合强大分析与完整的运维可见性。",
+      "metaTitle": "AI 可观测性与实时洞察",
+      "title": "实时掌握正在发生的一切。",
+      "ogTitle": "可观测性",
+      "ogDescription": "实时掌握正在发生的一切",
+      "capabilities": {
+        "traces": {
+          "title": "运行追踪",
+          "description": "每次运行的每个步骤、输入、输出与判断都会被记录。"
+        },
+        "metrics": {
+          "title": "实时指标",
+          "description": "吞吐量、延迟、错误率与成本，按工作流、智能体和版本分别统计。"
+        },
+        "alerting": {
+          "title": "告警",
+          "description": "阈值与异常告警，直接推送到您已有的值班渠道。"
+        },
+        "evidence": {
+          "title": "证据链路",
+          "description": "从任意一条输出回溯到产生它的记录与提示词。"
+        },
+        "compare": {
+          "title": "比较版本",
+          "description": "把智能体或工作流的两个版本并排放在一起，看清哪一个确实更好。"
+        },
+        "cost": {
+          "title": "成本归属",
+          "description": "花费按运行记录，并按版本和团队汇总，账单因此能对应到产生它的那部分工作。"
+        }
+      },
+      "specs": {
+        "traces": {
+          "label": "追踪",
+          "content": "按运行的步骤时间线，包含输入、输出与令牌用量。"
+        },
+        "metrics": {
+          "label": "指标",
+          "content": "按版本统计的吞吐量、延迟分位数、错误率与成本。"
+        },
+        "retention": {
+          "label": "保留",
+          "content": "可按工作区配置，并支持导出以长期留存。"
+        },
+        "alerting": {
+          "label": "告警",
+          "content": "阈值与异常，可发送至 Slack、邮件或 Webhook。"
+        },
+        "export": {
+          "label": "导出",
+          "content": "将运行与指标推送到您的数据仓库或 OTLP 端点。"
+        },
+        "sampling": {
+          "label": "采样",
+          "content": "默认全量采集，运行量大的工作流可以单独采样。"
+        }
+      },
+      "faq": {
+        "why": {
+          "question": "我能看到智能体为什么这样回答吗？",
+          "answer": "可以。每次运行都保留了结果背后的提示词、检索到的上下文、工具调用与输出。"
+        },
+        "existing": {
+          "question": "它能与我们现有的监控配合吗？",
+          "answer": "可以，通过 OTLP 导出以及推送到值班工具的 Webhook 实现。"
+        },
+        "retention": {
+          "question": "运行数据会保留多久？",
+          "answer": "保留期可按工作区配置，运行记录也可导出以长期留存。"
+        },
+        "overhead": {
+          "question": "追踪会让运行变慢吗？",
+          "answer": "追踪与执行并行写入，运行量大的工作流还可以按工作流单独采样。"
+        },
+        "sensitive": {
+          "question": "能把敏感值排除在追踪之外吗？",
+          "answer": "可以。字段在采集时即可脱敏，因此不会进入保存下来的追踪。"
+        },
+        "cost": {
+          "question": "能看到一次运行花了多少吗？",
+          "answer": "可以。词元用量与花费按运行记录，并按版本和团队汇总。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "每一次运行都可记录、可解释",
+          "description": "每次运行在执行过程中都会写下完整链路。指标由这些链路汇总而来，因此您衡量的对象和排查的对象是同一条记录。"
+        },
+        "capabilities": {
+          "title": "可观测性真正带来什么",
+          "description": "知道“出了问题”和知道“为什么出问题”之间的差别。"
+        },
+        "specs": {
+          "title": "都记录了什么"
+        },
+        "faq": {
+          "title": "在真正依赖它之前",
+          "description": "团队在把它作为生产判断依据之前常问的问题。"
+        },
+        "cta": {
+          "title": "完整看一次运行",
+          "description": "先跑一次，然后从触发到输出逐步追踪它。",
+          "primary": "开始追踪",
+          "secondary": "可观测性文档"
+        }
+      },
+      "how": {
+        "trace": {
+          "title": "追踪每个步骤",
+          "description": "在运行过程中记录输入、输出、工具调用与令牌用量。",
+          "media": "运行链路"
+        },
+        "alert": {
+          "title": "尽早发现",
+          "description": "阈值与异常会推送到您本就在关注的值班渠道。",
+          "media": "告警配置"
+        }
+      }
+    },
+    "ontology": {
+      "description": "将数据、系统、人员与流程统一为一个活的模型，使 AI 能够理解、推理并据此行动。",
+      "eyebrow": "本体",
+      "metaDescription": "将数据、系统、人员与流程统一为活的业务模型，使 AI 智能体与应用能够理解、推理并据此行动。",
+      "metaTitle": "面向 AI 的企业本体",
+      "title": "业务的活模型",
+      "ogTitle": "本体",
+      "ogDescription": "业务的活模型",
+      "capabilities": {
+        "vocabulary": {
+          "title": "共享的术语体系",
+          "description": "定义您的团队与智能体共同使用的实体、属性与关系。"
+        },
+        "mapping": {
+          "title": "映射到源系统",
+          "description": "每个实体都能指回它所依据的记录与字段。"
+        },
+        "evolution": {
+          "title": "安全演进",
+          "description": "结构变更带版本管理，并会针对您已有的数据进行校验。"
+        },
+        "agents": {
+          "title": "可供智能体查询",
+          "description": "智能体通过本体解析引用，而不是猜测表名。"
+        },
+        "permissions": {
+          "title": "权限跟着对象走",
+          "description": "访问规则定义在实体上，因此读取它的每个工具都执行同一道边界。"
+        },
+        "reuse": {
+          "title": "定义一次，处处可用",
+          "description": "同一套定义同时支撑界面、API、您的工作流和您的智能体。"
+        }
+      },
+      "specs": {
+        "entities": {
+          "label": "实体",
+          "content": "带有属性、关系与标识符的类型化对象。"
+        },
+        "mapping": {
+          "label": "映射",
+          "content": "来自每个已连接数据源的字段级映射。"
+        },
+        "resolution": {
+          "label": "解析",
+          "content": "按实体配置的确定性与概率性匹配规则。"
+        },
+        "versioning": {
+          "label": "版本管理",
+          "content": "结构版本在生效前会针对现有记录完成校验。"
+        },
+        "access": {
+          "label": "访问",
+          "content": "可通过 API、SDK 以及智能体的工具调用读取。"
+        },
+        "relationships": {
+          "label": "关系",
+          "content": "实体之间的类型化连接，可从查询和工具调用中沿着它遍历。"
+        }
+      },
+      "faq": {
+        "upfront": {
+          "question": "我们必须一开始就建好全部模型吗？",
+          "answer": "不必。先从您最常操作的实体开始，再逐步扩展模型。"
+        },
+        "warehouse": {
+          "question": "这与我们数据仓库里的数据模型有什么不同？",
+          "answer": "本体额外提供了实体解析与权限，而且它正是智能体查询的对象，因此跨工具的答案能保持一致。"
+        },
+        "changes": {
+          "question": "源系统发生变更时会怎样？",
+          "answer": "映射会在每次同步时校验，因此破坏性变更会在进入生产之前暴露出来。"
+        },
+        "owner": {
+          "question": "模型由谁负责？",
+          "answer": "通常是少数几位理解业务定义的人，改动像代码一样走评审。"
+        },
+        "disagree": {
+          "question": "如果两个团队对同一个定义有分歧怎么办？",
+          "answer": "模型会把分歧摆到台面上，并记录最终采用了哪个定义，而不是让两种说法在各自的工具里并存。"
+        },
+        "size": {
+          "question": "模型需要做到多大？",
+          "answer": "它随业务生长。实体在需要时才添加，不必提前建模。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "团队与智能体共用的同一个模型",
+          "description": "实体只定义一次。人在界面中查询，智能体通过工具调用解析，两者得到的是同一个答案。"
+        },
+        "capabilities": {
+          "title": "共享模型能避免什么",
+          "description": "当一切都以同一套定义为准时，随之消失的那类故障。"
+        },
+        "specs": {
+          "title": "模型支持什么"
+        },
+        "faq": {
+          "title": "开始建模之前",
+          "description": "团队在确定采用共享定义层之前常问的问题。"
+        },
+        "cta": {
+          "title": "建模第一个实体",
+          "description": "从您最常操作的那个开始，边用边扩展。",
+          "primary": "开始建模",
+          "secondary": "本体文档"
+        }
+      },
+      "how": {
+        "define": {
+          "title": "定义实体",
+          "description": "属性、关系与标识符，带版本管理，并在生效前完成校验。",
+          "media": "实体结构"
+        },
+        "query": {
+          "title": "随处可查",
+          "description": "同一个模型同时服务于界面、API 以及智能体的工具调用。",
+          "media": "智能体工具调用"
+        }
+      }
+    },
+    "runtime": {
+      "description": "为智能体、应用与自动化工作流提供安全执行层，具备企业所需的可靠性、隔离性与扩展能力。",
+      "eyebrow": "运行时",
+      "metaDescription": "在专为企业可靠性、隔离性与扩展能力打造的安全执行层上部署智能体、应用与自动化工作流。",
+      "metaTitle": "企业级 AI 运行时",
+      "title": "大规模运行智能。",
+      "ogTitle": "运行时",
+      "ogDescription": "大规模运行智能",
+      "capabilities": {
+        "isolation": {
+          "title": "隔离执行",
+          "description": "每次运行都在独立沙箱中进行，工作区之间不共享文件系统或网络状态。"
+        },
+        "scale": {
+          "title": "弹性伸缩",
+          "description": "容量随需求变化。并发运行无需预先预置即可自动扩缩。"
+        },
+        "dependencies": {
+          "title": "受管依赖",
+          "description": "按项目锁定运行时与依赖包版本，保证构建可复现。"
+        },
+        "deploys": {
+          "title": "无中断发布",
+          "description": "新版本在后台完成发布。进行中的运行会在原有版本上完成。"
+        },
+        "traced": {
+          "title": "无需额外改造即可追踪",
+          "description": "无须在代码里加埋点，每次运行都会留下完整追踪。"
+        },
+        "secrets": {
+          "title": "受管密钥",
+          "description": "凭据在运行时注入，绝不写进您的项目文件。"
+        }
+      },
+      "specs": {
+        "languages": {
+          "label": "语言",
+          "content": "TypeScript 与 Python，运行时版本可锁定。"
+        },
+        "isolation": {
+          "label": "隔离",
+          "content": "每次运行独立沙箱，工作区之间不共享状态。"
+        },
+        "limits": {
+          "label": "限额",
+          "content": "可按项目配置超时、内存与并发数。"
+        },
+        "networking": {
+          "label": "网络",
+          "content": "出站允许列表，以及到您自有网络的私有连接。"
+        },
+        "regions": {
+          "label": "区域",
+          "content": "可为数据驻留选择项目运行的区域。"
+        },
+        "secrets": {
+          "label": "密钥",
+          "content": "静态加密存储，按运行注入，并限定在单个项目内。"
+        }
+      },
+      "faq": {
+        "servers": {
+          "question": "我需要自己管理服务器吗？",
+          "answer": "不需要。您只需部署代码并设置限额，容量、补丁与扩缩由我们负责。"
+        },
+        "private": {
+          "question": "运行能访问我们网络内的系统吗？",
+          "answer": "可以，通过私有连接访问，出站允许列表由您掌控。"
+        },
+        "deploy": {
+          "question": "发布期间正在进行的工作会怎样？",
+          "answer": "进行中的运行会在其启动时的版本上完成，新的运行使用新版本。"
+        },
+        "cold": {
+          "question": "运行会有冷启动吗？",
+          "answer": "活跃项目的容量保持预热，因此多数运行立即开始。"
+        },
+        "local": {
+          "question": "同一份代码能在本地跑吗？",
+          "answer": "可以。SDK 会在您本机运行项目，并连接开发用工作区。"
+        },
+        "image": {
+          "question": "能带自己的容器镜像吗？",
+          "answer": "项目自行固定运行环境与依赖版本。如果需要完全自定义的镜像，请与我们联系。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "您的代码真正运行的地方",
+          "description": "每次运行都会获得全新的沙箱、锁定的依赖，以及您设定的限额。运行之间不会残留任何状态。"
+        },
+        "capabilities": {
+          "title": "运行时替您承担了什么",
+          "description": "那些您不必再安排人力去做的运维工作。"
+        },
+        "specs": {
+          "title": "运行环境提供什么"
+        },
+        "faq": {
+          "title": "开始部署之前",
+          "description": "平台团队在这里承载生产负载前会核对的事项。"
+        },
+        "cta": {
+          "title": "部署第一个项目",
+          "description": "推送代码、设定限额，容量会自动随需求变化。",
+          "primary": "开始部署",
+          "secondary": "运行时文档"
+        }
+      },
+      "how": {
+        "deploy": {
+          "title": "部署您的代码",
+          "description": "按项目锁定运行时与依赖包，让每一次构建都可复现。",
+          "media": "项目设置"
+        },
+        "execute": {
+          "title": "隔离运行",
+          "description": "每次运行都有独立沙箱，按需伸缩，并受您设定的限额约束。",
+          "media": "执行沙箱"
+        }
+      }
+    },
+    "security": {
+      "description": "以企业级安全、细粒度访问控制与治理，保护你的数据、应用、智能体与基础设施。",
+      "eyebrow": "安全",
+      "metaDescription": "以企业级安全、细粒度访问控制与治理，保护你的数据、应用、智能体与基础设施。",
+      "metaTitle": "企业级 AI 安全与治理",
+      "title": "安全内建于每一层。",
+      "ogTitle": "安全",
+      "ogDescription": "安全内建于每一层",
+      "capabilities": {
+        "access": {
+          "title": "细粒度访问控制",
+          "description": "基于角色与属性的权限，可精确到实体与字段级别。"
+        },
+        "audit": {
+          "title": "完整审计轨迹",
+          "description": "每一次读取、写入与运行都会归属到具体身份，并以不可篡改的方式记录。"
+        },
+        "residency": {
+          "title": "数据驻留",
+          "description": "选择数据存储与处理所在的区域。"
+        },
+        "private": {
+          "title": "私有连接",
+          "description": "通过私有网络访问您的系统，无需将其暴露在公网。"
+        },
+        "isolation": {
+          "title": "租户隔离",
+          "description": "工作区之间不共享数据、不共享文件系统，也不共享执行状态。"
+        },
+        "assurance": {
+          "title": "独立验证",
+          "description": "第三方测试与报告，您的评审人员可在评估阶段索取。"
+        }
+      },
+      "specs": {
+        "authn": {
+          "label": "身份认证",
+          "content": "通过 SAML 与 OIDC 实现单点登录，支持 SCIM 账号开通。"
+        },
+        "authz": {
+          "label": "授权",
+          "content": "基于角色与属性，在实体和字段级别强制执行。"
+        },
+        "audit": {
+          "label": "审计",
+          "content": "对读取、写入与运行的不可篡改且可导出的日志。"
+        },
+        "encryption": {
+          "label": "加密",
+          "content": "传输中与静态均加密，可使用客户自管密钥。"
+        },
+        "residency": {
+          "label": "数据驻留",
+          "content": "存储与处理区域，按工作区选择。"
+        },
+        "compliance": {
+          "label": "合规",
+          "content": "报告与已填写的问卷，在评估期间依保密协议提供。"
+        }
+      },
+      "faq": {
+        "training": {
+          "question": "我们的数据会被用于训练模型吗？",
+          "answer": "不会。您的数据不会被用于训练基础模型。"
+        },
+        "sso": {
+          "question": "你们支持 SSO 和 SCIM 吗？",
+          "answer": "支持。登录使用 SAML 与 OIDC，账号的开通与回收使用 SCIM。"
+        },
+        "regions": {
+          "question": "我们可以限制处理数据的区域吗？",
+          "answer": "可以。存储与处理区域按工作区选择。"
+        },
+        "incident": {
+          "question": "安全事件如何处理？",
+          "answer": "我们按合同约定通知您，并以书面说明影响范围与补救措施。"
+        },
+        "exit": {
+          "question": "如果我们终止合作，数据怎么办？",
+          "answer": "可按您的要求导出，并按合同约定的时限删除。"
+        },
+        "subprocessors": {
+          "question": "还有谁会接触我们的数据？",
+          "answer": "我们公开现行的次级处理方名单，并在变更前通知您。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "在读取数据的那一层强制执行",
+          "description": "权限在记录被解析的地方评估，而不是附加在界面之上，因此智能体与真人会碰到完全相同的边界。"
+        },
+        "capabilities": {
+          "title": "您的安全团队会得到什么",
+          "description": "审核方必定会问到的管控能力，第一天即可使用。"
+        },
+        "specs": {
+          "title": "控制项与标准"
+        },
+        "faq": {
+          "title": "在您的审核之前",
+          "description": "每一次安全与采购审核中都会出现的问题。"
+        },
+        "cta": {
+          "title": "与我们聊聊您的要求",
+          "description": "带上您的审核清单，我们和您逐条过一遍。",
+          "primary": "联系销售",
+          "secondary": "安全文档"
+        }
+      },
+      "how": {
+        "control": {
+          "title": "划定边界",
+          "description": "角色与属性规则只需定义一次，即可精确执行到字段级别。",
+          "media": "权限规则"
+        },
+        "prove": {
+          "title": "事后可举证",
+          "description": "对每一次读取、写入与运行的不可篡改且可导出的记录。",
+          "media": "审计日志"
+        }
+      }
+    },
+    "storage": {
+      "description": "安全存储并管理驱动智能系统的数据、产物与知识。",
+      "eyebrow": "存储",
+      "metaDescription": "安全存储并管理驱动智能系统、智能体与应用的数据、产物与知识。",
+      "metaTitle": "面向 AI 数据与知识的存储",
+      "title": "存储 AI 所需的一切。",
+      "ogTitle": "存储",
+      "ogDescription": "存储 AI 所需的一切",
+      "capabilities": {
+        "artifacts": {
+          "title": "文档与产物",
+          "description": "把合同、报告和运行产物保存在它们所属的实体旁边。"
+        },
+        "versions": {
+          "title": "默认带版本",
+          "description": "每次写入都会生成一个版本，不会就地覆盖。"
+        },
+        "search": {
+          "title": "跨内容检索",
+          "description": "对您存储的全部内容进行全文检索与语义检索。"
+        },
+        "permissions": {
+          "title": "权限随实体而定",
+          "description": "权限继承自文件所挂载的记录，而不是逐个文件设置。"
+        },
+        "retention": {
+          "title": "保留规则",
+          "description": "按工作区设定对象的存活时长，让旧版本按计划到期。"
+        },
+        "extraction": {
+          "title": "内容提取",
+          "description": "上传时即从文档中提取正文与结构，搜索和智能体可以立刻使用。"
+        }
+      },
+      "specs": {
+        "objects": {
+          "label": "对象类型",
+          "content": "文档、产物、运行输出与向量嵌入。"
+        },
+        "versioning": {
+          "label": "版本管理",
+          "content": "不可变版本，支持恢复到指定时间点。"
+        },
+        "search": {
+          "label": "检索",
+          "content": "对已存储内容的全文检索与向量检索。"
+        },
+        "encryption": {
+          "label": "加密",
+          "content": "传输中与静态均加密，可使用客户自管密钥。"
+        },
+        "residency": {
+          "label": "数据驻留",
+          "content": "可选择对象存储所在的区域。"
+        },
+        "size": {
+          "label": "对象大小",
+          "content": "支持大文件，可用分片上传与断点续传。"
+        }
+      },
+      "faq": {
+        "types": {
+          "question": "支持哪些文件类型？",
+          "answer": "常见的文档、图片与数据格式，以及运行过程产生的任意产物。"
+        },
+        "access": {
+          "question": "谁可以查看已存储的文件？",
+          "answer": "能够查看该文件所挂载实体的人。权限是继承的，而非逐个文件设置。"
+        },
+        "keys": {
+          "question": "我们可以使用自己的加密密钥吗？",
+          "answer": "可以，支持客户自管密钥。"
+        },
+        "size": {
+          "question": "文件大小有上限吗？",
+          "answer": "大文件通过分片上传处理。如果您的需求比较特殊，请与我们联系。"
+        },
+        "expire": {
+          "question": "旧文件能自动到期吗？",
+          "answer": "可以。保留规则按工作区运行，对旧版本和当前版本同样适用。"
+        },
+        "agents": {
+          "question": "智能体能读取已存的文档吗？",
+          "answer": "可以。正文在上传时提取，访问权限仍然沿用文件所挂载实体的权限。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "始终与上下文绑定的文件",
+          "description": "文档保存在它所属的实体旁边，因此权限、历史和检索结果都跟随那条记录，而不是某个文件夹路径。"
+        },
+        "capabilities": {
+          "title": "具备上下文的存储改变了什么",
+          "description": "为什么这不是一个界面更好看的存储桶。"
+        },
+        "specs": {
+          "title": "存储支持什么"
+        },
+        "faq": {
+          "title": "上传之前",
+          "description": "团队在此存放敏感文档之前常问的问题。"
+        },
+        "cta": {
+          "title": "存入第一份文档",
+          "description": "把文件挂到某个实体上，看看权限与检索如何随之而动。",
+          "primary": "开始存储",
+          "secondary": "存储文档"
+        }
+      },
+      "how": {
+        "attach": {
+          "title": "挂到记录上",
+          "description": "文件与其所描述的实体存放在一起，并继承该实体的权限。",
+          "media": "挂在实体上的文档"
+        },
+        "find": {
+          "title": "之后再找回",
+          "description": "对您存储的全部内容进行全文检索与语义检索。",
+          "media": "检索结果"
+        }
+      }
+    },
+    "workflows": {
+      "description": "构建、自动化并编排工作流，连接你的数据、系统与智能体，在整个组织中完成工作。",
+      "eyebrow": "工作流",
+      "metaDescription": "构建、自动化并编排工作流，连接你的数据、系统与智能体，在整个组织中完成工作。",
+      "metaTitle": "企业级 AI 工作流与自动化",
+      "title": "让智能转化为行动。",
+      "ogTitle": "工作流",
+      "ogDescription": "让智能转化为行动",
+      "capabilities": {
+        "authoring": {
+          "title": "可视化与代码优先两种方式",
+          "description": "在编辑器中编排步骤，或用 TypeScript 定义。两者生成同一个带版本的工作流。"
+        },
+        "control": {
+          "title": "确定性的控制流",
+          "description": "使用明确的条件进行分支、循环、分发与汇合，因此一次运行的路径始终可复现。"
+        },
+        "durable": {
+          "title": "持久执行",
+          "description": "长时间运行的步骤可以跨越重启与重试。状态在每个步骤之间保存。"
+        },
+        "approvals": {
+          "title": "人工审批环节",
+          "description": "暂停运行以供审核，获得批准后带着完整上下文继续执行。"
+        },
+        "drafts": {
+          "title": "发布前先验证",
+          "description": "用真实输入运行草稿，不触碰线上版本，也不触碰它背后的系统。"
+        },
+        "explained": {
+          "title": "每次运行都讲得清",
+          "description": "一次运行走过的路径、每一步的数据、在哪里等待过，全部留有记录。"
+        }
+      },
+      "specs": {
+        "triggers": {
+          "label": "触发方式",
+          "content": "定时计划、Webhook、事件、API 调用或手动启动。"
+        },
+        "steps": {
+          "label": "步骤类型",
+          "content": "智能体、函数、HTTP 请求、转换、分支、等待与审批。"
+        },
+        "concurrency": {
+          "label": "并发",
+          "content": "按工作流和按工作区设置上限，支持排队与背压。"
+        },
+        "retries": {
+          "label": "重试",
+          "content": "按步骤配置重试策略，支持指数退避与死信记录。"
+        },
+        "versioning": {
+          "label": "版本管理",
+          "content": "每次发布都不可变；进行中的运行会在其启动时的版本上完成。"
+        },
+        "duration": {
+          "label": "时长",
+          "content": "运行可持续数小时或数天，每一步之间都会保存断点。"
+        }
+      },
+      "faq": {
+        "agents": {
+          "question": "工作流可以调用智能体吗？",
+          "answer": "可以。智能体本身就是一种步骤类型。它接收本次运行的上下文，并返回下一步可直接使用的结构化输出。"
+        },
+        "failure": {
+          "question": "某个步骤失败会怎样？",
+          "answer": "该步骤会按其策略重试。若仍然失败，运行将停止，并连同输入、输出和调用栈一并保留，便于您重放。"
+        },
+        "schedule": {
+          "question": "工作流可以定时运行吗？",
+          "answer": "可以，支持 cron 定时、事件、传入的 Webhook 或直接调用 API。"
+        },
+        "gradual": {
+          "question": "能把现有流程一点点迁过来吗？",
+          "answer": "可以。先从流程的一个分支开始，等这部分跑顺了再扩大。"
+        },
+        "test": {
+          "question": "怎样安全地验证一次改动？",
+          "answer": "先发布成草稿，用真实输入跑一遍，再让它成为线上版本。"
+        },
+        "long": {
+          "question": "单次运行最长能持续多久？",
+          "answer": "数小时或数天。状态在步骤之间保存，因此长时间运行也能扛过重启。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "从触发到完成",
+          "description": "工作流是一连串带有明确条件的步骤。您只需编排一次，之后每次运行都遵循同一条路径。"
+        },
+        "capabilities": {
+          "title": "编排带来什么",
+          "description": "当工作不再散落在脚本和定时任务里，您立刻能得到的东西。"
+        },
+        "specs": {
+          "title": "一个工作流能做什么"
+        },
+        "faq": {
+          "title": "开始自动化之前",
+          "description": "团队在把一个流程搬进工作流之前常问的问题。"
+        },
+        "cta": {
+          "title": "自动化第一个流程",
+          "description": "在编辑器中搭建，或用 TypeScript 定义，两种方式都只需几分钟。",
+          "primary": "开始搭建",
+          "secondary": "工作流文档"
+        }
+      },
+      "how": {
+        "author": {
+          "title": "只需编排一次",
+          "description": "在编辑器中编排步骤，或用 TypeScript 定义。两者生成同一个带版本的工作流。",
+          "media": "工作流编辑器"
+        },
+        "run": {
+          "title": "看清每一次运行",
+          "description": "每次执行都会记录它走过的路径、输入，以及在哪里停下来等待审批。",
+          "media": "运行时间线"
+        },
+        "recover": {
+          "title": "从失败中恢复",
+          "description": "中止的运行会保留输入与调用栈，您可以修复原因后直接重放。",
+          "media": "失败运行的重放"
+        }
+      }
+    },
+    "agents": {
+      "title": "会理解、会判断、会行动的智能体。",
+      "eyebrow": "智能体",
+      "description": "创建智能体，接入您的数据，几分钟内即可投入使用。",
+      "metaTitle": "面向企业的 AI 智能体",
+      "metaDescription": "几分钟内创建能理解业务、接入数据、做出判断并在组织内采取行动的智能体。",
+      "ogTitle": "AI 智能体",
+      "ogDescription": "会理解、会判断、会行动的智能体",
+      "sections": {
+        "how": {
+          "title": "智能体如何把事情做完",
+          "description": "目标、可用工具和边界由您设定，具体怎么走则由智能体在这个范围内决定。"
+        },
+        "capabilities": {
+          "title": "让智能体敢于上线的前提",
+          "description": "这些管控能力，正是演示与可投入生产之间的差别。"
+        },
+        "specs": {
+          "title": "智能体支持什么"
+        },
+        "faq": {
+          "title": "让智能体上线之前",
+          "description": "在让它操作真实系统之前，团队常问的问题。"
+        },
+        "cta": {
+          "title": "构建第一个智能体",
+          "description": "给它一个目标，授予工具，然后查看它做出的每一个判断。",
+          "primary": "开始构建",
+          "secondary": "智能体文档"
+        }
+      },
+      "how": {
+        "define": {
+          "title": "交给它一项任务",
+          "description": "描述目标、它可以使用的工具，以及必须遵守的边界。",
+          "media": "智能体配置"
+        },
+        "run": {
+          "title": "看着它完成",
+          "description": "运行过程中，每一次判断、工具调用与交接都会被记录下来。",
+          "media": "智能体运行"
+        }
+      },
+      "capabilities": {
+        "tools": {
+          "title": "对系统的类型化访问",
+          "description": "智能体调用的是与工作流相同的受管工具，而不是直连数据库。"
+        },
+        "context": {
+          "title": "以本体为依据",
+          "description": "智能体通过共享模型解析实体，而不是猜测您的表结构。"
+        },
+        "handoff": {
+          "title": "交给人来判断",
+          "description": "需要人工判断时把工作转交出去，之后再带着完整上下文接回。"
+        },
+        "bounds": {
+          "title": "受策略约束",
+          "description": "权限、花费与工具访问按智能体设定，并在运行时强制执行。"
+        },
+        "memory": {
+          "title": "跨运行保有记忆",
+          "description": "持久状态绑定在智能体和它处理的实体上，而不是某一次对话。"
+        },
+        "evaluation": {
+          "title": "上线前先度量",
+          "description": "用已记录的案例测试智能体，在扩大使用范围之前比较版本。"
+        }
+      },
+      "specs": {
+        "models": {
+          "label": "模型",
+          "content": "按工作区配置，并可按智能体单独覆盖。"
+        },
+        "tools": {
+          "label": "工具",
+          "content": "类型化的函数、HTTP 与工作流调用，按智能体限定范围。"
+        },
+        "memory": {
+          "label": "记忆",
+          "content": "跨运行保留的持久状态，范围限定于该智能体及其实体。"
+        },
+        "limits": {
+          "label": "限额",
+          "content": "每次运行在令牌、花费与耗时上的上限。"
+        },
+        "observability": {
+          "label": "可观测性",
+          "content": "每一条提示词、工具调用与输出都随运行一并保留。"
+        },
+        "concurrency": {
+          "label": "并发",
+          "content": "每个智能体有同时运行数上限，达到上限后进入排队。"
+        }
+      },
+      "faq": {
+        "differ": {
+          "question": "智能体和工作流有什么区别？",
+          "answer": "工作流沿着您定义好的路径执行；智能体则在您给定的工具与边界内自行选择路径。智能体也可以作为工作流中的一个步骤。"
+        },
+        "wrong": {
+          "question": "如何防止智能体做错事？",
+          "answer": "它只能调用您授予的工具，权限与真人完全一致，并受每次运行的花费与时间上限约束。"
+        },
+        "review": {
+          "question": "可以让人先审核再行动吗？",
+          "answer": "可以。把任意操作接入审批步骤，通过之后智能体便会继续执行。"
+        },
+        "many": {
+          "question": "我们应该运行多少个智能体？",
+          "answer": "多数团队从一个职责很窄的开始。几个各司其职的智能体，比一个包办一切的更好把握。"
+        },
+        "spend": {
+          "question": "怎样让花费保持可预期？",
+          "answer": "每个智能体都有按次运行的词元、花费与时间上限，实际用量也按运行记录。"
+        },
+        "improve": {
+          "question": "智能体如何随时间变好？",
+          "answer": "用已记录的案例比较版本，再把表现更好的那个提上去。"
+        }
+      }
+    }
+  },
+  "Products": {
+    "cta": {
+      "primary": "开始使用",
+      "secondary": "查看文档"
+    },
+    "pages": {
+      "agent": {
+        "title": "在 Frontal 上构建的智能层。",
+        "description": "能回答问题、排查故障、执行已批准操作并基于数据推理的 AI，内建于我们的产品之中。",
+        "metaTitle": "面向智能软件的 AI 智能体",
+        "metaDescription": "在与业务数据、系统与工作流相连的共享智能层上，构建、部署并运维 AI 智能体。",
+        "ogTitle": "Frontal Agent",
+        "ogDescription": "在 Frontal 上构建 AI 智能体的智能层。"
+      },
+      "aiGateway": {
+        "title": "一个网关，涵盖一切。",
+        "description": "通过专为企业工作负载打造的统一网关，连接、路由并治理对 AI 模型的访问。",
+        "metaTitle": "企业 AI 网关与模型路由",
+        "metaDescription": "通过专为企业工作负载打造的统一网关，连接、路由并治理对 AI 模型的访问。",
+        "ogTitle": "企业 AI 网关",
+        "ogDescription": "一个网关，涵盖一切",
+        "eyebrow": "AI Gateway",
+        "sections": {
+          "how": {
+            "title": "所有模型，一个地址",
+            "description": "你的代码只管调用网关。由哪个供应商来接这次请求，网关来定，并把经过记下来。"
+          },
+          "capabilities": {
+            "title": "网关替你扛下的活",
+            "description": "第二个模型、第二个供应商、第二个团队一进来，这些活立刻就冒出来了。"
+          },
+          "specs": {
+            "title": "网关支持什么"
+          },
+          "faq": {
+            "title": "把生产流量接进来之前",
+            "description": "当一个组件横在所有模型调用前面时，平台团队会问的问题。"
+          },
+          "cta": {
+            "title": "先把一个调用指过来",
+            "description": "改一个基础 URL，发一次请求，然后读一读它做出的路由判断。",
+            "primary": "开始使用",
+            "secondary": "阅读文档"
+          }
+        },
+        "how": {
+          "route": {
+            "title": "只发往一个端点",
+            "description": "一套 API、一把密钥、一种请求形状。换供应商不再是一次改代码。",
+            "media": "网关请求"
+          },
+          "govern": {
+            "title": "让策略去挑模型",
+            "description": "按成本、延迟、区域或能力分流，供应商一旦劣化就切走。",
+            "media": "路由策略"
+          },
+          "account": {
+            "title": "拿到那张凭据",
+            "description": "每次调用都记下到达了哪个模型、花了多少、用了多久、是谁问的。",
+            "media": "用量记录"
+          }
+        },
+        "capabilities": {
+          "routing": {
+            "title": "切换不该是你的事",
+            "description": "某个供应商变慢或报错时，策略里的下一个直接接手，不需要发一次版。"
+          },
+          "budgets": {
+            "title": "真会咬人的支出上限",
+            "description": "按团队、按密钥的上限在网关处强制执行，而不是在账单上才发现。"
+          },
+          "keys": {
+            "title": "供应商密钥只放一处",
+            "description": "应用手里拿的是网关密钥。供应商的凭据从不离开网关。"
+          },
+          "caching": {
+            "title": "重复的活不再花钱",
+            "description": "完全相同的请求走缓存，命中率就摆在支出旁边。"
+          }
+        },
+        "specs": {
+          "providers": {
+            "label": "供应商",
+            "content": "Anthropic、OpenAI、Google、Mistral，以及你自建的任何 OpenAI 兼容端点。"
+          },
+          "routing": {
+            "label": "路由",
+            "content": "加权、看成本、看延迟、锁区域的多种策略，配有序的故障转移。"
+          },
+          "limits": {
+            "label": "上限",
+            "content": "按密钥、按团队、按模型的速率与支出上限。"
+          },
+          "caching": {
+            "label": "缓存",
+            "content": "完全匹配与提示前缀匹配，可按路由分别配置。"
+          },
+          "records": {
+            "label": "记录",
+            "content": "每次请求都留存模型、令牌、成本、延迟与调用方。"
+          }
+        },
+        "faq": {
+          "latency": {
+            "question": "每次调用会多花多少时间？",
+            "answer": "路由上几毫秒，而缓存通常省回来的时间远比这多得多。"
+          },
+          "lockin": {
+            "question": "这会把我们锁死在 Frontal 吗？",
+            "answer": "不会。网关讲的就是各家供应商自己的请求形状，把客户端指回去只是改一个 URL。"
+          },
+          "outage": {
+            "question": "网关挂了怎么办？",
+            "answer": "客户端可以配置成直接回落到某个供应商，网关本身也跨多可用区运行。"
+          },
+          "keys": {
+            "question": "团队还能用自己的供应商密钥吗？",
+            "answer": "可以。带上自己的密钥，照样拿到路由、上限和记录。"
+          }
+        }
+      },
+      "ask": {
+        "title": "问问 Frontal。",
+        "description": "让理解您的数据、系统与业务背景的 AI，把问题变成答案。",
+        "metaTitle": "面向小型企业的 AI 助手",
+        "metaDescription": "在一次对话中查询系统、启动工作流并检查运行情况。一个懂您业务、并能把事做成的 AI 助手。",
+        "ogTitle": "AI 助手",
+        "ogDescription": "一次对话，运转整个业务",
+        "eyebrow": "Ask",
+        "sections": {
+          "how": {
+            "title": "从一句提问到一件做完的事",
+            "description": "用你自己的话提问。Ask 判断你的意图，把活儿做完，再把做过什么摆给你看。"
+          },
+          "capabilities": {
+            "title": "什么样的回答才值得信",
+            "description": "助手要能被核查才有用。以下这些部分让核查成为可能。"
+          },
+          "specs": {
+            "title": "Ask 支持什么"
+          },
+          "faq": {
+            "title": "接入真实系统之前",
+            "description": "在让助手代为读写之前，各团队通常会问的问题。"
+          },
+          "cta": {
+            "title": "问出第一个问题",
+            "description": "接入一个数据源，问一个你已经知道答案的问题，然后读一遍它的推演过程。",
+            "primary": "开始提问",
+            "secondary": "阅读文档"
+          }
+        },
+        "how": {
+          "ask": {
+            "title": "用你自己的话提问",
+            "description": "不需要查询语言，也没有层层菜单。Ask 会解析问题背后的实体、系统与权限。",
+            "media": "对话"
+          },
+          "act": {
+            "title": "看着它把活儿做完",
+            "description": "每一次查询、工具调用与改动都在执行时逐条呈现，整次执行事后仍然留存。",
+            "media": "执行详情"
+          },
+          "verify": {
+            "title": "核对这个答案",
+            "description": "打开这次执行，把它读过的来源和发起的调用一条条走一遍。",
+            "media": "来源列表"
+          }
+        },
+        "capabilities": {
+          "context": {
+            "title": "扎根于你的本体",
+            "description": "客户、发票与执行记录通过共享模型解析，而不是去猜你的表名。"
+          },
+          "actions": {
+            "title": "经受管控的工具行动",
+            "description": "它用团队已经在用的同一套带类型的工具启动流程、更新记录。"
+          },
+          "permissions": {
+            "title": "在权限范围内作答",
+            "description": "Ask 看到的正是提问者能看到的内容，不多一分。"
+          },
+          "evidence": {
+            "title": "留下推演痕迹",
+            "description": "每个回答都附带读过的来源与发起的调用，让你可以核查而不是只能相信。"
+          }
+        },
+        "specs": {
+          "sources": {
+            "label": "来源",
+            "content": "你的本体、已接入的系统、上传的文件，以及你允许时的网络。"
+          },
+          "surfaces": {
+            "label": "入口",
+            "content": "控制台、命令行、API，以及团队本来就开着的插件。"
+          },
+          "actions": {
+            "label": "操作",
+            "content": "在有权限之处读取，写入则只经由你授予的工具。"
+          },
+          "history": {
+            "label": "历史",
+            "content": "对话与执行按工作区留存，可检索、可导出。"
+          },
+          "languages": {
+            "label": "语言",
+            "content": "团队用什么语言书写，就能用什么语言提问与作答。"
+          }
+        },
+        "faq": {
+          "accuracy": {
+            "question": "我们怎么知道回答是对的？",
+            "answer": "每个回答都列出读了什么、调用了什么。打开这次执行，你可以自己把同一条路径走一遍。"
+          },
+          "access": {
+            "question": "它会看到人不该看的东西吗？",
+            "answer": "不会。Ask 继承提问者的权限，没有权限的问题会返回未作答，而不是猜一个答案。"
+          },
+          "act": {
+            "question": "它会自作主张改动东西吗？",
+            "answer": "只能经由你授予的工具，而且可以要求任何写入之前先经过一道审批。"
+          },
+          "start": {
+            "question": "我们该从哪里开始？",
+            "answer": "先接入一个系统，问一些你已知答案的问题。这是最快看出你的业务模型哪里单薄的办法。"
+          }
+        }
+      },
+      "cloud": {
+        "title": "为 AI 而生的云。",
+        "description": "从零构建的基础设施，为下一代智能软件提供动力、部署与扩展能力。",
+        "metaTitle": "面向 AI 的云基础设施",
+        "metaDescription": "从零构建的基础设施，为下一代智能软件提供动力、部署与扩展能力。",
+        "ogTitle": "云服务",
+        "ogDescription": "为 AI 而生的云。",
+        "eyebrow": "Cloud",
+        "sections": {
+          "how": {
+            "title": "平台跑在什么之上",
+            "description": "隔离、调度与存储都围绕一次次执行来设计，而不是围绕长期驻留的服务器。"
+          },
+          "capabilities": {
+            "title": "你不必再运维的部分",
+            "description": "把智能体放进生产所带来的基础设施工作，在底层替你做完。"
+          },
+          "specs": {
+            "title": "Cloud 提供什么"
+          },
+          "faq": {
+            "title": "搬迁一个负载之前",
+            "description": "平台团队拿它与现有环境比较时会问的问题。"
+          },
+          "cta": {
+            "title": "放点东西上去跑",
+            "description": "部署一个负载，看它怎么伸缩，再把账单和你今天的开销比一比。",
+            "primary": "开始使用",
+            "secondary": "阅读文档"
+          }
+        },
+        "how": {
+          "isolate": {
+            "title": "每次执行都有自己的沙箱",
+            "description": "每次执行都拿到一台全新的隔离机器，只带着被授予的网络与凭据。",
+            "media": "运行时架构"
+          },
+          "scale": {
+            "title": "跟着工作量走的容量",
+            "description": "调度以执行为单位，空闲不花钱，突增也不需要事先做容量规划。",
+            "media": "调度"
+          }
+        },
+        "capabilities": {
+          "isolation": {
+            "title": "默认隔离",
+            "description": "负载之间从不共享内核、文件系统或同一套凭据。"
+          },
+          "scaling": {
+            "title": "能降到零，也能升回来",
+            "description": "按执行运行的秒数计费，而不是按那些也许会用上的机器计费。"
+          },
+          "regions": {
+            "title": "在数据所在之处运行",
+            "description": "按工作区锁定区域，让处理留在制度要求的边界之内。"
+          },
+          "operations": {
+            "title": "没有补丁要打",
+            "description": "运行时、调度器与存储层由我们在底层运维并更新。"
+          }
+        },
+        "specs": {
+          "compute": {
+            "label": "算力",
+            "content": "按执行分配的沙箱，CPU、内存与运行时长上限均可配置。"
+          },
+          "regions": {
+            "label": "区域",
+            "content": "工作区级别的区域锁定，处理与存储都留在所选边界之内。"
+          },
+          "networking": {
+            "label": "网络",
+            "content": "按负载设置出站白名单，并支持回连你自有网络的专线。"
+          },
+          "storage": {
+            "label": "存储",
+            "content": "挂在执行上的对象、向量与关系型存储，按工作区策略留存。"
+          },
+          "availability": {
+            "label": "可用性",
+            "content": "跨可用区调度、自动重试，并为每次执行留下运行记录。"
+          }
+        },
+        "faq": {
+          "own": {
+            "question": "能部署在我们自己的云上吗？",
+            "answer": "支持。如果政策要求，运行时可以部署到您的账户中。在这种客户自托管模式下，基础设施由客户团队运营。请与 Enterprise 团队确认部署范围和运维责任。"
+          },
+          "cost": {
+            "question": "价格怎么比？",
+            "answer": "按运行时间计费而非预留容量，通常更利于波峰波谷明显、而非常年恒定的负载。"
+          },
+          "data": {
+            "question": "我们的数据会去哪里？",
+            "answer": "处理与存储都停留在工作区锁定的区域，任何数据都不会用于训练共享模型。"
+          },
+          "migrate": {
+            "question": "搬一个负载有多难？",
+            "answer": "一个负载就是一个容器加一份清单。多数团队先搬一个，比对运行记录，再把其余的迁过去。"
+          }
+        }
+      },
+      "evaluation": {
+        "title": "构建你可以信赖的 AI。",
+        "description": "从准确性、可靠性、工具使用、延迟、成本等多个维度评估智能体、工作流与 AI 应用。",
+        "metaTitle": "面向企业系统的 AI 评估",
+        "metaDescription": "以可重复的测试、生产环境信号，以及每次判断的明确依据，评估 AI 智能体、工作流与应用。",
+        "ogTitle": "面向企业系统的 AI 评估",
+        "ogDescription": "自信地评估并改进 AI 智能体、工作流与应用。",
+        "eyebrow": "Evaluation",
+        "sections": {
+          "how": {
+            "title": "一次改动如何被证明",
+            "description": "把发生过的事记下来，拿去跑新版本，在别人看到之前先把两者比一比。"
+          },
+          "capabilities": {
+            "title": "什么样的结果值得据以行动",
+            "description": "一个数字动了，和有证据说明确实变好了，是两回事。"
+          },
+          "specs": {
+            "title": "评估覆盖什么"
+          },
+          "faq": {
+            "title": "让它卡住一次发布之前",
+            "description": "当一个分数开始决定什么能上线时，团队会问的问题。"
+          },
+          "cta": {
+            "title": "给第一个版本打个分",
+            "description": "把一周的生产执行变成一套用例，再让下一个版本跑一遍。",
+            "primary": "开始评估",
+            "secondary": "阅读文档"
+          }
+        },
+        "chart": {
+          "title": "变好是什么样子",
+          "description": "每个版本都用同一批录制用例打分，所以这条线是比较，不是说法。",
+          "caption": "同一个智能体六个版本的通过率，在 1200 条录制用例上测得。",
+          "ariaLabel": "六个版本通过率的折线图。准确率从 58% 升到 94%，工具使用从 44% 升到 89%，稳定性从 61% 升到 91%。",
+          "series": {
+            "accuracy": "准确率",
+            "tools": "工具使用",
+            "reliability": "稳定性"
+          }
+        },
+        "how": {
+          "capture": {
+            "title": "把真实发生的事收进来",
+            "description": "生产执行变成用例，输入、工具调用和结局一并留在一起。",
+            "media": "录制用例"
+          },
+          "replay": {
+            "title": "回放到新版本上",
+            "description": "整套用例对着候选版本跑一遍，每次都按同一套标准打分。",
+            "media": "用例集执行"
+          },
+          "compare": {
+            "title": "先比，再决定",
+            "description": "在推上生产之前，看清哪些变好了、哪些退了、哪些用例换了答案。",
+            "media": "版本差异"
+          }
+        },
+        "capabilities": {
+          "grounded": {
+            "title": "按你的活打分，不按排行榜",
+            "description": "用例出自你自己的执行，所以结果说的是你的业务，而不是某个公开数据集。"
+          },
+          "dimensions": {
+            "title": "不止一个数字",
+            "description": "准确率、工具使用、延迟和成本各走各的，一次发布要按这四项一起判。"
+          },
+          "regressions": {
+            "title": "退步会被点名，不会被平均掉",
+            "description": "换了答案的用例一条条列出来，均值上涨也盖不住它们。"
+          },
+          "continuous": {
+            "title": "上线后也在跑，不只是上线前",
+            "description": "对真实流量抽样，用同一套用例打分，漂移一发生就露出来。"
+          }
+        },
+        "specs": {
+          "suites": {
+            "label": "用例集",
+            "content": "按智能体或工作流分组的用例，与被测对象一同做版本管理。"
+          },
+          "scoring": {
+            "label": "打分",
+            "content": "完全匹配、评分表、模型评判，以及你自己写的评分器。"
+          },
+          "dimensions": {
+            "label": "维度",
+            "content": "准确率、工具使用、稳定性、延迟与成本，按用例和整体分别给出。"
+          },
+          "sampling": {
+            "label": "抽样",
+            "content": "按可配置的比例抽取真实执行，持续对着同一套用例打分。"
+          },
+          "gating": {
+            "label": "闸门",
+            "content": "用例集低于你设定的阈值时，上线会被自动挡下。"
+          }
+        },
+        "faq": {
+          "cases": {
+            "question": "我们需要多少条用例？",
+            "answer": "够覆盖这件事真正会变化的那些情形。多数团队从五十条上下开始，再用发现的失败把用例集养大。"
+          },
+          "grading": {
+            "question": "能让模型给模型打分吗？",
+            "answer": "开放式的活可以，评分表随执行一并留存。凡是能精确核对的，就该精确核对。"
+          },
+          "flaky": {
+            "question": "那些跑不稳的执行怎么办？",
+            "answer": "分数会连同多次重复之间的离散度一起给出，这样噪声范围内的差别就不会被读成进步。"
+          },
+          "gate": {
+            "question": "该让分数卡住发布吗？",
+            "answer": "等你信得过这套用例了再设阈值。在那之前先让它并行跑，看它是否和你自己的判断一致。"
+          }
+        }
+      },
+      "plugins": {
+        "title": "将 Frontal 连接到你使用的一切。",
+        "description": "通过插件扩展 Frontal，将企业智能、上下文、数据与操作直接带入团队已在使用的工具中。",
+        "metaTitle": "面向企业 AI 工作流的插件",
+        "metaDescription": "通过插件扩展 Frontal，将团队现有工具接入安全的、基于角色的 AI 工作流与业务上下文。",
+        "ogTitle": "Frontal 插件",
+        "ogDescription": "将 Frontal 连接到团队已在使用的工具。"
+      },
+      "studio": {
+        "title": "构建，没有边界。",
+        "description": "用于扩展 Frontal、编排智能系统，并把你的想法变为可投产软件的平台。",
+        "metaTitle": "面向智能软件的 Studio",
+        "metaDescription": "在同一个协作开发环境中构建、测试并交付智能软件。",
+        "ogTitle": "工作室",
+        "ogDescription": "构建，没有边界。",
+        "eyebrow": "Studio",
+        "sections": {
+          "how": {
+            "title": "一次构建如何进入生产",
+            "description": "把零件拼起来，拿真实用例试过，再以一个可以回滚的版本发布。"
+          },
+          "capabilities": {
+            "title": "写产品代码之前就已具备的东西",
+            "description": "否则要花一个季度搭建、再配一个团队维护的那部分。"
+          },
+          "specs": {
+            "title": "Studio 支持什么"
+          },
+          "faq": {
+            "title": "在它之上动工之前",
+            "description": "工程团队在决定是否投入时会问的问题。"
+          },
+          "cta": {
+            "title": "打开 Studio",
+            "description": "拼一个智能体，拿一段录制的用例回放，再以一个版本把它发出去。",
+            "primary": "开始构建",
+            "secondary": "阅读文档"
+          }
+        },
+        "how": {
+          "compose": {
+            "title": "把零件拼起来",
+            "description": "智能体、工作流、工具与数据源在同一处组装，而不是横跨四处接线。",
+            "media": "组装"
+          },
+          "ship": {
+            "title": "发布一个版本",
+            "description": "每一次改动都是一个版本，可以试、可以上、也可以回滚，无需重新部署周边任何东西。",
+            "media": "版本历史"
+          }
+        },
+        "capabilities": {
+          "environment": {
+            "title": "只有一个动工的地方",
+            "description": "编辑器、运行时、数据与日志同处一个会话，排错不再是来回切标签页。"
+          },
+          "collaboration": {
+            "title": "为多人协作而建",
+            "description": "共享工作区、上线前评审，以及一份记录谁改了什么的历史。"
+          },
+          "testing": {
+            "title": "拿真实用例来试",
+            "description": "把录制的执行回放到新版本上，在团队之外的人看到之前先弄清改了什么。"
+          },
+          "deployment": {
+            "title": "不必等发布列车",
+            "description": "就地把版本推上生产，表现不对时用同样的方式退回来。"
+          }
+        },
+        "specs": {
+          "languages": {
+            "label": "语言",
+            "content": "TypeScript 与 Python 的 SDK，两者背后是同一套 API。"
+          },
+          "environments": {
+            "label": "环境",
+            "content": "开发、预发与生产工作区彼此分离，各自持有独立凭据。"
+          },
+          "versioning": {
+            "label": "版本管理",
+            "content": "每个智能体、工作流与工具都有版本，按环境上线与回滚。"
+          },
+          "testing": {
+            "label": "测试",
+            "content": "录制的执行作为夹具回放，版本之间并排比对。"
+          },
+          "access": {
+            "label": "访问",
+            "content": "按工作区划分的角色权限，以及每次上线都留下的审计记录。"
+          }
+        },
+        "faq": {
+          "local": {
+            "question": "我们能在本地开发吗？",
+            "answer": "可以。SDK 在哪都能跑；Studio 承载的是共享状态、版本与历史。"
+          },
+          "existing": {
+            "question": "它会取代我们的技术栈吗？",
+            "answer": "不会。Studio 负责组装并管理 AI 那部分的版本，其余照旧留在原处，经由工具触达。"
+          },
+          "review": {
+            "question": "一次改动是怎么评审的？",
+            "answer": "先提出一个版本，与录制的执行比对，再由有上线权限的人推上生产。"
+          },
+          "rollback": {
+            "question": "版本出了问题怎么办？",
+            "answer": "退回上一个版本。已经在跑的执行会以它启动时的版本跑完。"
+          }
+        }
+      },
+      "benchmark": {
+        "title": "Frontal 基准测试。",
+        "description": "使用我们的基准测试衡量企业 AI 的性能。",
+        "mobileDescription": "使用我们的基准测试衡量企业 AI 的性能。",
+        "metaTitle": "企业 AI 性能基准测试",
+        "metaDescription": "以真实业务工作为基础的公开、可复现基准测试，衡量企业 AI 的性能。",
+        "ogTitle": "Frontal 基准测试",
+        "ogDescription": "以公开证据比较各类 AI 系统。",
+        "eyebrow": "Benchmark",
+        "sections": {
+          "how": {
+            "title": "一轮基准测试是怎么跑的",
+            "description": "公开的任务、固定的执行框架、每次尝试都有的完整记录--结果是拿来核验的，不是拿来相信的。"
+          },
+          "capabilities": {
+            "title": "什么样的数字才值得信",
+            "description": "已发表的结果大多复现不出来。下面这些让我们的数字可以拿来比。"
+          },
+          "specs": {
+            "title": "基准测试测什么"
+          },
+          "faq": {
+            "title": "引用一个结果之前",
+            "description": "当一个数字被用来支撑决策时，人们一定会问的。"
+          },
+          "cta": {
+            "title": "去看结果",
+            "description": "每一项任务、每一份记录、每一个分数，全部公开。",
+            "primary": "查看基准测试",
+            "secondary": "阅读文档"
+          }
+        },
+        "how": {
+          "tasks": {
+            "title": "是真活，不是脑筋急转弯",
+            "description": "任务取自团队真的在跑的业务流程，成功标准先写下来。",
+            "media": "任务集"
+          },
+          "run": {
+            "title": "所有人用同一套框架",
+            "description": "每个系统拿到相同的工具、相同的限制、相同的尝试次数。",
+            "media": "执行框架"
+          },
+          "publish": {
+            "title": "连记录一起公开",
+            "description": "分数随附完整运行记录，任何人都能看清这个结果是怎么来的。",
+            "media": "运行记录"
+          }
+        },
+        "capabilities": {
+          "reproducible": {
+            "title": "谁都能复现",
+            "description": "框架、任务和评分代码都是公开的，一轮测试可以从头到尾重跑一遍。"
+          },
+          "contaminated": {
+            "title": "留出的任务会轮换",
+            "description": "一部分任务被扣下并逐轮替换，所以分数没法靠训练拿到。"
+          },
+          "transcripts": {
+            "title": "每次尝试都在案",
+            "description": "失败和成功一并公开。看不进去的结果算不上证据。"
+          },
+          "cost": {
+            "title": "成本和时间也计入",
+            "description": "靠多花五十倍钱赢下来的系统，并没有赢下多数团队真正要买的东西。"
+          }
+        },
+        "specs": {
+          "tasks": {
+            "label": "任务",
+            "content": "多步骤的业务流程，成功标准成文，工具集固定。"
+          },
+          "attempts": {
+            "label": "尝试",
+            "content": "每个系统每项任务的次数固定，每次尝试都打分并公开。"
+          },
+          "scoring": {
+            "label": "评分",
+            "content": "结果客观的用自动判定，不客观的用盲评人工审阅。"
+          },
+          "reporting": {
+            "label": "报告",
+            "content": "通过率、每项任务成本与实际耗时，按任务和整体分别给出。"
+          },
+          "cadence": {
+            "label": "节奏",
+            "content": "每季度重跑一次，留出集轮换，执行框架做版本管理。"
+          }
+        },
+        "faq": {
+          "why": {
+            "question": "为什么还要再做一个基准？",
+            "answer": "现有的那些测的是在谜题上的推理。几乎没有一个在测系统能不能把一件寻常的业务工作做完。"
+          },
+          "gaming": {
+            "question": "怎么防止有人照着它训练？",
+            "answer": "一部分任务被扣下并逐轮轮换，公开部分和留出部分的成绩分开报告。"
+          },
+          "submit": {
+            "question": "我们能提交自己的系统吗？",
+            "answer": "可以。框架是公开的，提交上来的系统在与其他人相同的条件下打分。"
+          },
+          "compare": {
+            "question": "这些数字该怎么读？",
+            "answer": "读成在这套任务上的排名，而不是一句普适结论。相信某个差距之前，先去读几份运行记录。"
+          }
+        }
+      }
+    },
+    "images": {
+      "benchmark": "基准测试结果界面",
+      "dashboard": "Frontal 控制台"
+    }
+  },
+  "Legal": {
+    "title": "条款与政策",
+    "description": "规定 Frontal 运营方式的条款、政策和协议。每份文档均有版本记录并标明生效日期。",
+    "lastUpdated": "最后更新于 {date}",
+    "metaTitle": "条款与政策",
+    "metaDescription": "Frontal 的法律文档。",
+    "ogTitle": "条款与政策",
+    "ogDescription": "Frontal 的法律文档。"
+  },
+  "Careers": {
+    "title": "构建软件之后的未来。",
+    "mission": "我们正在组建一支卓越的建设者团队，打造能够在整个企业中理解、决策并行动的新一代智能系统。",
+    "hiring": "我们审慎招聘，看重好奇心胜过履历，寻找能够将重要工作从想法推进到产品交付的人。",
+    "openRoles": "开放职位",
+    "apply": "申请",
+    "filters": {
+      "allTeams": "所有团队",
+      "allLocations": "所有地点",
+      "teamLabel": "按团队筛选职位",
+      "locationLabel": "按地点筛选职位"
+    },
+    "metaTitle": "招聘",
+    "metaDescription": "加入打造 Frontal 的团队：一群标准严苛、自主性强的建设者，正在创造面向企业的智能系统。",
+    "ogTitle": "招聘",
+    "ogDescription": "加入打造 Frontal 的团队：一群标准严苛、自主性强的建设者，正在创造面向企业的智能系统。"
+  },
+  "Research": {
+    "title": "推进计算智能科学",
+    "mission": "我们正在构建世界的计算理论，为表征现实和推理知识创建新基础，以推进计算智能科学。",
+    "filters": {
+      "all": "全部",
+      "search": "搜索研究"
+    },
+    "read": "阅读",
+    "noMatches": "没有研究条目与您的搜索匹配。",
+    "noEntries": "暂无已发表的研究条目。",
+    "metaTitle": "研究",
+    "metaDescription": "推进计算智能科学",
+    "ogTitle": "研究",
+    "ogDescription": "推进计算智能科学"
+  },
+  "Partners": {
+    "pages": {
+      "solutions": {
+        "title": "寻找合作伙伴",
+        "description": "找到合适的解决方案合作伙伴，助您交付下一个项目。",
+        "primaryAction": "寻找合作伙伴",
+        "secondaryAction": "成为合作伙伴",
+        "metaTitle": "解决方案合作伙伴",
+        "metaDescription": "找到一位解决方案合作伙伴，在 Frontal 上帮你设计、构建并上线下一个项目，从初版原型到生产环境。",
+        "ogTitle": "解决方案合作伙伴",
+        "ogDescription": "为你的下一个项目找到合适的解决方案合作伙伴",
+        "sections": {
+          "specialisms": {
+            "title": "伙伴替你们做什么",
+            "description": "四类工作，通常由不同的公司承担。"
+          },
+          "directory": {
+            "title": "合作伙伴目录",
+            "description": "按所需工作筛选，然后联系匹配的公司。"
+          },
+          "engagement": {
+            "title": "一个项目怎么推进"
+          },
+          "choosing": {
+            "title": "签约前该核对什么"
+          },
+          "faq": {
+            "title": "客户的提问",
+            "description": "团队在引入伙伴之前会先确认的事。"
+          },
+          "cta": {
+            "title": "没有找到合适的合作伙伴？",
+            "description": "告诉我们你们要建什么，我们介绍做过同类项目的公司给你们。",
+            "action": "联系我们"
+          }
+        },
+        "specialisms": {
+          "a": {
+            "title": "架构与范围界定",
+            "description": "判断哪些流程值得自动化，以及第一个工作流应该是什么。"
+          },
+          "b": {
+            "title": "建设与集成",
+            "description": "接上你们现有的系统，并交付在它们之上运行的工作流。"
+          },
+          "c": {
+            "title": "治理与合规",
+            "description": "在任何东西进入生产之前，把你们的制度落到权限、阈值和审计链路上。"
+          },
+          "d": {
+            "title": "托管运营",
+            "description": "上线之后继续跑这套部署，包括监控、调优和值班轮转。"
+          }
+        },
+        "engagement": {
+          "a": {
+            "title": "圈定一个工作流",
+            "description": "一个短周期项目，挑出单一流程，约定什么算成功，并在你们自己的数据上验证它。"
+          },
+          "b": {
+            "title": "建设并加固",
+            "description": "工作流在你们的制度之下进入生产，带着评审方要求的检查点和上限。"
+          },
+          "c": {
+            "title": "扩大或者移交",
+            "description": "要么伙伴接手后续流程，要么你们的团队接手这套部署。两条路都在一开始就规划好，而不是事后才发现。"
+          }
+        },
+        "choosing": {
+          "a": {
+            "label": "投入到你们项目上的认证工程师",
+            "content": "要问的是分配到你们项目上的人里有几位持有有效认证，而不是这家公司总共雇了多少人。"
+          },
+          "b": {
+            "label": "你们行业内的参考部署",
+            "content": "已经在你们这类监管约束下做过事的伙伴，第一个月是在建设，而不是在学这些约束。"
+          },
+          "c": {
+            "label": "写明责任人的移交计划",
+            "content": "先约定上线之后由谁运营。说不清移交怎么走的伙伴，打算的是无限期留下来。"
+          },
+          "d": {
+            "label": "所建之物的归属",
+            "content": "项目期间建成的工作流、连接器和策略应当归你们所有。写进工作说明书里确认，别默认如此。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "我们真的需要伙伴吗？",
+            "answer": "不一定。有自有工程师的团队往往能自己交付第一个工作流。伙伴的价值体现在规模、受监管环境和速度上。"
+          },
+          "b": {
+            "question": "伙伴是怎么筛选的？",
+            "answer": "所有列出的公司都持有有效认证、交付过参考部署，并且有一位在事情升级时我们能联系上的负责人。"
+          },
+          "c": {
+            "question": "一个项目通常要花多少钱？",
+            "answer": "费率由各家伙伴自定。范围界定阶段一般是几周；在承诺建设之前，先就这一阶段拿到固定报价。"
+          },
+          "d": {
+            "question": "以后可以换伙伴吗？",
+            "answer": "可以。建成的东西归你们所有，并且跑在你们自己的部署上，所以换一家公司或者收回自己做都不意味着重建。"
+          }
+        }
+      },
+      "index": {
+        "title": "与 Frontal 携手合作。",
+        "becomePartner": "成为合作伙伴",
+        "findPartner": "寻找合作伙伴",
+        "alreadyPartner": "已经是合作伙伴？",
+        "signIn": "登录",
+        "metaTitle": "合作伙伴",
+        "metaDescription": "成为 Frontal 合作伙伴，为你的客户构建并交付智能系统。可以加入合作伙伴计划，也可以找到已在平台上开发的伙伴。",
+        "ogTitle": "合作伙伴",
+        "ogDescription": "在 Frontal 上构建并交付智能系统",
+        "about": {
+          "title": "成为伙伴到底意味着什么",
+          "lead": "Frontal 是企业构建自己智能系统的那一层。伙伴就是与企业一起设计、交付并运营这些系统的公司。",
+          "body": {
+            "a": "这份工作不是转售许可证。它是圈定第一个工作流，接上客户数据本来就在的那些系统，并在部署开始承载真实业务量之后继续留下来。",
+            "b": "所以这个平台必须是学一次就能到处用的东西。你们接手的每一个项目，都是同一套运行环境、同一套权限模型、同一条审计链路。"
+          }
+        },
+        "sections": {
+          "tracks": {
+            "title": "三种合作方式",
+            "description": "挑一条与你们现在赚钱方式相符的路径。"
+          },
+          "solutionPartners": {
+            "title": "解决方案合作伙伴",
+            "description": "负责界定范围、完成构建并持续支持上线运行的公司。"
+          },
+          "technologyPartners": {
+            "title": "技术合作伙伴",
+            "description": "在运行时之上构建，或将其与您现有系统连接的产品。"
+          },
+          "proof": {
+            "title": "这个计划值多少",
+            "description": "来自平台上第一年伙伴的数字。"
+          },
+          "terms": {
+            "title": "计划提供什么",
+            "description": "我们这边的承诺，以及我们相应的要求。"
+          },
+          "faq": {
+            "title": "潜在伙伴的提问",
+            "description": "各家公司在申请之前会先确认的事。"
+          },
+          "cta": {
+            "title": "在 Frontal 上建立一门业务",
+            "description": "提交申请，或者看看已经在交付的伙伴。"
+          }
+        },
+        "tracks": {
+          "a": {
+            "eyebrow": "交付",
+            "title": "咨询公司与系统集成商",
+            "detail": "你们圈定并上线客户的第一批工作流，之后继续把它们扩大。提供认证、早期项目的联合交付，以及来自我们销售团队的引荐。"
+          },
+          "b": {
+            "eyebrow": "技术",
+            "title": "软件厂商与平台开发商",
+            "detail": "你们把 Frontal 嵌进自己的产品，或者发布客户自行安装的连接器。提供共享的工程支持、运行时变更的提前获取，以及发布时的联合宣传。"
+          },
+          "c": {
+            "eyebrow": "咨询顾问",
+            "title": "战略与转型咨询机构",
+            "detail": "在任何人动手写代码之前，你们判断智能系统该放在哪里。提供架构评审、参考部署的查阅权，以及一家可以承接建设的交付伙伴。"
+          }
+        },
+        "technologyPartners": {
+          "a": {
+            "title": "嵌入式平台",
+            "description": "在自有产品中运行 Frontal 的厂商，让客户无需离开其产品。"
+          },
+          "b": {
+            "title": "连接器",
+            "description": "为已存放您数据的系统发布集成的团队。"
+          },
+          "c": {
+            "title": "基础设施",
+            "description": "运行时已通过认证的云、存储与部署提供商。"
+          },
+          "d": {
+            "title": "模型与工具",
+            "description": "其模型、评估与可观测性工具可接入运行时的提供商。"
+          }
+        },
+        "proof": {
+          "a": {
+            "value": "9wk",
+            "label": "从通过认证到首次生产部署的中位时长"
+          },
+          "b": {
+            "value": "3x",
+            "label": "同一批公司在相邻平台上报告的平均项目规模之比"
+          },
+          "c": {
+            "value": "74%",
+            "label": "在两个季度内扩大的伙伴项目占比"
+          }
+        },
+        "terms": {
+          "a": {
+            "label": "认证与能力建设",
+            "content": "你们的工程师使用与我们自己解决方案团队相同的材料受训。认证按人计算且免费，它同时解锁联合交付和伙伴名录的收录。"
+          },
+          "b": {
+            "label": "商务条款",
+            "content": "转售用量的分成、引荐成交的佣金，首年没有最低承诺。同一层级的伙伴条款一致且公开，不逐案谈判。"
+          },
+          "c": {
+            "label": "交付期间的支持",
+            "content": "每个在跑的项目都有指定对接人，平台层面的问题可直接上报到工程团队，任何东西进入生产之前都会做一次共同的架构评审。"
+          },
+          "d": {
+            "label": "我们的要求",
+            "content": "达到第一层级需要两名通过认证的工程师、六个月内一个参考部署，以及一位客户升级时我们能联系上的伙伴负责人。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "申请要多久？",
+            "answer": "多数公司一周内收到回复，一个月内完成认证。卡住进度的是你们工程师的培训，而不是我们的审核。"
+          },
+          "b": {
+            "question": "需要已有的人工智能经验吗？",
+            "answer": "不需要。做得最好的公司，往往是已经会在受监管环境里交付企业软件的那些。平台本身的部分由认证覆盖。"
+          },
+          "c": {
+            "question": "可以同时走多条路径吗？",
+            "answer": "可以，很多公司就是这样。交付和咨询顾问常常在同一个团队里，而认证只计一次。"
+          },
+          "d": {
+            "question": "客户关系归谁？",
+            "answer": "你们自己带来的项目归你们。我们引荐的成交，合同结构在引荐之前就谈定，而不是事后再谈。"
+          }
+        }
+      }
+    }
+  },
+  "PartnersContact": {
+    "consent": {
+      "marketing": "是的，我同意按照贵方<link>隐私政策</link>所述接收 Frontal 的营销信息。",
+      "withdraw": "您可以随时通过邮件中的退订链接撤回同意。"
+    },
+    "description": "请介绍您的公司以及目前交付的工作。大多数申请会在一周内收到回复。",
+    "fields": {
+      "fullName": "姓名",
+      "fullNamePlaceholder": "Steve Jobs",
+      "workEmail": "公司邮箱",
+      "workEmailPlaceholder": "steve@apple.com",
+      "company": "公司",
+      "companyPlaceholder": "公司名称",
+      "country": "国家/地区",
+      "countryPlaceholder": "选择国家/地区",
+      "companySize": "公司规模",
+      "companySizePlaceholder": "选择规模",
+      "primaryInterest": "主要关注方向",
+      "primaryInterestPlaceholder": "选择领域",
+      "message": "留言",
+      "messagePlaceholder": "请介绍贵公司、服务的客户，以及您希望在 Frontal 上交付的工作",
+      "partnerTrack": "合作类型",
+      "partnerTrackPlaceholder": "请选择类型"
+    },
+    "genericError": "出了点问题，请重试。",
+    "highlights": {
+      "review": {
+        "title": "一周内完成审核",
+        "description": "多数公司会在几天内收到回复，随后即可开始认证。"
+      },
+      "certification": {
+        "title": "认证免费",
+        "description": "贵公司的工程师将使用与我们解决方案团队相同的培训材料。"
+      }
+    },
+    "interests": {
+      "agents": "智能体与工作流",
+      "evaluation": "评估",
+      "safety": "安全与治理",
+      "data": "数据与集成",
+      "enterprise": "企业部署"
+    },
+    "submit": "提交申请",
+    "success": "感谢提交。我们会审阅你的申请并与你联系。",
+    "title": "申请加入合作伙伴计划。",
+    "tracks": {
+      "delivery": "交付与集成",
+      "technology": "技术与产品",
+      "advisory": "战略与咨询"
+    }
+  },
+  "Segments": {
+    "images": {
+      "product": "Frontal 产品界面"
+    },
+    "pages": {
+      "enterprise": {
+        "eyebrow": "企业",
+        "title": "为规模化而生的企业智能。",
+        "description": "以专为现代企业需求打造的安全智能基础设施，连接您的数据、系统与业务运营。",
+        "metaTitle": "企业",
+        "metaDescription": "使用 Frontal 构建安全、可扩展、面向企业的智能系统。",
+        "ogTitle": "企业",
+        "ogDescription": "使用 Frontal 构建安全、可扩展、面向企业的智能系统。",
+        "deploymentOptions": {
+          "title": "部署选项",
+          "description": "Frontal Cloud 是默认选项，也是最快的启动方式。基础设施由 Frontal 运营。对于更严格的数据隔离或合规要求，可选择专属/隔离云；如果计算和数据必须完全留在客户环境内，可选择客户 VPC/自托管。",
+          "cloud": {
+            "title": "Frontal Cloud（推荐）",
+            "description": "最快的启动方式。Frontal 运营基础设施，您的团队可以专注于连接系统和构建工作流。"
+          },
+          "dedicated": {
+            "title": "专属/隔离云",
+            "description": "适用于更严格的数据隔离或合规要求。专属或隔离云基础设施由 Frontal 运营。"
+          },
+          "customer": {
+            "title": "客户 VPC / 自托管",
+            "description": "适用于要求计算和数据完全留在自身环境内的企业。基础设施由客户运营。"
+          },
+          "question": "我们应该选择哪种部署模式？",
+          "recommendation": "若要最快开始，请从 Frontal Cloud 入手，基础设施由 Frontal 运营。更严格的数据隔离或合规要求适合专属/隔离云。若计算和数据必须完全留在客户环境内，请选择客户 VPC/自托管。",
+          "learnMore": "阅读部署指南"
+        }
+      },
+      "startups": {
+        "eyebrow": "初创企业",
+        "title": "构建软件的未来。",
+        "description": "获得初创企业所需的基础设施、智能与支持，以前所未有的速度构建、发布并扩展业务。",
+        "metaTitle": "初创企业",
+        "metaDescription": "在几分钟内创建能够理解您的业务、连接您的数据、做出决策并在整个组织中采取行动的智能体。",
+        "ogTitle": "初创企业",
+        "ogDescription": "初创企业"
+      }
+    }
+  },
+  "SDKs": {
+    "title": "直接基于 Frontal 构建。",
+    "description": "使用 Frontal 的 SDK 集成其能力，只需几行代码即可构建智能软件。",
+    "getStarted": "开始使用",
+    "apiDocumentation": "API 文档",
+    "copyCode": "复制代码",
+    "keyFeatures": "主要特性：",
+    "install": "安装：",
+    "example": "示例：",
+    "viewDocs": "查看 {language} 文档",
+    "seeExamples": "查看示例",
+    "sdks": {
+      "typescript": {
+        "title": "TypeScript SDK",
+        "description": "面向现代 Web 与后端应用设计的完整类型化 SDK，用于调用 Frontal 的 API。",
+        "features": {
+          "typed": "完整类型定义，一流的 TypeScript 支持",
+          "runtimes": "可在 Node、Bun 及各类现代运行时中使用",
+          "setup": "配置简单，响应可预期"
+        }
+      },
+      "go": {
+        "title": "Go SDK",
+        "description": "轻量级 Go SDK，用于借助 Frontal API 构建服务端应用。"
+      },
+      "php": {
+        "title": "PHP SDK",
+        "description": "PHP SDK，用于将 Frontal 的 API 集成到您的 PHP 应用中。"
+      }
+    },
+    "build": {
+      "title": "构建真实的财务工作流",
+      "description": "使用 Frontal SDK，将财务数据、洞察与工作流集成到您的产品中。",
+      "items": {
+        "analyseRuns": {
+          "short": "同步并分析运行",
+          "long": "以编程方式同步并分析运行，构建自定义分析工具"
+        },
+        "dashboards": {
+          "short": "构建仪表板与报表",
+          "long": "构建贴合自身需求的仪表板与报表"
+        },
+        "internalTools": "为内部工具提供财务数据，并接入现有工作流",
+        "exports": {
+          "short": "自动生成可直接入账的导出",
+          "long": "为您的会计软件自动生成可直接入账的导出"
+        }
+      }
+    },
+    "security": {
+      "title": "默认安全",
+      "description": "所有 SDK 均使用安全的 API 密钥与范围受限的访问权限，确保您的数据受到保护。"
+    },
+    "resources": {
+      "title": "快速上手",
+      "quickstart": {
+        "title": "快速开始",
+        "description": "几分钟内上手 Frontal SDK。"
+      },
+      "examples": {
+        "title": "示例",
+        "description": "查看示例应用与代码片段。"
+      },
+      "apiReference": {
+        "title": "API 参考",
+        "description": "完整的 API 文档与端点说明。"
+      },
+      "changelog": {
+        "title": "更新日志",
+        "description": "及时了解最新变更。"
+      }
+    },
+    "metaTitle": "SDK",
+    "metaDescription": "类型化 SDK，助您更快地基于 Frontal 开发。通过官方客户端库将 Frontal 集成到您的应用中。",
+    "ogTitle": "SDK",
+    "ogDescription": "面向 Frontal API 的类型化客户端库"
+  },
+  "CLI": {
+    "badge": "私有测试版",
+    "title": "你需要的一切，尽在终端。",
+    "description": "强大的 CLI，用于构建、部署和运维智能体、工作流、数据与部署。",
+    "getStarted": "开始使用",
+    "viewDocumentation": "查看文档",
+    "copied": "已复制",
+    "whatYouGet": "你将获得",
+    "terminal": {
+      "tabs": {
+        "createAgent": "创建智能体",
+        "weeklyBriefing": "每周简报",
+        "chaseApprovals": "催办审批",
+        "anomalyAlert": "异常告警"
+      }
+    },
+    "features": {
+      "describe": {
+        "title": "你来描述，它来构建",
+        "description": "用日常语言告诉 Frontal 你的需求。它会构建智能体、展示方案，并在你确认后部署。"
+      },
+      "readyMade": {
+        "title": "开箱即用的智能体",
+        "description": "Cycle Close、Approval Chaser、Weekly Briefing、Anomaly Detector。一键启用，已针对真实工作流完成调优。"
+      },
+      "schedule": {
+        "title": "按你的时间表运行",
+        "description": "每周二 9 点、每月最后一天、每天 10 点。设置一次，其余交给智能体。"
+      },
+      "learns": {
+        "title": "越用越聪明",
+        "description": "智能体在多次运行之间保有记忆。趋势逐周累积，基线不断收敛。运行越久，越有价值。"
+      },
+      "control": {
+        "title": "掌控权在你",
+        "description": "智能体提出行动方案，由你审阅并批准。未经你同意，任何事都不会发生。为信任而设计。"
+      },
+      "data": {
+        "title": "访问你的全部数据",
+        "description": "实体、运行、工作流、报表、已连接的系统等。智能体可使用 Frontal 掌握的全部业务信息。"
+      },
+      "thinks": {
+        "title": "不只执行，更会思考",
+        "description": "智能体会分析数据、发现异常、比较趋势并给出建议。这不只是自动化。"
+      },
+      "secure": {
+        "title": "安全且隔离",
+        "description": "每个智能体都在独立沙箱中运行，无法访问你的文件系统或网络，其行为边界受到硬性限制。"
+      },
+      "transparency": {
+        "title": "所有操作一览无遗",
+        "description": "每一步都有完整追踪：读取了哪些数据、做出了什么判断、执行了哪些操作。没有黑箱。"
+      },
+      "connected": {
+        "title": "与你的工具相连",
+        "description": "把结果发到 Slack、通过 Gmail 发送邮件、更新 Google 表格。智能体把成果送到团队工作的地方。"
+      },
+      "anywhere": {
+        "title": "随时随地可用",
+        "description": "仪表板、iMessage、聊天或 CLI。可从任一入口创建智能体、批准提案并查看结果。"
+      },
+      "quickstart": {
+        "title": "几秒即可上手",
+        "description": "一条命令，用浏览器登录即可。无需 API 密钥和配置文件，第一个智能体一分钟内上线。"
+      }
+    },
+    "catalog": {
+      "title": "预置智能体",
+      "subtitle": "一键启用，已针对真实业务流程完成调优。",
+      "agents": {
+        "cycleClose": {
+          "name": "周期结账",
+          "schedule": "每月最后几天 8:00",
+          "description": "替你走完整个周期，在结账前标出需要关注的事项。",
+          "details": {
+            "first": "审查当前周期的每一次运行",
+            "second": "标记未分类记录与待审阅事项",
+            "third": "对比本月与上月，给出健康度评估"
+          }
+        },
+        "approvalChaser": {
+          "name": "审批催办员",
+          "schedule": "每周二 9:00",
+          "description": "找出受阻的审批并建议发送提醒。任何内容发出前都由你批准。",
+          "details": {
+            "first": "按影响程度与阻塞时长排定优先级",
+            "second": "追踪升级历史，标记屡次拖延的对象",
+            "third": "提出提醒草案，由你决定发送内容"
+          }
+        },
+        "weeklyBriefing": {
+          "name": "每周简报",
+          "schedule": "每周一 8:00",
+          "description": "每周一提供清晰的生产环境概览：吞吐、可靠性、成本，以及需要你关注的事项。",
+          "details": {
+            "first": "汇总所有工作流的吞吐量",
+            "second": "逐周跟踪可靠性与成本趋势",
+            "third": "列出待办事项，如受阻审批与成本骤增"
+          }
+        },
+        "anomalyDetector": {
+          "name": "异常检测器",
+          "schedule": "每天 10:00",
+          "description": "在后台监控生产环境。学习何为正常，仅在异常时通知你。",
+          "details": {
+            "first": "在 90 天内为每个工作流建立行为基线",
+            "second": "捕捉重复运行、成本骤增与未经审阅的工具",
+            "third": "在正常的日子里完全保持静默"
+          }
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "运作方式",
+      "steps": {
+        "describe": {
+          "title": "描述",
+          "description": "用日常语言说出需求，或从目录中挑选现成的智能体。"
+        },
+        "review": {
+          "title": "审阅",
+          "description": "Frontal 构建智能体并展示方案，确认无误后由你确认。"
+        },
+        "automate": {
+          "title": "自动化",
+          "description": "按你的时间表运行，从每次运行中学习，并随时间变得更有用。"
+        },
+        "control": {
+          "title": "掌控",
+          "description": "所有操作一览无遗。行动执行前由你批准，你始终掌握情况。"
+        }
+      }
+    },
+    "surfaces": {
+      "dashboard": {
+        "title": "仪表板",
+        "items": {
+          "first": "“启用审批催办员”",
+          "second": "“创建一个监控成本的智能体”",
+          "third": "在聊天中管理智能体",
+          "fourth": "查看运行历史与结果"
+        }
+      },
+      "chat": {
+        "title": "聊天",
+        "items": {
+          "first": "iMessage、WhatsApp、Slack、Telegram",
+          "second": "随时接收通知并批准",
+          "third": "在任意聊天中查看智能体结果",
+          "fourth": "无需安装应用"
+        }
+      },
+      "cli": {
+        "title": "CLI",
+        "items": {
+          "first": "创建、运行并管理智能体",
+          "second": "在终端中批准提案",
+          "third": "查看内存与运行历史",
+          "fourth": "使用浏览器登录"
+        }
+      },
+      "api": {
+        "title": "API",
+        "items": {
+          "first": "构建你自己的集成",
+          "second": "以编程方式触发运行",
+          "third": "管理提案与审批",
+          "fourth": "完整访问每一步的追踪记录"
+        }
+      }
+    },
+    "infrastructure": {
+      "title": "它跑在哪里"
+    },
+    "cta": {
+      "title": "开始使用",
+      "description": "Frontal Computer 让你的业务进入自动驾驶。说出需求，其余交给它。"
+    },
+    "metaTitle": "Computer：面向企业的自主 AI 智能体",
+    "metaDescription": "描述你的需求，Frontal 便会部署一个自主智能体：按你的时间表运行、随时间学习，在你休息时也持续交付结果。",
+    "ogTitle": "Frontal Computer",
+    "ogDescription": "即使你停下来，业务依然运转"
+  },
+  "Validation": {
+    "accuracyConfirmed": {
+      "required": "请确认您填写的信息准确无误。"
+    },
+    "basedInCountry": {
+      "required": "请选择您的常驻地。"
+    },
+    "company": {
+      "required": "请填写公司名称。",
+      "tooLong": "公司名称过长。"
+    },
+    "country": {
+      "required": "请选择您所在的国家/地区。"
+    },
+    "email": {
+      "invalid": "请输入有效的电子邮件地址。",
+      "invalidWork": "请输入有效的公司邮箱地址。"
+    },
+    "firstName": {
+      "required": "请填写名字。"
+    },
+    "fullName": {
+      "required": "请填写姓名。",
+      "tooLong": "姓名过长。"
+    },
+    "lastName": {
+      "required": "请填写姓氏。"
+    },
+    "message": {
+      "tooLong": "请将留言控制在 5000 字以内。",
+      "tooShort": "请再多描述一些您的需求。"
+    },
+    "option": {
+      "required": "请选择一个选项。"
+    },
+    "phone": {
+      "required": "请填写电话号码。"
+    },
+    "privacyAcknowledged": {
+      "required": "请确认您已阅读应聘者隐私声明。"
+    },
+    "privacyPolicy": {
+      "required": "请接受隐私政策。"
+    },
+    "referralSource": {
+      "required": "请告诉我们您是如何了解到我们的。"
+    },
+    "teamSize": {
+      "required": "请选择您的团队规模。"
+    },
+    "url": {
+      "invalid": "请输入有效的 http(s) 网址。"
+    },
+    "useCase": {
+      "required": "请选择主要使用场景。"
+    },
+    "workAuthorization": {
+      "required": "请选择您的工作许可状态。"
+    }
+  },
+  "Chunk": {
+    "staleVersion": {
+      "action": "重新加载",
+      "description": "刷新以加载最新更新。",
+      "title": "有新版本可用"
+    }
+  },
+  "Consent": {
+    "bannerMessage": "我们默认使用无 Cookie 分析。接受 Cookie 可帮助我们跨会话统计您的访问，从而获得更准确的数据。",
+    "deny": "拒绝",
+    "acceptAll": "全部接受",
+    "settings": "自定义",
+    "save": "保存",
+    "dialogTitle": "您的隐私",
+    "dialogDescription": "必要存储始终启用。其余项由您选择，随时可在此更改。",
+    "privacyNote": "请在我们的<link>隐私政策</link>中了解我们如何处理您的数据。",
+    "options": {
+      "essential": {
+        "label": "必要",
+        "description": "您的同意选择、语言偏好与安全性。"
+      },
+      "analytics": {
+        "label": "分析",
+        "description": "跨会话记住您的访问，使流量与转化报告更准确。即使不启用，我们仍会匿名统计访问量，且不会在您的设备上存储任何内容。"
+      },
+      "functional": {
+        "label": "功能",
+        "description": "在本设备上跨访问保留您的 Ask AI 对话记录。"
+      }
+    }
+  },
+  "ContactSales": {
+    "title": "为您的组织构建合适的 AI 基础设施。",
+    "description": "告诉我们您正在构建什么。我们将帮助您把 Frontal 对接到您的系统、安全要求与部署目标。",
+    "highlights": {
+      "conversation": {
+        "title": "围绕您的需求展开的沟通",
+        "description": "与我们的团队讨论架构、集成、定价与推广方案。"
+      },
+      "procurement": {
+        "title": "满足安全与采购要求",
+        "description": "我们可以与您共同梳理治理、合规与部署要求。"
+      }
+    },
+    "fields": {
+      "fullName": "姓名",
+      "fullNamePlaceholder": "Steve Jobs",
+      "workEmail": "公司邮箱",
+      "workEmailPlaceholder": "steve@apple.com",
+      "company": "公司",
+      "companyPlaceholder": "公司名称",
+      "country": "国家/地区",
+      "countryPlaceholder": "选择国家/地区",
+      "companySize": "公司规模",
+      "companySizePlaceholder": "选择规模",
+      "primaryInterest": "主要关注方向",
+      "primaryInterestPlaceholder": "选择领域",
+      "message": "留言",
+      "messagePlaceholder": "请介绍您当前的技术栈、使用场景，以及希望如何使用我们的产品"
+    },
+    "interests": {
+      "agents": "智能体与工作流",
+      "evaluation": "评估",
+      "safety": "安全与治理",
+      "data": "数据与集成",
+      "enterprise": "企业部署"
+    },
+    "consent": {
+      "marketing": "是的，我同意按照贵方<link>隐私政策</link>所述接收 Frontal 的营销信息。",
+      "withdraw": "您可以随时通过邮件中的退订链接撤回同意。"
+    },
+    "submit": "联系销售",
+    "success": "感谢您的提交，我们的销售团队会尽快与您联系。",
+    "genericError": "出了点问题，请重试。"
+  },
+  "StartupsContact": {
+    "consent": {
+      "marketing": "是的，我同意按照贵方<link>隐私政策</link>所述接收 Frontal 的营销信息。",
+      "withdraw": "您可以随时通过邮件中的退订链接撤回同意。"
+    },
+    "description": "告诉我们你在做什么、进展到哪一步。我们会帮你尽快上线，并配上合适的方案与支持。",
+    "fields": {
+      "fullName": "姓名",
+      "fullNamePlaceholder": "Steve Jobs",
+      "workEmail": "公司邮箱",
+      "workEmailPlaceholder": "steve@apple.com",
+      "company": "公司",
+      "companyPlaceholder": "公司名称",
+      "country": "国家/地区",
+      "countryPlaceholder": "选择国家/地区",
+      "companySize": "公司规模",
+      "companySizePlaceholder": "选择规模",
+      "primaryInterest": "主要关注方向",
+      "primaryInterestPlaceholder": "选择领域",
+      "message": "留言",
+      "messagePlaceholder": "请介绍您当前的技术栈、使用场景，以及希望如何使用我们的产品",
+      "fundingStage": "融资阶段",
+      "fundingStagePlaceholder": "选择阶段"
+    },
+    "genericError": "出了点问题，请重试。",
+    "highlights": {
+      "velocity": {
+        "title": "从原型走向生产",
+        "description": "我们帮助您选择契合当前阶段的模型、评估方式与部署路径。"
+      },
+      "pricing": {
+        "title": "初创团队定价与额度",
+        "description": "符合条件的团队可获得折扣用量以及随规模增长的方案。"
+      },
+      "support": {
+        "title": "与团队直接沟通",
+        "description": "我们提供与 Frontal 开发工程师直连的共享频道，而不是工单队列。"
+      },
+      "security": {
+        "title": "为首个大型客户合同做好准备",
+        "description": "提供 SSO、审计日志，以及首个大客户会追问的安全答复。"
+      }
+    },
+    "interests": {
+      "agents": "智能体与工作流",
+      "evaluation": "评估",
+      "safety": "安全与治理",
+      "data": "数据与集成",
+      "enterprise": "企业部署"
+    },
+    "stages": {
+      "idea": "创意或产品前阶段",
+      "pre-seed": "种子前轮",
+      "seed": "种子轮",
+      "series-a": "A 轮",
+      "series-b-plus": "B 轮及以后"
+    },
+    "submit": "申请 Frontal for Startups",
+    "success": "感谢提交。我们会审阅你的申请并与你联系。",
+    "title": "在 Frontal 上打造你的初创产品。"
+  },
+  "EnterpriseContact": {
+    "consent": {
+      "marketing": "是的，我同意按照贵方<link>隐私政策</link>所述接收 Frontal 的营销信息。",
+      "withdraw": "您可以随时通过邮件中的退订链接撤回同意。"
+    },
+    "deployments": {
+      "cloud": "Frontal Cloud（推荐）",
+      "dedicated-cloud": "专属/隔离云",
+      "self-hosted": "客户 VPC / 自托管"
+    },
+    "description": "请告诉我们您的系统、安全要求和上线计划。我们会将 Frontal 与您的环境对接，并安排合适的团队与您沟通。",
+    "fields": {
+      "fullName": "姓名",
+      "fullNamePlaceholder": "Steve Jobs",
+      "workEmail": "公司邮箱",
+      "workEmailPlaceholder": "steve@apple.com",
+      "company": "公司",
+      "companyPlaceholder": "公司名称",
+      "country": "国家/地区",
+      "countryPlaceholder": "选择国家/地区",
+      "companySize": "公司规模",
+      "companySizePlaceholder": "选择规模",
+      "primaryInterest": "主要关注方向",
+      "primaryInterestPlaceholder": "选择领域",
+      "message": "留言",
+      "messagePlaceholder": "请介绍您当前的技术栈、使用场景，以及希望如何使用我们的产品",
+      "deployment": "部署模式",
+      "deploymentPlaceholder": "选择部署模式",
+      "timeline": "上线时间",
+      "timelinePlaceholder": "选择时间范围"
+    },
+    "genericError": "出了点问题，请重试。",
+    "highlights": {
+      "deployment": {
+        "title": "部署选项",
+        "description": "Frontal Cloud 是最快的启动方式，基础设施由 Frontal 运营。专属/隔离云可满足更严格的数据隔离或合规要求。客户 VPC/自托管适用于要求计算和数据完全留在自身环境内的企业。"
+      },
+      "governance": {
+        "title": "满足安全与采购要求",
+        "description": "我们与您的团队共同梳理治理、合规与数据驻留要求。"
+      },
+      "integration": {
+        "title": "契合您现有的技术栈",
+        "description": "无需重建即可接入身份体系、数据仓库与内部服务。"
+      },
+      "support": {
+        "title": "专属支持与上线陪跑",
+        "description": "配备专属团队负责推广部署、团队培训与持续的架构评审。"
+      }
+    },
+    "interests": {
+      "agents": "智能体与工作流",
+      "evaluation": "评估",
+      "safety": "安全与治理",
+      "data": "数据与集成",
+      "enterprise": "企业部署"
+    },
+    "submit": "联系企业销售团队",
+    "success": "感谢您的提交。我们的企业团队会尽快与您联系。",
+    "timelines": {
+      "evaluating": "正在评估方案",
+      "immediate": "立即",
+      "this-half": "未来六个月",
+      "this-quarter": "本季度"
+    },
+    "title": "在整个企业中部署 Frontal。"
+  },
+  "Application": {
+    "selectPlaceholder": "请选择",
+    "selectItems": "选择项目",
+    "selectItemsPlaceholder": "选择项目…",
+    "sections": {
+      "personal": "个人信息",
+      "eligibility": "工作地点与就业资格",
+      "referral": "您是如何了解到我们的？",
+      "links": "社交与职业链接",
+      "optional": "（可选）",
+      "confirmations": "确认事项"
+    },
+    "fields": {
+      "firstName": "名字",
+      "lastName": "姓氏",
+      "email": "电子邮件地址",
+      "phone": "电话号码",
+      "country": "国家/地区",
+      "source": "来源",
+      "linkedin": "LinkedIn",
+      "twitter": "X (Twitter)",
+      "github": "GitHub",
+      "portfolio": "作品集",
+      "workAuthorization": "工作许可",
+      "basedInCountry": "您目前常驻何地？"
+    },
+    "questions": {
+      "londonHybrid": "您能否以混合办公方式每周三天到我们的伦敦办公室工作？",
+      "visaSponsorship": "您现在或将来是否需要签证担保？",
+      "listedState": "您是否居住在阿拉巴马、阿拉斯加、特拉华、堪萨斯、缅因、密西西比、蒙大拿、内布拉斯加、新墨西哥、北达科他、南达科他、西弗吉尼亚或怀俄明州？"
+    },
+    "confirmations": {
+      "privacyLabel": "应聘者隐私声明：",
+      "privacyText": "我确认已阅读该声明。",
+      "accuracyLabel": "申请信息准确性：",
+      "accuracyText": "我确认所填写的全部信息真实、完整。"
+    },
+    "submit": "提交申请",
+    "submitting": "提交中…",
+    "success": "已收到您的申请，感谢。我们会尽快与您联系。",
+    "genericError": "无法提交您的申请，请重试。",
+    "options": {
+      "referralSource": {
+        "LinkedIn": "LinkedIn",
+        "Referral": "他人推荐",
+        "Twitter/X": "X (Twitter)",
+        "Indeed": "Indeed",
+        "GitHub": "GitHub",
+        "Job board": "招聘网站",
+        "Conference": "会议",
+        "Other": "其他"
+      },
+      "workAuthorization": {
+        "Citizen or permanent resident": "公民或永久居民",
+        "Visa sponsorship required": "需要签证担保",
+        "Visa sponsorship not required": "无需签证担保"
+      },
+      "yesNo": {
+        "Yes": "是",
+        "No": "否"
+      }
+    }
+  },
+  "Capabilities": {
+    "runtime": {
+      "title": "执行运行时",
+      "description": "在统一的执行环境中设计并交付智能软件，涵盖编排、状态与可靠性。"
+    },
+    "context": {
+      "title": "状态与上下文",
+      "description": "借助面向智能体的可观测性、治理与控制流，管理确定性与概率性的系统边界。"
+    },
+    "reliability": {
+      "title": "可靠性原语",
+      "description": "从早期原型到关键任务系统，Frontal 提供支撑生产环境 AI 的基础设施。"
+    }
+  },
+  "Shortcuts": {
+    "dialogTitle": "键盘快捷键",
+    "dialogDescription": "无需使用鼠标即可浏览 Frontal。",
+    "openSearch": "打开搜索",
+    "showHelp": "显示键盘快捷键",
+    "toggleChat": "切换 Ask AI",
+    "toggleTheme": "切换深色模式",
+    "groups": {
+      "general": "通用",
+      "appearance": "外观"
+    }
+  },
+  "Customers": {
+    "meta": {
+      "title": "客户案例",
+      "description": "各团队如何用 Frontal 把自己的数据、系统和业务变成智能软件。",
+      "ogTitle": "客户案例",
+      "ogDescription": "看看各团队如何把数据、系统和业务变成智能软件。"
+    },
+    "hero": {
+      "title": "客户案例",
+      "description": "各团队如何把自己的数据、系统和业务，放到真正在其上运转的软件背后。"
+    },
+    "sections": {
+      "quotes": {
+        "title": "他们自己的话",
+        "description": "有什么变化，由真正在运营它的团队来讲。"
+      },
+      "logos": {
+        "title": "正在使用 Frontal 构建的团队"
+      },
+      "stories": {
+        "title": "全部案例"
+      },
+      "customers": {
+        "title": "全部客户",
+        "description": "我们已公开介绍其工作的团队。"
+      },
+      "cta": {
+        "title": "开始你们自己的故事",
+        "description": "几分钟内创建一个工作区，或者和我们聊聊你们的场景。",
+        "primary": "开始构建",
+        "secondary": "联系销售"
+      }
+    },
+    "story": {
+      "back": "客户案例",
+      "employees": "{size} 名员工",
+      "facts": {
+        "title": "概览",
+        "industry": "行业",
+        "size": "公司规模",
+        "useCase": "使用场景",
+        "published": "发布日期"
+      },
+      "outcomes": {
+        "title": "成果"
+      },
+      "more": {
+        "title": "更多客户案例"
+      }
+    },
+    "empty": "第一批客户案例正在撰写中，请稍后再来。"
+  }
+}

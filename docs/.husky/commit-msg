@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+commit_message=$(sed -n '1p' "$1")
+
+case "$commit_message" in
+  Merge\ *|Revert\ *|fixup\!\ *|squash\!\ *)
+    exit 0
+    ;;
+esac
+
+if printf '%s\n' "$commit_message" | grep -Eq '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([[:alnum:]_.\/-]+\))?(!)?: .+'; then
+  exit 0
+fi
+
+echo "Commit message must use Conventional Commits, for example: feat(auth): add sign in" >&2
+exit 1

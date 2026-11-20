@@ -1,0 +1,4570 @@
+{
+  "Header": {
+    "features": "機能",
+    "resources": "リソース",
+    "pricing": "料金",
+    "searchPlaceholder": "ドキュメント、アップデート、ページを検索",
+    "searchButton": "検索",
+    "quickLinks": "クイックリンク",
+    "seeAllResults": "{count}件すべての結果を表示",
+    "localeButton": "言語を選択",
+    "signIn": "ログイン",
+    "closeMenu": "メニューを閉じる",
+    "homeLabel": "Frontal OSS ホーム",
+    "noResults": "検索条件に一致するページやドキュメントはありません。",
+    "openMenu": "メニューを開く",
+    "resultCount": "{count, plural, other {#件の結果}}",
+    "searching": "検索中…"
+  },
+  "Footer": {
+    "toggleTheme": "テーマを切り替え",
+    "lightMode": "ライトモード",
+    "darkMode": "ダークモード",
+    "copyright": "© {year} Frontal Labs, Inc. またはその関連会社。",
+    "tagline": "エンタープライズ AI インフラストラクチャ"
+  },
+  "StartPage": {
+    "hero": {
+      "title": "エンタープライズ・インテリジェンスの未来を築いています",
+      "description": "企業のデータ、システム、業務をインテリジェントなソフトウェアに変えるインフラを構築しています。",
+      "primaryCta": "私たちのミッションを読む",
+      "secondaryCta": "デモを予約"
+    },
+    "video": {
+      "playLabel": "動画を再生",
+      "closeLabel": "ダイアログを閉じる"
+    },
+    "howItWorks": {
+      "title": "仕組み"
+    },
+    "features": {
+      "context": {
+        "title": "すべてのコンテキストを、ひとつに",
+        "subtitle": "すでに稼働しているシステムを接続すると、Frontal がそれらを問い合わせ可能なひとつのコンテキスト層に解決します。",
+        "mobileSubtitle": "業務を支えるすべてのシステムを、ひとつのコンテキスト層に。",
+        "media": "接続済みシステム"
+      },
+      "agents": {
+        "title": "本番に到達するエージェント",
+        "subtitle": "エージェントは決定的な境界の内側で動き、判断が必要な場面では相互に、そして人へと引き継ぎます。",
+        "mobileSubtitle": "エージェントは定義された境界内で動き、引き継ぎも行います。",
+        "media": "エージェントの実行"
+      },
+      "observability": {
+        "title": "はじめから観測可能",
+        "subtitle": "すべての実行はトレースされ、評価され、帰属が明らかです。システムが何を、なぜ行ったかを示せます。",
+        "mobileSubtitle": "すべての実行はトレース、評価、監査が可能です。",
+        "media": "実行トレース"
+      }
+    },
+    "videos": {
+      "overview": {
+        "title": "概要",
+        "subtitle": "Frontal が企業のデータ・システム・業務を、どのようにインテリジェントなソフトウェアへ変えるのかをご覧ください。"
+      },
+      "runtime": {
+        "title": "ランタイム",
+        "subtitle": "オーケストレーション、状態、信頼性を担う統合実行環境。最初のプロトタイプから本番まで。"
+      },
+      "agents": {
+        "title": "エージェント",
+        "subtitle": "決定的な境界の内側で動くエージェント。ツール利用、引き継ぎ、そして重要な場面での人によるレビューを備えます。"
+      },
+      "ontology": {
+        "title": "オントロジー",
+        "subtitle": "業務の土台となるエンティティの共有モデル。あらゆるシステムとエージェントが同じ定義にもとづいて推論します。"
+      },
+      "data": {
+        "title": "データ",
+        "subtitle": "既存のシステムやウェアハウスを移行なしで接続し、すべてのソースでリネージを保ちます。"
+      },
+      "observability": {
+        "title": "オブザーバビリティ",
+        "subtitle": "すべての実行にトレース、評価、監査証跡を。本番環境の挙動を説明できる状態に保ちます。"
+      },
+      "security": {
+        "title": "セキュリティ",
+        "subtitle": "企業のレビューに耐えるガバナンス、アクセス制御、データ境界。"
+      }
+    },
+    "images": {
+      "dashboardPreview": "Frontal ダッシュボードのプレビュー",
+      "dashboard": "ダッシュボードのイラスト"
+    },
+    "sections": {
+      "platform": {
+        "title": "すべてのレイヤーを、ひとつの基盤で",
+        "description": "8 つのレイヤーが、同じ文脈・同じ権限・同じ監査証跡を共有します。"
+      },
+      "how": {
+        "title": "仕組み",
+        "description": "すでにお使いのものをつなぎ、その上に構築し、すべての実行を見届けられます。"
+      },
+      "useCases": {
+        "title": "チームは Frontal で何を作っているか",
+        "description": "ほとんどの導入で共通して現れる 4 つのパターンです。"
+      },
+      "faq": {
+        "title": "よくある質問",
+        "description": "最初のワークスペースを作る前に、よく寄せられる質問です。"
+      },
+      "cta": {
+        "title": "今日、最初のワークフローを作る",
+        "description": "数分でワークスペースを作成できます。ユースケースのご相談も承ります。",
+        "primary": "作り始める",
+        "secondary": "デモを予約"
+      }
+    },
+    "useCases": {
+      "support": {
+        "title": "顧客からの依頼を最後まで処理する",
+        "description": "依頼を読み取り、その顧客の履歴を参照し、正となるシステム上で処理し、監査証跡を残します。"
+      },
+      "ops": {
+        "title": "業務の「あいだ」を自動化する",
+        "description": "どのシステムも所有していないために、表計算や受信箱に住み着いている繰り返し作業です。"
+      },
+      "analysis": {
+        "title": "システムをまたいだ問いに答える",
+        "description": "エンティティ、実行、コスト、直近の変更について尋ねると、ダッシュボードではなく実データに基づく答えが返ります。"
+      },
+      "review": {
+        "title": "人の判断を、必要な場所に集中させる",
+        "description": "量はエージェントが引き受け、例外だけを文脈ごと人に渡します。"
+      }
+    },
+    "faq": {
+      "what": {
+        "question": "Frontal とは何ですか。",
+        "answer": "企業向け AI のためのインフラ層です。データとシステムをつなぎ、その上でエージェントとワークフローを動かし、何が起きたかを記録します。"
+      },
+      "replace": {
+        "question": "既存のシステムを置き換える必要がありますか。",
+        "answer": "いいえ。Frontal は、すでにお使いのシステムやウェアハウスから読み取ります。ソースを 1 つつなぐだけで始められます。"
+      },
+      "trust": {
+        "question": "エージェントが何をしたか、どう確認できますか。",
+        "answer": "各実行が入力・ツール呼び出し・出力を保持し、実行者の ID に紐づけられ、監査用にエクスポートできます。"
+      },
+      "start": {
+        "question": "始めるときは何をしますか。",
+        "answer": "ワークスペースを作り、システムを 1 つつなぎ、その上にワークフローかエージェントを 1 つ作ります。多くのチームは半日で到達します。"
+      }
+    },
+    "intro": {
+      "title": "事業を理解して動くソフトウェア",
+      "lead": "多くの AI ツールはモデルまでで終わります。難しいのはその周辺です。読み取るデータ、触れるシステム、引き継ぐ権限、そして何をしたかという記録。",
+      "body": {
+        "a": "Frontal はその残りを引き受けるレイヤーです。すでにお使いのシステムをつなぎ、事業が実際に扱うエンティティを定義し、社員と同じルールの下で動くエージェントとワークフローを構築できます。",
+        "b": "ブラックボックスは残りません。各実行が入力・判断・出力を保持するため、本番で起きたことは検証でき、説明でき、改善できる状態のままです。"
+      }
+    }
+  },
+  "Agents": {
+    "meta": {
+      "title": "エンタープライズ AI エージェント",
+      "description": "ビジネスを理解し、データに接続し、意思決定を行い、組織全体で数分のうちに行動するエージェントを作成できます。",
+      "ogTitle": "AI エージェント",
+      "ogDescription": "理解し、判断し、実行するエージェント"
+    },
+    "hero": {
+      "title": "理解し、判断し、実行するエージェント。",
+      "eyebrow": "エージェント",
+      "mobileDescription": "ビジネスを理解するエージェントを構築",
+      "description": "エージェントを作成し、データと接続して、数分でデプロイできます。",
+      "primaryCta": "私たちのミッションを読む",
+      "secondaryCta": "デモを予約"
+    },
+    "video": {
+      "playLabel": "動画を再生",
+      "closeLabel": "ダイアログを閉じる"
+    },
+    "images": {
+      "agentRunAlt": "エージェント実行画面",
+      "dashboardPreviewAlt": "Frontal ダッシュボードのプレビュー",
+      "dashboardAlt": "ダッシュボードのイラスト"
+    },
+    "videos": {
+      "overview": {
+        "title": "概要",
+        "subtitle": "Frontal がエンタープライズのデータ、システム、業務をインテリジェントなソフトウェアに変える様子をご覧ください。"
+      },
+      "runtime": {
+        "title": "ランタイム",
+        "subtitle": "オーケストレーション、状態、信頼性のための統合実行環境。"
+      },
+      "tools": {
+        "title": "ツール",
+        "subtitle": "すでに利用中のシステムへ、型付けされたアクセスをエージェントに与えます。"
+      },
+      "handoffs": {
+        "title": "ハンドオフ",
+        "subtitle": "エージェントと人の間で作業を引き継ぎ、判断が必要な箇所ではレビューを挟みます。"
+      },
+      "memory": {
+        "title": "メモリ",
+        "subtitle": "実行やチームをまたいで保持される永続的な状態と共有コンテキスト。"
+      },
+      "evaluation": {
+        "title": "評価",
+        "subtitle": "本番投入の前後で、実際のケースに対してエージェントの挙動を評価します。"
+      },
+      "governance": {
+        "title": "ガバナンス",
+        "subtitle": "すべての操作に対するアクセス制御、データ境界、監査証跡。"
+      }
+    },
+    "recentHighlights": {
+      "title": "最近のハイライト",
+      "viewMore": "投稿をもっと見る",
+      "posts": {
+        "thirdEra": {
+          "title": "AI ソフトウェア開発の第三の時代",
+          "description": "自律的なクラウドエージェントがより大きなタスクをより長い時間軸で担う、AI ソフトウェア開発の第三の時代が到来しつつあります。",
+          "category": "アイデア",
+          "date": "2026年2月26日"
+        },
+        "computerUse": {
+          "title": "Cursor エージェントが自身のコンピュータを操作可能に",
+          "description": "クラウドエージェントは自ら作成したソフトウェアを使って変更を検証し、成果をデモします。",
+          "category": "プロダクト",
+          "date": "2026年2月24日"
+        },
+        "bugbotAutofix": {
+          "title": "Bugbot Autofix でコードレビューのループを閉じる",
+          "description": "Bugbot Autofix はクラウドエージェントを起動して変更をテストし、PR の問題を自動で検出・修正します。",
+          "category": "プロダクト",
+          "date": "2026年2月26日"
+        }
+      }
+    }
+  },
+  "Developers": {
+    "meta": {
+      "title": "開発者",
+      "description": "SDK、型付き API、そして自社のスタックから Frontal 上で構築するために必要なリファレンスを提供します。",
+      "ogTitle": "開発者",
+      "ogDescription": "自社のスタックから Frontal 上で構築する"
+    },
+    "hero": {
+      "eyebrow": "開発者",
+      "title": "Frontal 上で構築する。",
+      "description": "クライアントライブラリ、型付き API、そして最初の統合を今日中に出荷するためのリファレンスがそろっています。"
+    },
+    "breadcrumb": "開発者",
+    "nav": {
+      "label": "開発者リファレンス",
+      "browse": "リファレンスを見る"
+    },
+    "startHere": "はじめに"
+  },
+  "Docs": {
+    "meta": {
+      "title": "ドキュメント",
+      "ogTitle": "ドキュメント",
+      "description": "Frontal 上での構築方法を学べます。エージェント、ワークフロー、データ、オントロジー、オブザーバビリティなどの疑問に答えます。",
+      "ogDescription": "Frontal について知っておきたいすべて"
+    },
+    "hero": {
+      "eyebrow": "ドキュメント",
+      "title": "どのようなことでお困りですか？",
+      "description": "Frontal でインテリジェントなソフトウェアを構築する方法を学びましょう。"
+    },
+    "popularGuides": "人気のガイド",
+    "browseByTopic": "トピックから探す",
+    "breadcrumb": "ドキュメント",
+    "chat": {
+      "thinking": "考えています…",
+      "rateLimitPrefix": "レート制限に達しました。しばらくしてから再試行するか、",
+      "browseDocs": "ドキュメントをご覧ください",
+      "rateLimitSuffix": "."
+    },
+    "askAI": "AI に質問",
+    "askAIPrompt": "このページを読んで、内容についての質問に答えてください。",
+    "nav": {
+      "label": "ドキュメント",
+      "browse": "ドキュメントを見る"
+    },
+    "browseSdks": "SDKを見る",
+    "updated": "{date}に更新",
+    "pager": "ページ移動",
+    "previous": "前へ",
+    "next": "次へ",
+    "closing": {
+      "title": "開発に必要なものがそろっています",
+      "description": "クイックスタートから始めてください。足りないものがあればヘルプセンターへ。",
+      "help": "ヘルプを見る"
+    },
+    "onThisPage": "このページの内容",
+    "actions": "ページの操作",
+    "viewMarkdown": "マークダウンで表示"
+  },
+  "Help": {
+    "meta": {
+      "title": "ヘルプセンター",
+      "description": "ガイドと回答に加え、ページではなく人に相談したいときに team へ直接つながる窓口を用意しています。",
+      "ogTitle": "ヘルプセンター",
+      "ogDescription": "Frontal のガイド、回答、サポート"
+    },
+    "hero": {
+      "eyebrow": "ヘルプセンター",
+      "title": "何にお困りですか？",
+      "description": "ガイドを検索し、手順を追い、必要であれば担当チームに直接ご連絡ください。",
+      "contact": "お問い合わせ"
+    },
+    "search": {
+      "label": "ヘルプ記事を検索",
+      "placeholder": "答えを検索",
+      "empty": "その検索に一致するヘルプ記事はありません。",
+      "viewAll": "すべての結果を見る"
+    },
+    "categories": {
+      "title": "トピックから探す",
+      "description": "いま取り組んでいる内容に最も近い分野から始めてください。",
+      "articleCount": "{count, plural, other {#件の記事}}",
+      "getting-started": {
+        "label": "はじめに",
+        "description": "ワークスペースを作成し、チームを招待して、最初のプロジェクトを設定します。"
+      },
+      "accounts-and-access": {
+        "label": "アカウントとアクセス",
+        "description": "ロール、権限、シングルサインオン、そして誰が何を見られるか。"
+      },
+      "billing": {
+        "label": "請求",
+        "description": "プラン、請求書、利用上限、支払い内容の変更方法。"
+      },
+      "data-and-syncs": {
+        "label": "データと同期",
+        "description": "ソースの接続、同期の更新、失敗したときに起きること。"
+      },
+      "troubleshooting": {
+        "label": "トラブルシューティング",
+        "description": "エージェントやワークフロー、連携が想定どおりに動かないときに最初に確認すること。"
+      },
+      "security-and-privacy": {
+        "label": "セキュリティとプライバシー",
+        "description": "データの保管場所、保護のしくみ、請求できるレポート。"
+      }
+    },
+    "popular": {
+      "title": "よく読まれる記事",
+      "description": "最も多く開かれている回答です。"
+    },
+    "channels": {
+      "title": "サポートの受け方",
+      "description": "記事だけでは足りないときに。",
+      "support": {
+        "title": "サポートに連絡",
+        "description": "アカウントの状況を添えてチームに届きます。"
+      },
+      "status": {
+        "title": "システムステータス",
+        "description": "稼働状況と障害履歴は、このサイトとは別に公開しています。"
+      },
+      "docs": {
+        "title": "開発者ドキュメント",
+        "description": "APIリファレンス、SDK、Frontalで開発するためのガイド。"
+      }
+    },
+    "faq": {
+      "title": "よくある質問",
+      "items": {
+        "contact": {
+          "question": "サポートへの連絡方法は？",
+          "answer": "ワークスペースからリクエストを送ると、アカウントの状況を添えてチームに届きます。"
+        },
+        "included": {
+          "question": "サポートはプランに含まれますか？",
+          "answer": "すべてのプランにサポートが含まれます。応答時間はプランと緊急度によって変わります。"
+        },
+        "teammates": {
+          "question": "ワークスペースに人を追加できますか？",
+          "answer": "はい。オーナーはメンバーを招待し、それぞれができることを選べます。"
+        },
+        "status": {
+          "question": "障害が起きているかはどこで確認しますか？",
+          "answer": "稼働状況と障害履歴はステータスページに、このサイトとは別に公開しています。"
+        }
+      }
+    },
+    "cta": {
+      "title": "まだ解決しませんか？",
+      "description": "ここで答えが見つからないときは、推測するよりチームに知らせてください。",
+      "primary": "お問い合わせ",
+      "secondary": "システムステータスを確認"
+    },
+    "category": {
+      "metaTitle": "{category}のヘルプ",
+      "metaDescription": "{category}に関するガイドと回答。",
+      "empty": "ここにはまだ記事がありません。",
+      "otherTopics": "ほかのトピック",
+      "backToHelp": "すべてのヘルプトピック",
+      "articles": "記事"
+    },
+    "article": {
+      "breadcrumb": "ヘルプ",
+      "updated": "{date}に更新",
+      "related": "関連記事"
+    }
+  },
+  "Learn": {
+    "meta": {
+      "title": "ラーニング",
+      "description": "Frontal でインテリジェントなソフトウェアを構築するための、短い動画レッスンによるガイド付きコース。",
+      "ogTitle": "ラーニング",
+      "ogDescription": "Frontal で構築するためのガイド付きコース"
+    },
+    "hero": {
+      "title": "Frontal を学ぶ。",
+      "description": "理にかなった順序で並んだ短い動画レッスン。最初から始めても、必要なレッスンに直接進んでもかまいません。"
+    },
+    "breadcrumb": "ラーニング",
+    "minutes": "{count} 分",
+    "nav": {
+      "label": "コース",
+      "browse": "コースを見る"
+    }
+  },
+  "Releases": {
+    "meta": {
+      "title": "リリース",
+      "description": "Frontal の最新のアップデートと改善点。インテリジェントなソフトウェアのリリースを支えるために構築してきたものをご紹介します。",
+      "ogDescription": "私たちが取り組んできたこと"
+    },
+    "backLink": "← 戻る",
+    "pageLabel": "ページ",
+    "pagination": {
+      "previous": "前へ",
+      "next": "次へ"
+    }
+  },
+  "Authors": {
+    "others": "他 +{count} 名"
+  },
+  "Blog": {
+    "meta": {
+      "description": "Frontal チームによるアイデア、エンジニアリングノート、プロダクトの考察。",
+      "ogDescription": "アイデアとエンジニアリングノート",
+      "title": "ブログ"
+    },
+    "pagination": {
+      "next": "次へ",
+      "previous": "前へ"
+    },
+    "archive": {
+      "allCategories": "すべて",
+      "searchPosts": "記事を検索",
+      "noMatches": "検索条件に一致する記事はありません。"
+    }
+  },
+  "News": {
+    "meta": {
+      "description": "Frontal に関する発表、プレスリリース、メディア掲載。",
+      "ogDescription": "発表とプレス",
+      "title": "ニュースルーム"
+    },
+    "pagination": {
+      "next": "次へ",
+      "previous": "前へ"
+    }
+  },
+  "PostActions": {
+    "label": "記事のアクション",
+    "askAI": "AI に質問",
+    "askFrontal": "Frontal AI に質問",
+    "askPrompt": "この記事を読んで、「{title}」について の質問に答えてください。",
+    "listen": "聴く",
+    "preparing": "音声を準備しています…",
+    "listenFailed": "音声を準備できませんでした",
+    "copy": "コピー",
+    "copyLink": "リンクをコピー",
+    "copyMarkdown": "Markdown をコピー",
+    "linkCopied": "リンクをコピーしました",
+    "markdownCopied": "Markdown をコピーしました",
+    "copyFailed": "コピーに失敗しました"
+  },
+  "Download": {
+    "hero": {
+      "title": "あらゆる業務レベルで Frontal を活用しましょう。"
+    },
+    "desktop": {
+      "title": "デスクトップ",
+      "description": "集中して作業するために必要なツールを備えた、エージェント中心の体験。",
+      "cta": "macOS 版をダウンロード"
+    },
+    "terminal": {
+      "title": "ターミナル",
+      "description": "任意のターミナルやスクリプトで、使い慣れたツールと並べてエージェントを実行できます。",
+      "copyLabel": "インストールコマンドをコピー"
+    },
+    "web": {
+      "title": "Web",
+      "description": "ブラウザやスマートフォン、チームが既に使っているツールからエージェントを起動できます。",
+      "cta": "Frontal をウェブで開く"
+    }
+  },
+  "Site": {
+    "title": "Frontal：エンタープライズ AI",
+    "description": "Frontal は、データ、AI エージェント、ワークフロー、業務システムをひとつの統合基盤でつなぎ、インテリジェントなソフトウェアを構築するための企業向け AI プラットフォームです。",
+    "chatSuggestions": {
+      "enterpriseDataSecurity": "Frontal は企業データ、セキュリティ、AI をどのように扱いますか？",
+      "howDoesItWork": "Frontal はどのように動作しますか？",
+      "howWouldItWork": "Frontal は私の会社でどのように使えますか？",
+      "showMe": "Frontal が私の会社で何をできるか見せてください。",
+      "whatCanIBuild": "Frontal で何を作れますか？",
+      "whatIsFrontal": "Frontal とは何ですか？",
+      "whatMakesDifferent": "Frontal の違いは何ですか？"
+    }
+  },
+  "Error": {
+    "notFound": {
+      "action": "ホームに戻る",
+      "description": "お探しのページは存在しません。",
+      "title": "ページが見つかりません"
+    },
+    "unexpected": {
+      "action": "再試行",
+      "description": "申し訳ありませんが、問題が発生しました。",
+      "title": "問題が発生しました"
+    }
+  },
+  "LocaleSelector": {
+    "documentLanguage": "ドキュメントの言語",
+    "english": "英語"
+  },
+  "Chat": {
+    "clearChat": "チャットをクリア",
+    "clearFailed": "チャット履歴を消去できませんでした",
+    "closeChat": "チャットを閉じる",
+    "console": {
+      "clearFailed": "メッセージの消去に失敗しました:",
+      "saveFailed": "メッセージの保存に失敗しました:"
+    },
+    "drawerTrigger": "AI に聞く",
+    "historyCleared": "チャット履歴を消去しました",
+    "keyboardTip": "ヒント: 次のキーでチャットを開閉できます",
+    "sendMessage": "メッセージを送信",
+    "stopGenerating": "生成を停止",
+    "title": "AI に聞く",
+    "unknownError": "不明なエラー",
+    "copyChat": "チャットをコピー",
+    "chatCopied": "チャットをクリップボードにコピーしました",
+    "copyFailed": "チャットをコピーできませんでした",
+    "roleYou": "あなた",
+    "roleAssistant": "AI"
+  },
+  "Navigation": {
+    "ai": {
+      "benchmark": "ベンチマーク",
+      "evaluation": "評価",
+      "gateway": "AI ゲートウェイ",
+      "research": "研究",
+      "safety": "安全性"
+    },
+    "company": {
+      "brand": "ブランド",
+      "careers": {
+        "description": "次の時代をつくる",
+        "label": "キャリア"
+      },
+      "contactSales": "営業に問い合わせる",
+      "customers": "カスタマー",
+      "enterprise": "エンタープライズ",
+      "mission": {
+        "description": "世界のインテリジェンスレイヤーをつくる",
+        "label": "ミッション"
+      },
+      "news": "ニュース",
+      "newsroom": {
+        "description": "お知らせ、プレスリリース、会社のニュース。",
+        "label": "ニュースルーム"
+      },
+      "openSource": "オープンソース",
+      "partnerNetwork": "パートナーシップ",
+      "pricing": "価格",
+      "pressKit": "プレスキット",
+      "research": {
+        "description": "計算知能の科学を前進させる",
+        "label": "研究"
+      },
+      "startups": "スタートアップ"
+    },
+    "developers": {
+      "apiReference": "API リファレンス",
+      "documentation": "ドキュメント",
+      "examples": "サンプル",
+      "sdks": "SDK",
+      "status": "ステータス",
+      "templates": "テンプレート"
+    },
+    "features": {
+      "agents": {
+        "description": "ビジネスのための自律的な作業",
+        "label": "エージェント"
+      },
+      "data": {
+        "description": "すべての意思決定を文脈に基づかせる",
+        "label": "データ"
+      },
+      "observability": {
+        "description": "すべての実行と結果を確認する",
+        "label": "オブザーバビリティ"
+      },
+      "ontology": {
+        "description": "システムのための共通言語",
+        "label": "オントロジー"
+      },
+      "runtime": {
+        "description": "インテリジェントなソフトウェアを確実に実行",
+        "label": "ランタイム"
+      },
+      "security": {
+        "description": "制御、プライバシー、ガバナンス",
+        "label": "セキュリティ"
+      },
+      "storage": {
+        "description": "AI に必要なものをすべて保存",
+        "label": "ストレージ"
+      },
+      "workflows": {
+        "description": "作業を最初から最後まで接続",
+        "label": "ワークフロー"
+      }
+    },
+    "footer": {
+      "ai": "AI",
+      "brand": "ブランド",
+      "company": "会社",
+      "developers": "開発者",
+      "explore": "探索",
+      "features": "機能",
+      "legal": "法務と信頼",
+      "products": "製品",
+      "resources": "リソース",
+      "solutions": "ソリューション",
+      "social": "ソーシャル",
+      "tools": "ツール"
+    },
+    "footerLabel": "フッターナビゲーション",
+    "groups": {
+      "features": {
+        "build": "構築",
+        "context": "コンテキスト",
+        "operate": "運用"
+      },
+      "resources": {
+        "develop": "開発",
+        "tools": "ツール",
+        "stayCurrent": "最新情報"
+      }
+    },
+    "legal": {
+      "acceptableUsePolicy": "利用規約上の許容利用ポリシー",
+      "allDocuments": "すべてのドキュメント",
+      "cookiePolicy": "Cookie ポリシー",
+      "dataProcessingAgreement": "データ処理契約",
+      "dataProtectionPolicy": "データ保護ポリシー",
+      "privacyPolicy": "プライバシーポリシー",
+      "securityOverview": "セキュリティ概要",
+      "subprocessors": "再委託先",
+      "termsOfService": "利用規約"
+    },
+    "mobile": {
+      "ask": "質問する",
+      "contactSales": {
+        "description": "ニーズについてチームにご相談ください。",
+        "label": "営業に問い合わせる"
+      }
+    },
+    "products": {
+      "ask": "質問する",
+      "cloud": "クラウド",
+      "cli": "CLI",
+      "dashboard": "ダッシュボード",
+      "download": "ダウンロード",
+      "studio": "スタジオ"
+    },
+    "resources": {
+      "blog": {
+        "description": "アイデア、エンジニアリングノート、プロダクトの考察。",
+        "label": "ブログ"
+      },
+      "cli": {
+        "description": "ターミナルからエージェントネイティブなワークフローを実行できます。",
+        "label": "CLI"
+      },
+      "community": {
+        "description": "Frontal コミュニティに参加する。",
+        "label": "コミュニティ"
+      },
+      "computer": {
+        "description": "会社全体の作業を自動化する。",
+        "label": "コンピュータ"
+      },
+      "documentation": {
+        "description": "Frontal での構築方法を学ぶ。",
+        "label": "ドキュメント"
+      },
+      "helpCenter": {
+        "description": "Frontal の使い方に関する回答とガイダンス。",
+        "label": "ヘルプセンター"
+      },
+      "learn": "学ぶ",
+      "pricing": "料金",
+      "releases": {
+        "description": "Frontal の最新情報を確認する。",
+        "label": "リリース"
+      },
+      "sdks": {
+        "description": "型付き SDK でより速く構築する。",
+        "label": "SDK"
+      },
+      "support": "サポート"
+    },
+    "search": {
+      "documentation": "ドキュメント",
+      "pricing": "料金",
+      "releases": "リリース"
+    },
+    "solutions": {
+      "customerService": "カスタマーサポート",
+      "dataAnalysis": "データ分析",
+      "engineering": "エンジニアリング",
+      "finance": "財務",
+      "marketing": "マーケティング",
+      "operations": "オペレーション",
+      "sales": "営業"
+    },
+    "social": {
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "x": "X",
+      "youtube": "YouTube"
+    },
+    "tools": {
+      "agent": "Frontal エージェント",
+      "frameworks": "フレームワーク",
+      "plugins": "Frontal プラグイン"
+    }
+  },
+  "Pricing": {
+    "actions": {
+      "contactSales": "営業に問い合わせる",
+      "startTrial": "試用を開始する"
+    },
+    "copy": "プラットフォームへのアクセスは、PAYG のコンピュート、AI 推論、ストレージ、ワークフロー実行とは別に課金されます。Team は明確な本番ユースケース向け、Business は運用規模と管理性を拡張、Enterprise はインフラ、セキュリティ、ガバナンス要件に合わせて調整されます。",
+    "cta": {
+      "description": "ワークフロー、インフラ、Frontal がスタックにどう適合するかについて、ぜひチームにご相談ください。",
+      "primary": "始める",
+      "secondary": "営業と話す",
+      "title": "Frontal で構築を始めましょう。"
+    },
+    "customerStories": "導入事例",
+    "faq": {
+      "annual": {
+        "answer": "はい。Team は月額または年額で請求できます。Business は年額請求で、Enterprise 契約は年次または調達要件に合わせて調整されます。",
+        "question": "年額払いはできますか？"
+      },
+      "billing": {
+        "answer": "コンピュート、モデル推論、ストレージ、および該当するデータ転送の利用は、プラットフォームアクセスとは別に計測されます。利用状況はモデル、プロジェクト、ワークフロー、環境、リソース種別ごとに報告され、支出管理で消費の予測と管理を支援します。",
+        "question": "どのリソースが別請求ですか？"
+      },
+      "platform": {
+        "answer": "プラットフォームアクセスには、ワークスペース、プロジェクト、環境、エージェント、オーケストレーション、モデル、コネクタ、組織管理など、あなたのプランで利用できる Frontal の機能が含まれます。",
+        "question": "プラットフォームアクセスには何が含まれますか？"
+      },
+      "plan": {
+        "answer": "Team は、共に構築し出荷する本気のチーム向けです。Business は、Frontal を運用インフラの一部にする企業向けです。Enterprise は、個別のデプロイ、ガバナンス、セキュリティ、サポートが必要な組織向けです。",
+        "question": "どの Frontal プランが自分の組織に適していますか？"
+      },
+      "private": {
+        "answer": "はい。Frontal Cloud が標準の選択肢で、最も早く利用を開始でき、インフラは Frontal が運用します。より強いデータ分離やコンプライアンス要件には専用／分離クラウドを、コンピューティングとデータをすべて自社環境内に保持する必要がある場合は顧客 VPC／セルフホストを選べます。アーキテクチャと運用責任の範囲は Enterprise と確認します。",
+        "question": "Frontal は専用クラウドや顧客環境へのデプロイに対応できますか？"
+      },
+      "regional": {
+        "answer": "はい。価格は選択したロケールと地域に自動的に合わせて調整されます。組織に別の地域価格が適用される場合は、通貨セレクターを更新できます。",
+        "question": "地域別の価格と通貨に対応していますか？"
+      },
+      "title": "よくある質問"
+    },
+    "hero": {
+      "description": "本番向けのインテリジェンスを、PAYG インフラとは別に課金されるプラットフォームアクセスで提供します。",
+      "title": "あなたとともに拡張するために作られています。"
+    },
+    "section": {
+      "subtitle": "シンプルに始め、ワークフローが複雑になったらアップグレード。",
+      "title": "開発スタイルに合う価格設定"
+    },
+    "comparison": {
+      "title": "プラットフォームは定額、実行量は従量。",
+      "description": "プランには Frontal プラットフォームの利用が含まれます。コンピュート、推論、ストレージ、ワークフローの消費は必要に応じて個別に計測し、本番運用向けに支出の可視化と制御を提供します。",
+      "usageTitle": "従量料金",
+      "usageDescription": "Frontal は、顧客価値の指標、基盤インフラのコスト、粗利目標、レポーティングモデルを検証したうえで、はじめて従量課金の単位と料金を公表します。モデル・ツール・コンピュートの消費が大きく異なるワークロードに対して、一律の実行単価は用いません。",
+      "recommended": "おすすめ",
+      "searchFeatures": "機能を検索",
+      "searchLabel": "プランの機能を検索",
+      "moreInformation": "{feature} の詳細",
+      "noMatches": "一致する機能はありません。",
+      "sections": {
+        "network": {
+          "description": "システムを接続し、Frontal プラットフォームを通じてインテリジェンスをルーティングします。",
+          "rows": {
+            "serviceConnections": {
+              "label": "サービス接続",
+              "tooltip": "エージェントとワークフローを、実際の業務に必要なシステム・ツール・データソースに接続します。"
+            },
+            "deploymentRegions": {
+              "label": "デプロイリージョン"
+            },
+            "trafficControls": {
+              "label": "トラフィック制御"
+            },
+            "privateNetworking": {
+              "label": "プライベートネットワーク",
+              "tooltip": "プライベートネットワーク接続はインフラ案件であり、プラットフォームの標準チェック項目ではありません。"
+            }
+          },
+          "title": "ネットワーク"
+        },
+        "intelligence": {
+          "description": "インテリジェントなソフトウェアを構築・オーケストレーション・評価・運用します。",
+          "rows": {
+            "agents": {
+              "label": "エージェント"
+            },
+            "agentOrchestration": {
+              "label": "エージェントのオーケストレーション",
+              "tooltip": "エージェント、ツール、メモリ、承認、ワークフローのステップを、インテリジェントな業務のための単一のオペレーティングシステムに統合します。"
+            },
+            "supportedModels": {
+              "label": "対応モデル"
+            },
+            "modelRouting": {
+              "label": "モデルルーティング"
+            },
+            "agentMemory": {
+              "label": "エージェントメモリ"
+            },
+            "toolCalling": {
+              "label": "ツール呼び出し"
+            },
+            "agentPermissions": {
+              "label": "エージェントの権限"
+            },
+            "guardrailsAndPolicies": {
+              "label": "ガードレールとポリシー"
+            },
+            "workflows": {
+              "label": "ワークフロー"
+            },
+            "workflowComplexity": {
+              "label": "ワークフローの複雑さ"
+            },
+            "workflowExecution": {
+              "label": "ワークフローの実行",
+              "tooltip": "実行時の消費は、プラットフォーム利用とは別に計測されます。顧客価値の指標とユニットエコノミクスが検証されるまで、Frontal は一律の実行単価を公表しません。"
+            },
+            "humanInTheLoop": {
+              "label": "人による関与"
+            },
+            "evaluation": {
+              "label": "評価"
+            },
+            "continuousEvaluation": {
+              "label": "継続的な評価",
+              "tooltip": "本番環境の挙動を、精度・信頼性・ツール利用・レイテンシー・コストの要件に照らして継続的に評価します。"
+            },
+            "benchmarks": {
+              "label": "ベンチマーク"
+            },
+            "scheduledIntelligence": {
+              "label": "スケジュール実行のインテリジェンス"
+            }
+          },
+          "title": "インテリジェンス"
+        },
+        "data": {
+          "description": "インテリジェンスの土台となるデータを接続し、整理し、推論に用います。",
+          "rows": {
+            "dataConnectors": {
+              "label": "データコネクター"
+            },
+            "dataIngestion": {
+              "label": "データ取り込み"
+            },
+            "dataSynchronization": {
+              "label": "データ同期"
+            },
+            "artifactsAndDocuments": {
+              "label": "成果物とドキュメント"
+            },
+            "graphsAndOntology": {
+              "label": "グラフとオントロジー",
+              "tooltip": "エージェントやアプリケーションが業務領域を理解するために用いる、エンティティ・関係・ビジネス上の意味を表現します。"
+            },
+            "semanticDataLayer": {
+              "label": "セマンティックデータ層"
+            },
+            "dataAccessPolicies": {
+              "label": "データアクセスポリシー"
+            },
+            "dataRetention": {
+              "label": "データ保持"
+            },
+            "dataResidency": {
+              "label": "データ所在地"
+            },
+            "customDataIntegrations": {
+              "label": "カスタムデータ連携"
+            }
+          },
+          "title": "データ"
+        },
+        "compute": {
+          "description": "エージェント、アプリケーション、ワークフローを計測対象のインフラ上で実行します。",
+          "rows": {
+            "runtimeCompute": {
+              "label": "ランタイムのコンピュート"
+            },
+            "aiInference": {
+              "label": "AI 推論"
+            },
+            "storage": {
+              "label": "ストレージ"
+            },
+            "executionEnvironments": {
+              "label": "実行環境"
+            },
+            "jobsAndWorkloads": {
+              "label": "ジョブとワークロード"
+            },
+            "autoscaling": {
+              "label": "オートスケーリング"
+            },
+            "dedicatedCapacity": {
+              "label": "専有キャパシティ",
+              "tooltip": "予約キャパシティと性能のコミットメントは、ワークロードに合わせて設計し、プラットフォーム利用とは別に契約します。"
+            },
+            "privateIsolatedDeployment": {
+              "label": "専用／分離クラウド"
+            },
+            "vpcDedicatedInfrastructure": {
+              "label": "顧客 VPC／セルフホスト"
+            }
+          },
+          "title": "コンピュート"
+        },
+        "accessSecurity": {
+          "description": "人とシステムに、インテリジェントな業務への統制されたアクセスを与えます。",
+          "rows": {
+            "teams": {
+              "label": "チーム",
+              "tooltip": "チームは、コラボレーション、オーナーシップ、権限、リソースアクセスのための組織単位です。"
+            },
+            "rbac": {
+              "label": "RBAC"
+            },
+            "apiAccess": {
+              "label": "API アクセス"
+            },
+            "sdksAndWebhooks": {
+              "label": "SDK と Webhook"
+            },
+            "serviceAccounts": {
+              "label": "サービスアカウント"
+            },
+            "apiKeysAndSecrets": {
+              "label": "API キーとシークレット"
+            },
+            "accessPolicies": {
+              "label": "アクセスポリシー"
+            },
+            "ssoSaml": {
+              "label": "SSO / SAML"
+            },
+            "scim": {
+              "label": "SCIM"
+            },
+            "ipAllowlisting": {
+              "label": "IP 許可リスト"
+            }
+          },
+          "title": "アクセスとセキュリティ"
+        },
+        "compliance": {
+          "description": "ガバナンス、調達、プライバシー、信頼性の要件を明示します。",
+          "rows": {
+            "auditLogs": {
+              "label": "監査ログ"
+            },
+            "governanceControls": {
+              "label": "ガバナンス統制"
+            },
+            "securityReviews": {
+              "label": "セキュリティレビュー"
+            },
+            "complianceSupport": {
+              "label": "コンプライアンス支援"
+            },
+            "dpaPrivacyAgreements": {
+              "label": "DPA / プライバシー契約"
+            },
+            "procurementSupport": {
+              "label": "調達支援"
+            },
+            "securityDocumentation": {
+              "label": "セキュリティ関連ドキュメント"
+            },
+            "dataProcessingControls": {
+              "label": "データ処理の統制"
+            },
+            "contractTerms": {
+              "label": "契約条件"
+            },
+            "sla": {
+              "label": "SLA"
+            },
+            "customLegalRequirements": {
+              "label": "個別の法的要件"
+            }
+          },
+          "title": "コンプライアンス"
+        },
+        "buildDeploy": {
+          "description": "作業を整理し、環境を管理し、インテリジェントなアプリケーションを出荷します。",
+          "rows": {
+            "workspaces": {
+              "label": "ワークスペース"
+            },
+            "projects": {
+              "label": "プロジェクト"
+            },
+            "environments": {
+              "label": "環境"
+            },
+            "applications": {
+              "label": "アプリケーション"
+            },
+            "apis": {
+              "label": "API"
+            },
+            "deployments": {
+              "label": "デプロイ"
+            },
+            "deploymentControls": {
+              "label": "デプロイの統制"
+            },
+            "deploymentApprovals": {
+              "label": "デプロイの承認"
+            },
+            "rollbacks": {
+              "label": "ロールバック"
+            },
+            "versioning": {
+              "label": "バージョン管理"
+            },
+            "secretsAndConfiguration": {
+              "label": "シークレットと設定"
+            },
+            "customDeployment": {
+              "label": "カスタムデプロイ"
+            },
+            "customIntegrations": {
+              "label": "カスタム連携"
+            },
+            "infrastructureConfiguration": {
+              "label": "インフラ構成"
+            }
+          },
+          "title": "ビルドとデプロイ"
+        },
+        "observability": {
+          "description": "プラットフォームの健全性、インテリジェンスの品質、運用パフォーマンスを一元的に把握します。",
+          "rows": {
+            "platformObservability": {
+              "label": "プラットフォームのオブザーバビリティ"
+            },
+            "intelligenceObservability": {
+              "label": "インテリジェンスのオブザーバビリティ",
+              "tooltip": "インフラの稼働状況だけでなく、エージェント・モデル・データ・ワークフローの挙動を一体として把握します。"
+            },
+            "agentTraces": {
+              "label": "エージェントのトレース"
+            },
+            "workflowTraces": {
+              "label": "ワークフローのトレース"
+            },
+            "modelObservability": {
+              "label": "モデルのオブザーバビリティ"
+            },
+            "evaluationAnalytics": {
+              "label": "評価アナリティクス"
+            },
+            "usageAnalytics": {
+              "label": "利用状況アナリティクス"
+            },
+            "costAnalytics": {
+              "label": "コストアナリティクス"
+            },
+            "performanceAnalytics": {
+              "label": "パフォーマンスアナリティクス"
+            },
+            "alerts": {
+              "label": "アラート"
+            },
+            "dashboards": {
+              "label": "ダッシュボード"
+            },
+            "logRetention": {
+              "label": "ログ保持"
+            },
+            "support": {
+              "label": "サポート"
+            },
+            "supportResponse": {
+              "label": "サポートの応答時間"
+            },
+            "solutionsEngineering": {
+              "label": "ソリューションエンジニアリング"
+            },
+            "customerSuccessAndOnboarding": {
+              "label": "カスタマーサクセスとオンボーディング"
+            },
+            "technicalAccountManager": {
+              "label": "テクニカルアカウントマネージャー",
+              "tooltip": "アーキテクチャ、導入、運用の成功を支える専任の技術パートナー。"
+            }
+          },
+          "title": "オブザーバビリティ"
+        }
+      },
+      "values": {
+        "included": "含む",
+        "standard": "標準",
+        "regional": "リージョン単位",
+        "custom": "カスタム",
+        "advanced": "高度",
+        "multiStep": "マルチステップ",
+        "multiSystem": "複数システム",
+        "payg": "従量課金",
+        "coreConnectors": "基本コネクター",
+        "advancedConnectors": "高度なコネクター",
+        "extended": "拡張",
+        "30Days": "30 日",
+        "1Year": "1 年",
+        "dedicated": "専任",
+        "monthlyAnnual": "月次 / 年次",
+        "annual": "年次",
+        "annualCustom": "年次 / カスタム",
+        "unlimitedCustom": "無制限 / カスタム",
+        "developmentProduction": "開発 + 本番",
+        "developmentStagingProduction": "開発 + ステージング + 本番",
+        "businessHours": "営業時間内",
+        "priority": "優先",
+        "1BusinessDay": "1 営業日",
+        "4Hours": "4 時間",
+        "selfServeGuided": "セルフサービス + ガイド付き",
+        "guided": "ガイド付き",
+        "dedicatedWhiteGlove": "専任 / フルサポート"
+      }
+    },
+    "summaries": {
+      "team": {
+        "name": "チーム",
+        "description": "本番環境のインテリジェンスを構築・運用するチーム向け。",
+        "price": "$5,000 / 月"
+      },
+      "business": {
+        "name": "ビジネス",
+        "description": "チーム、システム、プロダクト、デプロイをまたいでインテリジェンスをスケールさせる組織向け。",
+        "price": "$15,000 / 月"
+      },
+      "enterprise": {
+        "name": "エンタープライズ",
+        "description": "プライベートインフラ、カスタムセキュリティ、ガバナンス、サポート、大規模コミットメント向け。",
+        "price": "カスタム"
+      }
+    }
+  },
+  "Brand": {
+    "meta": {
+      "title": "ブランドガイドライン",
+      "description": "Frontal を一貫して正確に表現するためのリソース。",
+      "ogDescription": "Frontal を一貫して正確に表現するためのリソース。"
+    },
+    "hero": {
+      "title": "ブランドガイドライン",
+      "description": "Frontal を一貫して正確に表現するためのリソース",
+      "download": "ブランドアセットをダウンロード"
+    },
+    "assets": {
+      "title": "ブランドアセット",
+      "description": "アーカイブには、SVG と PNG 形式の Frontal ロゴタイプとシンボル、ライトとダークのバリエーション、主要なカラーパレットとタイプスケール、さらに余白、最小サイズ、避けていただきたい改変についての使用上の注意が含まれています。",
+      "videoLabel": "Frontal ブランド紹介"
+    }
+  },
+  "Solutions": {
+    "imageAlt": "受信トレイの画面",
+    "teams": {
+      "customerService": {
+        "description": "データソースを接続し、AI エージェントに顧客からの問い合わせを任せてインサイトを得られます。",
+        "eyebrow": "カスタマーサービス",
+        "metaDescription": "Frontal でインテリジェントなカスタマーサービスワークフローを構築・運用できます。",
+        "metaTitle": "AI カスタマーサービスワークフロー",
+        "title": "顧客対応を処理。",
+        "sections": {
+          "stats": {
+            "title": "サポート部門が一四半期後に測るもの"
+          },
+          "work": {
+            "title": "エージェントが自力で片づけるもの",
+            "description": "待ち行列の大半を占める案件。"
+          },
+          "depth": {
+            "title": "線の内側にとどまる仕組み",
+            "description": "自動応答を説明できるものにする統制。"
+          },
+          "faq": {
+            "title": "サポート責任者からの質問",
+            "description": "エージェントが顧客に返信する前に確認されること。"
+          },
+          "cta": {
+            "title": "何度も積み直す待ち行列をなくす",
+            "description": "問い合わせ基盤を接続し、最初の案件を解決してください。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "47%",
+            "label": "人手を介さず完了する問い合わせ"
+          },
+          "b": {
+            "value": "2m",
+            "label": "初回応答までの中央値"
+          },
+          "c": {
+            "value": "18%",
+            "label": "解決済み案件の満足度の向上"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "返金と請求",
+            "description": "方針の範囲内で、最後まで解決します。",
+            "detail": "エージェントは注文、入金記録、返金規定を読み、条件に合うものを処理し、合わないものは引き上げます。"
+          },
+          "b": {
+            "title": "アカウントとアクセス",
+            "description": "答えを持つシステムから回答します。",
+            "detail": "パスワード、席数、権限の質問は、古いヘルプ記事ではなくID基盤に照らして解決されます。"
+          },
+          "c": {
+            "title": "引き上げ",
+            "description": "下準備が済んだ状態で引き継ぎます。",
+            "detail": "人の判断が要る案件は、履歴を読み、規定を確認し、次の一手の案を添えて届きます。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "規定に基づく応答",
+            "content": "返金、保証、適用条件の規定をソースとして読み込みます。エージェントは最新版を適用し、返信の中でそれを示します。"
+          },
+          "b": {
+            "label": "問い合わせ基盤",
+            "content": "問い合わせ管理と顧客対応の基盤が正となる記録であり続けます。Frontalは担当者と同じ権限で書き戻します。"
+          },
+          "c": {
+            "label": "引き上げの条件",
+            "content": "人に渡すべき条件を決めます。曖昧なもの、金額の大きいもの、規定の外にあるものは、文脈を添えて回されます。"
+          },
+          "d": {
+            "label": "語調と言語",
+            "content": "返信は自社の文章指針に従い、顧客の言語で答えます。確認の工程は今と同じです。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "顧客はエージェントだと分かりますか。",
+            "answer": "そこは自社で決められます。明示するかどうかは設定であり、返信は方針が求めるとおりの内容を含みます。"
+          },
+          "b": {
+            "question": "解決できない案件はどうなりますか。",
+            "answer": "履歴を読み、規定を確認したうえで引き上げられるため、担当者は最初からではなく途中から入れます。"
+          },
+          "c": {
+            "question": "自社の規定はどう学習しますか。",
+            "answer": "一度ソースとして接続するだけです。更新は再学習なしに、以降のすべての実行へ届きます。"
+          },
+          "d": {
+            "question": "ひとつの窓口から始められますか。",
+            "answer": "はい。多くのチームは件数の多い窓口ひとつから始め、解決率が安定してから広げています。"
+          }
+        }
+      },
+      "dataAnalysis": {
+        "description": "データソースを接続すれば、AI エージェントが分析し、問いに答え、インサイトを提供します。",
+        "eyebrow": "データ分析",
+        "metaDescription": "Frontal でインテリジェントなデータ分析ワークフローを構築・運用できます。",
+        "metaTitle": "AI データ分析ワークフロー",
+        "title": "データの問いに答える。",
+        "sections": {
+          "stats": {
+            "title": "質問の待ち行列が奪うもの",
+            "lead": "多くの分析チームは、自分たちにしかできない分析よりも、繰り返される質問への回答に時間を使っています。",
+            "description": "Frontalは繰り返しの質問を統制されたモデルから答え、難しいものは文脈を整えたうえで分析担当に渡します。"
+          },
+          "work": {
+            "title": "答えができるまで",
+            "description": "三つの工程、どれも中身を確認できます。"
+          },
+          "depth": {
+            "title": "答えを信頼できるものにする条件"
+          },
+          "faq": {
+            "title": "分析チームからの質問",
+            "description": "データ基盤を接続する前に分析担当が確認すること。"
+          },
+          "cta": {
+            "title": "データを手の届く場所へ",
+            "description": "データ基盤を接続し、最初の質問をしてください。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "80%",
+            "label": "分析担当なしで解決する随時の質問"
+          },
+          "b": {
+            "value": "9x",
+            "label": "定型依頼への回答の速さ"
+          },
+          "c": {
+            "value": "1d",
+            "label": "質問から確認済みの回答まで"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "普通のことばで尋ねる",
+            "description": "質問は普段の作業場所に届き、集計画面と同じ定義に基づいて解決されます。"
+          },
+          "b": {
+            "title": "問い合わせ文を見る",
+            "description": "すべての答えが実行した問い合わせ文を示すため、分析担当は検証も修正も昇格もできます。"
+          },
+          "c": {
+            "title": "うまくいったものを残す",
+            "description": "良い一度きりの答えは統制された指標になり、次に尋ねる人には確認済みの版が届きます。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "統制されたモデル",
+            "content": "答えは生の表ではなく意味定義の層から読まれるため、指標はどこで現れても同じ意味になります。"
+          },
+          "b": {
+            "label": "行単位の権限",
+            "content": "アクセスはデータ基盤で既に定めた方針に従います。尋ねた人が見られないデータを、エージェントが返すことはありません。"
+          },
+          "c": {
+            "label": "問い合わせの費用",
+            "content": "作業領域ごとに上限を設けます。重い問い合わせは実行前に見積もられ、予算を超えると止まります。"
+          },
+          "d": {
+            "label": "出所",
+            "content": "すべての答えが、使ったモデル、問い合わせ文、実行を示します。数字はいつでも検証できます。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "既存の集計ツールを置き換えますか。",
+            "answer": "いいえ。同じ意味定義の層を読み、図表が必要なものは既存の集計画面へ戻します。"
+          },
+          "b": {
+            "question": "誤った答えはどう防ぎますか。",
+            "answer": "答えは統制されたモデルに基づき、必ず問い合わせ文を示すため、広がる前に分析担当が誤りに気づけます。"
+          },
+          "c": {
+            "question": "対応しているデータ基盤は何ですか。",
+            "answer": "Snowflake、BigQuery、Databricks、Postgresに、こちらで管理する読み取り専用の接続で対応します。"
+          },
+          "d": {
+            "question": "誰が質問できますか。",
+            "answer": "権限を与えた人すべてです。何が見えるかは、既に運用しているデータ基盤の方針が決めます。"
+          }
+        }
+      },
+      "engineering": {
+        "description": "技術チームに、AI ネイティブなシステムを組織全体で構築・デプロイ・観測・運用するためのツールを提供します。",
+        "eyebrow": "エンジニアリング",
+        "metaDescription": "Frontal でインテリジェントなエンジニアリングワークフローを構築・運用できます。",
+        "metaTitle": "AI エンジニアリングワークフロー",
+        "title": "インテリジェントなインフラを構築。",
+        "sections": {
+          "stats": {
+            "title": "基盤が肩代わりするもの",
+            "description": "AIシステムのうち、製品ではなく基盤にあたる部分。"
+          },
+          "work": {
+            "title": "開発に使うもの",
+            "description": "チームが毎日触れる面。"
+          },
+          "depth": {
+            "title": "どう動くのか",
+            "description": "公開するすべてのワークフローの下にある保証。"
+          },
+          "related": {
+            "title": "技術チームはこの後こちらを読むことが多いです"
+          },
+          "faq": {
+            "title": "開発チームからの質問",
+            "description": "最初の公開前に開発者が確認すること。"
+          },
+          "cta": {
+            "title": "最初のワークフローを公開する",
+            "description": "資料を読むか、管理画面で作り始めてください。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "0",
+            "label": "自社で運用するサーバーの台数"
+          },
+          "b": {
+            "value": "90%",
+            "label": "連携ごとのつなぎコードの削減"
+          },
+          "c": {
+            "value": "12x",
+            "label": "試作から本番までの短縮"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "コマンドラインとSDK",
+            "description": "手元で開発し、同じコードを本番で動かし、管理画面でできることはすべて自動化できます。"
+          },
+          "b": {
+            "title": "ワークフローの部品",
+            "description": "永続する工程、再試行、人の確認地点を、図を描く作業ではなく普通のコードとして書けます。"
+          },
+          "c": {
+            "title": "コネクタ",
+            "description": "既に使っているシステム向けの型付きクライアント。認証、頁送り、流量制限は解決済みです。"
+          },
+          "d": {
+            "title": "コードとしての方針",
+            "description": "権限と上限は、それが統べるワークフローの隣に置かれ、同じ確認を通ります。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "実行の隔離",
+            "content": "実行ごとに、依存関係を固定し上限を設けた新しい環境が用意されます。実行をまたいで残るものはありません。"
+          },
+          "b": {
+            "label": "公開",
+            "content": "既存の配信経路から公開できます。版は書き換えられず、切り戻しは参照先の変更だけ、確認用は専用の環境を持ちます。"
+          },
+          "c": {
+            "label": "状態と永続性",
+            "content": "長く走る処理は再起動を越えて生き延びます。ワークフローは最初からではなく、確定した最後の工程から再開します。"
+          },
+          "d": {
+            "label": "機密情報とアクセス",
+            "content": "資格情報は実行時に保管庫から解決され、コードにも記録にも追跡情報にも残りません。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "対応している言語は何ですか。",
+            "answer": "現時点ではTypeScriptとPythonで、どちらも実行時の挙動は同じです。"
+          },
+          "b": {
+            "question": "自社のクラウドで動かせますか。",
+            "answer": "はい。大規模導入では自社の環境で動き、制御基盤は当社が運用します。"
+          },
+          "c": {
+            "question": "手元での開発はどうなりますか。",
+            "answer": "コマンドライン道具が同じ実行環境を手元で動かすため、公開前と後でワークフローの挙動は変わりません。"
+          },
+          "d": {
+            "question": "抜け道はありますか。",
+            "answer": "どの抽象にも用意されています。任意の工程で普通のコードに降り、自社のサービスを直接呼び出せます。"
+          }
+        }
+      },
+      "finance": {
+        "description": "データソースを接続し、AI エージェントに財務業務を任せてインサイトを得られます。",
+        "eyebrow": "ファイナンス",
+        "metaDescription": "Frontal でインテリジェントな財務ワークフローを構築・運用できます。",
+        "metaTitle": "AI 財務ワークフロー",
+        "title": "経理を自動化。",
+        "sections": {
+          "stats": {
+            "title": "経理部門が最初の四半期で目にする変化"
+          },
+          "work": {
+            "title": "仕事の形が変わる",
+            "description": "月末の駆け込みに代わる四つの習慣。"
+          },
+          "depth": {
+            "title": "Frontalが強制する統制"
+          },
+          "faq": {
+            "title": "管理会計からの質問",
+            "description": "エージェントが総勘定元帳に触れる前に確認されること。"
+          },
+          "cta": {
+            "title": "証跡の上で月次を締める",
+            "description": "総勘定元帳を接続し、最初の統制を設定してください。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "6d",
+            "label": "月次決算の短縮日数"
+          },
+          "b": {
+            "value": "94%",
+            "label": "人手を介さず一致した突合"
+          },
+          "c": {
+            "value": "40%",
+            "label": "表計算ソフトに費やす時間の削減"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "常時突合する",
+            "description": "取引が届いた時点で銀行と元帳の記録に照合します。月末にまとめて追われることがなくなります。"
+          },
+          "b": {
+            "title": "差異をすべて説明する",
+            "description": "数字が動いたとき、エージェントが要因を示し、その裏づけとなる記録を結びつけます。"
+          },
+          "c": {
+            "title": "証跡をもって督促する",
+            "description": "督促は実際の請求書、入金履歴、契約条件を読んでから一文字目を書きます。"
+          },
+          "d": {
+            "title": "証跡を途切れさせない",
+            "description": "自動仕訳には入力、適用規則、承認者が付きます。監査は大仕事ではなく検索になります。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "職務分掌",
+            "content": "仕訳を用意したエージェントは、その仕訳を承認できません。承認はID基盤で適切な役割を持つ担当者に回ります。"
+          },
+          "b": {
+            "label": "重要性の基準額",
+            "content": "実行が確認のために止まる金額を決めます。それ未満は自動で計上され、証跡はそのまま残ります。"
+          },
+          "c": {
+            "label": "証憑書類",
+            "content": "請求書、明細、契約書は裏づける仕訳と結ばれたままです。確認する人が証憑を探し回ることはありません。"
+          },
+          "d": {
+            "label": "会計期間の統制",
+            "content": "締めた期間は書き込みを拒否します。締め済みの月に計上しようとしたエージェントは、静かに調整せず明確に失敗します。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "エージェントは総勘定元帳に計上できますか。",
+            "answer": "決めた範囲内でできます。しきい値を超える場合は仕訳を用意し、承認を待ちます。"
+          },
+          "b": {
+            "question": "監査人にはどう説明しますか。",
+            "answer": "実行ごとに入力、適用した規則、承認者が残り、読める形式の記録として書き出せます。"
+          },
+          "c": {
+            "question": "どのシステムを読みますか。",
+            "answer": "基幹システム、銀行明細、請求基盤、文書保管がソースとして接続され、正となる記録であり続けます。"
+          },
+          "d": {
+            "question": "期中に規則が変わったらどうなりますか。",
+            "answer": "規則には版があります。実行はどの版を適用したかを必ず示すため、履歴は後からでも読み解けます。"
+          }
+        }
+      },
+      "marketing": {
+        "description": "データソースを接続し、AI エージェントにマーケティング業務を任せてインサイトを得られます。",
+        "eyebrow": "マーケティング",
+        "metaDescription": "Frontal でインテリジェントなマーケティングワークフローを構築・運用できます。",
+        "metaTitle": "AI マーケティングワークフロー",
+        "title": "マーケティングを自動化。",
+        "sections": {
+          "stats": {
+            "title": "時間が戻ってくる場所",
+            "lead": "マーケティング部門は、社内のどこかに既にある情報を集め直すことに、ほぼ一週間を失っています。",
+            "description": "Frontalはその工程をなくします。企画書も原稿も報告も接続済みのソースから始まるため、仕事は収集ではなく判断から始まります。"
+          },
+          "work": {
+            "title": "マーケティングが早く出せるようになるもの",
+            "description": "施策が止まりやすい三つの地点。"
+          },
+          "depth": {
+            "title": "ブランドを保つ仕組み",
+            "description": "すべての原稿が通るソースと確認点。"
+          },
+          "faq": {
+            "title": "マーケティング責任者からの質問",
+            "description": "エージェントに原稿を書かせる前に確認されること。"
+          },
+          "cta": {
+            "title": "文脈のある状態で施策を始める",
+            "description": "ソースを接続し、最初のエージェントに指示を出してください。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "4d",
+            "label": "施策の企画書ごとに短縮できる日数"
+          },
+          "b": {
+            "value": "2x",
+            "label": "四半期あたりに試せる施策の数"
+          },
+          "c": {
+            "value": "71%",
+            "label": "自動で組み上がる報告の割合"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "データから始まる企画書",
+            "description": "企画書は白紙ではなく、実際の顧客像、製品、成果の文脈から書き始められます。"
+          },
+          "b": {
+            "title": "主張がぶれない原稿",
+            "description": "エージェントは自社の訴求と語調に沿って書き、承認済みの表現から外れた部分を指摘します。"
+          },
+          "c": {
+            "title": "催促のいらない報告",
+            "description": "成果のまとめは、既存の集計画面が読んでいるのと同じソースから自動で組み上がります。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "ブランドと表現",
+            "content": "承認済みの訴求、語調、法務表現をソースとして読み込みます。それに反する原稿は確認前に指摘されます。"
+          },
+          "b": {
+            "label": "分析と貢献度",
+            "content": "データ基盤の表、製品分析、広告基盤を読み取り専用で接続するため、報告は既に信頼されている数字と一致します。"
+          },
+          "c": {
+            "label": "コンテンツ基盤",
+            "content": "コンテンツ管理基盤、素材庫、翻訳ツールは、担当者が持つ権限のまま書き込みを受け付けます。"
+          },
+          "d": {
+            "label": "確認と公開",
+            "content": "定めた承認の手順を通らないものは公開されません。原稿は既存の確認待ち一覧に入ります。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "確認なしで公開されるのですか。",
+            "answer": "いいえ。原稿は今と同じ承認者に回ります。Frontalは良い原稿までの距離を縮めるもので、確認役をなくすものではありません。"
+          },
+          "b": {
+            "question": "自社の訴求をどう把握しますか。",
+            "answer": "一度ソースとして登録します。実行ごとに最新版を読むため、更新はすべての原稿へ同時に届きます。"
+          },
+          "c": {
+            "question": "今の道具立てを残せますか。",
+            "answer": "はい。Frontalはコンテンツ基盤、分析、広告基盤に接続するもので、置き換えるものではありません。"
+          },
+          "d": {
+            "question": "他の言語はどうなりますか。",
+            "answer": "エージェントは設定した言語で動き、既存の翻訳確認の工程に引き渡します。"
+          }
+        }
+      },
+      "operations": {
+        "description": "データソースを接続し、AI エージェントに運用業務を任せてインサイトを得られます。",
+        "eyebrow": "オペレーション",
+        "metaDescription": "Frontal でインテリジェントな運用ワークフローを構築・運用できます。",
+        "metaTitle": "AI 運用ワークフロー",
+        "title": "運用業務を自動化。",
+        "sections": {
+          "stats": {
+            "title": "業務部門が取り戻すもの"
+          },
+          "work": {
+            "title": "仕事が実際に消えていく先",
+            "description": "業務の一週間を飲み込む二つの隙間。"
+          },
+          "depth": {
+            "title": "各ワークフローが宣言すること"
+          },
+          "faq": {
+            "title": "業務責任者からの質問",
+            "description": "最初の業務を移す前に確認されること。"
+          },
+          "cta": {
+            "title": "業務の中間を自動化する",
+            "description": "ひとつの業務を選び、本番に載せてください。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "58%",
+            "label": "引き継ぎなしで完了する依頼の割合"
+          },
+          "b": {
+            "value": "5d",
+            "label": "ひとりあたり毎月短縮できる日数"
+          },
+          "c": {
+            "value": "3x",
+            "label": "例外対応にかかる時間の短縮"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "システム間の引き継ぎ",
+            "description": "購買、問い合わせ、承認をまたぐ依頼が、三つの画面を行き来して項目を写す作業ではなくなります。"
+          },
+          "b": {
+            "title": "担当者のいない例外",
+            "description": "想定どおりに進まなかった案件を拾い上げ、調べ、必要な文脈を付けたまま担当へ回します。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "業務の境界",
+            "content": "各ワークフローは触れてよいシステムと実行してよい操作を宣言します。宣言の外にあるものは、その場で判断せずに失敗します。"
+          },
+          "b": {
+            "label": "人が確認する地点",
+            "content": "承認はどこにでも差し込めます。エージェントは停止し、文脈をすべて渡し、判断の続きから再開します。"
+          },
+          "c": {
+            "label": "再試行と復旧",
+            "content": "失敗した工程は方針に沿って再試行され、どこで止まったかを報告します。止まった実行が見えなくなることはありません。"
+          },
+          "d": {
+            "label": "責任の所在",
+            "content": "各ワークフローには担当者と引き上げ先があります。例外は待ち行列ではなく人に届きます。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "どの業務から始めるべきですか。",
+            "answer": "二つか三つのシステムをまたぎ、頻度の高いものからです。説明しやすく、効果も早く確かめられます。"
+          },
+          "b": {
+            "question": "先にすべてを設計する必要がありますか。",
+            "answer": "いいえ。まずひとつの業務から始めてください。コンテキスト層は、その業務に必要なシステムとともに広がります。"
+          },
+          "c": {
+            "question": "既存の自動化はどうなりますか。",
+            "answer": "そのまま動きます。Frontalは必要な場面でそれらを呼び出すだけで、作り直しは求めません。"
+          },
+          "d": {
+            "question": "実行が正しかったとどう分かりますか。",
+            "answer": "実行ごとに入力、判断、書き込みが残るため、何が起きたのかを一段ずつ再現できます。"
+          }
+        }
+      },
+      "sales": {
+        "description": "データソースを接続し、AI エージェントに営業業務を任せてインサイトを得られます。",
+        "eyebrow": "セールス",
+        "metaDescription": "Frontal でインテリジェントな営業ワークフローを構築・運用できます。",
+        "metaTitle": "AI 営業ワークフロー",
+        "title": "営業を自動化。",
+        "sections": {
+          "stats": {
+            "title": "本当に見えるパイプライン",
+            "description": "報告される数字と担当者が更新する記録が、ようやく同じものになります。"
+          },
+          "work": {
+            "title": "営業がFrontalで動かすもの",
+            "description": "担当者の一週間を奪う三つの仕事を、自社の記録の上で処理します。"
+          },
+          "depth": {
+            "title": "既存のシステムとのつながり",
+            "description": "Frontalが何に接続し、そこで何を許されるのか。"
+          },
+          "faq": {
+            "title": "営業責任者からの質問",
+            "description": "顧客管理システムを接続する前に、各社が確認すること。"
+          },
+          "cta": {
+            "title": "担当者に一週間を返す",
+            "description": "顧客管理システムを接続し、最初の営業エージェントを動かしてください。"
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "62%",
+            "label": "手作業での顧客管理システム更新にかかる時間の削減"
+          },
+          "b": {
+            "value": "3x",
+            "label": "担当者ひとりあたりが対応できる取引先の数"
+          },
+          "c": {
+            "value": "24h",
+            "label": "新規リードから有望案件の引き継ぎまで"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "常に最新の事前調査",
+            "description": "エージェントが取引履歴、製品の利用状況、未対応の問い合わせを一つの資料にまとめ、商談前に届けます。"
+          },
+          "b": {
+            "title": "落ちないフォローアップ",
+            "description": "商談で交わした約束は、担当者と期日のついた追跡可能なタスクになります。"
+          },
+          "c": {
+            "title": "根拠に基づく予測",
+            "description": "パイプラインの確認は担当者が更新する記録をそのまま読むため、数字が食い違いません。"
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "顧客管理システム",
+            "content": "Salesforce、HubSpot、Dynamicsを正となる記録として接続します。Frontalは担当者がすでに持つ権限の範囲で読み書きします。"
+          },
+          "b": {
+            "label": "担当範囲とアクセス",
+            "content": "担当者には自分の取引先だけが見えます。役割はID基盤から取得され、すべての実行に適用されます。"
+          },
+          "c": {
+            "label": "通話とメールの記録",
+            "content": "通話基盤、共有メールボックス、予定表がコンテキスト層に流れ込み、エージェントは何が既に話されたかを把握します。"
+          },
+          "d": {
+            "label": "監査と出所",
+            "content": "エージェントが書き込んだ各項目には、それを生んだ実行が残ります。変わった数字は必ず出所まで辿れます。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "エージェントは確認なしで書き込みますか。",
+            "answer": "許可した範囲だけです。すべての操作は方針で制限され、しきい値を超えるものは承認を待ちます。"
+          },
+          "b": {
+            "question": "最初のワークフローにはどれくらいかかりますか。",
+            "answer": "多くのチームは顧客管理システムを接続し、一週間ほどで調査エージェントを動かしています。"
+          },
+          "c": {
+            "question": "既存の営業ツールを置き換えますか。",
+            "answer": "いいえ。Frontalはそれらに接続し同じ記録の上で動くため、担当者は使い慣れた道具をそのまま使えます。"
+          },
+          "d": {
+            "question": "エージェントが誤ったときはどうなりますか。",
+            "answer": "実行ごとに入力と判断が残ります。何を読んだかを確認し、元のデータを直して、もう一度実行できます。"
+          }
+        }
+      }
+    }
+  },
+  "Features": {
+    "data": {
+      "description": "全社のデータを取り込んで整理し、インテリジェントなシステムのための構造化・ガバナンス済みの基盤を築きます。",
+      "eyebrow": "データ",
+      "metaDescription": "全社のデータを取り込んで整理し、AI エージェント、アプリケーション、インテリジェントなワークフローのための構造化・ガバナンス済みの基盤を築きます。",
+      "metaTitle": "AI のための統合エンタープライズデータ",
+      "title": "企業データを、ひとつに。",
+      "ogTitle": "エンタープライズデータ",
+      "ogDescription": "企業データを、ひとつに",
+      "capabilities": {
+        "connectors": {
+          "title": "マネージドコネクタ",
+          "description": "すでに運用しているシステムのレコードを、継続的かつ増分で同期します。"
+        },
+        "warehouse": {
+          "title": "ウェアハウスネイティブ",
+          "description": "すでにモデリング済みのデータを複製することなく、ウェアハウスから直接読み取ります。"
+        },
+        "lineage": {
+          "title": "スキーマとリネージ",
+          "description": "各フィールドの型、取得元、最終同期時刻を記録し、参照できます。"
+        },
+        "resolution": {
+          "title": "エンティティ解決",
+          "description": "同じ対象を表すレコードは、オントロジーに基づいて照合・統合されます。"
+        },
+        "quality": {
+          "title": "品質チェック",
+          "description": "同期のたびに検証が実行されるため、不正なレコードはエージェントが読む前に表面化します。"
+        },
+        "governed": {
+          "title": "取得元の段階から統制",
+          "description": "各ソースは、規則の複製ではなく、供給先エンティティの権限をそのまま引き継ぎます。"
+        }
+      },
+      "specs": {
+        "sources": {
+          "label": "ソース",
+          "content": "マネージドコネクタ、ウェアハウス、オブジェクトストレージ、API。"
+        },
+        "sync": {
+          "label": "同期モード",
+          "content": "全件更新、増分更新、ソースが対応する場合は変更データキャプチャ。"
+        },
+        "freshness": {
+          "label": "鮮度",
+          "content": "ソース単位で分単位までのスケジュール設定。必要に応じてバックフィルも可能です。"
+        },
+        "formats": {
+          "label": "形式",
+          "content": "構造化レコード、JSON、CSV、Parquet、非構造化ドキュメント。"
+        },
+        "lineage": {
+          "label": "リネージ",
+          "content": "フィールド単位の取得元、変換内容、最終同期時刻。"
+        },
+        "volume": {
+          "label": "データ量",
+          "content": "ソースあたり数百万件のレコード。レート制限はソース単位で設定できます。"
+        }
+      },
+      "faq": {
+        "move": {
+          "question": "データを移動する必要がありますか。",
+          "answer": "いいえ。ウェアハウスから直接読み取ることも、Frontal へ同期することもできます。ソースごとに選択できます。"
+        },
+        "duplicates": {
+          "question": "重複レコードはどう扱われますか。",
+          "answer": "レコードはオントロジーに基づいて解決されるため、3 つのシステムに存在する同一顧客が 1 つのエンティティになり、各取得元も追跡できます。"
+        },
+        "backfill": {
+          "question": "過去データを取り込めますか。",
+          "answer": "はい。ソース単位・期間単位で、必要に応じて実行できます。"
+        },
+        "first": {
+          "question": "最初にどのソースをつなぐべきですか。",
+          "answer": "すでに頻繁に聞かれている質問に答えているソースです。初日から結果を照合する基準が手に入ります。"
+        },
+        "quality": {
+          "question": "不正なデータが広がる前に気づけますか。",
+          "answer": "同期のたびに検証が走り、エンティティに解決される前に失敗したレコードを検出します。"
+        },
+        "cost": {
+          "question": "ソースを最新に保つ費用はどれくらいですか。",
+          "answer": "初回読み込み以降は変更されたレコードだけが転送されるため、大きなソースでも通常の同期は軽量なままです。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "ソースシステムから解決済みレコードへ",
+          "description": "レコードはコネクタ経由で届くか、ウェアハウスから直接読み取られ、その後オントロジーに基づいて、実際に扱えるエンティティへと解決されます。"
+        },
+        "capabilities": {
+          "title": "データを統合すると何ができるか",
+          "description": "「顧客とは何か」についてすべてのシステムの認識がそろうと、何が変わるのか。"
+        },
+        "specs": {
+          "title": "データ基盤が対応する範囲"
+        },
+        "faq": {
+          "title": "システムを接続する前に",
+          "description": "ソースを Frontal に向ける前に、データチームからよく寄せられる質問です。"
+        },
+        "cta": {
+          "title": "最初のソースを接続する",
+          "description": "まずは 1 つのシステムから。解決の様子を確認してから残りを追加できます。",
+          "primary": "ソースを接続する",
+          "secondary": "データのドキュメント"
+        }
+      },
+      "how": {
+        "connect": {
+          "title": "ソースを接続する",
+          "description": "継続的に同期するか、何も複製せずウェアハウスから直接読み取ります。",
+          "media": "コネクタ設定"
+        },
+        "resolve": {
+          "title": "エンティティへ解決する",
+          "description": "同じ対象を表すレコードは照合・統合され、各取得元も引き続き追跡できます。",
+          "media": "エンティティ解決"
+        },
+        "serve": {
+          "title": "実際に活用する",
+          "description": "エージェントもワークフローも、生のテーブルではなく解決済みエンティティを読むため、回答の一貫性が保たれます。",
+          "media": "利用中のエンティティ"
+        }
+      }
+    },
+    "observability": {
+      "description": "リアルタイムのインサイト、強力な分析、完全な可視性でビジネスのパフォーマンスを把握できます。",
+      "eyebrow": "オブザーバビリティ",
+      "metaDescription": "ビジネスのパフォーマンス、エージェントの動作、ワークフローの結果をリアルタイムに監視し、強力な分析と完全な運用可視性を得られます。",
+      "metaTitle": "AI オブザーバビリティとリアルタイムインサイト",
+      "title": "いま起きていることを、リアルタイムで把握。",
+      "ogTitle": "オブザーバビリティ",
+      "ogDescription": "いま起きていることを、リアルタイムで把握",
+      "capabilities": {
+        "traces": {
+          "title": "実行トレース",
+          "description": "実行ごとに、すべてのステップ、入力、出力、判断が記録されます。"
+        },
+        "metrics": {
+          "title": "リアルタイムのメトリクス",
+          "description": "スループット、レイテンシ、エラー率、コストを、ワークフロー・エージェント・バージョン単位で計測します。"
+        },
+        "alerting": {
+          "title": "アラート",
+          "description": "しきい値と異常検知のアラートを、既存のオンコールチャネルに配信します。"
+        },
+        "evidence": {
+          "title": "根拠のたどり直し",
+          "description": "あらゆる出力から、それを生んだレコードとプロンプトまでさかのぼれます。"
+        },
+        "compare": {
+          "title": "バージョンを比較",
+          "description": "エージェントやワークフローの二つのバージョンを並べ、どちらが実際に優れているかを確認できます。"
+        },
+        "cost": {
+          "title": "コストの帰属",
+          "description": "支出は実行ごとに記録され、バージョン別・チーム別に集計されるため、請求と作業内容が対応します。"
+        }
+      },
+      "specs": {
+        "traces": {
+          "label": "トレース",
+          "content": "実行ごとのステップのタイムライン。入力、出力、トークン使用量を含みます。"
+        },
+        "metrics": {
+          "label": "メトリクス",
+          "content": "バージョン単位のスループット、レイテンシのパーセンタイル、エラー率、コスト。"
+        },
+        "retention": {
+          "label": "保持期間",
+          "content": "ワークスペース単位で設定可能。長期保管用のエクスポートにも対応します。"
+        },
+        "alerting": {
+          "label": "アラート",
+          "content": "しきい値と異常を、Slack、メール、Webhook で配信します。"
+        },
+        "export": {
+          "label": "エクスポート",
+          "content": "実行とメトリクスをウェアハウスまたは OTLP エンドポイントへ送信します。"
+        },
+        "sampling": {
+          "label": "サンプリング",
+          "content": "既定では全件を記録し、大量実行のワークフローでは個別にサンプリングできます。"
+        }
+      },
+      "faq": {
+        "why": {
+          "question": "エージェントがその回答をした理由を確認できますか。",
+          "answer": "はい。各実行は、結果の背後にあるプロンプト、取得したコンテキスト、ツール呼び出し、出力を保持しています。"
+        },
+        "existing": {
+          "question": "既存の監視基盤と併用できますか。",
+          "answer": "はい。OTLP エクスポートと、オンコールツールへの Webhook で連携できます。"
+        },
+        "retention": {
+          "question": "実行データはどのくらい保持されますか。",
+          "answer": "保持期間はワークスペース単位で設定でき、長期保管のためにエクスポートすることもできます。"
+        },
+        "overhead": {
+          "question": "トレースは実行を遅くしますか。",
+          "answer": "トレースは実行と並行して書き込まれ、大量に実行されるワークフローはワークフロー単位でサンプリングできます。"
+        },
+        "sensitive": {
+          "question": "機密の値をトレースから除外できますか。",
+          "answer": "はい。取得時にフィールドを伏せられるため、保存されるトレースには到達しません。"
+        },
+        "cost": {
+          "question": "実行ごとの費用は確認できますか。",
+          "answer": "はい。トークン使用量と支出は実行ごとに記録され、バージョン別・チーム別に集計されます。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "すべての実行を記録し、説明できる形に",
+          "description": "各実行は進行しながら完全なトレースを書き出します。メトリクスはそのトレースから集計されるため、測定する対象と調査する対象が同じ記録になります。"
+        },
+        "capabilities": {
+          "title": "可視化が本当にもたらすもの",
+          "description": "「壊れた」と分かることと、「なぜ壊れたか」が分かることの違いです。"
+        },
+        "specs": {
+          "title": "記録される内容"
+        },
+        "faq": {
+          "title": "本格的に頼る前に",
+          "description": "本番の判断基準にする前に、チームからよく寄せられる質問です。"
+        },
+        "cta": {
+          "title": "最初の実行を最初から最後まで確認する",
+          "description": "何かを実行し、トリガーから出力までステップごとに追ってみてください。",
+          "primary": "トレースを始める",
+          "secondary": "オブザーバビリティのドキュメント"
+        }
+      },
+      "how": {
+        "trace": {
+          "title": "すべてのステップを追跡する",
+          "description": "入力、出力、ツール呼び出し、トークン使用量を、実行の進行に合わせて記録します。",
+          "media": "実行トレース"
+        },
+        "alert": {
+          "title": "早い段階で気づく",
+          "description": "しきい値と異常を、すでに見ているオンコールチャネルへ届けます。",
+          "media": "アラート設定"
+        }
+      }
+    },
+    "ontology": {
+      "description": "データ、システム、人、プロセスを、AI が理解し推論し行動できる生きたモデルへと統合します。",
+      "eyebrow": "オントロジー",
+      "metaDescription": "データ、システム、人、プロセスを、AI エージェントやアプリケーションが理解し推論し行動できる生きたビジネスモデルへと統合します。",
+      "metaTitle": "AI のためのエンタープライズオントロジー",
+      "title": "ビジネスの生きたモデル",
+      "ogTitle": "オントロジー",
+      "ogDescription": "ビジネスの生きたモデル",
+      "capabilities": {
+        "vocabulary": {
+          "title": "共通の語彙",
+          "description": "チームとエージェントの双方が使うエンティティ、属性、関連を定義します。"
+        },
+        "mapping": {
+          "title": "ソースシステムへの対応付け",
+          "description": "各エンティティは、その元となったレコードとフィールドを指し示します。"
+        },
+        "evolution": {
+          "title": "安全に進化",
+          "description": "スキーマ変更はバージョン管理され、既存データに対して検証されます。"
+        },
+        "agents": {
+          "title": "エージェントから参照可能",
+          "description": "エージェントはテーブル名を推測せず、オントロジーを通じて参照を解決します。"
+        },
+        "permissions": {
+          "title": "権限が対象に付いて回る",
+          "description": "アクセス規則はエンティティ側にあるため、それを読むどのツールも同じ境界を適用します。"
+        },
+        "reuse": {
+          "title": "一度定義すればどこでも使える",
+          "description": "同じ定義が画面、API、ワークフロー、エージェントのすべてを支えます。"
+        }
+      },
+      "specs": {
+        "entities": {
+          "label": "エンティティ",
+          "content": "属性、関連、識別子を持つ型付きオブジェクト。"
+        },
+        "mapping": {
+          "label": "マッピング",
+          "content": "接続された各ソースからのフィールド単位のマッピング。"
+        },
+        "resolution": {
+          "label": "解決",
+          "content": "エンティティ単位の決定的および確率的な照合ルール。"
+        },
+        "versioning": {
+          "label": "バージョン管理",
+          "content": "スキーマのバージョンは、適用前に既存レコードに対して検証されます。"
+        },
+        "access": {
+          "label": "アクセス",
+          "content": "API、SDK、エージェントのツール呼び出しから参照できます。"
+        },
+        "relationships": {
+          "label": "関連",
+          "content": "エンティティ間の型付きリンク。クエリやツール呼び出しからたどれます。"
+        }
+      },
+      "faq": {
+        "upfront": {
+          "question": "最初にすべてをモデリングする必要がありますか。",
+          "answer": "いいえ。最もよく扱うエンティティから始め、必要に応じてモデルを広げていけます。"
+        },
+        "warehouse": {
+          "question": "ウェアハウスのデータモデルと何が違いますか。",
+          "answer": "オントロジーは解決と権限を加えたもので、エージェントが参照するのもこちらです。そのためツールをまたいでも回答が一貫します。"
+        },
+        "changes": {
+          "question": "ソースシステムが変更されたらどうなりますか。",
+          "answer": "マッピングは同期のたびに検証されるため、破壊的変更が本番に届く前に検知できます。"
+        },
+        "owner": {
+          "question": "モデルは誰が所有しますか。",
+          "answer": "通常は業務定義を理解している少人数のグループです。変更はコードと同じようにレビューされます。"
+        },
+        "disagree": {
+          "question": "定義について二つのチームの意見が割れたら。",
+          "answer": "モデルは相違を表に出し、どの定義が採用されたかを記録します。別々のツールで両方が生き続けることはありません。"
+        },
+        "size": {
+          "question": "モデルはどこまで大きくする必要がありますか。",
+          "answer": "事業に合わせて育ちます。エンティティは前もって作り込むのではなく、必要になった時点で追加します。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "チームとエージェントが共有する 1 つのモデル",
+          "description": "エンティティの定義は一度だけです。人は画面から参照し、エージェントはツール呼び出しで解決し、どちらも同じ答えを得ます。"
+        },
+        "capabilities": {
+          "title": "共有モデルが防ぐこと",
+          "description": "同じ定義にそろえた途端に消える種類の不具合です。"
+        },
+        "specs": {
+          "title": "モデルが対応する範囲"
+        },
+        "faq": {
+          "title": "モデリングを始める前に",
+          "description": "共有の定義レイヤーに踏み切る前に、チームからよく寄せられる質問です。"
+        },
+        "cta": {
+          "title": "最初のエンティティをモデリングする",
+          "description": "最もよく扱うものから始め、理解が進むにつれて広げていけます。",
+          "primary": "モデリングを始める",
+          "secondary": "オントロジーのドキュメント"
+        }
+      },
+      "how": {
+        "define": {
+          "title": "エンティティを定義する",
+          "description": "属性、関連、識別子を、バージョン管理し、適用前に検証します。",
+          "media": "エンティティのスキーマ"
+        },
+        "query": {
+          "title": "どこからでも参照する",
+          "description": "同じモデルが、画面にも API にもエージェントのツール呼び出しにも応えます。",
+          "media": "エージェントのツール呼び出し"
+        }
+      }
+    },
+    "runtime": {
+      "description": "エージェント、アプリケーション、自動化ワークフローを、企業が求める信頼性・分離・スケールで展開できる安全な実行レイヤーです。",
+      "eyebrow": "ランタイム",
+      "metaDescription": "エージェント、アプリケーション、自動化ワークフローを、企業水準の信頼性・分離・スケールを備えた安全な実行レイヤー上に展開できます。",
+      "metaTitle": "エンタープライズ AI ランタイム",
+      "title": "インテリジェンスを大規模に実行。",
+      "ogTitle": "ランタイム",
+      "ogDescription": "インテリジェンスを大規模に実行",
+      "capabilities": {
+        "isolation": {
+          "title": "分離された実行",
+          "description": "各実行は専用のサンドボックスで動作し、ワークスペース間でファイルシステムやネットワーク状態を共有しません。"
+        },
+        "scale": {
+          "title": "弾力的なスケーリング",
+          "description": "処理能力は需要に追随します。同時実行数は事前のプロビジョニングなしに増減します。"
+        },
+        "dependencies": {
+          "title": "管理された依存関係",
+          "description": "ランタイムとパッケージのバージョンをプロジェクト単位で固定し、ビルドの再現性を保ちます。"
+        },
+        "deploys": {
+          "title": "無停止デプロイ",
+          "description": "新しいバージョンは背後で展開されます。実行中のものは元のバージョンで完了します。"
+        },
+        "traced": {
+          "title": "追加作業なしで追跡",
+          "description": "コードに計測を組み込まなくても、すべての実行が完全なトレースを残します。"
+        },
+        "secrets": {
+          "title": "管理されたシークレット",
+          "description": "認証情報は実行時に注入され、プロジェクトのファイルに保存されることはありません。"
+        }
+      },
+      "specs": {
+        "languages": {
+          "label": "言語",
+          "content": "TypeScript と Python。ランタイムバージョンは固定できます。"
+        },
+        "isolation": {
+          "label": "分離",
+          "content": "実行ごとのサンドボックス。ワークスペース間で状態を共有しません。"
+        },
+        "limits": {
+          "label": "上限",
+          "content": "プロジェクト単位で設定できるタイムアウト、メモリ、同時実行数。"
+        },
+        "networking": {
+          "label": "ネットワーク",
+          "content": "送信先の許可リストと、自社ネットワークへのプライベート接続。"
+        },
+        "regions": {
+          "label": "リージョン",
+          "content": "データレジデンシーのため、プロジェクトを実行するリージョンを選べます。"
+        },
+        "secrets": {
+          "label": "シークレット",
+          "content": "保存時に暗号化され、実行ごとに注入され、単一のプロジェクトに限定されます。"
+        }
+      },
+      "faq": {
+        "servers": {
+          "question": "サーバーを自分で管理する必要がありますか。",
+          "answer": "いいえ。コードをデプロイし上限を設定するだけです。容量、パッチ適用、スケーリングはこちらで対応します。"
+        },
+        "private": {
+          "question": "実行から社内ネットワークのシステムに接続できますか。",
+          "answer": "はい。プライベート接続経由で、送信先の許可リストはお客様が管理します。"
+        },
+        "deploy": {
+          "question": "デプロイ中の実行中タスクはどうなりますか。",
+          "answer": "実行中のものは開始時のバージョンで完了します。新しい実行は新しいバージョンを使用します。"
+        },
+        "cold": {
+          "question": "実行にコールドスタートはありますか。",
+          "answer": "稼働中のプロジェクトには容量が温存されるため、ほとんどの実行はすぐに始まります。"
+        },
+        "local": {
+          "question": "同じコードを手元で実行できますか。",
+          "answer": "はい。SDK は開発用ワークスペースに対して、手元の環境でプロジェクトを実行します。"
+        },
+        "image": {
+          "question": "独自のコンテナイメージを持ち込めますか。",
+          "answer": "プロジェクトごとに実行環境とパッケージの版を固定できます。完全な独自イメージが必要な場合はご相談ください。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "コードが実際に動く場所",
+          "description": "各実行には新しいサンドボックス、固定された依存関係、設定した上限が割り当てられます。実行間で引き継がれるものはありません。"
+        },
+        "capabilities": {
+          "title": "ランタイムが引き受けること",
+          "description": "もう人手を割く必要のない運用作業です。"
+        },
+        "specs": {
+          "title": "実行環境が提供するもの"
+        },
+        "faq": {
+          "title": "デプロイする前に",
+          "description": "本番の処理をここで動かす前に、プラットフォームチームが確認する点です。"
+        },
+        "cta": {
+          "title": "最初のプロジェクトをデプロイする",
+          "description": "コードを配置し、上限を決めれば、あとは需要に応じて容量が追随します。",
+          "primary": "デプロイを始める",
+          "secondary": "ランタイムのドキュメント"
+        }
+      },
+      "how": {
+        "deploy": {
+          "title": "コードをデプロイする",
+          "description": "ランタイムとパッケージをプロジェクト単位で固定し、ビルドの再現性を保ちます。",
+          "media": "プロジェクト設定"
+        },
+        "execute": {
+          "title": "分離して実行する",
+          "description": "各実行は専用のサンドボックスを持ち、需要に応じてスケールし、設定した上限の範囲で動きます。",
+          "media": "実行サンドボックス"
+        }
+      }
+    },
+    "security": {
+      "description": "エンタープライズ水準のセキュリティ、きめ細かなアクセス制御、ガバナンスで、データ・アプリケーション・エージェント・インフラを保護します。",
+      "eyebrow": "セキュリティ",
+      "metaDescription": "エンタープライズ水準のセキュリティ、きめ細かなアクセス制御、ガバナンスで、データ・アプリケーション・エージェント・インフラを保護します。",
+      "metaTitle": "エンタープライズ AI のセキュリティとガバナンス",
+      "title": "あらゆるレイヤーに組み込まれたセキュリティ。",
+      "ogTitle": "セキュリティ",
+      "ogDescription": "あらゆるレイヤーに組み込まれたセキュリティ",
+      "capabilities": {
+        "access": {
+          "title": "きめ細かなアクセス制御",
+          "description": "ロールと属性に基づく権限を、エンティティおよびフィールド単位まで適用します。"
+        },
+        "audit": {
+          "title": "完全な監査証跡",
+          "description": "すべての読み取り、書き込み、実行が特定の ID に紐づけられ、改ざんできない形で記録されます。"
+        },
+        "residency": {
+          "title": "データレジデンシー",
+          "description": "データを保管・処理するリージョンを選択できます。"
+        },
+        "private": {
+          "title": "プライベート接続",
+          "description": "システムを公開することなく、プライベートネットワーク経由で接続します。"
+        },
+        "isolation": {
+          "title": "テナント分離",
+          "description": "ワークスペース間でデータ、ファイルシステム、実行状態のいずれも共有しません。"
+        },
+        "assurance": {
+          "title": "第三者による検証",
+          "description": "評価の一環として、レビュー担当者が請求できる第三者の試験と報告書。"
+        }
+      },
+      "specs": {
+        "authn": {
+          "label": "認証",
+          "content": "SAML と OIDC による SSO、SCIM プロビジョニング。"
+        },
+        "authz": {
+          "label": "認可",
+          "content": "ロールと属性に基づき、エンティティおよびフィールド単位で適用。"
+        },
+        "audit": {
+          "label": "監査",
+          "content": "読み取り、書き込み、実行の改ざん不可・エクスポート可能なログ。"
+        },
+        "encryption": {
+          "label": "暗号化",
+          "content": "転送時と保存時。顧客管理鍵にも対応します。"
+        },
+        "residency": {
+          "label": "データ所在地",
+          "content": "保管および処理のリージョンを、ワークスペース単位で選択します。"
+        },
+        "compliance": {
+          "label": "コンプライアンス",
+          "content": "報告書と記入済みの質問票を、評価期間中に秘密保持契約のもとで提供します。"
+        }
+      },
+      "faq": {
+        "training": {
+          "question": "当社のデータはモデルの学習に使われますか。",
+          "answer": "いいえ。お客様のデータが基盤モデルの学習に使われることはありません。"
+        },
+        "sso": {
+          "question": "SSO と SCIM に対応していますか。",
+          "answer": "はい。サインインは SAML と OIDC、ユーザーの追加・削除は SCIM に対応しています。"
+        },
+        "regions": {
+          "question": "データを処理するリージョンを限定できますか。",
+          "answer": "はい。保管および処理のリージョンはワークスペース単位で選択します。"
+        },
+        "incident": {
+          "question": "セキュリティ事象はどのように扱われますか。",
+          "answer": "契約の条件に従って通知し、影響範囲と是正措置を書面でご報告します。"
+        },
+        "exit": {
+          "question": "解約した場合、データはどうなりますか。",
+          "answer": "ご要望に応じて書き出し、契約で定めた期日に削除します。"
+        },
+        "subprocessors": {
+          "question": "ほかに誰がデータに触れますか。",
+          "answer": "現行の再委託先一覧を公開しており、変更前に通知します。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "データを読む層で適用されます",
+          "description": "権限は画面側に後付けするのではなく、レコードが解決される場所で評価されます。そのためエージェントも人も、まったく同じ境界に突き当たります。"
+        },
+        "capabilities": {
+          "title": "セキュリティチームが得られるもの",
+          "description": "監査担当者が必ず尋ねる管理機能を、初日から利用できます。"
+        },
+        "specs": {
+          "title": "統制と基準"
+        },
+        "faq": {
+          "title": "審査の前に",
+          "description": "セキュリティ審査や調達審査で必ず挙がる質問です。"
+        },
+        "cta": {
+          "title": "要件についてご相談ください",
+          "description": "審査用のチェックリストをお持ちください。一緒に確認していきます。",
+          "primary": "営業に問い合わせる",
+          "secondary": "セキュリティのドキュメント"
+        }
+      },
+      "how": {
+        "control": {
+          "title": "境界を定める",
+          "description": "ロールと属性のルールを一度定義すれば、フィールド単位まで適用されます。",
+          "media": "権限ルール"
+        },
+        "prove": {
+          "title": "後から証明する",
+          "description": "すべての読み取り・書き込み・実行についての、改ざんできずエクスポート可能な記録。",
+          "media": "監査ログ"
+        }
+      }
+    },
+    "storage": {
+      "description": "インテリジェントなシステムを支えるデータ、成果物、ナレッジを安全に保管・管理します。",
+      "eyebrow": "ストレージ",
+      "metaDescription": "インテリジェントなシステム、エージェント、アプリケーションを支えるデータ、成果物、ナレッジを安全に保管・管理します。",
+      "metaTitle": "AI のデータとナレッジのためのストレージ",
+      "title": "AI に必要なすべてを保管。",
+      "ogTitle": "ストレージ",
+      "ogDescription": "AI に必要なすべてを保管",
+      "capabilities": {
+        "artifacts": {
+          "title": "ドキュメントと成果物",
+          "description": "契約書、レポート、実行結果を、関連するエンティティのそばに保管します。"
+        },
+        "versions": {
+          "title": "既定でバージョン管理",
+          "description": "書き込みのたびにバージョンが作成されます。上書きは行われません。"
+        },
+        "search": {
+          "title": "コンテンツ横断の検索",
+          "description": "保管したすべての内容に対する全文検索とセマンティック検索。"
+        },
+        "permissions": {
+          "title": "アクセス権はエンティティに従う",
+          "description": "権限はファイル単位ではなく、ファイルが紐づくレコードから継承されます。"
+        },
+        "retention": {
+          "title": "保持ルール",
+          "description": "ワークスペースごとに保存期間を定め、古い版を予定どおり失効させられます。"
+        },
+        "extraction": {
+          "title": "内容の抽出",
+          "description": "アップロード時に文書から本文と構造を取り出すため、検索もエージェントもすぐに利用できます。"
+        }
+      },
+      "specs": {
+        "objects": {
+          "label": "オブジェクトの種類",
+          "content": "ドキュメント、成果物、実行結果、埋め込みベクトル。"
+        },
+        "versioning": {
+          "label": "バージョン管理",
+          "content": "不変のバージョンと、任意時点への復元。"
+        },
+        "search": {
+          "label": "検索",
+          "content": "保管コンテンツに対する全文検索とベクトル検索。"
+        },
+        "encryption": {
+          "label": "暗号化",
+          "content": "転送時と保存時。顧客管理鍵にも対応します。"
+        },
+        "residency": {
+          "label": "データ所在地",
+          "content": "オブジェクトを保管するリージョンを選択できます。"
+        },
+        "size": {
+          "label": "オブジェクトの大きさ",
+          "content": "大容量ファイルに対応。分割アップロードと再開可能な転送を利用できます。"
+        }
+      },
+      "faq": {
+        "types": {
+          "question": "どのファイル形式に対応していますか。",
+          "answer": "一般的なドキュメント、画像、データ形式に加え、実行が生成したあらゆる成果物に対応します。"
+        },
+        "access": {
+          "question": "保管したファイルは誰が閲覧できますか。",
+          "answer": "そのファイルが紐づくエンティティを閲覧できる人です。権限はファイル単位ではなく継承されます。"
+        },
+        "keys": {
+          "question": "自社の暗号鍵を使えますか。",
+          "answer": "はい。顧客管理鍵に対応しています。"
+        },
+        "size": {
+          "question": "ファイルサイズの上限はありますか。",
+          "answer": "大容量ファイルは分割アップロードで扱えます。特殊な要件がある場合はご相談ください。"
+        },
+        "expire": {
+          "question": "古いファイルを自動で失効させられますか。",
+          "answer": "はい。保持ルールはワークスペース単位で動き、現行の版だけでなく古い版にも適用されます。"
+        },
+        "agents": {
+          "question": "エージェントは保存された文書を読めますか。",
+          "answer": "はい。本文はアップロード時に抽出され、アクセスは添付先エンティティの権限に従います。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "文脈から切り離されないファイル",
+          "description": "ドキュメントは、それが属するエンティティのそばに保管されます。権限も履歴も検索結果も、フォルダのパスではなくそのレコードに従います。"
+        },
+        "capabilities": {
+          "title": "文脈を理解するストレージがもたらす違い",
+          "description": "これが「見た目のよいバケット」ではない理由です。"
+        },
+        "specs": {
+          "title": "ストレージが対応する範囲"
+        },
+        "faq": {
+          "title": "アップロードする前に",
+          "description": "機微なドキュメントをここに置く前に、チームからよく寄せられる質問です。"
+        },
+        "cta": {
+          "title": "最初のドキュメントを保管する",
+          "description": "ファイルをエンティティに添付し、権限と検索がそれに従う様子をご確認ください。",
+          "primary": "保管を始める",
+          "secondary": "ストレージのドキュメント"
+        }
+      },
+      "how": {
+        "attach": {
+          "title": "レコードに添付する",
+          "description": "ファイルは、それが説明するエンティティのそばに置かれ、その権限を継承します。",
+          "media": "エンティティに添付されたドキュメント"
+        },
+        "find": {
+          "title": "あとから見つける",
+          "description": "保管したすべての内容に対する全文検索とセマンティック検索。",
+          "media": "検索結果"
+        }
+      }
+    },
+    "workflows": {
+      "description": "データ、システム、エージェントをつなぐワークフローを構築・自動化・オーケストレーションし、組織全体で業務を実行します。",
+      "eyebrow": "ワークフロー",
+      "metaDescription": "データ、システム、エージェントをつなぐワークフローを構築・自動化・オーケストレーションし、組織全体で業務を実行します。",
+      "metaTitle": "エンタープライズ AI ワークフローと自動化",
+      "title": "インテリジェンスを行動に変える。",
+      "ogTitle": "ワークフロー",
+      "ogDescription": "インテリジェンスを行動に変える",
+      "capabilities": {
+        "authoring": {
+          "title": "ビジュアルとコードの両方で作成",
+          "description": "ビルダーでステップを組み立てても、TypeScript で定義しても、同じバージョン管理されたワークフローになります。"
+        },
+        "control": {
+          "title": "決定的な制御フロー",
+          "description": "明示的な条件で分岐、ループ、ファンアウト、結合を行うため、実行経路は常に再現できます。"
+        },
+        "durable": {
+          "title": "永続的な実行",
+          "description": "長時間実行のステップは再起動やリトライを越えて継続します。状態は各ステップの間で保存されます。"
+        },
+        "approvals": {
+          "title": "人による承認ゲート",
+          "description": "レビューのために実行を一時停止し、承認後に完全なコンテキストのまま再開できます。"
+        },
+        "drafts": {
+          "title": "公開前に試せる",
+          "description": "本番の版や背後のシステムに触れずに、実データを使って下書きを実行できます。"
+        },
+        "explained": {
+          "title": "すべての実行を説明できる",
+          "description": "実行がたどった経路、各段階のデータ、待機した場所がすべて記録されます。"
+        }
+      },
+      "specs": {
+        "triggers": {
+          "label": "トリガー",
+          "content": "スケジュール、Webhook、イベント、API 呼び出し、手動開始。"
+        },
+        "steps": {
+          "label": "ステップの種類",
+          "content": "エージェント、関数、HTTP リクエスト、変換、分岐、待機、承認。"
+        },
+        "concurrency": {
+          "label": "同時実行",
+          "content": "ワークフロー単位およびワークスペース単位の上限。キューイングとバックプレッシャーに対応。"
+        },
+        "retries": {
+          "label": "リトライ",
+          "content": "ステップ単位のリトライポリシー。指数バックオフとデッドレター記録に対応。"
+        },
+        "versioning": {
+          "label": "バージョン管理",
+          "content": "公開されたバージョンは不変です。実行中のものは開始時のバージョンで完了します。"
+        },
+        "duration": {
+          "label": "実行時間",
+          "content": "数時間から数日に及ぶ実行に対応。各段階の間で状態を保存します。"
+        }
+      },
+      "faq": {
+        "agents": {
+          "question": "ワークフローからエージェントを呼び出せますか。",
+          "answer": "はい。エージェントはステップの一種です。実行のコンテキストを受け取り、次のステップが利用できる構造化された出力を返します。"
+        },
+        "failure": {
+          "question": "ステップが失敗するとどうなりますか。",
+          "answer": "ポリシーに従って再試行されます。それでも失敗した場合は実行が停止し、入力・出力・スタックとともに保存されるため、後から再現できます。"
+        },
+        "schedule": {
+          "question": "ワークフローをスケジュール実行できますか。",
+          "answer": "はい。cron スケジュール、イベント、受信 Webhook、API の直接呼び出しに対応しています。"
+        },
+        "gradual": {
+          "question": "既存の業務を少しずつ移行できますか。",
+          "answer": "はい。まず業務の一分岐から始め、その部分が安定してから範囲を広げてください。"
+        },
+        "test": {
+          "question": "変更を安全に試すには。",
+          "answer": "下書きとして公開し、本番の版になる前に実データで実行してください。"
+        },
+        "long": {
+          "question": "一回の実行はどれくらい続けられますか。",
+          "answer": "数時間から数日です。状態は各段階の間で保存されるため、長い実行も再起動を乗り越えます。"
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "トリガーから完了まで",
+          "description": "ワークフローは、明示的な条件でつながれた一連のステップです。作成は一度きりで、どの実行も同じ経路をたどります。"
+        },
+        "capabilities": {
+          "title": "オーケストレーションがもたらすもの",
+          "description": "業務がスクリプトと定期実行から離れた瞬間に手に入るもの。"
+        },
+        "specs": {
+          "title": "ワークフローでできること"
+        },
+        "faq": {
+          "title": "自動化する前に",
+          "description": "業務をワークフローに移す前に、チームからよく寄せられる質問です。"
+        },
+        "cta": {
+          "title": "最初の業務を自動化する",
+          "description": "エディターで組み立てても、TypeScript で定義しても、どちらも数分で始められます。",
+          "primary": "作り始める",
+          "secondary": "ワークフローのドキュメント"
+        }
+      },
+      "how": {
+        "author": {
+          "title": "一度だけ作成する",
+          "description": "ビルダーでステップを組み立てても、TypeScript で定義しても、同じバージョン管理されたワークフローになります。",
+          "media": "ワークフローエディター"
+        },
+        "run": {
+          "title": "すべての実行を見届ける",
+          "description": "各実行は、たどった経路、入力、そして承認待ちで止まった箇所を記録します。",
+          "media": "実行のタイムライン"
+        },
+        "recover": {
+          "title": "失敗から立て直す",
+          "description": "停止した実行は入力とスタックを保持しているため、原因を直してそのまま再実行できます。",
+          "media": "失敗した実行の再現"
+        }
+      }
+    },
+    "agents": {
+      "title": "理解し、判断し、行動するエージェント。",
+      "eyebrow": "エージェント",
+      "description": "エージェントを作成し、データとつなぎ、数分で稼働させられます。",
+      "metaTitle": "企業向け AI エージェント",
+      "metaDescription": "ビジネスを理解し、データに接続し、判断を下し、組織全体で行動するエージェントを数分で作成できます。",
+      "ogTitle": "AI エージェント",
+      "ogDescription": "理解し、判断し、行動するエージェント",
+      "sections": {
+        "how": {
+          "title": "エージェントはどう仕事を進めるか",
+          "description": "目的・使える道具・守るべき制限はあなたが決めます。その枠の中で、進め方はエージェントが選びます。"
+        },
+        "capabilities": {
+          "title": "安心して任せられる理由",
+          "description": "デモ止まりのものと、本番に載せられるものを分ける制御です。"
+        },
+        "specs": {
+          "title": "エージェントが対応する範囲"
+        },
+        "faq": {
+          "title": "本番投入の前に",
+          "description": "実システムを触らせる前に、チームからよく寄せられる質問です。"
+        },
+        "cta": {
+          "title": "最初のエージェントを作る",
+          "description": "目的を与え、道具を許可し、下されたすべての判断を確認できます。",
+          "primary": "作り始める",
+          "secondary": "エージェントのドキュメント"
+        }
+      },
+      "how": {
+        "define": {
+          "title": "仕事を与える",
+          "description": "目的、使ってよい道具、守るべき制限を記述します。",
+          "media": "エージェント設定"
+        },
+        "run": {
+          "title": "動きを見届ける",
+          "description": "すべての判断、ツール呼び出し、引き継ぎが実行中に記録されます。",
+          "media": "エージェントの実行"
+        }
+      },
+      "capabilities": {
+        "tools": {
+          "title": "型付けされたシステムアクセス",
+          "description": "エージェントはワークフローと同じ統制されたツールを呼び出します。データベースへの直接アクセスは行いません。"
+        },
+        "context": {
+          "title": "オントロジーに基づく",
+          "description": "エージェントはスキーマを推測せず、共有モデルを通じて参照を解決します。"
+        },
+        "handoff": {
+          "title": "人へ引き継ぐ",
+          "description": "判断が必要な場面では人に渡し、その後は完全な文脈を保ったまま再開できます。"
+        },
+        "bounds": {
+          "title": "ポリシーで制限",
+          "description": "権限、コスト、ツールへのアクセスはエージェントごとに設定され、実行時に強制されます。"
+        },
+        "memory": {
+          "title": "実行をまたいで記憶する",
+          "description": "一回の対話ではなく、エージェントと対象エンティティに結び付いた永続的な状態です。"
+        },
+        "evaluation": {
+          "title": "展開前に測定",
+          "description": "記録済みの事例でエージェントを試し、利用範囲を広げる前にバージョンを比較できます。"
+        }
+      },
+      "specs": {
+        "models": {
+          "label": "モデル",
+          "content": "ワークスペース単位で設定し、エージェントごとに上書きできます。"
+        },
+        "tools": {
+          "label": "ツール",
+          "content": "型付けされた関数・HTTP・ワークフロー呼び出し。エージェントごとに範囲を限定します。"
+        },
+        "memory": {
+          "label": "メモリ",
+          "content": "実行をまたぐ永続的な状態。対象はそのエージェントと関連エンティティに限られます。"
+        },
+        "limits": {
+          "label": "上限",
+          "content": "実行ごとのトークン、コスト、実時間の上限。"
+        },
+        "observability": {
+          "label": "オブザーバビリティ",
+          "content": "すべてのプロンプト、ツール呼び出し、出力が実行に紐づいて保持されます。"
+        },
+        "concurrency": {
+          "label": "同時実行数",
+          "content": "エージェントごとの同時実行上限。上限に達した分は順番待ちになります。"
+        }
+      },
+      "faq": {
+        "differ": {
+          "question": "エージェントとワークフローはどう違いますか。",
+          "answer": "ワークフローはあなたが定義した経路をたどります。エージェントは、あなたが与えた道具と制限の範囲で自ら経路を選びます。エージェントをワークフローの一ステップにすることもできます。"
+        },
+        "wrong": {
+          "question": "エージェントが誤った行動を取らない保証は。",
+          "answer": "許可した道具しか呼び出せず、権限は人と同じ扱いで、実行ごとのコストと時間の上限内に収まります。"
+        },
+        "review": {
+          "question": "行動する前に人が確認できますか。",
+          "answer": "はい。任意の操作を承認ステップ経由にすれば、承認された時点でエージェントが再開します。"
+        },
+        "many": {
+          "question": "エージェントは何体運用すべきですか。",
+          "answer": "多くのチームは範囲を絞った一体から始めます。何でもこなす一体より、目的を絞った複数のほうが把握しやすくなります。"
+        },
+        "spend": {
+          "question": "費用を見通しやすく保つには。",
+          "answer": "各エージェントにトークン、支出、時間の実行あたり上限があり、実際の使用量は実行ごとに記録されます。"
+        },
+        "improve": {
+          "question": "エージェントはどのように改善しますか。",
+          "answer": "記録済みの事例でバージョンを比較し、結果の良いほうを採用してください。"
+        }
+      }
+    }
+  },
+  "Products": {
+    "cta": {
+      "primary": "はじめる",
+      "secondary": "ドキュメントを読む"
+    },
+    "pages": {
+      "agent": {
+        "title": "Frontal 上での構築を支えるインテリジェンス層。",
+        "description": "質問に答え、問題を調査し、承認された操作を実行し、データをもとに推論する AI。当社プロダクトに組み込まれています。",
+        "metaTitle": "インテリジェントなソフトウェアのための AI エージェント",
+        "metaDescription": "ビジネスのデータ・システム・ワークフローとつながる共通のインテリジェンス層の上で、AI エージェントを構築・デプロイ・運用できます。",
+        "ogTitle": "Frontal Agent",
+        "ogDescription": "Frontal 上で AI エージェントを構築するためのインテリジェンス層。"
+      },
+      "aiGateway": {
+        "title": "すべてをひとつのゲートウェイで。",
+        "description": "エンタープライズのワークロード向けに構築された統合ゲートウェイで、AI モデルへの接続・ルーティング・アクセス統制を実現します。",
+        "metaTitle": "エンタープライズ AI ゲートウェイとモデルルーティング",
+        "metaDescription": "エンタープライズのワークロード向けに構築された統合ゲートウェイで、AI モデルへの接続・ルーティング・アクセス統制を実現します。",
+        "ogTitle": "エンタープライズ AI ゲートウェイ",
+        "ogDescription": "すべてをひとつのゲートウェイで",
+        "eyebrow": "AI Gateway",
+        "sections": {
+          "how": {
+            "title": "すべてのモデルに宛先はひとつ",
+            "description": "コードはゲートウェイを呼ぶだけです。どのプロバイダーが応じるかはゲートウェイが決め、何が起きたかを記録します。"
+          },
+          "capabilities": {
+            "title": "ゲートウェイが肩代わりするもの",
+            "description": "二つ目のモデル、二つ目のプロバイダー、二つ目のチームが加わった瞬間に発生する作業です。"
+          },
+          "specs": {
+            "title": "ゲートウェイが対応する範囲"
+          },
+          "faq": {
+            "title": "本番をここに通す前に",
+            "description": "すべてのモデル呼び出しの前段に単一の部品が立つとき、プラットフォームチームが確認することです。"
+          },
+          "cta": {
+            "title": "呼び出しを一つ向けてみる",
+            "description": "ベース URL を変えてリクエストを送り、下されたルーティング判断を読んでください。",
+            "primary": "はじめる",
+            "secondary": "ドキュメントを読む"
+          }
+        },
+        "how": {
+          "route": {
+            "title": "宛先はひとつのエンドポイント",
+            "description": "API もキーもリクエスト形式も一つ。プロバイダーの切り替えがコード変更でなくなります。",
+            "media": "ゲートウェイ要求"
+          },
+          "govern": {
+            "title": "モデルはポリシーが選ぶ",
+            "description": "コスト、レイテンシ、リージョン、能力で振り分け、プロバイダーが劣化したら切り替えます。",
+            "media": "ルーティングポリシー"
+          },
+          "account": {
+            "title": "明細を受け取る",
+            "description": "呼び出しごとに、到達したモデル、費用、所要時間、依頼元が記録されます。",
+            "media": "利用記録"
+          }
+        },
+        "capabilities": {
+          "routing": {
+            "title": "切り替えはこちらの仕事",
+            "description": "プロバイダーが遅くなるか失敗すると、ポリシー上の次の候補がデプロイなしで引き取ります。"
+          },
+          "budgets": {
+            "title": "効く支出上限",
+            "description": "チーム単位・キー単位の上限をゲートウェイで強制します。請求書で気づくのでは遅すぎます。"
+          },
+          "keys": {
+            "title": "プロバイダーの鍵は一か所に",
+            "description": "アプリが持つのはゲートウェイの鍵だけ。プロバイダーの資格情報はゲートウェイから出ません。"
+          },
+          "caching": {
+            "title": "同じ作業は二度課金されない",
+            "description": "同一のリクエストはキャッシュから返り、ヒット率が費用の隣に表示されます。"
+          }
+        },
+        "specs": {
+          "providers": {
+            "label": "プロバイダー",
+            "content": "Anthropic、OpenAI、Google、Mistral、および自社で運用する OpenAI 互換エンドポイント。"
+          },
+          "routing": {
+            "label": "ルーティング",
+            "content": "重み付け、コスト、レイテンシ、リージョン固定の各ポリシーと、順序付きのフェイルオーバー。"
+          },
+          "limits": {
+            "label": "上限",
+            "content": "キー単位・チーム単位・モデル単位のレートおよび支出の上限。"
+          },
+          "caching": {
+            "label": "キャッシュ",
+            "content": "完全一致とプロンプト前方一致。ルートごとに設定できます。"
+          },
+          "records": {
+            "label": "記録",
+            "content": "すべてのリクエストをモデル、トークン、費用、レイテンシ、呼び出し元とともに保持します。"
+          }
+        },
+        "faq": {
+          "latency": {
+            "question": "呼び出しごとにどれだけ増えますか。",
+            "answer": "ルーティングに数ミリ秒です。これに対してキャッシュが取り戻す分のほうが通常はるかに大きくなります。"
+          },
+          "lockin": {
+            "question": "Frontal に縛られませんか。",
+            "answer": "いいえ。ゲートウェイはプロバイダー自身のリクエスト形式を話すため、戻すのは URL の変更だけです。"
+          },
+          "outage": {
+            "question": "ゲートウェイが落ちたらどうなりますか。",
+            "answer": "クライアント側でプロバイダーへ直接フォールバックする設定が可能で、ゲートウェイ自体も複数ゾーンで動きます。"
+          },
+          "keys": {
+            "question": "チームが自前の鍵を使えますか。",
+            "answer": "はい。自分の鍵を持ち込んでも、ルーティング、上限、記録はそのまま得られます。"
+          }
+        }
+      },
+      "ask": {
+        "title": "Frontal に聞く。",
+        "description": "データ、システム、ビジネスの文脈を理解する AI が、疑問を答えに変えます。",
+        "metaTitle": "スモールビジネス向け AI アシスタント",
+        "metaDescription": "ひとつの会話から、システムへの問い合わせ、ワークフローの開始、実行の確認まで。ビジネスを理解し、実際に仕事をこなす AI アシスタントです。",
+        "ogTitle": "AI アシスタント",
+        "ogDescription": "ビジネス全体を動かす、ひとつの会話",
+        "eyebrow": "Ask",
+        "sections": {
+          "how": {
+            "title": "質問から完了までを一続きに",
+            "description": "自分の言葉で尋ねるだけです。Ask は意図を読み取り、作業を実行し、何をしたのかを示します。"
+          },
+          "capabilities": {
+            "title": "回答を信頼できるものにする要素",
+            "description": "アシスタントは検証できてこそ役に立ちます。検証を可能にしているのが次の要素です。"
+          },
+          "specs": {
+            "title": "Ask が対応する範囲"
+          },
+          "faq": {
+            "title": "実際のシステムにつなぐ前に",
+            "description": "アシスタントに読み書きを任せる前に、各チームが確認していることです。"
+          },
+          "cta": {
+            "title": "最初の質問をしてみる",
+            "description": "データソースを一つつなぎ、答えを知っている質問を投げて、その過程を読んでください。",
+            "primary": "質問をはじめる",
+            "secondary": "ドキュメントを読む"
+          }
+        },
+        "how": {
+          "ask": {
+            "title": "自分の言葉で尋ねる",
+            "description": "クエリ言語もメニューも不要です。Ask が質問の背後にあるエンティティ、システム、権限を解決します。",
+            "media": "会話"
+          },
+          "act": {
+            "title": "作業の様子をそのまま見る",
+            "description": "検索、ツール呼び出し、変更のすべてが実行中に表示され、実行記録はあとからも残ります。",
+            "media": "実行の詳細"
+          },
+          "verify": {
+            "title": "答えを確かめる",
+            "description": "実行を開き、参照した情報源と実行した呼び出しを一つずつたどれます。",
+            "media": "情報源の一覧"
+          }
+        },
+        "capabilities": {
+          "context": {
+            "title": "オントロジーに根ざす",
+            "description": "顧客、請求書、実行はテーブル名の推測ではなく共有モデルを通じて解決されます。"
+          },
+          "actions": {
+            "title": "統制されたツール経由で動く",
+            "description": "チームがすでに使っているのと同じ型付きツールで、ワークフローを開始しレコードを更新します。"
+          },
+          "permissions": {
+            "title": "権限の範囲内で答える",
+            "description": "Ask が見えるのは質問した本人に見えるものだけで、それ以上は見えません。"
+          },
+          "evidence": {
+            "title": "過程を残す",
+            "description": "回答には参照した情報源と実行した呼び出しが添えられるため、信じるのではなく確かめられます。"
+          }
+        },
+        "specs": {
+          "sources": {
+            "label": "情報源",
+            "content": "オントロジー、接続済みシステム、アップロードしたファイル、そして許可した場合はウェブ。"
+          },
+          "surfaces": {
+            "label": "利用面",
+            "content": "ダッシュボード、CLI、API、そしてチームがすでに開いているプラグイン。"
+          },
+          "actions": {
+            "label": "操作",
+            "content": "権限のある範囲は読み取り、書き込みは付与したツール経由に限られます。"
+          },
+          "history": {
+            "label": "履歴",
+            "content": "会話と実行はワークスペース単位で保持され、検索と書き出しができます。"
+          },
+          "languages": {
+            "label": "言語",
+            "content": "チームが書くどの言語でも質問と回答ができます。"
+          }
+        },
+        "faq": {
+          "accuracy": {
+            "question": "回答が正しいとどう確かめますか。",
+            "answer": "回答には読んだものと呼び出したものが列挙されます。実行を開けば同じ経路を自分でたどれます。"
+          },
+          "access": {
+            "question": "人が見てはいけないものまで見えますか。",
+            "answer": "いいえ。Ask は質問した本人の権限を引き継ぎ、権限のない質問は推測せず未回答のまま返します。"
+          },
+          "act": {
+            "question": "勝手に何かを変更しますか。",
+            "answer": "付与したツール経由のみです。書き込みの前に承認ステップを必須にすることもできます。"
+          },
+          "start": {
+            "question": "どこから始めるとよいですか。",
+            "answer": "システムを一つつなぎ、答えを知っている質問をしてください。事業モデルのどこが手薄かを最も速く見つけられます。"
+          }
+        }
+      },
+      "cloud": {
+        "title": "AI のためのクラウド。",
+        "description": "次世代のインテリジェントなソフトウェアを動かし、デプロイし、スケールさせるためにゼロから設計されたインフラです。",
+        "metaTitle": "AI のためのクラウドインフラ",
+        "metaDescription": "次世代のインテリジェントなソフトウェアを動かし、デプロイし、スケールさせるためにゼロから設計されたインフラです。",
+        "ogTitle": "クラウド",
+        "ogDescription": "AI のためのクラウド。",
+        "eyebrow": "Cloud",
+        "sections": {
+          "how": {
+            "title": "プラットフォームが載っている土台",
+            "description": "常時稼働のサーバーではなく、実行を中心に設計された分離、スケジューリング、ストレージ。"
+          },
+          "capabilities": {
+            "title": "運用しなくてよくなるもの",
+            "description": "エージェントを本番で動かすと生じるインフラ作業を、土台側で引き受けます。"
+          },
+          "specs": {
+            "title": "Cloud が提供するもの"
+          },
+          "faq": {
+            "title": "ワークロードを移す前に",
+            "description": "既存環境と比較する段階で、プラットフォームチームが確認していることです。"
+          },
+          "cta": {
+            "title": "実際に動かしてみる",
+            "description": "ワークロードを一つ載せ、どうスケールするかを見て、今の請求額と比べてください。",
+            "primary": "はじめる",
+            "secondary": "ドキュメントを読む"
+          }
+        },
+        "how": {
+          "isolate": {
+            "title": "実行ごとに専用のサンドボックス",
+            "description": "実行のたびに新しい隔離環境が割り当てられ、与えたネットワークと資格情報だけを持ちます。",
+            "media": "実行基盤の構成"
+          },
+          "scale": {
+            "title": "作業量に追随する容量",
+            "description": "スケジューリングは実行単位です。待機中は費用がかからず、急増に容量計画は要りません。",
+            "media": "スケジューリング"
+          }
+        },
+        "capabilities": {
+          "isolation": {
+            "title": "既定で分離",
+            "description": "ワークロードがカーネル、ファイルシステム、資格情報を他者と共有することはありません。"
+          },
+          "scaling": {
+            "title": "ゼロまで下がり、また戻る",
+            "description": "課金対象は実行が動いている秒数で、必要だったかもしれないマシンではありません。"
+          },
+          "regions": {
+            "title": "データのある場所で動く",
+            "description": "ワークスペースごとにリージョンを固定し、方針が求める境界の内側で処理を完結させます。"
+          },
+          "operations": {
+            "title": "パッチ適用は不要",
+            "description": "実行環境、スケジューラ、ストレージ層は土台側で運用され更新されます。"
+          }
+        },
+        "specs": {
+          "compute": {
+            "label": "コンピュート",
+            "content": "実行単位のサンドボックス。CPU、メモリ、実時間の上限を設定できます。"
+          },
+          "regions": {
+            "label": "リージョン",
+            "content": "ワークスペース単位のリージョン固定。処理と保存は選んだ境界の内側に留まります。"
+          },
+          "networking": {
+            "label": "ネットワーク",
+            "content": "ワークロードごとの送信許可リストと、自社ネットワークへの専用接続。"
+          },
+          "storage": {
+            "label": "ストレージ",
+            "content": "実行に紐づくオブジェクト、ベクトル、リレーショナルの各ストレージ。保持はワークスペースの方針に従います。"
+          },
+          "availability": {
+            "label": "可用性",
+            "content": "複数ゾーンでのスケジューリング、自動再試行、実行ごとの記録。"
+          }
+        },
+        "faq": {
+          "own": {
+            "question": "自社のクラウドで動かせますか。",
+            "answer": "はい。ポリシー上必要な場合、ランタイムをお客様のアカウントにデプロイできます。この顧客ホスト型モデルでは、お客様のチームがインフラを運用します。デプロイ範囲と運用責任は Enterprise と確認してください。"
+          },
+          "cost": {
+            "question": "料金はどう比較されますか。",
+            "answer": "予約容量ではなく実行時間で課金されるため、負荷が一定ではなく波のあるワークロードほど有利になります。"
+          },
+          "data": {
+            "question": "データはどこに置かれますか。",
+            "answer": "処理も保存もワークスペースに固定したリージョンに留まり、共有モデルの学習には使われません。"
+          },
+          "migrate": {
+            "question": "ワークロードの移行はどの程度大変ですか。",
+            "answer": "ワークロードはコンテナとマニフェストです。多くのチームはまず一つ移し、実行記録を比べてから残りを移します。"
+          }
+        }
+      },
+      "evaluation": {
+        "title": "信頼できる AI をつくる。",
+        "description": "エージェント、ワークフロー、AI アプリケーションを、精度・信頼性・ツール利用・レイテンシ・コストなどの観点で評価できます。",
+        "metaTitle": "エンタープライズシステムのための AI 評価",
+        "metaDescription": "再現性のあるテスト、本番のシグナル、判断ごとの明確な根拠をもって、AI エージェント・ワークフロー・アプリケーションを評価できます。",
+        "ogTitle": "エンタープライズシステムのための AI 評価",
+        "ogDescription": "AI エージェント・ワークフロー・アプリケーションを、自信をもって評価し改善する。",
+        "eyebrow": "Evaluation",
+        "sections": {
+          "how": {
+            "title": "変更をどう裏づけるか",
+            "description": "起きたことを記録し、新しい版に流し込み、誰かの目に触れる前に両者を比べます。"
+          },
+          "capabilities": {
+            "title": "動いてよい結果とは",
+            "description": "数字が動いたことと、実際に良くなった証拠との違いです。"
+          },
+          "specs": {
+            "title": "評価が扱う範囲"
+          },
+          "faq": {
+            "title": "リリースの可否を委ねる前に",
+            "description": "スコアが出荷を決めはじめるとき、各チームが確認することです。"
+          },
+          "cta": {
+            "title": "最初の版を採点する",
+            "description": "一週間分の本番実行をスイートに変え、次の版をそこへ流してください。",
+            "primary": "評価をはじめる",
+            "secondary": "ドキュメントを読む"
+          }
+        },
+        "chart": {
+          "title": "改善とはこう見えるもの",
+          "description": "どの版も同じ記録済みケースで採点されるため、この線は主張ではなく比較です。",
+          "caption": "あるエージェント六世代の合格率。記録済み 1,200 ケースで測定。",
+          "ariaLabel": "六つの版にわたる合格率の折れ線グラフ。正確性は 58% から 94%、ツール利用は 44% から 89%、安定性は 61% から 91% へ上昇。",
+          "series": {
+            "accuracy": "正確性",
+            "tools": "ツール利用",
+            "reliability": "安定性"
+          }
+        },
+        "how": {
+          "capture": {
+            "title": "実際に起きたことを取り込む",
+            "description": "本番の実行がそのままケースになり、入力、ツール呼び出し、結末がひとまとまりで残ります。",
+            "media": "記録済みケース"
+          },
+          "replay": {
+            "title": "新しい版へ流し込む",
+            "description": "スイート全体が候補版に対して走り、毎回同じ基準で採点されます。",
+            "media": "スイート実行"
+          },
+          "compare": {
+            "title": "比べてから決める",
+            "description": "昇格の前に、何が良くなり、何が後退し、どのケースが答えを変えたのかを確認できます。",
+            "media": "版の差分"
+          }
+        },
+        "capabilities": {
+          "grounded": {
+            "title": "順位表ではなく自社の仕事で採点",
+            "description": "ケースは自社の実行から作られるため、結果は公開データセットではなく自社の業務について語ります。"
+          },
+          "dimensions": {
+            "title": "数字はひとつではない",
+            "description": "正確性、ツール利用、レイテンシ、費用は別々に動き、リリースは四つすべてで判断されます。"
+          },
+          "regressions": {
+            "title": "後退は名指しされ、平均に埋もれない",
+            "description": "答えが変わったケースは個別に列挙されるため、平均の上昇では隠せません。"
+          },
+          "continuous": {
+            "title": "本番でも走り続ける",
+            "description": "実トラフィックを抽出して同じスイートで採点するため、ドリフトが起きた時点で表に出ます。"
+          }
+        },
+        "specs": {
+          "suites": {
+            "label": "スイート",
+            "content": "エージェントやワークフロー単位にまとめたケース群を、対象と一緒にバージョン管理します。"
+          },
+          "scoring": {
+            "label": "採点",
+            "content": "完全一致、ルーブリック、モデル採点、そして自作の採点器。"
+          },
+          "dimensions": {
+            "label": "観点",
+            "content": "正確性、ツール利用、安定性、レイテンシ、費用を、ケース単位と全体の両方で報告します。"
+          },
+          "sampling": {
+            "label": "サンプリング",
+            "content": "実行のうち設定した割合を、同じスイートで継続的に採点します。"
+          },
+          "gating": {
+            "label": "ゲート",
+            "content": "スイートが設定したしきい値を下回ると、昇格が自動的に止まります。"
+          }
+        },
+        "faq": {
+          "cases": {
+            "question": "ケースはいくつ必要ですか。",
+            "answer": "仕事が実際にばらつく範囲を覆える数です。多くのチームは五十前後から始め、見つかった失敗でスイートを育てます。"
+          },
+          "grading": {
+            "question": "モデルがモデルを採点してよいのですか。",
+            "answer": "自由記述の仕事では可です。ルーブリックは実行に記録します。厳密に確認できるものは厳密に確認すべきです。"
+          },
+          "flaky": {
+            "question": "再現しない実行はどう扱いますか。",
+            "answer": "スコアは反復間のばらつきとともに報告されるため、ノイズの内側の差が改善には見えません。"
+          },
+          "gate": {
+            "question": "スコアでリリースを止めるべきですか。",
+            "answer": "スイートを信頼できるようになってからしきい値を置いてください。それまでは並走させ、自分の判断と一致するかを見ます。"
+          }
+        }
+      },
+      "plugins": {
+        "title": "Frontal を、使っているすべてとつなぐ。",
+        "description": "チームがすでに使っているツールに、エンタープライズの知見・コンテキスト・データ・アクションを直接届けるプラグインで Frontal を拡張できます。",
+        "metaTitle": "エンタープライズ AI ワークフロー向けプラグイン",
+        "metaDescription": "チームがすでに使っているツールを、ロールベースで安全な AI ワークフローとビジネスコンテキストにつなぐプラグインで Frontal を拡張できます。",
+        "ogTitle": "Frontal プラグイン",
+        "ogDescription": "チームがすでに使っているツールと Frontal をつなぐ。"
+      },
+      "studio": {
+        "title": "限界のない開発を。",
+        "description": "Frontal を拡張し、インテリジェントなシステムを組み立て、アイデアを本番品質のソフトウェアに変えるためのプラットフォームです。",
+        "metaTitle": "インテリジェントなソフトウェアのための Studio",
+        "metaDescription": "ひとつの共同開発環境で、インテリジェントなソフトウェアを構築・テスト・出荷できます。",
+        "ogTitle": "スタジオ",
+        "ogDescription": "限界のない開発を。",
+        "eyebrow": "Studio",
+        "sections": {
+          "how": {
+            "title": "作ったものが本番に届くまで",
+            "description": "部品を組み立て、実際のケースで試し、いつでも戻せるバージョンとして出荷します。"
+          },
+          "capabilities": {
+            "title": "製品コードを書く前に手に入るもの",
+            "description": "本来なら構築に一四半期、維持に一チームを要する部分です。"
+          },
+          "specs": {
+            "title": "Studio が対応する範囲"
+          },
+          "faq": {
+            "title": "この上に作りはじめる前に",
+            "description": "採用を決める段階で、開発チームが確認していることです。"
+          },
+          "cta": {
+            "title": "Studio を開く",
+            "description": "エージェントを組み立て、記録済みのケースを流し込み、バージョンとして出荷してください。",
+            "primary": "作りはじめる",
+            "secondary": "ドキュメントを読む"
+          }
+        },
+        "how": {
+          "compose": {
+            "title": "部品を組み立てる",
+            "description": "エージェント、ワークフロー、ツール、データソースを四か所に配線するのではなく、一か所で組み上げます。",
+            "media": "構成"
+          },
+          "ship": {
+            "title": "バージョンを出荷する",
+            "description": "変更はすべてバージョンです。周辺を再デプロイせずに、試験、昇格、切り戻しができます。",
+            "media": "バージョン履歴"
+          }
+        },
+        "capabilities": {
+          "environment": {
+            "title": "作る場所は一つ",
+            "description": "エディタ、実行環境、データ、ログが同じセッションに揃うため、デバッグがタブ移動の作業でなくなります。"
+          },
+          "collaboration": {
+            "title": "複数人で使う前提",
+            "description": "共有ワークスペース、昇格前のレビュー、誰が何を変えたかを残す履歴。"
+          },
+          "testing": {
+            "title": "実際のケースで試す",
+            "description": "記録済みの実行を新しいバージョンに流し、チームの外に出る前に差分を確認できます。"
+          },
+          "deployment": {
+            "title": "リリース列車なしで出す",
+            "description": "バージョンをその場で本番に昇格し、問題があれば同じ手順で戻せます。"
+          }
+        },
+        "specs": {
+          "languages": {
+            "label": "言語",
+            "content": "TypeScript と Python の SDK。背後の API 面はどちらも同一です。"
+          },
+          "environments": {
+            "label": "環境",
+            "content": "開発、ステージング、本番のワークスペースを分離し、それぞれに固有の資格情報を持たせます。"
+          },
+          "versioning": {
+            "label": "バージョン管理",
+            "content": "エージェント、ワークフロー、ツールはすべてバージョン管理され、環境ごとに昇格と切り戻しができます。"
+          },
+          "testing": {
+            "label": "テスト",
+            "content": "記録済みの実行をフィクスチャとして再生し、バージョン間を並べて比較します。"
+          },
+          "access": {
+            "label": "アクセス",
+            "content": "ワークスペースごとのロール権限と、昇格ごとの監査記録。"
+          }
+        },
+        "faq": {
+          "local": {
+            "question": "ローカルで作業できますか。",
+            "answer": "はい。SDK はどこでも動きます。共有状態、バージョン、履歴が置かれる場所が Studio です。"
+          },
+          "existing": {
+            "question": "既存のスタックを置き換えますか。",
+            "answer": "いいえ。Studio で組み立てて版を管理するのは AI の部分だけです。ほかは今の場所に残し、ツール経由で呼び出します。"
+          },
+          "review": {
+            "question": "変更はどうレビューされますか。",
+            "answer": "バージョンを提案し、記録済みの実行と比較したうえで、昇格権限を持つ人が本番に上げます。"
+          },
+          "rollback": {
+            "question": "バージョンが誤っていたらどうなりますか。",
+            "answer": "前のバージョンに戻します。進行中の実行は開始したバージョンのまま完了します。"
+          }
+        }
+      },
+      "benchmark": {
+        "title": "Frontal ベンチマーク。",
+        "description": "当社のベンチマークで、エンタープライズ AI の性能を測定できます。",
+        "mobileDescription": "当社のベンチマークで、エンタープライズ AI の性能を測定できます。",
+        "metaTitle": "エンタープライズ AI 性能ベンチマーク",
+        "metaDescription": "実際の業務にもとづく、公開かつ再現可能なベンチマークで、エンタープライズ AI の性能を測定できます。",
+        "ogTitle": "Frontal ベンチマーク",
+        "ogDescription": "公開された根拠にもとづいて AI システムを比較できます。",
+        "eyebrow": "Benchmark",
+        "sections": {
+          "how": {
+            "title": "ベンチマークの実施手順",
+            "description": "公開されたタスク、固定されたハーネス、そして試行ごとの記録。結果は信じるものではなく確かめるものです。"
+          },
+          "capabilities": {
+            "title": "数字が信用に足る条件",
+            "description": "公表された結果の多くは再現できません。当社のものを比較可能にしているのは次の点です。"
+          },
+          "specs": {
+            "title": "ベンチマークが測るもの"
+          },
+          "faq": {
+            "title": "結果を引用する前に",
+            "description": "数字が判断の根拠として使われるとき、必ず問われることです。"
+          },
+          "cta": {
+            "title": "結果を読む",
+            "description": "すべてのタスク、すべての記録、すべてのスコアを、そのまま公開しています。",
+            "primary": "ベンチマークを見る",
+            "secondary": "ドキュメントを読む"
+          }
+        },
+        "how": {
+          "tasks": {
+            "title": "パズルではなく実務",
+            "description": "タスクは実際に運用されている業務プロセスから採り、成功条件を先に文章にしています。",
+            "media": "タスク集合"
+          },
+          "run": {
+            "title": "全員に同じハーネス",
+            "description": "どのシステムにも同じツール、同じ制限、同じ試行回数が与えられます。",
+            "media": "ハーネス"
+          },
+          "publish": {
+            "title": "記録つきで公開",
+            "description": "スコアには実行記録がまるごと付くため、その結果に至った過程を誰でも確認できます。",
+            "media": "実行記録"
+          }
+        },
+        "capabilities": {
+          "reproducible": {
+            "title": "誰でも再現できる",
+            "description": "ハーネス、タスク、採点コードはすべて公開されており、実施を端から端まで繰り返せます。"
+          },
+          "contaminated": {
+            "title": "非公開タスクは入れ替わる",
+            "description": "集合の一部は伏せられ、周期ごとに差し替えられるため、スコアを学習で取りにいけません。"
+          },
+          "transcripts": {
+            "title": "すべての試行が記録に残る",
+            "description": "失敗も成功と並べて公開します。中を見られない結果は証拠ではありません。"
+          },
+          "cost": {
+            "title": "費用と時間でも採点",
+            "description": "五十倍の費用をかけて勝つシステムは、多くのチームが買おうとしているものでは勝っていません。"
+          }
+        },
+        "specs": {
+          "tasks": {
+            "label": "タスク",
+            "content": "成功条件を文章化した複数手順の業務プロセスと、固定されたツール一式。"
+          },
+          "attempts": {
+            "label": "試行",
+            "content": "タスクとシステムの組ごとに回数を固定し、すべての試行を採点して公開します。"
+          },
+          "scoring": {
+            "label": "採点",
+            "content": "結果が客観的なものは自動判定、そうでないものは伏せた状態での人手審査。"
+          },
+          "reporting": {
+            "label": "報告",
+            "content": "合格率、タスクあたりの費用、実時間を、タスク単位と全体の両方で報告します。"
+          },
+          "cadence": {
+            "label": "周期",
+            "content": "四半期ごとに再実施。非公開集合は入れ替え、ハーネスはバージョン管理されます。"
+          }
+        },
+        "faq": {
+          "why": {
+            "question": "なぜ新しいベンチマークが必要なのですか。",
+            "answer": "既存の集合はパズルでの推論を測ります。ありふれた業務を最後までやり切れるかを測るものはほとんどありません。"
+          },
+          "gaming": {
+            "question": "学習で対策されるのを何が防ぎますか。",
+            "answer": "集合の一部は伏せられ周期ごとに入れ替わります。結果は公開分と非公開分に分けて報告します。"
+          },
+          "submit": {
+            "question": "自社のシステムを提出できますか。",
+            "answer": "はい。ハーネスは公開されており、提出されたものも他と同じ条件で採点されます。"
+          },
+          "compare": {
+            "question": "この数字はどう読むべきですか。",
+            "answer": "一般的な主張ではなく、このタスク集合での順位として読んでください。差を信じる前に記録をいくつか読むことです。"
+          }
+        }
+      }
+    },
+    "images": {
+      "benchmark": "ベンチマーク結果の画面",
+      "dashboard": "Frontal のダッシュボード"
+    }
+  },
+  "Legal": {
+    "title": "規約とポリシー",
+    "description": "Frontal の運営を規定する規約、ポリシー、および契約です。各ドキュメントはバージョン管理され、発効日が記載されています。",
+    "lastUpdated": "最終更新日 {date}",
+    "metaTitle": "規約とポリシー",
+    "metaDescription": "Frontal の法的文書。",
+    "ogTitle": "規約とポリシー",
+    "ogDescription": "Frontal の法的文書。"
+  },
+  "Careers": {
+    "title": "ソフトウェアの次を、つくる。",
+    "mission": "企業全体で理解し、判断し、行動する新世代のインテリジェントシステムを生み出すため、卓越したつくり手のチームを築いています。",
+    "hiring": "私たちは慎重に採用し、経歴よりも好奇心を重んじ、重要な仕事をアイデアから製品の出荷まで導ける人を探しています。",
+    "openRoles": "募集中のポジション",
+    "apply": "応募する",
+    "filters": {
+      "allTeams": "すべてのチーム",
+      "allLocations": "すべての勤務地",
+      "teamLabel": "チームでポジションを絞り込む",
+      "locationLabel": "勤務地でポジションを絞り込む"
+    },
+    "metaTitle": "採用情報",
+    "metaDescription": "Frontal をつくるチームに参加しませんか。高い基準と大きな裁量を持つつくり手が、企業向けのインテリジェントシステムを開発しています。",
+    "ogTitle": "採用情報",
+    "ogDescription": "Frontal をつくるチームに参加しませんか。高い基準と大きな裁量を持つつくり手が、企業向けのインテリジェントシステムを開発しています。"
+  },
+  "Research": {
+    "title": "計算知能の科学を前進させる",
+    "mission": "私たちは世界の計算理論を構築し、現実を表現し知識を推論するための新しい基盤を築くことで、計算知能の科学を前進させています。",
+    "filters": {
+      "all": "すべて",
+      "search": "研究を検索"
+    },
+    "read": "読む",
+    "noMatches": "検索結果に一致する研究エントリがありません。",
+    "noEntries": "まだ研究エントリは公開されていません。",
+    "metaTitle": "研究",
+    "metaDescription": "計算知能の科学を前進させる",
+    "ogTitle": "研究",
+    "ogDescription": "計算知能の科学を前進させる"
+  },
+  "Partners": {
+    "pages": {
+      "solutions": {
+        "title": "パートナーを探す",
+        "description": "次のプロジェクトを実現に導く、最適なソリューションパートナーを見つけましょう。",
+        "primaryAction": "パートナーを探す",
+        "secondaryAction": "パートナーになる",
+        "metaTitle": "ソリューションパートナー",
+        "metaDescription": "次のプロジェクトを Frontal 上で設計・構築・リリースまで導くソリューションパートナーを見つけましょう。最初のプロトタイプから本番まで対応します。",
+        "ogTitle": "ソリューションパートナー",
+        "ogDescription": "次のプロジェクトに最適なソリューションパートナーを見つける",
+        "sections": {
+          "specialisms": {
+            "title": "パートナーが担うこと",
+            "description": "四種類の仕事で、通常は別々の会社が担当します。"
+          },
+          "directory": {
+            "title": "パートナー一覧",
+            "description": "必要な業務で絞り込み、条件に合う企業にご連絡ください。"
+          },
+          "engagement": {
+            "title": "案件の進み方"
+          },
+          "choosing": {
+            "title": "契約前に確かめること"
+          },
+          "faq": {
+            "title": "お客様からの質問",
+            "description": "パートナーを迎える前に各社が確認すること。"
+          },
+          "cta": {
+            "title": "適したパートナーが見つかりませんか。",
+            "description": "何を作ろうとしているかをお知らせいただければ、同じ経験のある会社をご紹介します。",
+            "action": "お問い合わせ"
+          }
+        },
+        "specialisms": {
+          "a": {
+            "title": "設計と範囲決め",
+            "description": "どの業務を自動化する価値があるか、最初のワークフローを何にするかを決めます。"
+          },
+          "b": {
+            "title": "構築と連携",
+            "description": "既存のシステムをつなぎ、その上で動くワークフローを届けます。"
+          },
+          "c": {
+            "title": "統制と規制対応",
+            "description": "本番に出る前に、社内規程を権限、しきい値、監査証跡へ落とし込みます。"
+          },
+          "d": {
+            "title": "運用代行",
+            "description": "公開後の運用を担います。監視、調整、当番体制まで含みます。"
+          }
+        },
+        "engagement": {
+          "a": {
+            "title": "ワークフローを一つ決める",
+            "description": "業務を一つ選び、何をもって成功とするかを合意し、御社自身のデータで確かめる短期の案件です。"
+          },
+          "b": {
+            "title": "作り込み、堅くする",
+            "description": "ワークフローは御社の規程の下で本番に入ります。確認する側が求める検査点と上限を備えた状態です。"
+          },
+          "c": {
+            "title": "広げるか、引き渡すか",
+            "description": "次の業務をパートナーが担うか、御社の担当が運用を引き取るか。どちらも最初から計画し、途中で判明するようにはしません。"
+          }
+        },
+        "choosing": {
+          "a": {
+            "label": "案件に入る認定技術者",
+            "content": "会社全体の人数ではなく、御社の案件に割り当てられた人のうち何名が有効な認定を持っているかをお尋ねください。"
+          },
+          "b": {
+            "label": "同じ業種での導入実績",
+            "content": "御社と同じ規制の中で仕事をした経験があるパートナーは、最初の一か月を学習ではなく構築に使えます。"
+          },
+          "c": {
+            "label": "名前の入った引き渡し計画",
+            "content": "公開後に誰が運用するかを先に決めてください。引き渡しを説明できないパートナーは、居続けるつもりでいます。"
+          },
+          "d": {
+            "label": "作られたものの帰属",
+            "content": "案件で作られたワークフロー、コネクタ、規程は御社のものであるべきです。当然と考えず、作業範囲の書面で確認してください。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "そもそもパートナーは必要ですか。",
+            "answer": "常にではありません。社内に技術者がいる場合、最初のワークフローは自力で出せることが多いです。パートナーが効くのは規模、規制環境、そして速さです。"
+          },
+          "b": {
+            "question": "パートナーはどう審査されていますか。",
+            "answer": "掲載している会社はすべて有効な認定を持ち、参照導入を届けており、問題が起きたときに連絡できる責任者を置いています。"
+          },
+          "c": {
+            "question": "案件の費用の目安は。",
+            "answer": "料金は各パートナーが決めます。範囲決めは数週間が一般的です。構築を発注する前に、その段階の固定価格を求めてください。"
+          },
+          "d": {
+            "question": "あとからパートナーを変えられますか。",
+            "answer": "はい。作られたものは御社に属し、御社自身の環境で動きます。別の会社に移しても内製に戻しても、作り直しにはなりません。"
+          }
+        }
+      },
+      "index": {
+        "title": "Frontal とパートナーに。",
+        "becomePartner": "パートナーになる",
+        "findPartner": "パートナーを探す",
+        "alreadyPartner": "すでにパートナーですか？",
+        "signIn": "ログイン",
+        "metaTitle": "パートナー",
+        "metaDescription": "Frontal のパートナーとして、顧客に向けたインテリジェントシステムを構築し、提供しましょう。パートナーになることも、すでにプラットフォーム上で開発しているパートナーを探すこともできます。",
+        "ogTitle": "パートナー",
+        "ogDescription": "Frontal 上でインテリジェントシステムを構築し、提供する",
+        "about": {
+          "title": "パートナーになるとは何をすることか",
+          "lead": "Frontalは、企業が自社の知的システムを築くための土台です。パートナーとは、そのシステムを企業とともに設計し、導入し、運用する会社を指します。",
+          "body": {
+            "a": "仕事はライセンスの再販ではありません。最初のワークフローの範囲を決め、顧客のデータが既に置かれているシステムをつなぎ、本番の量が流れ始めたあとも伴走することです。",
+            "b": "だからこそ、この基盤は一度学べばどこでも使えるものである必要があります。どの案件でも、同じ実行環境、同じ権限モデル、同じ監査証跡が使えます。"
+          }
+        },
+        "sections": {
+          "tracks": {
+            "title": "パートナーになる三つの道",
+            "description": "御社が今どう稼いでいるかに合う道をお選びください。"
+          },
+          "solutionPartners": {
+            "title": "ソリューションパートナー",
+            "description": "要件を定義し、構築し、運用まで伴走する企業です。"
+          },
+          "technologyPartners": {
+            "title": "テクノロジーパートナー",
+            "description": "ランタイム上に構築される製品や、既存システムと接続する製品です。"
+          },
+          "proof": {
+            "title": "この制度の価値",
+            "description": "基盤に参画して一年目のパートナーの数字です。"
+          },
+          "terms": {
+            "title": "制度が提供するもの",
+            "description": "当社側の約束と、その見返りにお願いすること。"
+          },
+          "faq": {
+            "title": "参画を検討する企業からの質問",
+            "description": "応募前に各社が確認すること。"
+          },
+          "cta": {
+            "title": "Frontalの上に事業を築く",
+            "description": "制度に応募するか、すでに導入を手がけるパートナーをご覧ください。"
+          }
+        },
+        "tracks": {
+          "a": {
+            "eyebrow": "導入支援",
+            "title": "コンサルティング会社とシステムインテグレーター",
+            "detail": "顧客の最初のワークフローの範囲を決めて本番に載せ、その後も拡張を担います。認定、初期案件での共同導入、当社営業からの引き合いが得られます。"
+          },
+          "b": {
+            "eyebrow": "テクノロジー",
+            "title": "ソフトウェアベンダーと基盤開発企業",
+            "detail": "自社製品の中にFrontalを組み込むか、顧客が導入するコネクタを公開します。技術支援の共有、実行環境の変更への先行アクセス、公開時の共同発信が得られます。"
+          },
+          "c": {
+            "eyebrow": "アドバイザリー",
+            "title": "戦略および変革支援の企業",
+            "detail": "誰かがコードを書く前に、知的システムをどこに置くべきかを助言します。設計レビュー、参照導入事例へのアクセス、構築を引き継ぐ導入パートナーが得られます。"
+          }
+        },
+        "technologyPartners": {
+          "a": {
+            "title": "組み込みプラットフォーム",
+            "description": "自社製品の中で Frontal を動かし、顧客が製品を離れずに使えるようにするベンダーです。"
+          },
+          "b": {
+            "title": "コネクタ",
+            "description": "既にデータが保管されているシステムとの連携機能を公開するチームです。"
+          },
+          "c": {
+            "title": "インフラストラクチャ",
+            "description": "ランタイムが認定を受けているクラウド、ストレージ、デプロイの各プロバイダーです。"
+          },
+          "d": {
+            "title": "モデルとツール",
+            "description": "モデルや評価、オブザーバビリティのツールをランタイムに接続できる提供元です。"
+          }
+        },
+        "proof": {
+          "a": {
+            "value": "9wk",
+            "label": "認定取得から最初の本番導入までの中央値"
+          },
+          "b": {
+            "value": "3x",
+            "label": "同じ企業が近い基盤で報告する案件規模との比"
+          },
+          "c": {
+            "value": "74%",
+            "label": "二四半期以内に拡張するパートナー案件の割合"
+          }
+        },
+        "terms": {
+          "a": {
+            "label": "認定と習得支援",
+            "content": "御社の技術者は、当社のソリューション部門と同じ教材で学びます。認定は個人単位で無償であり、これが共同導入とパートナー一覧への掲載を解放します。"
+          },
+          "b": {
+            "label": "商用条件",
+            "content": "再販した利用分へのマージン、紹介案件への手数料、初年度の最低利用条件なし。条件は同じ階層のパートナーすべてに共通で公開されており、個別交渉ではありません。"
+          },
+          "c": {
+            "label": "導入中の支援",
+            "content": "進行中の案件ごとに担当者を配置し、基盤側の問題は開発部門へ引き上げ、本番公開の前に設計レビューを一緒に行います。"
+          },
+          "d": {
+            "label": "お願いすること",
+            "content": "第一階層に届くための認定技術者二名、六か月以内の参照導入、そして顧客からの引き上げ時に連絡できる責任者一名です。"
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "応募にはどれくらいかかりますか。",
+            "answer": "多くの企業が一週間ほどで回答を受け取り、一か月で認定を終えます。時間がかかるのは御社の技術者の学習であって、当社の審査ではありません。"
+          },
+          "b": {
+            "question": "既存のAI知見は必要ですか。",
+            "answer": "いいえ。うまくいくのは、規制のある環境に企業向けソフトウェアを届けた経験のある会社です。基盤固有の内容は認定で扱います。"
+          },
+          "c": {
+            "question": "複数の道を同時に選べますか。",
+            "answer": "はい、実際に多くの会社がそうしています。導入支援とアドバイザリーは同じ部門にあることが多く、認定は一度で足ります。"
+          },
+          "d": {
+            "question": "顧客との関係はどちらが持ちますか。",
+            "answer": "御社が獲得した案件は御社が持ちます。当社が紹介する案件では、契約の形を紹介の前に取り決めます。あとからではありません。"
+          }
+        }
+      }
+    }
+  },
+  "PartnersContact": {
+    "consent": {
+      "marketing": "はい、<link>プライバシーポリシー</link>に記載のとおり、Frontal からのマーケティング情報の受け取りに同意します。",
+      "withdraw": "同意はいつでも、メール内の配信停止リンクから取り消せます。"
+    },
+    "description": "貴社と、現在手がけている業務についてお聞かせください。多くの応募には1週間以内に回答しています。",
+    "fields": {
+      "fullName": "氏名",
+      "fullNamePlaceholder": "Steve Jobs",
+      "workEmail": "勤務先メールアドレス",
+      "workEmailPlaceholder": "steve@apple.com",
+      "company": "会社",
+      "companyPlaceholder": "会社名",
+      "country": "国・地域",
+      "countryPlaceholder": "国・地域を選択",
+      "companySize": "会社規模",
+      "companySizePlaceholder": "規模を選択",
+      "primaryInterest": "主な関心分野",
+      "primaryInterestPlaceholder": "分野を選択",
+      "message": "メッセージ",
+      "messagePlaceholder": "貴社の概要、担当する顧客、Frontal 上で提供したい業務についてご記入ください",
+      "partnerTrack": "パートナー区分",
+      "partnerTrackPlaceholder": "区分を選択"
+    },
+    "genericError": "問題が発生しました。もう一度お試しください。",
+    "highlights": {
+      "review": {
+        "title": "1週間以内に審査",
+        "description": "多くの企業には数日以内に返信し、その直後に認定プログラムを開始します。"
+      },
+      "certification": {
+        "title": "認定は無料",
+        "description": "貴社のエンジニアは、当社ソリューションチームと同じ教材で学びます。"
+      }
+    },
+    "interests": {
+      "agents": "エージェントとワークフロー",
+      "evaluation": "評価",
+      "safety": "安全性とガバナンス",
+      "data": "データと連携",
+      "enterprise": "エンタープライズ導入"
+    },
+    "submit": "応募を送信",
+    "success": "ありがとうございます。応募内容を確認のうえ、ご連絡します。",
+    "title": "パートナープログラムに応募する。",
+    "tracks": {
+      "delivery": "デリバリーと統合",
+      "technology": "テクノロジーと製品",
+      "advisory": "戦略とアドバイザリー"
+    }
+  },
+  "Segments": {
+    "images": {
+      "product": "Frontal の製品インターフェース"
+    },
+    "pages": {
+      "enterprise": {
+        "eyebrow": "エンタープライズ",
+        "title": "スケールするために設計された、エンタープライズ・インテリジェンス。",
+        "description": "現代の企業が求める水準に応える、セキュアでインテリジェントなインフラで、データ・システム・業務をつなぎます。",
+        "metaTitle": "エンタープライズ",
+        "metaDescription": "セキュアでスケーラブル、エンタープライズ対応のインテリジェントシステムを Frontal で構築できます。",
+        "ogTitle": "エンタープライズ",
+        "ogDescription": "セキュアでスケーラブル、エンタープライズ対応のインテリジェントシステムを Frontal で構築できます。",
+        "deploymentOptions": {
+          "title": "デプロイ方法",
+          "description": "Frontal Cloud が標準の選択肢で、最も早く利用を開始できます。インフラは Frontal が運用します。より強いデータ分離やコンプライアンス要件には専用／分離クラウドを、コンピューティングとデータをすべて自社環境内に置く必要がある場合は顧客 VPC／セルフホストを選択できます。",
+          "cloud": {
+            "title": "Frontal Cloud（推奨）",
+            "description": "最も早く利用を開始できる方法です。Frontal がインフラを運用し、お客様のチームはシステム接続とワークフロー構築に集中できます。"
+          },
+          "dedicated": {
+            "title": "専用／分離クラウド",
+            "description": "より強いデータ分離やコンプライアンス要件向けです。専用または分離クラウドのインフラは Frontal が運用します。"
+          },
+          "customer": {
+            "title": "顧客 VPC／セルフホスト",
+            "description": "コンピューティングとデータをすべて自社環境内に保持する必要がある企業向けです。インフラはお客様が運用します。"
+          },
+          "question": "どのデプロイ方法を選べばよいですか？",
+          "recommendation": "最も早く導入するには Frontal Cloud から始めます。インフラは Frontal が運用します。より強いデータ分離やコンプライアンス要件には専用／分離クラウドを、コンピューティングとデータをすべて自社環境内に保持する必要がある場合は顧客 VPC／セルフホストを選びます。",
+          "learnMore": "デプロイガイドを読む"
+        }
+      },
+      "startups": {
+        "eyebrow": "スタートアップ",
+        "title": "ソフトウェアの未来をつくる。",
+        "description": "スタートアップが、かつてないスピードで開発し、ローンチし、スケールするために必要なインフラ・インテリジェンス・サポートを手に入れましょう。",
+        "metaTitle": "スタートアップ",
+        "metaDescription": "自社のビジネスを理解し、データに接続し、判断を下し、組織全体で行動するエージェントを数分で作成できます。",
+        "ogTitle": "スタートアップ",
+        "ogDescription": "スタートアップ"
+      }
+    }
+  },
+  "SDKs": {
+    "title": "Frontal の上に、直接つくる。",
+    "description": "Frontal の SDK を使えば、その機能を組み込み、わずか数行のコードでインテリジェントなソフトウェアを構築できます。",
+    "getStarted": "はじめる",
+    "apiDocumentation": "API ドキュメント",
+    "copyCode": "コードをコピー",
+    "keyFeatures": "主な特長:",
+    "install": "インストール:",
+    "example": "例:",
+    "viewDocs": "{language} のドキュメントを見る",
+    "seeExamples": "サンプルを見る",
+    "sdks": {
+      "typescript": {
+        "title": "TypeScript SDK",
+        "description": "モダンな Web／バックエンドアプリケーション向けに設計された、Frontal の API を扱う完全型付けの SDK です。",
+        "features": {
+          "typed": "TypeScript を第一級でサポートする完全型付け",
+          "runtimes": "Node、Bun、モダンなランタイムで動作",
+          "setup": "シンプルなセットアップと予測可能なレスポンス"
+        }
+      },
+      "go": {
+        "title": "Go SDK",
+        "description": "Frontal の API を使ってサーバーサイドアプリケーションを構築するための、軽量な Go SDK です。"
+      },
+      "php": {
+        "title": "PHP SDK",
+        "description": "Frontal の API を PHP アプリケーションに組み込むための PHP SDK です。"
+      }
+    },
+    "build": {
+      "title": "実務に耐える財務ワークフローを構築",
+      "description": "Frontal の SDK を使って、財務データ・分析・ワークフローを自社プロダクトに組み込めます。",
+      "items": {
+        "analyseRuns": {
+          "short": "実行の同期と分析",
+          "long": "実行をプログラムから同期・分析し、独自の分析ツールを構築できます"
+        },
+        "dashboards": {
+          "short": "ダッシュボードとレポートを作成",
+          "long": "自社のニーズに合わせたダッシュボードとレポートを作成できます"
+        },
+        "internalTools": "社内ツールに財務データを供給し、既存のワークフローに組み込めます",
+        "exports": {
+          "short": "会計向けエクスポートを自動化",
+          "long": "お使いの会計ソフト向けに、会計処理に適したエクスポートを自動化できます"
+        }
+      }
+    },
+    "security": {
+      "title": "はじめから安全",
+      "description": "すべての SDK は安全な API キーとスコープ付きアクセスを用い、データを保護します。"
+    },
+    "resources": {
+      "title": "すぐに使いはじめる",
+      "quickstart": {
+        "title": "クイックスタート",
+        "description": "数分で Frontal の SDK を使いはじめられます。"
+      },
+      "examples": {
+        "title": "サンプル",
+        "description": "サンプルアプリとコードスニペットをご覧ください。"
+      },
+      "apiReference": {
+        "title": "API リファレンス",
+        "description": "API ドキュメントとエンドポイントの完全版です。"
+      },
+      "changelog": {
+        "title": "変更履歴",
+        "description": "最新の変更点を随時チェックできます。"
+      }
+    },
+    "metaTitle": "SDK",
+    "metaDescription": "Frontal での開発を加速する型付き SDK。公式クライアントライブラリで、Frontal をアプリケーションに組み込めます。",
+    "ogTitle": "SDK",
+    "ogDescription": "Frontal API 向けの型付きクライアントライブラリ"
+  },
+  "CLI": {
+    "badge": "プライベートベータ",
+    "title": "必要なことは、すべてターミナルから。",
+    "description": "エージェント、ワークフロー、データ、デプロイの構築・デプロイ・運用を担う、強力な CLI です。",
+    "getStarted": "はじめる",
+    "viewDocumentation": "ドキュメントを見る",
+    "copied": "コピーしました",
+    "whatYouGet": "できること",
+    "terminal": {
+      "tabs": {
+        "createAgent": "エージェントを作成",
+        "weeklyBriefing": "週次ブリーフィング",
+        "chaseApprovals": "承認を催促",
+        "anomalyAlert": "異常アラート"
+      }
+    },
+    "features": {
+      "describe": {
+        "title": "話せば、つくられる",
+        "description": "必要なことを普通の言葉で伝えるだけ。Frontal がエージェントを組み立て、計画を提示し、準備ができたらデプロイします。"
+      },
+      "readyMade": {
+        "title": "すぐ使えるエージェント",
+        "description": "Cycle Close、Approval Chaser、Weekly Briefing、Anomaly Detector。ワンクリックで有効化でき、実際の業務に合わせて調整済みです。"
+      },
+      "schedule": {
+        "title": "スケジュールどおりに実行",
+        "description": "毎週火曜の 9 時。月末の最終日。毎日 10 時。一度設定すれば、あとはエージェントが動きます。"
+      },
+      "learns": {
+        "title": "使うほど賢くなる",
+        "description": "エージェントは実行をまたいで記憶します。トレンドは週ごとに積み上がり、基準値は精度を増します。動かすほど有用になります。"
+      },
+      "control": {
+        "title": "主導権はあなたに",
+        "description": "エージェントは行動を提案し、あなたが確認して承認します。あなたの了承なしには何も起きません。信頼を前提とした設計です。"
+      },
+      "data": {
+        "title": "すべてのデータにアクセス",
+        "description": "エンティティ、実行、ワークフロー、レポート、接続済みシステムなど。Frontal がビジネスについて把握しているすべてを、エージェントが扱えます。"
+      },
+      "thinks": {
+        "title": "実行するだけでなく、考える",
+        "description": "エージェントはデータを分析し、異常を見つけ、トレンドを比較し、提案まで行います。単なる自動化ではありません。"
+      },
+      "secure": {
+        "title": "安全に隔離",
+        "description": "各エージェントは専用のサンドボックスで動作し、ファイルシステムやネットワークにはアクセスしません。できることには明確な上限があります。"
+      },
+      "transparency": {
+        "title": "すべての挙動が見える",
+        "description": "すべてのステップを完全にトレースできます。どのデータを読み、何を判断し、どう行動したか。ブラックボックスはありません。"
+      },
+      "connected": {
+        "title": "お使いのツールと接続",
+        "description": "結果を Slack に投稿し、Gmail でメールを送り、Google スプレッドシートを更新。チームが働く場所に、エージェントが届けます。"
+      },
+      "anywhere": {
+        "title": "どこにいても使える",
+        "description": "ダッシュボード、iMessage、チャット、CLI。どの入り口からでも、エージェントの作成、提案の承認、結果の確認ができます。"
+      },
+      "quickstart": {
+        "title": "数秒で使いはじめられる",
+        "description": "コマンドはひとつ。ブラウザーでサインインするだけ。API キーも設定ファイルも不要で、最初のエージェントが 1 分以内に動きます。"
+      }
+    },
+    "catalog": {
+      "title": "組み込み済みのエージェント",
+      "subtitle": "ワンクリックで有効化。実際の業務フローに合わせて調整済みです。",
+      "agents": {
+        "cycleClose": {
+          "name": "サイクルクローズ",
+          "schedule": "月末の数日間、午前 8 時",
+          "description": "サイクル全体を代わりに確認し、締める前に対応が必要な点を洗い出します。",
+          "details": {
+            "first": "現在のサイクルのすべての実行を確認",
+            "second": "未分類のレコードと未処理のレビュー項目を抽出",
+            "third": "今月と先月を比較し、健全性のチェック結果を提示"
+          }
+        },
+        "approvalChaser": {
+          "name": "承認催促エージェント",
+          "schedule": "毎週火曜 午前 9 時",
+          "description": "滞っている承認を見つけ、リマインダーの送信を提案します。送る前に、必ずあなたが承認します。",
+          "details": {
+            "first": "影響度と滞留期間にもとづいて優先順位づけ",
+            "second": "エスカレーション履歴を追跡し、繰り返し遅延する相手を可視化",
+            "third": "リマインダー案を提示。何を送るかはあなたが決めます"
+          }
+        },
+        "weeklyBriefing": {
+          "name": "週次ブリーフィング",
+          "schedule": "毎週月曜 午前 8 時",
+          "description": "毎週月曜、本番環境の状況を明快に届けます。スループット、信頼性、コスト、そして注意すべき点。",
+          "details": {
+            "first": "全ワークフローのスループットを要約",
+            "second": "信頼性とコストの傾向を週次で追跡",
+            "third": "滞留中の承認やコスト急増など、対応事項を一覧化"
+          }
+        },
+        "anomalyDetector": {
+          "name": "異常検知エージェント",
+          "schedule": "毎日 午前 10 時",
+          "description": "本番環境をバックグラウンドで監視します。平常時の状態を学習し、おかしなときだけ知らせます。",
+          "details": {
+            "first": "90 日間かけて、ワークフローごとの挙動の基準値を構築",
+            "second": "重複実行、コスト急増、未レビューのツールを検知",
+            "third": "平常な日には、いっさい通知しません"
+          }
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "しくみ",
+      "steps": {
+        "describe": {
+          "title": "伝える",
+          "description": "必要なことを普通の言葉で伝えるか、カタログから既製のエージェントを選びます。"
+        },
+        "review": {
+          "title": "確認する",
+          "description": "Frontal がエージェントを組み立て、計画を提示します。問題なければ承認します。"
+        },
+        "automate": {
+          "title": "自動化する",
+          "description": "スケジュールどおりに動き、実行ごとに学習し、時間とともに役立つようになります。"
+        },
+        "control": {
+          "title": "統制する",
+          "description": "すべての挙動が見えます。行動は実行前に承認。つねに把握できます。"
+        }
+      }
+    },
+    "surfaces": {
+      "dashboard": {
+        "title": "ダッシュボード",
+        "items": {
+          "first": "「承認催促エージェントを有効にして」",
+          "second": "「コストを監視するエージェントをつくって」",
+          "third": "チャットからエージェントを管理",
+          "fourth": "実行履歴と結果を確認"
+        }
+      },
+      "chat": {
+        "title": "チャット",
+        "items": {
+          "first": "iMessage、WhatsApp、Slack、Telegram",
+          "second": "外出先でも通知を受け取り、承認",
+          "third": "どのチャットからでもエージェントの結果を確認",
+          "fourth": "アプリのインストールは不要"
+        }
+      },
+      "cli": {
+        "title": "CLI",
+        "items": {
+          "first": "エージェントの作成・実行・管理",
+          "second": "ターミナルから提案を承認",
+          "third": "メモリと実行履歴を確認",
+          "fourth": "ブラウザーでサインイン"
+        }
+      },
+      "api": {
+        "title": "API",
+        "items": {
+          "first": "独自の連携を構築",
+          "second": "実行をプログラムから起動",
+          "third": "提案と承認を管理",
+          "fourth": "ステップトレースへの完全なアクセス"
+        }
+      }
+    },
+    "infrastructure": {
+      "title": "どこで動くのか"
+    },
+    "cta": {
+      "title": "はじめる",
+      "description": "Frontal Computer が、ビジネスをオートパイロットに。必要なことを伝えれば、あとはおまかせです。"
+    },
+    "metaTitle": "Computer: ビジネスのための自律型 AI エージェント",
+    "metaDescription": "必要なことを伝えるだけで、Frontal は自律型エージェントをデプロイします。スケジュールどおりに動き、学習を重ね、あなたが眠っている間も成果を届けます。",
+    "ogTitle": "Frontal Computer",
+    "ogDescription": "あなたが動いていないときも、ビジネスは動き続ける"
+  },
+  "Validation": {
+    "accuracyConfirmed": {
+      "required": "入力内容が正確であることをご確認ください。"
+    },
+    "basedInCountry": {
+      "required": "お住まいの地域を選択してください。"
+    },
+    "company": {
+      "required": "会社名を入力してください。",
+      "tooLong": "会社名が長すぎます。"
+    },
+    "country": {
+      "required": "国・地域を選択してください。"
+    },
+    "email": {
+      "invalid": "有効なメールアドレスを入力してください。",
+      "invalidWork": "有効な勤務先メールアドレスを入力してください。"
+    },
+    "firstName": {
+      "required": "名を入力してください。"
+    },
+    "fullName": {
+      "required": "氏名を入力してください。",
+      "tooLong": "名前が長すぎます。"
+    },
+    "lastName": {
+      "required": "姓を入力してください。"
+    },
+    "message": {
+      "tooLong": "メッセージは 5,000 文字以内でご記入ください。",
+      "tooShort": "ご要望をもう少し詳しくお聞かせください。"
+    },
+    "option": {
+      "required": "選択肢をお選びください。"
+    },
+    "phone": {
+      "required": "電話番号を入力してください。"
+    },
+    "privacyAcknowledged": {
+      "required": "応募者向けプライバシー通知をご確認ください。"
+    },
+    "privacyPolicy": {
+      "required": "プライバシーポリシーに同意してください。"
+    },
+    "referralSource": {
+      "required": "当社をどこでお知りになったか教えてください。"
+    },
+    "teamSize": {
+      "required": "チームの規模を選択してください。"
+    },
+    "url": {
+      "invalid": "有効な http(s) の URL を入力してください。"
+    },
+    "useCase": {
+      "required": "主なユースケースを選択してください。"
+    },
+    "workAuthorization": {
+      "required": "就労資格を選択してください。"
+    }
+  },
+  "Chunk": {
+    "staleVersion": {
+      "action": "再読み込み",
+      "description": "最新の更新を読み込むには、ページを再読み込みしてください。",
+      "title": "新しいバージョンが利用できます"
+    }
+  },
+  "Consent": {
+    "bannerMessage": "既定ではCookieを使わないアクセス解析を利用しています。Cookieを受け入れると、セッションをまたいだ訪問の計測に役立ち、より正確なデータが得られます。",
+    "deny": "拒否する",
+    "acceptAll": "すべて許可",
+    "settings": "カスタマイズ",
+    "save": "保存",
+    "dialogTitle": "プライバシーについて",
+    "dialogDescription": "必須のストレージはつねに有効です。それ以外はお客様の選択によるもので、いつでもここで変更できます。",
+    "privacyNote": "データの取り扱いについては<link>プライバシーポリシー</link>をご覧ください。",
+    "options": {
+      "essential": {
+        "label": "必須",
+        "description": "同意の選択、言語設定、およびセキュリティに使用します。"
+      },
+      "analytics": {
+        "label": "分析",
+        "description": "セッションをまたいで訪問を記録し、トラフィックとコンバージョンのレポート精度を保ちます。無効でも訪問数は匿名で集計し、端末には何も保存しません。"
+      },
+      "functional": {
+        "label": "機能",
+        "description": "Ask AI の会話履歴を、この端末に訪問をまたいで保存します。"
+      }
+    }
+  },
+  "ContactSales": {
+    "title": "組織にふさわしい AI インフラを構築しましょう。",
+    "description": "何を構築されているのかお聞かせください。お客様のシステム、セキュリティ要件、デプロイ目標に Frontal をどう合わせるかをご一緒に整理します。",
+    "highlights": {
+      "conversation": {
+        "title": "お客様のニーズに沿った対話",
+        "description": "アーキテクチャ、連携、価格、展開について当社チームとご相談いただけます。"
+      },
+      "procurement": {
+        "title": "セキュリティ・調達にも対応",
+        "description": "ガバナンス、コンプライアンス、デプロイの要件をご一緒に整理できます。"
+      }
+    },
+    "fields": {
+      "fullName": "氏名",
+      "fullNamePlaceholder": "Steve Jobs",
+      "workEmail": "勤務先メールアドレス",
+      "workEmailPlaceholder": "steve@apple.com",
+      "company": "会社",
+      "companyPlaceholder": "会社名",
+      "country": "国・地域",
+      "countryPlaceholder": "国・地域を選択",
+      "companySize": "会社規模",
+      "companySizePlaceholder": "規模を選択",
+      "primaryInterest": "主な関心分野",
+      "primaryInterestPlaceholder": "分野を選択",
+      "message": "メッセージ",
+      "messagePlaceholder": "現在お使いのスタック、ユースケース、当社製品をどう活用したいかをお聞かせください"
+    },
+    "interests": {
+      "agents": "エージェントとワークフロー",
+      "evaluation": "評価",
+      "safety": "安全性とガバナンス",
+      "data": "データと連携",
+      "enterprise": "エンタープライズ導入"
+    },
+    "consent": {
+      "marketing": "はい、<link>プライバシーポリシー</link>に記載のとおり、Frontal からのマーケティング情報の受け取りに同意します。",
+      "withdraw": "同意はいつでも、メール内の配信停止リンクから取り消せます。"
+    },
+    "submit": "営業に問い合わせる",
+    "success": "ありがとうございます。営業チームよりご連絡いたします。",
+    "genericError": "問題が発生しました。もう一度お試しください。"
+  },
+  "StartupsContact": {
+    "consent": {
+      "marketing": "はい、<link>プライバシーポリシー</link>に記載のとおり、Frontal からのマーケティング情報の受け取りに同意します。",
+      "withdraw": "同意はいつでも、メール内の配信停止リンクから取り消せます。"
+    },
+    "description": "何を、どの段階まで作っているのかをお聞かせください。素早く本番投入できるよう、最適なプランとサポートをご用意します。",
+    "fields": {
+      "fullName": "氏名",
+      "fullNamePlaceholder": "Steve Jobs",
+      "workEmail": "勤務先メールアドレス",
+      "workEmailPlaceholder": "steve@apple.com",
+      "company": "会社",
+      "companyPlaceholder": "会社名",
+      "country": "国・地域",
+      "countryPlaceholder": "国・地域を選択",
+      "companySize": "会社規模",
+      "companySizePlaceholder": "規模を選択",
+      "primaryInterest": "主な関心分野",
+      "primaryInterestPlaceholder": "分野を選択",
+      "message": "メッセージ",
+      "messagePlaceholder": "現在お使いのスタック、ユースケース、当社製品をどう活用したいかをお聞かせください",
+      "fundingStage": "資金調達ステージ",
+      "fundingStagePlaceholder": "ステージを選択"
+    },
+    "genericError": "問題が発生しました。もう一度お試しください。",
+    "highlights": {
+      "velocity": {
+        "title": "プロトタイプから本番運用へ",
+        "description": "御社のフェーズに合ったモデル、評価、デプロイ方法の選定をご支援します。"
+      },
+      "pricing": {
+        "title": "スタートアップ向けの価格とクレジット",
+        "description": "条件を満たすチームには割引価格と、成長に合わせて広がるプランをご用意します。"
+      },
+      "support": {
+        "title": "チームへの直接の窓口",
+        "description": "Frontal を開発するエンジニアとつながる共有チャネルをご用意します。チケット待ちはありません。"
+      },
+      "security": {
+        "title": "初めての大型契約にも対応",
+        "description": "SSO、監査ログ、そして最初の大口顧客から求められるセキュリティ要件への回答をご用意します。"
+      }
+    },
+    "interests": {
+      "agents": "エージェントとワークフロー",
+      "evaluation": "評価",
+      "safety": "安全性とガバナンス",
+      "data": "データと連携",
+      "enterprise": "エンタープライズ導入"
+    },
+    "stages": {
+      "idea": "アイデア・プロダクト前",
+      "pre-seed": "プレシード",
+      "seed": "シード",
+      "series-a": "シリーズ A",
+      "series-b-plus": "シリーズ B 以降"
+    },
+    "submit": "Frontal for Startups に応募する",
+    "success": "ありがとうございます。応募内容を確認のうえ、ご連絡します。",
+    "title": "Frontal でスタートアップを立ち上げる。"
+  },
+  "EnterpriseContact": {
+    "consent": {
+      "marketing": "はい、<link>プライバシーポリシー</link>に記載のとおり、Frontal からのマーケティング情報の受け取りに同意します。",
+      "withdraw": "同意はいつでも、メール内の配信停止リンクから取り消せます。"
+    },
+    "deployments": {
+      "cloud": "Frontal Cloud（推奨）",
+      "dedicated-cloud": "専用／分離クラウド",
+      "self-hosted": "顧客 VPC／セルフホスト"
+    },
+    "description": "お使いのシステム、セキュリティ要件、展開計画についてお聞かせください。Frontal をお客様の環境に合わせて設計し、適切な担当者がご相談に応じます。",
+    "fields": {
+      "fullName": "氏名",
+      "fullNamePlaceholder": "Steve Jobs",
+      "workEmail": "勤務先メールアドレス",
+      "workEmailPlaceholder": "steve@apple.com",
+      "company": "会社",
+      "companyPlaceholder": "会社名",
+      "country": "国・地域",
+      "countryPlaceholder": "国・地域を選択",
+      "companySize": "会社規模",
+      "companySizePlaceholder": "規模を選択",
+      "primaryInterest": "主な関心分野",
+      "primaryInterestPlaceholder": "分野を選択",
+      "message": "メッセージ",
+      "messagePlaceholder": "現在お使いのスタック、ユースケース、当社製品をどう活用したいかをお聞かせください",
+      "deployment": "デプロイモデル",
+      "deploymentPlaceholder": "モデルを選択",
+      "timeline": "導入時期",
+      "timelinePlaceholder": "時期を選択"
+    },
+    "genericError": "問題が発生しました。もう一度お試しください。",
+    "highlights": {
+      "deployment": {
+        "title": "デプロイ方法",
+        "description": "Frontal Cloud は最も早く利用を開始でき、インフラは Frontal が運用します。専用／分離クラウドは、より強いデータ分離やコンプライアンス要件に対応します。顧客 VPC／セルフホストは、コンピューティングとデータをすべて自社環境内に保持する必要がある企業向けです。"
+      },
+      "governance": {
+        "title": "セキュリティ・調達にも対応",
+        "description": "ガバナンス、コンプライアンス、データレジデンシーの要件を御社チームと一緒に整理します。"
+      },
+      "integration": {
+        "title": "既存スタックにそのまま適合",
+        "description": "ID 基盤、データウェアハウス、社内サービスを作り直さずに接続できます。"
+      },
+      "support": {
+        "title": "専任サポートとオンボーディング",
+        "description": "展開、社内定着支援、継続的なアーキテクチャレビューを担う専任チームが付きます。"
+      }
+    },
+    "interests": {
+      "agents": "エージェントとワークフロー",
+      "evaluation": "評価",
+      "safety": "安全性とガバナンス",
+      "data": "データと連携",
+      "enterprise": "エンタープライズ導入"
+    },
+    "submit": "エンタープライズ営業に相談する",
+    "success": "ありがとうございます。エンタープライズチームよりご連絡します。",
+    "timelines": {
+      "evaluating": "選択肢を検討中",
+      "immediate": "すぐに",
+      "this-half": "今後 6 か月",
+      "this-quarter": "今四半期"
+    },
+    "title": "Frontal を全社に展開する。"
+  },
+  "Application": {
+    "selectPlaceholder": "選択してください",
+    "selectItems": "項目を選択",
+    "selectItemsPlaceholder": "項目を選択…",
+    "sections": {
+      "personal": "基本情報",
+      "eligibility": "勤務地と就労資格",
+      "referral": "当社をどこでお知りになりましたか？",
+      "links": "ソーシャル・職務関連リンク",
+      "optional": "（任意）",
+      "confirmations": "確認事項"
+    },
+    "fields": {
+      "firstName": "名",
+      "lastName": "姓",
+      "email": "メールアドレス",
+      "phone": "電話番号",
+      "country": "国・地域",
+      "source": "きっかけ",
+      "linkedin": "LinkedIn",
+      "twitter": "X (Twitter)",
+      "github": "GitHub",
+      "portfolio": "ポートフォリオ",
+      "workAuthorization": "就労資格",
+      "basedInCountry": "現在どちらにお住まいですか？"
+    },
+    "questions": {
+      "londonHybrid": "週 3 日、ロンドンオフィスでのハイブリッド勤務は可能ですか？",
+      "visaSponsorship": "現在または将来、ビザのスポンサーシップが必要ですか？",
+      "listedState": "アラバマ、アラスカ、デラウェア、カンザス、メイン、ミシシッピ、モンタナ、ネブラスカ、ニューメキシコ、ノースダコタ、サウスダコタ、ウェストバージニア、ワイオミングのいずれかにお住まいですか？"
+    },
+    "confirmations": {
+      "privacyLabel": "応募者向けプライバシー通知:",
+      "privacyText": "この通知を読んだことを確認します。",
+      "accuracyLabel": "応募内容の正確性:",
+      "accuracyText": "記載したすべての情報が正確かつ完全であることを確認します。"
+    },
+    "submit": "応募する",
+    "submitting": "送信中…",
+    "success": "応募を受け付けました。ありがとうございます。追ってご連絡いたします。",
+    "genericError": "応募を送信できませんでした。もう一度お試しください。",
+    "options": {
+      "referralSource": {
+        "LinkedIn": "LinkedIn",
+        "Referral": "紹介",
+        "Twitter/X": "X (Twitter)",
+        "Indeed": "Indeed",
+        "GitHub": "GitHub",
+        "Job board": "求人サイト",
+        "Conference": "カンファレンス",
+        "Other": "その他"
+      },
+      "workAuthorization": {
+        "Citizen or permanent resident": "国民または永住権保持者",
+        "Visa sponsorship required": "ビザのスポンサーシップが必要",
+        "Visa sponsorship not required": "ビザのスポンサーシップは不要"
+      },
+      "yesNo": {
+        "Yes": "はい",
+        "No": "いいえ"
+      }
+    }
+  },
+  "Capabilities": {
+    "runtime": {
+      "title": "実行ランタイム",
+      "description": "オーケストレーション、状態、信頼性を統合した実行環境で、インテリジェントなソフトウェアを設計し出荷できます。"
+    },
+    "context": {
+      "title": "状態とコンテキスト",
+      "description": "決定的なシステム境界と確率的なシステム境界を、エージェント向けのオブザーバビリティ、ガバナンス、制御フローで管理します。"
+    },
+    "reliability": {
+      "title": "信頼性プリミティブ",
+      "description": "初期のプロトタイプからミッションクリティカルなシステムまで、Frontal は本番環境の AI を支えるインフラを提供します。"
+    }
+  },
+  "Shortcuts": {
+    "dialogTitle": "キーボードショートカット",
+    "dialogDescription": "マウスを使わずに Frontal を操作できます。",
+    "openSearch": "検索を開く",
+    "showHelp": "キーボードショートカットを表示",
+    "toggleChat": "Ask AI の表示を切り替える",
+    "toggleTheme": "ダークモードを切り替える",
+    "groups": {
+      "general": "一般",
+      "appearance": "外観"
+    }
+  },
+  "Customers": {
+    "meta": {
+      "title": "導入事例",
+      "description": "各社がFrontalで、自社のデータ、システム、業務を知的なソフトウェアに変えている実例です。",
+      "ogTitle": "導入事例",
+      "ogDescription": "データ、システム、業務が知的なソフトウェアに変わっていく様子をご覧ください。"
+    },
+    "hero": {
+      "title": "導入事例",
+      "description": "自社のデータ、システム、業務を、それらを扱うソフトウェアの背後に置いた各社の記録です。"
+    },
+    "sections": {
+      "quotes": {
+        "title": "担当者の言葉",
+        "description": "何が変わったのかを、実際に運用している担当者が語ります。"
+      },
+      "logos": {
+        "title": "Frontal を活用しているチーム"
+      },
+      "stories": {
+        "title": "すべての事例"
+      },
+      "customers": {
+        "title": "すべてのお客様",
+        "description": "取り組みを公開しているチームの一覧です。"
+      },
+      "cta": {
+        "title": "次の事例をつくる",
+        "description": "数分で作業環境を用意するか、用途についてご相談ください。",
+        "primary": "構築を始める",
+        "secondary": "営業に相談する"
+      }
+    },
+    "story": {
+      "back": "導入事例",
+      "employees": "従業員 {size} 名",
+      "facts": {
+        "title": "概要",
+        "industry": "業種",
+        "size": "企業規模",
+        "useCase": "ユースケース",
+        "published": "公開日"
+      },
+      "outcomes": {
+        "title": "成果"
+      },
+      "more": {
+        "title": "その他の事例"
+      }
+    },
+    "empty": "最初の導入事例を執筆中です。しばらくしてからご覧ください。"
+  }
+}

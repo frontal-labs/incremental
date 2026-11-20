@@ -1,0 +1,107 @@
+---
+title: Configuration
+description: incremental.config.json, environment variables, CLI options, defaults, and policy.
+icon: Sliders
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [configuration, config file, environment variables, globalInputs, policy, ignore]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+Incremental is configured through `incremental.config.json` at the repo root, environment variables, and CLI options.
+
+## Config file: `incremental.config.json`
+
+Shape (defined in spec section 6.7):
+
+```json
+{
+  "roots": ["."],
+  "exclude": ["**/node_modules/**", ".git/**", ".incremental/**"],
+  "ignore": [],
+  "globalInputs": [
+    "pnpm-lock.yaml",
+    "package-lock.json",
+    "yarn.lock",
+    "package.json",
+    "tsconfig*.json",
+    "vitest.config.*",
+    "vite.config.*"
+  ],
+  "policy": "balanced",
+  "fallbackContextKeys": ["lockfile", "tsconfig", "pkgjson", "runner", "node", "fmt", "caps"],
+  "adapters": {
+    "vitest": { "testGlobs": ["**/*.{test,spec}.{ts,tsx,js,jsx,mjs,cjs,mts,cts}"] }
+  }
+}
+```
+
+### Settings
+
+| Setting | Type | Default | Meaning |
+|---------|------|---------|---------|
+| `roots` | string[] | `["."]` | Directories to consider as roots |
+| `exclude` | string[] | `["**/node_modules/**", ".git/**", ".incremental/**"]` | Globs matched against **canonical (realpath)** paths only — symlink resolution matters |
+| `ignore` | string[] | `[]` | Paths to ignore (rule P11) — dropped from changes, listed in `ignored` |
+| `globalInputs` | string[] | lockfiles, package.json, tsconfig, vitest/vite config | Any change triggers fallback (`global_input`) — affects every task |
+| `policy` | `"balanced"` \| `"conservative"` | `"balanced"` | How unobserved adds/modifies are handled (rules P6/P7) |
+| `fallbackContextKeys` | string[] | reserved keys | Context keys that trigger fallback if changed (reserved keys are always checked) |
+| `adapters` | object | `{}` | Adapter-specific configuration |
+
+### `exclude` matching detail
+
+Globs are matched against **canonical** (realpath-resolved) paths. Symlinks are resolved before matching, so a symlinked `node_modules` inside a root is still excluded if its real path matches.
+
+### Non-file inputs (volatile)
+
+Tasks that read time, network, randomness, or an unlisted environment variable are not protected by the strace oracle. Declare a `volatile` input on the observation:
+
+```json
+{ "kind": "volatile", "name": "time" }
+```
+
+The policy rule (P12) treats a volatile input as changed unless the caller attests `stable` via the `volatile` query field:
+
+```json
+{ "volatile": { "time": "stable" } }
+```
+
+The conservative default (`"changed"`) means the task is always re-run unless explicitly attested.
+
+### Glob support
+
+Patterns support `*`, `**`, and `?`.
+
+## Environment variables
+
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| `INCREMENTAL_STORE` | Override store directory | `<repo>/.incremental` |
+| `INCREMENTAL_TRACE_OUT` | Path for adapter trace output (preload writes here) | — |
+
+## CLI options
+
+Options apply to the `incremental` command and its subcommands:
+
+```bash
+incremental init     [--store PATH]
+incremental observe  --file FILE|-          # one observation as JSON
+incremental observe_many --file FILE|-      # atomic, all-or-nothing
+incremental affected --changes FILE|- --baseline SHA --context FILE
+                   [--verify] [--policy balanced|conservative]
+incremental advance  --to SHA --expected SHA|null
+incremental explain  --task ID
+incremental stats
+incremental serve    --store PATH --root PATH   # protocol v1 over stdio
+```
+
+See the [**CLI Reference**](/cli) for details and exit codes.
+
+## Policy: balanced vs conservative
+
+- **Balanced** (default): an unobserved added/modified path invalidates probers (`probe`) and listers (`dir`) when capabilities allow; otherwise it is listed as `unobserved` but does **not** force fallback.
+- **Conservative**: unobserved adds/modifies force a fallback unless the caller attests them stable.
+
+Choose conservative when you cannot tolerate any unvalidated input; choose balanced for faster, more responsive plans with slightly less strictness on new files.

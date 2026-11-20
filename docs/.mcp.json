@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest",
+        "--config",
+        "./.claude/playwright-mcp.json"
+      ],
+      "env": {}
+    },
+    "vercel": {
+      "type": "streamable-http",
+      "url": "https://mcp.vercel.com",
+      "env": {}
+    },
+    "cloudflare": {
+      "type": "streamable-http",
+      "url": "https://mcp.cloudflare.com/mcp",
+      "env": {}
+    },
+    "posthog": {
+      "type": "streamable-http",
+      "url": "https://mcp.posthog.com/mcp?features=dashboards",
+      "headers": {
+        "Authorization": "Bearer ${POSTHOG_MCP_API_KEY}"
+      },
+      "env": {}
+    }
+  }
+}

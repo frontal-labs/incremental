@@ -1,0 +1,90 @@
+---
+title: Policy Rules
+description: Incremental policy engine — certificate principle, baseline invariant, rules P0–P12, fallback priority, confidence.
+icon: ShieldCheck
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [policy, certificate, baseline invariant, P0-P12, fallback, confidence, reason]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+The policy engine decides, given a `ChangeSet` and the store graph, which tasks are invalid and which can be skipped. It is deterministic and order-independent.
+
+## Certificate principle
+
+> A task may be skipped **only if** it has a **certificate**: an observation, valid at the current baseline, whose inputs are all unchanged.
+> 
+> If no certificate exists, the task is invalid. **Never skip silently.**
+
+## Baseline invariant
+
+Every task's latest observation must be valid at store baseline `B`. Advancing the baseline requires an explicit `advance` with compare-and-swap (`expected`). Querying with a baseline different from the store baseline returns a full fallback.
+
+## Policy procedure (summary)
+
+1. **P0 / P0b**: If `options.baseline != store.baseline` or context missing → fallback
+2. **P11**: Drop changes matching `ignore` globs (listed in `ignored`)
+3. **P1**: Any change matching `globalInputs` → fallback (`global_input`)
+4. **P2**: Reserved or listed `fallbackContextKeys` differ from store context → fallback (`context_changed`)
+5. Process changes in sorted order `(path, status, old_path)`: deletions/renames (P5), file inputs (P3), self-changes (P4), unobserved adds/modifies (P6/P7)
+6. Check all known tasks: missing/dirty obs (P8), failed outcomes (P9), env changes (P2b)
+7. If `verify`: check recorded file hashes via stat cache (P10)
+8. Return plan with sorted tasks and reasons
+
+## Rule table
+
+| ID | Condition | Action | Reason code |
+|----|-----------|--------|-------------|
+| **P0** | Query baseline != store baseline | Fallback | `baseline_mismatch` |
+| **P0b** | Context missing | Fallback | `context_missing` |
+| **P11** | Path matches `ignore` | Drop, list in `ignored` | none |
+| **P1** | Path matches `globalInputs` | Fallback | `global_input` |
+| **P2** | Reserved/listed context key differs | Fallback | `context_changed` |
+| **P2b** | Task's recorded env changed, or `env_all` changed | Invalidate task | `env_changed:<NAME>` / `env_all_changed` |
+| **P3** | Changed path is a file input of task | Invalidate readers | `reads:<path>` or `declared:<path>` |
+| **P4** | Changed path is a known task's definition, added/modified | Invalidate task | `self_changed` |
+| **P5** | Path deleted/renamed (old path); invalidate readers/listers | Invalidate + list deleted | `removed_read:<old>`, `removed_listed:<dir>` |
+| **P6** | Path added/renamed-to, not a file input; balanced + caps → invalidate probers/listers else fallback | Invalidate or fallback | `probe:<path>`, `dir:<parent>` or `unobserved_input` |
+| **P7** | Modified path, not a file input, not a task def; balanced + caps → list in `unobserved` else fallback | List or fallback | `unobserved_input` |
+| **P8** | No observation, or latest observation is dirty | Invalidate | `no_observation` or `dirty_observation` |
+| **P9** | Latest outcome is fail/error | Invalidate | `failed_outcome` |
+| **P10** | Verify on; recorded file missing or hash mismatched | Invalidate | `stale:<path>` |
+| **P12** | Volatile input not attested `stable` | Invalidate | `volatile:<name>` |
+
+## Fallback priority
+
+```text
+baseline_mismatch > context_missing > global_input > context_changed > unobserved_input
+```
+
+Under fallback: all known tasks get reason `["fallback"]`, `skipped = 0`, `confidence = "n/a"`, and `unobserved / ignored / deleted_tasks = []`.
+
+## Confidence
+
+| Condition | Confidence |
+|-----------|------------|
+| Fallback fired | `n/a` |
+| No fallback, verify on, no task invalidated for `no_observation`, `dirty_observation`, or `stale:*` | `high` |
+| Otherwise (default for queries without verify) | `medium` |
+
+## Reserved context keys
+
+`lockfile`, `tsconfig`, `pkgjson`, `runner`, `node`, `fmt`, `caps`. `caps` = `{probes, dirs, env}` (booleans). Missing caps prevent P6/P7 in balanced mode → fallback.
+
+## Reason grammar
+
+A reason is `<code>` or `<code>:<arg>`. Codes:
+
+`reads`, `declared`, `self_changed`, `removed_read`, `removed_listed`, `probe`, `dir`, `no_observation`, `dirty_observation`, `failed_outcome`, `stale`, `env_changed`, `env_all_changed`, `volatile`, `fallback`.
+
+Fallback reasons appear only in `fallback.reason`. All reason lists are sorted lexicographically.
+
+## Example
+
+Change set: `src/math.ts` modified. `src/math.test.ts` has a certificate reading `src/math.ts`.
+
+- **P3**: `src/math.ts` is a file input of `src/math.test.ts` → invalidate, reason `reads:src/math.ts`
+
+Result plan: `src/math.test.ts` invalid (`reads:src/math.ts`), all other tasks skipped, confidence `high` (if verify passed and no unobserved inputs).

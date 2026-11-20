@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Default",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "incremental": false,
+    "isolatedModules": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "Bundler",
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "types": ["node"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/types/*": ["./types/*"],
+      "@/.source/*": ["./.source/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "allowJs": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "plugins": []
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "./worker/**/*.ts",
+    "./tests/**/*.ts",
+    "./tests/**/*.tsx",
+    "./e2e/**/*.ts",
+    "./types/**/*.d.ts",
+    "./types/**/*.ts",
+    ".cloudflare/types/**/*.d.ts",
+    "tanstack-start.d.ts",
+    "jsx.d.ts",
+    "vite-assets.d.ts"
+  ],
+  "exclude": ["node_modules"]
+}

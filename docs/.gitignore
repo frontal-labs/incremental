@@ -1,0 +1,64 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# fumadocs
+/.source/
+
+# framework build output
+/.tanstack/
+/out/
+
+# generated sitemaps
+/public/sitemap.xml
+/public/sitemap-*.xml
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env
+!.env.example
+
+# typescript
+*.tsbuildinfo
+tests/types/next-env.d.ts
+
+*storybook.log
+storybook-static
+
+# Playwright
+/test-results
+/playwright-report
+/playwright-browsers
+
+# MCP
+.playwright-*
+.env*
+/dist/
+.cloudflare/
+
+# Cloudflare Worker local secrets
+.dev.vars*
+!.dev.vars.example
