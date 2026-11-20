@@ -7,7 +7,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import type { Input } from "@incremental/client";
-import { buildScriptWatches, depInfoFor, parseDepInfo } from "./depinfo.js";
+import { buildScriptWatches, depInfoFor, parseDepInfo, scriptOutputFile } from "./depinfo.js";
 import type { Member, Message, Workspace } from "./cargo.js";
 
 // Config files cargo and clippy read from a crate's directory up to the root.
@@ -120,8 +120,8 @@ export function observeTask(opts: {
       const pkgId = String(m.package_id);
       const owner = byId.get(pkgId);
       if (owner !== undefined) {
-        const outFile = path.join(path.dirname(String(m.out_dir)), "output");
-        if (existsSync(outFile)) {
+        const outFile = scriptOutputFile(String(m.out_dir));
+        if (outFile !== null) {
           const watched = buildScriptWatches(readFileSync(outFile, "utf8"));
           if (watched.files.length === 0)
             reasons.add(`build script of ${owner.name} has no rerun-if-changed line`);
