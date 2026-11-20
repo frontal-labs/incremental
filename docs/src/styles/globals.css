@@ -1,0 +1,970 @@
+@import "tailwindcss";
+@import "./cortex.css";
+@import "./typeset.css";
+@import "@xyflow/react/dist/style.css";
+
+@font-face {
+  font-family: Figtree;
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/Figtree-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Figtree;
+  font-style: normal;
+  font-weight: 500;
+  src: url("/fonts/Figtree-Medium.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Figtree;
+  font-style: normal;
+  font-weight: 600;
+  src: url("/fonts/Figtree-SemiBold.ttf") format("truetype");
+  font-display: swap;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@source "../**/*.{ts,tsx}";
+
+@plugin "@tailwindcss/typography";
+@plugin "tailwindcss-animate";
+
+@source "../../node_modules/streamdown/dist/*.js";
+@source "../../node_modules/@streamdown/code/dist/*.js";
+@source "../../node_modules/@streamdown/cjk/dist/*.js";
+@source "../../node_modules/@streamdown/math/dist/*.js";
+@source "../../node_modules/@streamdown/mermaid/dist/*.js";
+
+@theme {
+  /*
+   * Header mega-menu reveal. The `animate-dropdown-fade` utility was in use
+   * without a matching token or keyframes, which left the panels stuck at
+   * `opacity-0`.
+   */
+  --animate-dropdown-fade: dropdown-fade 100ms ease-out forwards;
+  --animate-dropdown-slide: dropdown-slide 120ms ease-out forwards;
+  --animate-mobile-slide: mobile-slide 200ms ease-out forwards;
+  --animate-accordion-down: accordion-down 200ms ease-out;
+  --animate-accordion-up: accordion-up 160ms ease-out;
+  --animate-visual-graph-edge: visual-graph-edge 4.8s ease-in-out infinite;
+  --animate-visual-graph-node: visual-graph-node 3.8s ease-in-out infinite;
+  --animate-visual-layer: visual-layer 4.4s ease-in-out infinite;
+  --animate-visual-packet: visual-packet 4.2s linear infinite;
+  --animate-visual-point: visual-point 5.2s ease-in-out infinite;
+  --animate-visual-readout: visual-readout 5.2s steps(1, end) infinite;
+  --animate-visual-signal: visual-signal 2.2s ease-in-out infinite;
+
+  /*
+   * Motion curves.
+   *
+   * The built-in CSS easings are too weak to read as deliberate, so the site
+   * uses stronger custom curves. They live here as tokens because
+   * `--ease-out-strong` was already in use as a hand-typed `cubic-bezier` in
+   * two unrelated places — the `enter` utility below and the video carousel —
+   * which is how a single decision turns into several near-matching curves.
+   *
+   * Tailwind generates `ease-*` utilities from these keys, so each one is
+   * usable both as `var(--ease-out-strong)` in CSS and as `ease-out-strong`
+   * in a class list.
+   *
+   * Motion (the JS library) cannot read a CSS custom property; components
+   * using it inline the same curve in its four-number array form,
+   * `[0.22, 1, 0.36, 1]`.
+   */
+  --ease-out-strong: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /*
+   * The step between `text-sm` and `text-base`.
+   *
+   * `text-md` was already in use in four places (the hero eyebrow, the centred
+   * hero description, the partner cards) but was never registered, so Tailwind
+   * generated no rule for it and those lines silently rendered at the inherited
+   * 16px. Declaring it here makes the class mean what its callers assumed.
+   */
+  --text-md: 0.9375rem;
+  --text-md--line-height: calc(1.375 / 0.9375);
+
+  /* Font families loaded from the public font assets. */
+  --font-sans: Figtree, system-ui, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-heading: Figtree, system-ui, sans-serif;
+
+  @keyframes dropdown-fade {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes dropdown-slide {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes mobile-slide {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--accordion-panel-height, var(--collapsible-panel-height));
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--accordion-panel-height, var(--collapsible-panel-height));
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  @keyframes visual-graph-edge {
+    0%,
+    100% {
+      opacity: 0.3;
+      stroke-dashoffset: 16;
+    }
+
+    50% {
+      opacity: 0.64;
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes visual-graph-node {
+    0%,
+    100% {
+      opacity: 0.45;
+      transform: scale(0.8) translate(0, 3px);
+    }
+
+    48% {
+      opacity: 1;
+      transform: scale(1.1) translate(0, -2px);
+    }
+  }
+
+  @keyframes visual-layer {
+    0%,
+    100% {
+      transform: translateY(2px) scaleX(0.98);
+    }
+
+    50% {
+      transform: translateY(-2px) scaleX(1);
+    }
+  }
+
+  @keyframes visual-packet {
+    0% {
+      opacity: 0;
+      transform: translateY(12px) scale(0.7);
+    }
+
+    12% {
+      opacity: 0.85;
+    }
+
+    100% {
+      opacity: 0;
+      transform: translateY(-202px) scale(0.85);
+    }
+  }
+
+  @keyframes visual-point {
+    0%,
+    18% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+
+    28%,
+    88% {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    100% {
+      opacity: 0.15;
+    }
+  }
+
+  @keyframes visual-readout {
+    0%,
+    25% {
+      opacity: 1;
+    }
+
+    26%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes visual-signal {
+    0%,
+    100% {
+      opacity: 0.25;
+    }
+
+    50% {
+      opacity: 1;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-dropdown-fade,
+  .animate-dropdown-slide,
+  .animate-mobile-slide {
+    animation-duration: 1ms;
+  }
+
+  .animate-accordion-down,
+  .animate-accordion-up {
+    animation-duration: 1ms;
+  }
+}
+
+@plugin "@tailwindcss/typography";
+@plugin "tailwindcss-animate";
+@source "../";
+
+/* Keep editorial content on the site's Figtree system instead of the
+ * typography plugin's generic prose fallback. */
+.prose {
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-weight: 400;
+}
+
+.prose :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+
+/* Custom prose/typography styles for MDX content */
+@theme {
+  /* Single source of truth for the page gutter. `.page-shell` (header,
+     footer, hero) and the `max-w-page` sections must resolve to the same
+     width or the content edges drift away from the chrome. */
+  --container-page: 1440px;
+
+  /* The code-block surface. `bg-code` and `text-code-foreground` are used by
+     the MDX code block and by the design system's copy button, which had no
+     token behind them and so resolved to nothing. */
+  --color-code: var(--code);
+  --color-code-foreground: var(--code-foreground);
+
+  --prose-links-color: var(--primary);
+  --prose-links-hover-color: var(--primary);
+  --prose-headings-color: var(--foreground);
+  --prose-body-color: var(--muted-foreground);
+  --prose-code-color: var(--foreground);
+  --prose-pre-bg: var(--muted);
+  --prose-pre-code-color: var(--foreground);
+  --prose-bullet-color: var(--muted-foreground);
+  --prose-hr-color: var(--border);
+  --prose-blockquote-color: var(--muted-foreground);
+  --prose-blockquote-border-color: var(--primary);
+  --prose-table-border-color: var(--border);
+  --prose-th-color: var(--foreground);
+  --prose-td-color: var(--muted-foreground);
+  --prose-kbd-bg: var(--muted);
+  --prose-kbd-color: var(--foreground);
+}
+
+@layer utilities {
+  .prose-custom {
+    @apply prose prose-sm sm:prose-base dark:prose-invert text-foreground max-w-none font-sans;
+
+    /* Links */
+    a {
+      @apply text-primary font-medium no-underline underline-offset-4 hover:underline;
+    }
+
+    /* Headings */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply text-foreground font-heading font-semibold;
+    }
+
+    h1 {
+      @apply text-3xl lg:text-4xl;
+    }
+    h2 {
+      @apply text-2xl;
+    }
+    h3 {
+      @apply text-xl;
+    }
+    h4 {
+      @apply text-lg;
+    }
+
+    /* Lists - deepest nesting first: the formatter computes the triple-nested
+       selector at a lower specificity than the double-nested one, so this
+       order keeps `check` green. Rendering is unaffected: each level has a
+       distinct specificity, which decides the winner regardless of order. */
+    ul ul ul,
+    ol ul ul {
+      list-style-type: square;
+    }
+
+    ul,
+    ol {
+      @apply text-muted-foreground list-disc pl-6;
+    }
+
+    ul ul,
+    ol ul {
+      list-style-type: circle;
+    }
+
+    li {
+      @apply text-muted-foreground;
+    }
+
+    /* Code - base element first to avoid descending specificity */
+    code {
+      @apply bg-muted text-muted-foreground relative rounded-md px-[0.3rem] py-[0.2rem] font-mono text-[.8125rem];
+    }
+
+    pre {
+      @apply bg-muted overflow-x-auto rounded-lg border p-4;
+    }
+
+    pre code {
+      @apply text-foreground bg-transparent p-0 text-base;
+    }
+
+    /* Blockquotes */
+    blockquote {
+      @apply border-primary text-muted-foreground my-6 border-l-2 pl-6 italic;
+    }
+
+    blockquote p {
+      @apply text-muted-foreground;
+    }
+
+    /* Tables */
+    table {
+      @apply border-border my-6 w-full min-w-[40rem] border-separate border-spacing-0 overflow-hidden rounded-lg border text-left;
+    }
+
+    [data-slot="scroll-area"] table {
+      margin-block: 0;
+    }
+
+    th {
+      @apply text-foreground border-border border-b px-5 py-3.5 text-left leading-relaxed font-medium;
+    }
+
+    thead {
+      @apply bg-subtle;
+    }
+
+    td {
+      @apply border-border border-b px-5 py-3.5 text-left leading-relaxed;
+    }
+
+    tr:last-child td {
+      @apply border-b-0;
+    }
+
+    /* Horizontal rule */
+    hr {
+      @apply border-border my-8;
+    }
+
+    /* Images */
+    img {
+      @apply rounded-lg border;
+    }
+
+    /* Kbd */
+    kbd {
+      @apply bg-muted rounded px-1.5 py-0.5 font-mono text-xs;
+    }
+
+    /* Strong */
+    strong {
+      @apply text-foreground font-medium;
+    }
+
+    /* First paragraph margin */
+    > *:first-child {
+      @apply mt-0;
+    }
+  }
+}
+
+/* Keep list markers the same color as the list text */
+.prose ul > li::marker,
+.prose-custom ul > li::marker {
+  color: inherit;
+}
+
+/* Syntax highlighting for MDX code blocks lives in cortex.css: rehype-pretty-code
+   runs the same CSS-variables Shiki theme as the docs' MDX renderer, so every token
+   is `color: var(--shiki-token-*)` and the `pre` / `[data-line]` /
+   `[data-highlighted-line]` rules there apply to fences and `CodeBlock` alike. */
+
+:root {
+  /*
+   * Width reserved on the right edge for the chat rail. The Shell overrides it
+   * with the live value; the root default keeps every `right: var(...)` rule
+   * valid for anything rendered outside the Shell.
+   */
+  --chat-rail-width: 0px;
+
+  /*
+   * Vertical space an in-page anchor must clear: the fixed nav sits at 2.25rem
+   * and is 3.5rem tall, plus a little breathing room above the target.
+   */
+  --anchor-offset: 6.5rem;
+
+  --font-figtree: "Figtree", system-ui, sans-serif;
+  --font-lora: "Lora", Georgia, serif;
+  --font-geist-mono: "Geist Mono", monospace;
+}
+
+/*
+ * Smooth in-page navigation for every anchor (TOC links, heading permalinks,
+ * skip links, `#hash` route changes). `scroll-padding-top` keeps the target
+ * clear of the fixed header instead of hiding it underneath.
+ */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--anchor-offset);
+}
+
+/*
+ * Section theme scopes — see `src/lib/section.ts`.
+ *
+ * A themed region also carries `class="dark"`, which does the actual token
+ * flip (cortex.css declares `.dark` as a bare class, so it scopes to a
+ * subtree). These rules only add what the class cannot express: the native
+ * form-control hint, and the `brand` tone layered on top of dark.
+ *
+ * `.dark` deliberately leaves `--brand` alone, so a brand band looks identical
+ * whichever theme the visitor is in.
+ */
+[data-theme="dark"],
+[data-theme="brand"] {
+  color-scheme: dark;
+}
+
+/*
+ * Keep nested utilities in a subtle band on the same surface. Header links,
+ * dropdown panels, and section controls use the shared background/foreground
+ * tokens directly, so remapping them here keeps those descendants aligned
+ * with the band's explicit subtle colors.
+ */
+[data-theme="subtle"] {
+  --background: var(--subtle);
+  --foreground: var(--subtle-foreground);
+}
+
+[data-theme="subtle"] .header-menu-item {
+  background-color: var(--subtle);
+}
+
+[data-theme="subtle"] .header-menu-item:hover,
+[data-theme="subtle"] .header-menu-item:focus-visible {
+  background-color: var(--muted);
+}
+
+[data-theme="brand"] {
+  --background: var(--brand);
+  --foreground: var(--brand-foreground);
+  --card: color-mix(in oklch, var(--brand-foreground) 8%, var(--brand));
+  --secondary: color-mix(in oklch, var(--brand-foreground) 12%, var(--brand));
+  --muted-foreground: color-mix(
+    in oklch,
+    var(--brand-foreground) 72%,
+    transparent
+  );
+  --border: color-mix(in oklch, var(--brand-foreground) 20%, transparent);
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.2);
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+  }
+}
+
+@keyframes fadeInBlur {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/*
+ * Scroll-linked reveals.
+ *
+ * These run on a `view()` timeline rather than a clock, so the motion is tied
+ * to the scroll position: the block fades up from transparent as it enters the
+ * viewport and lands the moment it is mostly in view. Nothing here needs
+ * JavaScript, an observer, or a client component — sections stay
+ * server-rendered.
+ *
+ * Everything is wrapped in `@supports (animation-timeline: view())`. In a
+ * browser without scroll-driven animations the declarations are dropped
+ * wholesale and the content simply renders in its final state, so a missing
+ * feature can never leave a section stuck at `opacity: 0`.
+ *
+ * `both` fill is what makes the resting states correct at both ends: blocks
+ * below the fold sit at the `from` state, and anything already scrolled past
+ * — including everything above the fold on first paint — sits at `to`.
+ *
+ * Opacity is the only animated property: nothing moves along either axis, so
+ * a reveal can never shift layout, fight a hover transform inside it, or
+ * trigger a paint outside the element's own box.
+ */
+@keyframes reveal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/*
+ * The reveal ends at `entry 60%` rather than `entry 100%`: a block that never
+ * finishes entering — the last one on a page too short to scroll further —
+ * would otherwise be stranded mid-animation, permanently half-transparent.
+ * The 60% margin means a block only has to be mostly on screen to be done.
+ *
+ * Applied to wrappers (a section header, a list item), never to a tall
+ * `<section>`: the `entry` range is measured against the subject's own height,
+ * so a viewport-tall subject would drag its reveal out over a viewport-tall
+ * scroll.
+ */
+@utility reveal {
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: reveal-fade linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+/*
+ * The grid/list counterpart: every direct child reveals on its own timeline.
+ *
+ * Children in the same row would otherwise enter in lockstep, so the range
+ * start is pushed back by column position. `3n` matches the widest grid in the
+ * set and degrades sensibly for two- and four-column ones — the offsets simply
+ * repeat on a different cycle.
+ */
+@utility reveal-children {
+  > * {
+    --reveal-offset: 0%;
+
+    @supports (animation-timeline: view()) {
+      @media (prefers-reduced-motion: no-preference) {
+        animation: reveal-fade linear both;
+        animation-timeline: view();
+        animation-range: entry var(--reveal-offset) entry
+          calc(60% + var(--reveal-offset));
+      }
+    }
+  }
+
+  > *:nth-child(3n + 2) {
+    --reveal-offset: 8%;
+  }
+
+  > *:nth-child(3n + 3) {
+    --reveal-offset: 16%;
+  }
+}
+
+/*
+ * Load-time entrance for above-the-fold content, which a scroll timeline can
+ * never animate — it is already past `entry` on first paint. Stagger with
+ * `--enter-delay`; keep the delays short, since the hero headline is usually
+ * the LCP element and it is not measured until it is visible.
+ */
+@utility enter {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: reveal-fade 600ms var(--ease-out-strong) both;
+    animation-delay: var(--enter-delay, 0ms);
+  }
+}
+
+@layer utilities {
+  /**
+   * One plate of the `brand/pixels.tsx` texture. The animation lives here
+   * rather than inline so the reduced-motion override can win — an inline
+   * `style.animation` outranks any class, including a `motion-reduce:` one.
+   * Only the per-plate `animation-delay` stays inline.
+   */
+  .pixel-plate {
+    animation: fadeInOut 4s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pixel-plate {
+      /* Both plates held at half strength reads as the midpoint of the
+         crossfade, so the texture survives without the pulse. */
+      opacity: 0.5;
+      /* Both plates held at half strength reads as the midpoint of the
+         crossfade, so the texture survives without the pulse. */
+      animation: none;
+    }
+  }
+
+  .careers-page-shell {
+    max-width: 80rem;
+  }
+
+  .careers-content-layout {
+    display: grid;
+    gap: 3rem;
+  }
+
+  .careers-page-header,
+  .careers-content-layout > :last-child {
+    max-width: 56rem;
+  }
+
+  @media (min-width: 1024px) {
+    .careers-page-header {
+      margin-left: 16rem;
+    }
+
+    .careers-content-layout {
+      grid-template-columns: 12rem minmax(0, 56rem);
+      gap: 4rem;
+      justify-content: center;
+    }
+  }
+
+  .page-shell {
+    width: 100%;
+    max-width: var(--container-page);
+    padding-inline: 1rem;
+    margin-inline: auto;
+  }
+
+  .footer-nav-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 640px) {
+    .page-shell {
+      padding-inline: 1.5rem;
+    }
+
+    .footer-nav-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .footer-nav-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+
+  .bg-background-semi-transparent {
+    position: relative;
+  }
+
+  .bg-background-semi-transparent::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    content: "";
+    background-color: var(--background);
+    opacity: 0.8;
+  }
+}
+
+/* Updates/Blog styles - intentionally more specific than .prose-custom */
+/* More specific selectors first to avoid descending specificity */
+.updates pre span,
+.updates pre div,
+.updates pre code span,
+.updates pre code div,
+.updates .sh__line {
+  background: transparent;
+  background-color: transparent;
+}
+
+.updates pre code {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.updates pre {
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.updates pre::-webkit-scrollbar {
+  display: none;
+}
+
+.updates blockquote p {
+  padding-right: 14px;
+  padding-left: 14px;
+  margin: 7px 2px;
+  color: var(--foreground);
+  border-left: 3px solid;
+}
+
+.updates p code span {
+  font-family: var(--font-geist-mono);
+  font-size: 85%;
+  font-weight: 600;
+  color: #eb5757;
+}
+
+.updates p code {
+  padding: 0 0.4em 3px 0.4em;
+  line-height: normal;
+  background: hsla(44, 6%, 50%, 0.15);
+  border-radius: 4px;
+}
+
+.updates a {
+  text-decoration: underline;
+}
+
+.updates h2 {
+  margin-top: 0.8em;
+  margin-bottom: 10px;
+  font-size: 26px;
+  font-weight: 500;
+}
+
+.updates h3 {
+  margin-top: 0.8em;
+  margin-bottom: 1px;
+  font-size: 1.25em;
+  font-weight: 500;
+}
+
+.updates h4 {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.updates blockquote p {
+  padding-right: 14px;
+  padding-left: 14px;
+  margin: 7px 2px;
+  color: var(--foreground);
+  border-left: 3px solid;
+}
+
+.updates p code span {
+  font-family: var(--font-geist-mono);
+  font-size: 85%;
+  font-weight: 600;
+  color: #eb5757;
+}
+
+.updates p,
+.updates li {
+  color: #707070;
+}
+
+.updates p code span {
+  font-family: var(--font-geist-mono);
+  font-size: 85%;
+  font-weight: 600;
+  color: #eb5757;
+}
+
+.updates p code {
+  padding: 0 0.4em 3px 0.4em;
+  line-height: normal;
+  background: hsla(44, 6%, 50%, 0.15);
+  border-radius: 4px;
+}
+
+.updates ul li {
+  padding-top: 3px;
+  padding-bottom: 2px;
+  padding-left: 12px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+.updates ul {
+  list-style-position: inside;
+  list-style-type: disc;
+}
+
+/* Preserve intrinsic ratios for fixed-size integration and customer logos. */
+img[src*="/dropbox.svg"],
+img[src*="/outlook.svg"],
+img[src*="/customer-logos/"] {
+  width: auto;
+  height: auto;
+}
+
+.updates a {
+  text-decoration: underline;
+}
+
+.updates blockquote p {
+  padding-right: 14px;
+  padding-left: 14px;
+  margin: 7px 2px;
+  color: var(--foreground);
+  border-left: 3px solid;
+}
+
+.updates b,
+.updates strong {
+  font-weight: 500;
+}
+
+/* App description styles */
+.app-description strong {
+  display: block;
+  padding-top: 1.5em;
+  padding-bottom: 0.5em;
+  color: var(--foreground);
+}
+
+.app-description strong:first-child {
+  padding-top: 0;
+}
+
+.app-description ul,
+.app-description ol {
+  padding-bottom: 1em;
+}
+
+/* Respect user's motion preferences for accessibility and performance */
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+    scroll-behavior: auto;
+  }
+
+  /*
+   * Base UI decides how to drive a Collapsible or Accordion panel by reading
+   * its computed style: a non-zero `transition-duration` means "transition",
+   * a named `animation-name` means "animation", and both at once is a
+   * configuration it refuses to guess at, so it warns on every mount.
+   *
+   * The rule above is the standard reduced-motion reset, and it leaves
+   * `transition-property: all` at 0.01ms on *every* element. On a panel that
+   * already carries the `accordion-down` / `accordion-up` keyframes that is
+   * enough to trip the check, even though nothing here transitions a panel.
+   *
+   * These panels are animation-driven, so drop the transition rather than the
+   * keyframes; the blanket rule above has already shortened the animation to
+   * nothing, which is what reduced motion is asking for.
+   *
+   * Both slot names are listed because the package's `AccordionContent` marks
+   * its panel `accordion-content` while the design system's own guard rule
+   * keys off `accordion-panel`.
+   */
+  [data-slot="accordion-content"],
+  [data-slot="accordion-panel"],
+  [data-slot="collapsible-panel"] {
+    transition-duration: 0s;
+    transition-property: none;
+  }
+
+  /* Beats the `html { scroll-behavior: smooth }` rule on specificity. */
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Keep essential animations but simplify */
+  video {
+    animation: none;
+  }
+}

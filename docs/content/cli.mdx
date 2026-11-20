@@ -1,0 +1,181 @@
+---
+title: CLI Reference
+description: Every `incremental` command, option, and exit code.
+icon: Terminal
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [CLI, init, observe, affected, advance, explain, stats, serve]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+The `incremental` binary is a thin binding over Incremental Protocol v1. It is built from `core/src/main.goose` (the engine core) and exposes the protocol as a command-line interface.
+
+## Global options
+
+| Option | Environment variable | Default | Meaning |
+|--------|----------------------|---------|---------|
+| `--store PATH` | `INCREMENTAL_STORE` | `<repo>/.incremental` | Store directory |
+| `--root PATH` | — | `.` | Repository root |
+
+## Commands
+
+### `incremental init`
+
+Initialize a store at `--store`.
+
+```sh
+incremental init [--store PATH]
+```
+
+Creates `tg.log` (header record), `tg.lock`, and an empty stat cache. Idempotent: re-running on an existing store is a no-op.
+
+### `incremental observe`
+
+Record one observation (a task run) from a JSON file or stdin.
+
+```sh
+incremental observe --store PATH --file FILE|-
+incremental observe --store PATH --file examples/cli_workflow/observation.json
+cat observation.json | incremental observe --store PATH --file -
+```
+
+`--file -` reads the observation from stdin. The observation must conform to the [observation schema](/concepts#observation-schema).
+
+### `incremental observe_many`
+
+Record many observations atomically (all or none).
+
+```sh
+incremental observe_many --store PATH --file FILE|-
+```
+
+### `incremental affected`
+
+Compute which tasks are invalid given a change set. This is the core query.
+
+```sh
+incremental affected --store PATH --changes FILE|- --baseline SHA \
+  --context FILE [--verify] [--policy balanced|conservative]
+```
+
+| Option | Meaning |
+|--------|---------|
+| `--changes FILE\|-` | ChangeSet JSON (path + status per change) |
+| `--baseline SHA` | Query baseline (must equal store baseline unless fallback is acceptable) |
+| `--context FILE` | Context JSON for the query |
+| `--verify` | Hash every recorded file (slower, safe for audits/shared stores) |
+| `--policy` | `balanced` (default) or `conservative` — how unobserved adds/modifies are handled |
+
+Prints a plan to stdout as JSON. Exit `0` on success, non-zero on error.
+
+### `incremental advance`
+
+Compare-and-swap the store baseline.
+
+```sh
+incremental advance --store PATH --to SHA --expected SHA|null
+```
+
+Succeeds only if the store baseline equals `--expected`. Sets the baseline to `--to`. `--expected null` means "no baseline yet".
+
+### `incremental explain`
+
+Explain one task's status (observation, certificate, or why none exists).
+
+```sh
+incremental explain --store PATH --task TASK_ID
+```
+
+### `incremental stats`
+
+Print store summary: task count, observation count, baseline, graph version.
+
+```sh
+incremental stats --store PATH
+```
+
+### `incremental serve`
+
+Serve Protocol v1 over stdio for integrations (bindings, adapters, MCP).
+
+```sh
+incremental serve --store PATH --root PATH
+```
+
+This is a long-running process: read requests on stdin, write responses on stdout. Used by the Node/Python/Rust clients via `spawn`.
+
+### `incremental daemon` (design)
+
+Persistent daemon over a unix socket (T-08, design-only in this release). Avoids the per-run spawn cost.
+
+```sh
+incremental daemon start   [--foreground] [--store PATH] [--root PATH]
+incremental daemon status  [--store PATH]
+incremental daemon stop    [--store PATH] [--force]
+```
+
+See [`spec/DAEMON.md`](/spec#daemon) for the design.
+
+## Exit codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `2` | `invalid_params` / `unknown_method` / `protocol_mismatch` |
+| `3` | `store_missing` / `store_corrupt` |
+| `5` | `lock_busy` |
+
+## Config file
+
+`incremental.config.json` at repo root:
+
+```json
+{
+  "roots": ["."],
+  "exclude": ["**/node_modules/**", ".git/**", ".incremental/**"],
+  "ignore": [],
+  "globalInputs": [
+    "pnpm-lock.yaml", "package-lock.json", "yarn.lock",
+    "package.json", "tsconfig*.json", "vitest.config.*", "vite.config.*"
+  ],
+  "policy": "balanced",
+  "fallbackContextKeys": ["lockfile", "tsconfig", "pkgjson", "runner", "node", "fmt", "caps"],
+  "adapters": {
+    "vitest": { "testGlobs": ["**/*.{test,spec}.{ts,tsx,js,jsx,mjs,cjs,mts,cts}"] }
+  }
+}
+```
+
+See [**Configuration**](/configuration) for full details.
+
+## Environment variables
+
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| `INCREMENTAL_STORE` | Override store directory | `<repo>/.incremental` |
+| `INCREMENTAL_TRACE_OUT` | Path for adapter trace output (preload writes here) | — |
+
+## Examples
+
+Observe a task:
+
+```sh
+core/dist/incremental observe --store .incremental \
+  --file examples/cli_workflow/observation.json
+```
+
+Advance baseline:
+
+```sh
+core/dist/incremental advance --store .incremental --to abc123 --expected null
+```
+
+Affected from a change set:
+
+```sh
+echo '{"baseline":"abc123","head":"def456","changes":[{"path":"src/math.ts","status":"modified"}]}' \
+  | core/dist/incremental affected --store .incremental --changes - --baseline abc123 \
+    --context examples/cli_workflow/context.json
+```

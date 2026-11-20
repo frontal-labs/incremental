@@ -1,0 +1,76 @@
+# CODEOWNERS File
+# This file defines individuals or teams that are responsible for code in this repository.
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global owners - will be default owners for everything in the repo
+* @frontal/core-team @frontal/maintainers
+
+# Repository-wide configuration files
+/.github/ @frontal/devops-team
+/.gitignore @frontal/core-team
+LICENSE* @frontal/legal-team
+README.md @frontal/documentation-team
+
+# Documentation
+/docs/ @frontal/documentation-team
+*.md @frontal/documentation-team
+
+# Source code organization
+/src/ @frontal/web-team
+/src/app/ @frontal/web-team
+/src/components/ @frontal/web-team
+/src/lib/ @frontal/web-team
+/src/styles/ @frontal/web-team
+
+# Configuration and build files
+next.config.* @frontal/web-team @frontal/devops-team
+tailwind.config.* @frontal/web-team
+oxlint.config.* @frontal/web-team
+oxfmt.config.* @frontal/web-team
+tsconfig*.json @frontal/web-team
+package*.json @frontal/devops-team @frontal/web-team
+bun.lock @frontal/devops-team
+bunfig.toml @frontal/devops-team
+
+# Testing and quality
+/tests/ @frontal/web-team @frontal/qa-team
+playwright.config.* @frontal/web-team @frontal/qa-team
+vitest.config.* @frontal/web-team @frontal/qa-team
+*.test.* @frontal/web-team @frontal/qa-team
+*.spec.* @frontal/web-team @frontal/qa-team
+
+# Storybook
+/stories/ @frontal/web-team @frontal/design-team
+.storybook/ @frontal/web-team @frontal/design-team
+
+# Public assets and static files
+/public/ @frontal/web-team @frontal/design-team
+/assets/ @frontal/web-team @frontal/design-team
+
+# Content and data
+/content/ @frontal/documentation-team @frontal/web-team
+/content/documents/ @frontal/legal-team @frontal/web-team
+/content/documents/pins.json @frontal/legal-team
+/data/ @frontal/web-team
+
+# Scripts and automation
+/scripts/ @frontal/devops-team
+.husky/ @frontal/devops-team
+
+# Infrastructure and deployment
+Dockerfile* @frontal/devops-team
+docker-compose* @frontal/devops-team
+
+# Security and compliance
+SECURITY.md @frontal/security-team
+**/*security* @frontal/security-team
+sentry.*.config.* @frontal/web-team @frontal/security-team
+
+# Special files that require specific approval
+CHANGELOG.md @frontal/release-team @frontal/documentation-team
+CONTRIBUTING.md @frontal/core-team @frontal/documentation-team
+CODE_OF_CONDUCT.md @frontal/core-team @frontal/legal-team
+
+# Emergency override - critical security files can be modified by security team
+# This should be used sparingly and only for emergency security fixes
+**/CRITICAL_SECURITY_FIX* @frontal/security-team @frontal/core-team

@@ -1,0 +1,72 @@
+---
+title: Git Adapter
+description: Git adapter — produces ChangeSets from commits for the affected query.
+icon: GitBranch
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [git, adapter, changeset, commit, baseline, affected]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+The Git adapter (`adapters/git/`) produces **ChangeSets** from git commits so the engine can compute affected tasks. It is a **planner**: it turns two git revisions into a `ChangeSet` the `affected` method consumes.
+
+## What it does
+
+Given a baseline commit and a head commit, the Git adapter:
+
+1. Runs `git diff --name-status <baseline> <head>` (renames detected with `-M`)
+2. Converts each entry to `{ path, status, old_path? }`
+3. Returns the `ChangeSet` JSON to the engine
+
+Statuses: `added`, `modified`, `deleted`, `renamed`.
+
+## Usage
+
+The adapter is built as `adapters/git/dist/incremental-git`:
+
+```sh
+make build   # builds core/dist/incremental and adapters/git/dist/incremental-git
+```
+
+It is invoked by the engine/client when computing affected tasks from a git repository. The change set is then passed to `incremental affected --changes …`.
+
+## Example change set
+
+```json
+{
+  "baseline": "abc123",
+  "head": "def456",
+  "changes": [
+    { "path": "src/math.ts", "status": "modified" },
+    { "path": "src/new.ts", "status": "added" },
+    { "path": "src/old.ts", "status": "deleted" },
+    { "path": "src/a.ts", "status": "renamed", "old_path": "src/b.ts" }
+  ]
+}
+```
+
+This is fed to the engine:
+
+```sh
+core/dist/incremental affected --store $STORE --changes changes.json --baseline abc123 \
+  --context examples/cli_workflow/context.json
+```
+
+## Integration
+
+The Git adapter pairs naturally with the Vitest adapter: the Vitest adapter runs tests, and the Git adapter supplies the change set so Incremental knows which tests may be affected by a commit.
+
+## Test targets
+
+```sh
+make test-git
+```
+
+Runs the git adapter's test suite against fixtures.
+
+## Next steps
+
+- [**Vitest Adapter**](/adapters-vitest) — test runner integration that consumes ChangeSets
+- [**CLI Reference**](/cli) — `incremental affected` command

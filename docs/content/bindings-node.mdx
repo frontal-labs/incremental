@@ -1,0 +1,100 @@
+---
+title: Node Client
+description: TypeScript binding — @incremental/client, typed protocol client with process supervision.
+icon: Code
+stage: Stable
+updatedAt: 2026-11-20
+keywords: ["node", "bindings", "typescript", "client", "@incremental/client", "process supervision"]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+The Node binding (`bindings/node`, published as `@incremental/client`) is a typed TypeScript client for Protocol v1 with process supervision. It spawns `incremental serve`, performs the handshake, and exposes async methods for every protocol method.
+
+## Install
+
+```sh
+cd bindings/node
+npm install
+```
+
+`bindings/node` is not in the pnpm workspace; it has its own `package.json`.
+
+## Quick example
+
+```ts
+import { IncrementalClient } from "@incremental/client";
+
+const client = new IncrementalClient({
+  store: ".incremental",
+  root: process.cwd(),
+});
+
+await client.connect();
+
+// 1. Handshake (done automatically on connect)
+const { capabilities, store } = await client.hello({
+  client: { name: "my-app", version: "1.0.0" },
+});
+
+// 2. Observe a task run
+await client.observe({
+  task: "src/math.test.ts",
+  baseline: "abc123",
+  dirty: false,
+  context: { runner: "vitest@4.1.12", node: process.version, ... },
+  inputs: [{ kind: "file", path: "src/math.ts", hash: "sha256:..." }],
+  outputs: [],
+  outcome: "pass",
+  duration_ms: 120,
+});
+
+// 3. Advance baseline
+await client.advance({ to: "def456", expected: "abc123" });
+
+// 4. Compute affected
+const plan = await client.affected({
+  changes: { baseline: "abc123", head: "def456", changes: [...] },
+  options: { baseline: "abc123", context: {} },
+});
+
+console.log("Invalid:", plan.invalid, "Skipped:", plan.skipped);
+
+await client.shutdown();
+```
+
+## API
+
+| Method | Parameters | Returns |
+|--------|------------|---------|
+| `connect()` | — | `void` |
+| `hello(params)` | `{protocol, client}` | `{protocol, engine, capabilities, store}` |
+| `observe(params)` | `{observation}` | `{accepted: true}` |
+| `observe_many(params)` | `{observations: []}` | `{accepted: n}` |
+| `baseline()` | — | `{baseline: string \| null}` |
+| `advance(params)` | `{to, expected}` | `{baseline}` |
+| `affected(params)` | `{changes, options}` | `Plan` |
+| `explain(params)` | `{task}` | `{task, observation, certificate}` |
+| `forget(params)` | `{task}` | `{forgotten: true}` |
+| `stats()` | — | `{tasks, observations, baseline, graph_version}` |
+| `ping()` | — | `{pong: true}` |
+| `shutdown()` | — | `{bye: true}` |
+
+## Process supervision
+
+The client spawns `incremental serve --store … --root …` as a child process, manages its stdio, and restarts it on transient failure. Connections are sequential (one client per engine process). On `shutdown` the engine exits; the client waits up to 2 s grace.
+
+## Type safety
+
+All request/response shapes are TypeScript interfaces. Invalid parameters throw at the type level (compile time) and at runtime (protocol `invalid_params`).
+
+## Status
+
+Done (milestone E3). Full test suite: `cd bindings/node && npm test`.
+
+## Next steps
+
+- [**Protocol v1**](/protocol) — wire format reference
+- [**Python Client**](/bindings-python)
+- [**Rust Client**](/bindings-rust)

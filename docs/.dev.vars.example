@@ -1,0 +1,2 @@
+# Local-only Cloudflare Worker secrets. Never use this value in production.
+CRON_SECRET="replace-with-a-local-only-secret"

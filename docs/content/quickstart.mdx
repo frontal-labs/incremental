@@ -1,0 +1,95 @@
+---
+title: Quickstart
+description: Install, build, and run your first observe → affected cycle with the Incremental CLI.
+icon: Play
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [quickstart, install, build, observe, affected, tutorial]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+Get the Incremental engine running end-to-end in under five minutes.
+
+## Requirements
+
+- **Node 22** and **pnpm 9.0.0** (the `packageManager` field in `package.json`).
+- **Python 3.10** or later, for `make test-python`.
+- **cargo**, for `make test-rust` (the Rust binding).
+- **Docker**, for `make linux-gate` only.
+- The **Goose toolchain** is not installed by hand. `make setup` runs first and fetches it into `.toolchain/goose/` through `scripts/fetch-goose.sh` when missing. This needs network access once.
+
+## Install
+
+```sh
+pnpm install                       # root devDependencies (tsc-rs) and the pnpm workspace packages
+for d in $(git ls-files '*package.json' | grep -v -e '^package.json$' -e fixture -e '^examples/' | xargs -n1 dirname | sort -u); do (cd "$d" && npm install); done
+```
+
+The adapters are not in the pnpm workspace. Each runs its tests with `npm test` in its own folder, so each needs its own `npm install`. The loop above covers every such folder.
+
+## Build and test
+
+```sh
+make build        # engine (core/dist/incremental) and git source (adapters/git/dist/incremental-git)
+make all-tests    # check-spec, core, policy, protocol, bindings, vitest, oracle, e2e, adapters, mcp
+```
+
+`make all-tests` does not run everything. Also run:
+
+```sh
+make test-fuzz test-python test-git
+```
+
+The adapter targets run inside `test-adapters`, and each one can be run alone: `make test-bazel`, `test-biome`, `test-clippy`, `test-config`, `test-env`, `test-fs`, `test-playwright`, `test-pnpm`, `test-process`, `test-protobuf`, `test-ruff`, `test-turbopack`, `test-watcher`, plus `test-typescript` and `test-rust`.
+
+Every test target depends on `build`. Pass several targets to one `make` command, such as `make test-core test-policy`, so the engine is built once. Separate `make` commands rebuild it each time.
+
+When a target fails, the terminal shows its last 20–30 lines. The full output is in `logs/<target>.log` (git-ignored).
+
+Some targets fail on purpose because the target they check is not built yet; `make bench-smoke` and `make bench` now pass. The strace-oracle target (`make test-oracle`) is Linux-only and is skipped on macOS.
+
+## Your first observe → affected cycle
+
+This uses the example files in `examples/cli_workflow/`. The task `src/math.test.ts` reads `src/math.ts`.
+
+```sh
+STORE=.incremental
+
+# 1. Initialize a store
+core/dist/incremental init --store $STORE
+
+# 2. Record an observation for the task
+core/dist/incremental observe --store $STORE --file examples/cli_workflow/observation.json
+
+# 3. Advance the baseline to a known-good commit
+core/dist/incremental advance --store $STORE --to abc123 --expected null
+```
+
+Now simulate a change to `src/math.ts` and ask which tasks are affected:
+
+```sh
+# changes.json: {"baseline":"abc123","head":"def456","changes":[{"path":"src/math.ts","status":"modified"}]}
+core/dist/incremental affected --store $STORE --changes changes.json --baseline abc123 \
+  --context examples/cli_workflow/context.json
+```
+
+The last command prints a **plan**. It lists `src/math.test.ts` with the reason `reads:src/math.ts`, and `skipped` is `0`.
+
+Two other commands are useful:
+- `stats` — store summary (`{tasks, observations, baseline, graph_version}`)
+- `serve` — protocol v1 over stdio for integrations
+
+See `examples/cli_workflow/README.md` for the full walkthrough and `spec/PROTOCOL.md` for the protocol.
+
+## Performance in one paragraph
+
+The number that matters is **per-invocation cost, not per-query cost**. A single `incremental-vitest run` pays about **2.5 s** of fixed overhead even when nothing changed (Node start, imports, spawning the engine, loading the store, git change-set queries), and each selected test file then costs about **1 s** of Vitest cold start. A plan-and-report `--shadow` run is about **0.5 s**. The engine's own warm `affected` query is about **0.1 ms** — the engine is not the bottleneck; the overhead and per-file runner cost are what you actually feel.
+
+## Next steps
+
+- Read [**Core Concepts**](/concepts) to understand tasks, certificates, and plans.
+- Follow the [**Tutorial**](/tutorial) for a complete end-to-end example with the Vitest adapter.
+- See the [**CLI Reference**](/cli) for every command.
+- Read [**Performance**](/benchmarks) for the full benchmarks, methodology, and known issues.

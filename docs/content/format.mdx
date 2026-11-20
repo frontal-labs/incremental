@@ -1,0 +1,87 @@
+---
+title: Store Format
+description: Store directory layout, tg.log record encoding, index, stat cache, lock, compaction, graph_version.
+icon: Database
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [store, tg.log, format, index, stat cache, lock, compaction, graph_version]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+The store lives at `<store>/` (default `<repo>/.incremental`, configurable via `INCREMENTAL_STORE` or `--store`).
+
+## Store directory
+
+| File | Kind | Notes |
+|------|------|-------|
+| `tg.log` | Canonical, append-only JSON Lines, UTF-8 | Source of truth |
+| `tg.lock` | Local | Exclusive lock: `{"pid": N, "start": "<start time>"}` |
+| `stat.cache` | Local | Verify-mode cache for file hashes; safe to delete |
+| `tg.idx` | Cache | Index image, format 3. Stale or damaged: ignored, log replayed |
+
+## Log records
+
+Each line is a JSON object with `r` (record type). The first line **must** be `hdr`.
+
+```json
+{"r":"hdr","v":1,"hash":"sha256","created":"<RFC3339 UTC>"}        // required first
+{"r":"context","cid":3,"fields":{...}}                              // context record
+{"r":"path","id":5,"path":"packages/core/src/math.ts"}              // interned path
+{"r":"fv","id":17,"path":5,"hash":"sha256:..."}                     // file version
+{"r":"task","id":"packages/core/src/math.test.ts"}                  // optional task declaration
+{"r":"obs","task":"...","cid":3,"baseline":"...","dirty":false,
+   "inputs":[{"k":"file","fv":17},{"k":"dir","p":9},{"k":"probe","p":40},
+             {"k":"env","name":"X","vh":"sha256:..."},
+             {"k":"env_all","snapshot":{"X":"sha256:..."}},
+             {"k":"declared","fv":18}],
+   "outputs":[],"outcome":"pass","ms":412,"at":"<RFC3339 UTC>"}
+{"r":"forget","task":"..."}
+{"r":"baseline","value":"...","at":"<RFC3339 UTC>"}
+```
+
+### Rules
+
+- `path` or `fv` must precede first use in `obs`
+- `env` input `vh` is a value hash or the literal `"unset"`
+- Latest `obs` per task wins; a later `forget` removes the task until the next `obs`
+- Latest `baseline` record is the store baseline `B`; no baseline record means `B = null`
+- Readers ignore a truncated final line and skip unknown `r` values (non-tail corrupt records cause `store_corrupt`)
+
+## Compact log encoding
+
+Inputs use compact keys in the log: `k`, `fv`, `p`, `name`, `vh`. This keeps the log small.
+
+## graph_version
+
+```text
+g_ + first 8 hex chars of SHA-256(ASCII-decimal(log_length_bytes) || last_1024_bytes_of_log)
+```
+
+For logs under 1024 bytes, use all bytes.
+
+## Stat cache
+
+`<store>/stat.cache`:
+```json
+{ "<path>": { "size": N, "mtime_ns": N, "hash": "sha256:..." } }
+```
+
+Reuse: if `size` and `mtime_ns` match the file, use the cached hash without reading. Otherwise hash and update. Written only by verify mode. Safe to delete.
+
+## Lock
+
+`tg.lock`: exclusive create (`wx`), content `{"pid": N, "start": "<process start time>"}`.
+
+Stale if the PID is dead, or the PID is alive but the start time differs (PID reuse). Retry up to 5 s, then `lock_busy`. Each write takes the lock, appends, releases.
+
+## Compaction
+
+Compaction rewrites `tg.log` to drop obsolete records (forgotten tasks, superseded baselines) while preserving query semantics. The compacted log remains a valid append-only log. Not yet implemented (returns `compact` not-implemented via protocol).
+
+## Durability
+
+- Each write: take lock → append → fsync → release lock
+- The log is append-only; indexes are disposable and rebuilt from the log on replay
+- `stat.cache` is a write-through cache, safe to delete at any time

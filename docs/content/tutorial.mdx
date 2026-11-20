@@ -1,0 +1,175 @@
+---
+title: Tutorial
+description: "End-to-end walkthrough: initialize a store, observe tasks, advance the baseline, and compute affected tasks."
+icon: Flag
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [tutorial, walkthrough, observe, affected, advance, CLI, vitest]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+This tutorial walks through a complete observe → advance → affected cycle, first with the CLI directly, then with the Vitest adapter end-to-end.
+
+## Part 1: The CLI cycle
+
+We use the fixture files under `examples/cli_workflow/`. The task `src/math.test.ts` reads `src/math.ts`.
+
+### 1. Initialize a store
+
+```sh
+STORE=.incremental
+core/dist/incremental init --store $STORE
+```
+
+This creates `<store>/` with `tg.log` (header record), `tg.lock`, and an empty stat cache.
+
+### 2. Record an observation
+
+```sh
+core/dist/incremental observe --store $STORE \
+  --file examples/cli_workflow/observation.json
+```
+
+`examples/cli_workflow/observation.json` records that `src/math.test.ts` read `src/math.ts` at baseline `null`, outcome `pass`.
+
+```sh
+# show what was recorded
+core/dist/incremental stats --store $STORE
+```
+
+### 3. Advance the baseline
+
+```sh
+core/dist/incremental advance --store $STORE --to abc123 --expected null
+```
+
+Compare-and-swap: fails with `baseline_conflict` if `expected` does not match the store baseline. Now the store baseline is `abc123`.
+
+### 4. Compute affected tasks
+
+Create a change set:
+
+```sh
+cat > changes.json <<'EOF'
+{
+  "baseline": "abc123",
+  "head": "def456",
+  "changes": [
+    { "path": "src/math.ts", "status": "modified" }
+  ]
+}
+EOF
+```
+
+Run `affected`:
+
+```sh
+core/dist/incremental affected --store $STORE --changes changes.json --baseline abc123 \
+  --context examples/cli_workflow/context.json
+```
+
+Output (example):
+
+```text
+Plan: 5 tasks, 3 invalid, 2 skipped, confidence high
+├── src/math.test.ts   → invalid   reads:src/math.ts
+├── src/string.test.ts → skipped   certificate valid
+├── src/list.test.ts   → skipped   certificate valid
+└── ...
+```
+
+`src/math.test.ts` is invalid because `src/math.ts` (a file input) changed. The other tasks are skipped because their certificates are valid.
+
+### 5. Explain a single task
+
+```sh
+core/dist/incremental explain --store $STORE --task src/math.test.ts
+```
+
+Prints the task, its latest observation, and its certificate (or why none exists).
+
+## Part 2: Vitest adapter end-to-end
+
+The Vitest adapter wires Incremental into `vitest run`. Only invalidated test files execute; skipped files report as skipped.
+
+### Install
+
+```sh
+cd adapters/vitest
+npm install
+```
+
+### Run a baseline (everything runs)
+
+```sh
+make build
+STORE=.incremental npm test
+```
+
+All 14 fixture test files run. Each is observed and recorded at baseline `null`.
+
+### Advance baseline
+
+```sh
+core/dist/incremental advance --store $STORE --to abc123 --expected null
+```
+
+### Edit a source file
+
+```sh
+# touch src/math.ts so its mtime changes
+echo "// change" >> examples/cli_workflow/src/math.ts
+```
+
+### Run again — only affected files run
+
+```sh
+STORE=.incremental npm test
+```
+
+Output (example):
+
+```text
+Test Files  3 failed 14 total
+Tests       3 failed 42 total
+Snapshots   0 total
+Time        2.72 s
+
+Incremental: 3 invalid, 11 skipped (affected: src/math.test.ts …)
+```
+
+Only `src/math.test.ts` and its dependents re-ran. The other 11 files were skipped from their certificates.
+
+### Shadow run (dry-run, no execution)
+
+```sh
+STORE=.incremental npm test -- --shadow
+```
+
+Reports what *would* run without executing anything. Useful for CI previews and profiling.
+
+## Part 3: Verify mode
+
+Verify mode hashes every recorded file against the stat cache, catching drift the log alone cannot see:
+
+```sh
+core/dist/incremental affected --store $STORE --changes changes.json --baseline abc123 \
+  --context examples/cli_workflow/context.json --verify
+```
+
+Slower than the warm path (every recorded file is hashed), but safe for audits and shared stores.
+
+## Key takeaways
+
+| Step | Command | Purpose |
+|------|---------|---------|
+| init | `incremental init` | Create a store |
+| observe | `incremental observe` | Record what a task touched |
+| advance | `incremental advance` | Set/compare-and-swap baseline |
+| affected | `incremental affected` | Compute invalid tasks from a change set |
+| explain | `incremental explain` | Explain one task's status |
+| stats | `incremental stats` | Store summary |
+
+Next: see the [**CLI Reference**](/cli) and the [**Vitest Adapter**](/adapters-vitest).

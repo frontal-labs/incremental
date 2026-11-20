@@ -1,0 +1,47 @@
+---
+title: Limits
+description: Known limitations, non-file inputs, store boundaries, verify mode, and engine boundaries.
+icon: TriangleAlert
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [limits, limitations, non-file inputs, store, verify, boundaries]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+Incremental's boundaries — what it does and does not protect, and where the costs lie.
+
+## Non-file inputs are not observed
+
+Time, network, randomness, and unlisted environment variables are **not** observed. A task that depends on them is not protected by the engine; re-run it when they matter. Declare them as `volatile` inputs and attest `stable` via the `volatile` query field when you want to opt into protection.
+
+## Store is per worktree by default
+
+A store lives at `<repo>/.incremental` by default. A store shared between worktrees is safe, but a baseline mismatch falls back to running everything.
+
+## Verify mode is for audits, not the warm path
+
+Verify mode hashes every recorded file. It is slow (every file read and hashed) and is meant for audits and shared stores, not the fast CI path.
+
+## The engine answers from observations it has
+
+A query on a store with no baseline is a fallback, not a plan. Tasks never observed have no certificate and are always invalid until first observed.
+
+## Per-invocation cost dominates
+
+A single `incremental-vitest run` pays about **2.5 s** of fixed overhead even when nothing changed. The engine's own warm `affected` query is ~0.1 ms. The overhead and per-file runner cost (~1 s per file) are what you actually feel — not the engine.
+
+## Not yet implemented / confirmed
+
+| Item | Status |
+|------|--------|
+| `compact` protocol method | Not implemented |
+| Cold CLI target (< 300 ms at 100k tasks) | Not yet confirmed |
+| Rust binding status record | No status record yet |
+| Replay false-skip upper bound | 30% (10-commit sample) |
+| Strace oracle | Linux only, skipped on macOS |
+
+## Report an edge case
+
+If you hit a limit not listed here, check [`STATUS.md`](../STATUS.md) and [`DECISIONS.md`](../DECISIONS.md) for open items, then file an issue.

@@ -1,41 +1,38 @@
-# INCREMENTAL DOCUMENTATION
+# Incremental Documentation
 
-This directory contains comprehensive documentation for the Incremental project, restructured into subdirectories.
+![Incremental Banner](./banner.png)
 
-## Documentation Files
+**Incremental Compute Engine — developer documentation.**
 
-| File                                                                             | Description                                                                                |
-| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| [overview/OVERVIEW.md](overview/OVERVIEW.md)                                     | High-level overview, purpose, principles, architecture, and current state                  |
-| [spec/PROTOCOL.md](spec/PROTOCOL.md)                                             | incremental Protocol v1 specification (transport, handshake, methods, errors)              |
-| [spec/POLICY.md](spec/POLICY.md)                                                 | Policy engine: `plan(state, query)`, rules P0–P11, fallback priority, confidence           |
-| [spec/FORMAT.md](spec/FORMAT.md)                                                 | Store layout, log format, records, graph_version, stat cache, lock, compaction             |
-| [spec/DATA_MODEL.md](spec/DATA_MODEL.md)                                         | Core concepts, terms, input kinds, observation and ChangeSet schemas                       |
-| [spec/CONFIGURATION.md](spec/CONFIGURATION.md)                                   | Config file, environment variables, CLI options, defaults                                  |
-| [spec/DAEMON.md](spec/DAEMON.md)                                                 | Persistent engine daemon design (T-08): CLI, socket transport, discovery, failure handling |
-| [adapters/ADAPTERS.md](adapters/ADAPTERS.md)                                     | Adapter types, recorder contract, Vitest adapter, git source, strace oracle, MCP           |
-| [../adapters/README.md](../adapters/README.md)                                   | The built adapters under `adapters/`, one row each                                         |
-| [conformance/CONFORMANCE_AND_TESTING.md](conformance/CONFORMANCE_AND_TESTING.md) | Conformance suite, test cases (C01-C41, V01-V16), guarantees, testing commands             |
-| [benchmarks/BENCHMARKS_AND_GATES.md](benchmarks/BENCHMARKS_AND_GATES.md)         | Benchmark targets, replay methodology                                                      |
-| [development/DEVELOPMENT_GUIDE.md](development/DEVELOPMENT_GUIDE.md)             | Quick start, structure, ground rules, roles, workflow, milestones                          |
+This site is the complete end-to-end documentation for the Incremental incremental compute engine. It runs on TanStack Start and deploys to Cloudflare Workers.
 
-## Quick References
+Run the development server:
 
-- **Protocol Spec**: [spec/PROTOCOL.md](spec/PROTOCOL.md)
-- **Policy Spec**: [spec/POLICY.md](spec/POLICY.md)
-- **Format Spec**: [spec/FORMAT.md](spec/FORMAT.md)
-- **Schemas**: [spec/schemas/](../spec/schemas/)
-- **Conformance Cases**: [conformance/cases/](../conformance/cases/) (41 cases)
-- **Makefile**: [Makefile](../Makefile)
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-## Key Concepts
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-- **Task**: Named unit of work tracked by engine (adapter-defined ID)
-- **Certificate**: Observation at baseline with all inputs unchanged - allows skipping
-- **Baseline**: Opaque state identifier (usually git commit SHA)
-- **Plan**: Result showing invalid tasks with reasons, or fallback if unsafe to skip
-- **Never skip silently**: Unknown/unverifiable input → task invalid or full fallback
+The app uses TanStack Start and fumadocs. Edit the files under `src/routes` and the MDX pages under `content/`; the page auto-updates.
 
-## Current Implementation Status
+Production commands:
 
-Based on milestones and current codebase state - see [STATUS.md](../STATUS.md) for current progress.
+```bash
+bun run build
+bun run preview
+bun run deploy
+```
+
+## Learn More
+
+- [TanStack Start documentation](https://tanstack.com/start)
+- [Cloudflare Workers guide](https://developers.cloudflare.com/workers/)
+- [Cloudflare Vite plugin documentation](https://developers.cloudflare.com/workers/vite-plugin/)
+- [fumadocs documentation](https://fumadocs.vercel.app)

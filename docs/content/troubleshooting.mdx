@@ -1,0 +1,92 @@
+---
+title: Troubleshooting
+description: Common problems, error codes, and how to fix them.
+icon: AlertTriangle
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [troubleshooting, errors, exit codes, store_corrupt, lock_busy, fallback]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+Common problems, their causes, and fixes.
+
+## Exit codes
+
+| Code | Meaning | Typical cause | Fix |
+|------|---------|---------------|-----|
+| `0` | Success | — | — |
+| `2` | `invalid_params` / `unknown_method` / `protocol_mismatch` | Malformed request, wrong protocol version | Check request schema; use protocol 1 |
+| `3` | `store_missing` / `store_corrupt` / `baseline_conflict` | No store, corrupt log, advance expected mismatch | Initialize store; run without `--expected` or match current baseline |
+| `5` | `lock_busy` | Another process holds `tg.lock` | Wait for the other process; remove stale lock only if certain it's dead |
+
+## "store_missing"
+
+**Cause:** `--store` points to a directory that hasn't been initialized, or `INCREMENTAL_STORE` is unset and `<repo>/.incremental` doesn't exist.
+
+**Fix:** Run `incremental init --store <path>` first, or set `INCREMENTAL_STORE`.
+
+## "store_corrupt"
+
+**Cause:** A non-tail record in `tg.log` is invalid (the tail may be truncated, which is tolerated).
+
+**Fix:** The log is append-only. Do not hand-edit `tg.log`. Remove the store and re-initialize, or restore from a backup. Indexes (`tg.idx`, `stat.cache`) are disposable and can be deleted safely.
+
+## "lock_busy"
+
+**Cause:** Another `incremental` process holds `tg.lock` (PID + start time). Retries for up to 5 s.
+
+**Fix:** Wait for the other process to finish. If you're certain no process is running, the lock is stale (PID reuse) — delete `tg.lock` and retry.
+
+## "baseline_conflict"
+
+**Cause:** `incremental advance --expected <X>` but the store baseline is not `<X>`.
+
+**Fix:** Read the current baseline (`incremental stats` or `incremental baseline`) and pass it as `--expected`.
+
+## Full fallback fires unexpectedly
+
+**Cause:** Baseline mismatch, missing context, global input change, or unobserved input. Under fallback, all tasks run (`skipped = 0`).
+
+**Fix:** Check the plan's `fallback.reason`:
+- `baseline_mismatch`: pass `--baseline` matching the store baseline
+- `context_missing`: include `--context`
+- `global_input`: a `globalInputs` file changed — expected; full run required
+- `context_changed`: a reserved/fallback context key changed
+- `unobserved_input`: a new file was created that no task observed — expected in balanced mode
+
+## No tasks skip (skipped = 0) even though nothing changed
+
+**Possible causes:**
+
+1. **No baseline:** run `incremental advance` first
+2. **No observations:** tasks were never observed — run them once to record certificates
+3. **Baseline mismatch:** query baseline != store baseline
+4. **Context changed:** lockfile/tsconfig/pkgjson/runner/node changed
+5. **Failed outcome:** a previous run failed → task invalid until it passes
+
+## Vitest adapter: all tests run every time
+
+**Cause:** No baseline, or observations weren't recorded (adapter didn't `observe`), or the change set marks everything.
+
+**Fix:** Ensure the store exists and the first run completed (observations recorded). Check `incremental stats` shows observations > 0.
+
+## Verify mode is slow
+
+**Cause:** `--verify` hashes every recorded file against `stat.cache`.
+
+**Fix:** Use verify only for audits/shared stores, not the warm path. Omit `--verify` for fast CI runs.
+
+## Cold store is slow on first run
+
+**Cause:** Loading 100k+ observations into memory.
+
+**Fix:** This is a known optimization area. A cold `stats` after the index-load fix took ~99 ms at 100k tasks. Re-measure on an idle machine; see [**Benchmarks**](/benchmarks).
+
+## Getting help
+
+- Check `logs/<target>.log` for the full output of a failed `make` target
+- Read [`STATUS.md`](../STATUS.md) for open items
+- Read [`DECISIONS.md`](../DECISIONS.md) for open decisions
+- File an issue at the repository's issue tracker

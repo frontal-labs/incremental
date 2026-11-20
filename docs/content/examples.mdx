@@ -1,0 +1,112 @@
+---
+title: Examples
+description: Example workflows — CLI observe → affected, Vitest adapter, MCP queries.
+icon: FileCode
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [examples, walkthrough, cli workflow, vitest, mcp]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+Complete, copy-pasteable examples for the most common Incremental workflows.
+
+## Example 1: CLI observe → affected cycle
+
+Initialize a store, observe a task, advance baseline, and compute affected tasks.
+
+```sh
+STORE=.incremental
+
+# 1. Initialize
+core/dist/incremental init --store $STORE
+
+# 2. Observe a task
+core/dist/incremental observe --store $STORE \
+  --file examples/cli_workflow/observation.json
+
+# 3. Advance baseline
+core/dist/incremental advance --store $STORE --to abc123 --expected null
+
+# 4. Create a change set
+cat > changes.json <<'EOF'
+{"baseline":"abc123","head":"def456","changes":[{"path":"src/math.ts","status":"modified"}]}
+EOF
+
+# 5. Compute affected
+core/dist/incremental affected --store $STORE --changes changes.json --baseline abc123 \
+  --context examples/cli_workflow/context.json
+```
+
+Expected: `src/math.test.ts` is invalid with reason `reads:src/math.ts`; other tasks skipped.
+
+## Example 2: Vitest adapter end-to-end
+
+```sh
+cd adapters/vitest
+npm install
+
+# First run: everything runs, observations recorded
+make build
+STORE=.incremental npm test
+
+# Advance baseline
+core/dist/incremental advance --store $STORE --to abc123 --expected null
+
+# Edit a source file
+echo "// change" >> examples/cli_workflow/src/math.ts
+
+# Next run: only affected files execute
+STORE=.incremental npm test
+# → Incremental: N invalid, M skipped
+```
+
+## Example 3: Shadow (dry-run)
+
+Report what would run without executing:
+
+```sh
+STORE=.incremental npm test -- --shadow
+```
+
+## Example 4: MCP query via agent
+
+Configure the MCP server, then ask:
+
+> "Which tests are affected by the change to `src/math.ts`?"
+
+The agent calls `incremental.affected` and returns the plan. See [**MCP Server**](/adapters-mcp).
+
+## Example 5: Verify mode
+
+Hash every recorded file (slower, safe for shared stores):
+
+```sh
+core/dist/incremental affected --store $STORE --changes changes.json --baseline abc123 \
+  --context examples/cli_workflow/context.json --verify
+```
+
+## Example 6: Explain one task
+
+```sh
+core/dist/incremental explain --store $STORE --task src/math.test.ts
+```
+
+Prints the task, its latest observation, certificate, or why none exists.
+
+## Where examples live
+
+| Example | Path |
+|---------|------|
+| CLI workflow fixture | `examples/cli_workflow/` |
+| Observation JSON | `examples/cli_workflow/observation.json` |
+| Context JSON | `examples/cli_workflow/context.json` |
+| Vitest fixtures | `adapters/vitest/fixtures/` |
+| Conformance cases | `conformance/cases/` |
+
+## Next steps
+
+- [**Tutorial**](/tutorial) — guided end-to-end walkthrough
+- [**CLI Reference**](/cli) — all commands and options
+- [**Troubleshooting**](/troubleshooting) — common problems and fixes

@@ -1,0 +1,25 @@
+# Whitelist the Blacksmith self-hosted runner labels used by ci.yml and
+# release.yml so actionlint stops flagging them as unknown. Mirrors the
+# tiers documented at https://docs.blacksmith.sh/blacksmith-runners/overview.
+self-hosted-runner:
+  labels:
+    - blacksmith-2vcpu-ubuntu-2204
+    - blacksmith-2vcpu-ubuntu-2204-arm
+    - blacksmith-2vcpu-ubuntu-2404
+    - blacksmith-2vcpu-ubuntu-2404-arm
+    - blacksmith-4vcpu-ubuntu-2204
+    - blacksmith-4vcpu-ubuntu-2204-arm
+    - blacksmith-4vcpu-ubuntu-2404
+    - blacksmith-4vcpu-ubuntu-2404-arm
+    - blacksmith-8vcpu-ubuntu-2204
+    - blacksmith-8vcpu-ubuntu-2204-arm
+    - blacksmith-8vcpu-ubuntu-2404
+    - blacksmith-8vcpu-ubuntu-2404-arm
+    - blacksmith-16vcpu-ubuntu-2204
+    - blacksmith-16vcpu-ubuntu-2204-arm
+    - blacksmith-16vcpu-ubuntu-2404
+    - blacksmith-16vcpu-ubuntu-2404-arm
+    - blacksmith-32vcpu-ubuntu-2204
+    - blacksmith-32vcpu-ubuntu-2204-arm
+    - blacksmith-32vcpu-ubuntu-2404
+    - blacksmith-32vcpu-ubuntu-2404-arm

@@ -1,0 +1,4570 @@
+{
+  "Header": {
+    "features": "Features",
+    "resources": "Resources",
+    "pricing": "Pricing",
+    "searchPlaceholder": "Search the docs, updates and pages",
+    "searchButton": "Search",
+    "quickLinks": "Quick links",
+    "seeAllResults": "See all {count} results",
+    "localeButton": "Choose locale",
+    "signIn": "Sign in",
+    "closeMenu": "Close menu",
+    "homeLabel": "Incremental OSS home",
+    "noResults": "No pages or documentation matched your search.",
+    "openMenu": "Open menu",
+    "resultCount": "{count, plural, one {# result} other {# results}}",
+    "searching": "Searching…"
+  },
+  "Footer": {
+    "toggleTheme": "Toggle theme",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "copyright": "© {year} Incremental Labs, Inc. or its affiliates.",
+    "tagline": "Enterprise AI infrastructure"
+  },
+  "StartPage": {
+    "hero": {
+      "title": "We're building the future of enterprise intelligence",
+      "description": "We're building the infrastructure that turns enterprise data, systems, and operations into intelligent software.",
+      "primaryCta": "Read our mission",
+      "secondaryCta": "Book a demo"
+    },
+    "video": {
+      "playLabel": "Play video",
+      "closeLabel": "Close dialog"
+    },
+    "howItWorks": {
+      "title": "How it works"
+    },
+    "features": {
+      "context": {
+        "title": "All your context, unified",
+        "subtitle": "Connect the systems your business already runs on and Incremental resolves them into one queryable context layer.",
+        "mobileSubtitle": "Every system your business runs on, in one context layer.",
+        "media": "Connected systems"
+      },
+      "agents": {
+        "title": "Agents that reach production",
+        "subtitle": "Agents execute inside deterministic boundaries, handing off to each other and to people where judgment is required.",
+        "mobileSubtitle": "Agents run inside defined boundaries, with hand-offs.",
+        "media": "Agent run"
+      },
+      "observability": {
+        "title": "Observable by default",
+        "subtitle": "Every run is traced, evaluated, and attributable, so you can prove what a system did and why.",
+        "mobileSubtitle": "Every run is traced, evaluated, and auditable.",
+        "media": "Run trace"
+      }
+    },
+    "videos": {
+      "overview": {
+        "title": "Overview",
+        "subtitle": "See how Incremental turns enterprise data, systems, and operations into intelligent software."
+      },
+      "runtime": {
+        "title": "Runtime",
+        "subtitle": "A unified execution environment for orchestration, state, and reliability, from first prototype to production."
+      },
+      "agents": {
+        "title": "Agents",
+        "subtitle": "Agents that act inside deterministic boundaries, with tool access, hand-offs, and human review where it matters."
+      },
+      "ontology": {
+        "title": "Ontology",
+        "subtitle": "A shared model of the entities your business runs on, so every system and agent reasons over the same definitions."
+      },
+      "data": {
+        "title": "Data",
+        "subtitle": "Connect existing systems and warehouses without migration, and keep lineage intact across every source."
+      },
+      "observability": {
+        "title": "Observability",
+        "subtitle": "Traces, evaluations, and audit trails for every run, so behaviour in production is explainable."
+      },
+      "security": {
+        "title": "Security",
+        "subtitle": "Governance, access control, and data boundaries that hold up to enterprise review."
+      }
+    },
+    "images": {
+      "dashboardPreview": "Incremental dashboard preview",
+      "dashboard": "Dashboard illustration"
+    },
+    "sections": {
+      "platform": {
+        "title": "Every layer, one platform",
+        "description": "Eight layers that share the same context, permissions, and audit trail."
+      },
+      "how": {
+        "title": "How it works",
+        "description": "Connect what you already run, build on top of it, and see every run."
+      },
+      "useCases": {
+        "title": "What teams build with Incremental",
+        "description": "Four patterns that show up in almost every deployment."
+      },
+      "faq": {
+        "title": "Common questions",
+        "description": "What teams ask before their first workspace."
+      },
+      "cta": {
+        "title": "Build your first workflow today",
+        "description": "Create a workspace in minutes, or talk to us about your use case.",
+        "primary": "Start building",
+        "secondary": "Book a demo"
+      }
+    },
+    "useCases": {
+      "support": {
+        "title": "Resolve customer requests end to end",
+        "description": "Read the request, pull the account's history, act in the systems of record, and leave an audit trail behind."
+      },
+      "ops": {
+        "title": "Automate the operational middle",
+        "description": "The recurring processes that live in spreadsheets and inboxes because no system quite owns them."
+      },
+      "analysis": {
+        "title": "Answer questions across systems",
+        "description": "Ask about entities, runs, cost, or recent changes and get answers grounded in real records rather than a dashboard."
+      },
+      "review": {
+        "title": "Put judgement where it matters",
+        "description": "Let agents handle the volume and route the exceptions to a person, with the full context already attached."
+      }
+    },
+    "faq": {
+      "what": {
+        "question": "What is Incremental, exactly?",
+        "answer": "An infrastructure layer for enterprise AI. It connects your data and systems, runs agents and workflows against them, and records what happened."
+      },
+      "replace": {
+        "question": "Do we have to replace our stack?",
+        "answer": "No. Incremental reads from the systems and the warehouse you already run. Connecting a single source is enough to start."
+      },
+      "trust": {
+        "question": "How do we know what an agent did?",
+        "answer": "Every run keeps its inputs, tool calls, and outputs, attributed to an identity and exportable for audit."
+      },
+      "start": {
+        "question": "What does getting started look like?",
+        "answer": "Create a workspace, connect one system, and build a single workflow or agent against it. Most teams do that in an afternoon."
+      }
+    },
+    "intro": {
+      "title": "Software that understands your business",
+      "lead": "Most AI tooling stops at the model. The hard part is everything around it: the data it reads, the systems it touches, the permissions it inherits, and the record of what it did.",
+      "body": {
+        "a": "Incremental is the layer that handles the rest. Connect the systems you already run, define the entities your business actually uses, and build agents and workflows that act on them under the same rules your people follow.",
+        "b": "Nothing is a black box. Every run keeps its inputs, its decisions, and its outputs, so what happens in production stays something you can inspect, explain, and improve."
+      }
+    }
+  },
+  "Agents": {
+    "meta": {
+      "title": "Enterprise AI Agents",
+      "description": "Create agents that understand your business, connect to your data, make decisions, and take action across your organisation in minutes.",
+      "ogTitle": "AI Agents",
+      "ogDescription": "Agents that understand, decide, and act"
+    },
+    "hero": {
+      "title": "Agents that understand, decide, and act.",
+      "eyebrow": "Agents",
+      "mobileDescription": "Build agents that understand your business",
+      "description": "Create agents, connect them with your data, and deploy them in minutes.",
+      "primaryCta": "Read our mission",
+      "secondaryCta": "Book a demo"
+    },
+    "video": {
+      "playLabel": "Play video",
+      "closeLabel": "Close dialog"
+    },
+    "images": {
+      "agentRunAlt": "Agent run interface",
+      "dashboardPreviewAlt": "Incremental dashboard preview",
+      "dashboardAlt": "Dashboard illustration"
+    },
+    "videos": {
+      "overview": {
+        "title": "Overview",
+        "subtitle": "See how Incremental turns enterprise data, systems, and operations into intelligent software."
+      },
+      "runtime": {
+        "title": "Runtime",
+        "subtitle": "A unified execution environment for orchestration, state, and reliability."
+      },
+      "tools": {
+        "title": "Tools",
+        "subtitle": "Give agents typed access to the systems your business already runs on."
+      },
+      "handoffs": {
+        "title": "Hand-offs",
+        "subtitle": "Route work between agents and people, with review where judgment is required."
+      },
+      "memory": {
+        "title": "Memory",
+        "subtitle": "Durable state and shared context that persists across runs and teams."
+      },
+      "evaluation": {
+        "title": "Evaluation",
+        "subtitle": "Score agent behaviour against real cases before and after it reaches production."
+      },
+      "governance": {
+        "title": "Governance",
+        "subtitle": "Access control, data boundaries, and audit trails for every action taken."
+      }
+    },
+    "recentHighlights": {
+      "title": "Recent highlights",
+      "viewMore": "View more posts",
+      "posts": {
+        "thirdEra": {
+          "title": "The third era of AI software development",
+          "description": "A third era of AI software development is emerging as autonomous cloud agents take on larger tasks over longer timescales.",
+          "category": "Ideas",
+          "date": "26 Feb 2026"
+        },
+        "computerUse": {
+          "title": "Cursor agents can now control their own computers",
+          "description": "Cloud agents use the software they create to verify changes and demo their work.",
+          "category": "Product",
+          "date": "24 Feb 2026"
+        },
+        "bugbotAutofix": {
+          "title": "Closing the code review loop with Bugbot Autofix",
+          "description": "Bugbot Autofix can find and automatically fix issues in PRs by spawning cloud agents to test your changes.",
+          "category": "Product",
+          "date": "26 Feb 2026"
+        }
+      }
+    }
+  },
+  "Developers": {
+    "meta": {
+      "title": "Developers",
+      "description": "SDKs, a typed API, and the reference material you need to build on Incremental from your own stack.",
+      "ogTitle": "Developers",
+      "ogDescription": "Incremental Engine from your own stack"
+    },
+    "hero": {
+      "eyebrow": "Developers",
+      "title": "Incremental Engine",
+      "description": "Client libraries, a typed API, and the references you need to ship your first integration today."
+    },
+    "breadcrumb": "Developers",
+    "nav": {
+      "label": "Developer reference",
+      "browse": "Browse the reference"
+    },
+    "startHere": "Start here"
+  },
+  "Docs": {
+    "meta": {
+      "title": "Documentation",
+      "ogTitle": "Documentation",
+      "description": "Learn how to build on Incremental. Get answers about agents, workflows, data, ontology, observability, and more.",
+      "ogDescription": "Everything you need to know about Incremental"
+    },
+    "hero": {
+      "eyebrow": "Documentation",
+      "title": "How can we help?",
+      "description": "Learn how to build intelligent software with Incremental."
+    },
+    "popularGuides": "Popular guides",
+    "browseByTopic": "Browse by topic",
+    "breadcrumb": "Docs",
+    "chat": {
+      "thinking": "Thinking...",
+      "rateLimitPrefix": "Rate limit reached. Try again later or",
+      "browseDocs": "browse the docs",
+      "rateLimitSuffix": "."
+    },
+    "askAI": "Ask AI",
+    "askAIPrompt": "Read this page and answer questions about it.",
+    "nav": {
+      "label": "Documentation",
+      "browse": "Browse docs"
+    },
+    "browseSdks": "Browse the SDKs",
+    "updated": "Updated {date}",
+    "pager": "Page navigation",
+    "previous": "Previous",
+    "next": "Next",
+    "closing": {
+      "title": "Everything you need to build",
+      "description": "Start with the quickstart, or ask the help center if something is missing.",
+      "help": "Get help"
+    },
+    "onThisPage": "On this page",
+    "actions": "Page actions",
+    "viewMarkdown": "View as markdown"
+  },
+  "Help": {
+    "meta": {
+      "title": "Help Center",
+      "description": "Guides, answers, and a way through to the team when you need a person rather than a page.",
+      "ogTitle": "Help Center",
+      "ogDescription": "Guides, answers, and support for Incremental"
+    },
+    "hero": {
+      "eyebrow": "Help Center",
+      "title": "What do you need help with?",
+      "description": "Search the guides, follow a walkthrough, or reach the team directly.",
+      "contact": "Contact us"
+    },
+    "search": {
+      "label": "Search help articles",
+      "placeholder": "Search for an answer",
+      "empty": "No help articles matched that search.",
+      "viewAll": "See all results"
+    },
+    "categories": {
+      "title": "Browse by topic",
+      "description": "Start with the area closest to what you are trying to do.",
+      "articleCount": "{count, plural, one {# article} other {# articles}}",
+      "getting-started": {
+        "label": "Getting started",
+        "description": "Create a workspace, invite your team, and set up your first project."
+      },
+      "accounts-and-access": {
+        "label": "Accounts and access",
+        "description": "Roles, permissions, single sign on, and who can see what."
+      },
+      "billing": {
+        "label": "Billing",
+        "description": "Plans, invoices, usage limits, and how to change what you pay for."
+      },
+      "data-and-syncs": {
+        "label": "Data and syncs",
+        "description": "Connect a source, refresh a sync, and read what happens when one fails."
+      },
+      "troubleshooting": {
+        "label": "Troubleshooting",
+        "description": "What to check first when an agent, a workflow, or an integration misbehaves."
+      },
+      "security-and-privacy": {
+        "label": "Security and privacy",
+        "description": "Where your data lives, how it is protected, and the reports you can request."
+      }
+    },
+    "popular": {
+      "title": "Popular articles",
+      "description": "The answers people open most often."
+    },
+    "channels": {
+      "title": "Ways to get help",
+      "description": "When an article is not enough.",
+      "support": {
+        "title": "Contact support",
+        "description": "Reach the team with your account context attached."
+      },
+      "status": {
+        "title": "System status",
+        "description": "Live status and incident history, published separately from this site."
+      },
+      "docs": {
+        "title": "Developer docs",
+        "description": "API reference, SDKs, and guides for building on Incremental."
+      }
+    },
+    "faq": {
+      "title": "Common questions",
+      "items": {
+        "contact": {
+          "question": "How do I contact support?",
+          "answer": "Open a request from your workspace and it reaches the team with your account context attached."
+        },
+        "included": {
+          "question": "Is support included in my plan?",
+          "answer": "Every plan includes support. Response times depend on your plan and on how urgent the issue is."
+        },
+        "teammates": {
+          "question": "Can I add people to my workspace?",
+          "answer": "Yes. An owner can invite teammates and choose what each of them is allowed to do."
+        },
+        "status": {
+          "question": "Where do I check whether something is down?",
+          "answer": "Live status and incident history are published on the status page, separately from this site."
+        }
+      }
+    },
+    "cta": {
+      "title": "Still stuck?",
+      "description": "If you cannot find the answer here, the team would rather hear from you than have you guess.",
+      "primary": "Contact us",
+      "secondary": "Check system status"
+    },
+    "category": {
+      "metaTitle": "{category} help",
+      "metaDescription": "Guides and answers for {category}.",
+      "empty": "No articles here yet.",
+      "otherTopics": "Other topics",
+      "backToHelp": "All help topics",
+      "articles": "Articles"
+    },
+    "article": {
+      "breadcrumb": "Help",
+      "updated": "Updated {date}",
+      "related": "Related articles"
+    }
+  },
+  "Learn": {
+    "meta": {
+      "title": "Learn",
+      "description": "A guided course on building intelligent software with Incremental, in short video lessons.",
+      "ogTitle": "Learn",
+      "ogDescription": "A guided course on building with Incremental"
+    },
+    "hero": {
+      "title": "Learn Incremental.",
+      "description": "Short video lessons, in the order they make sense. Start at the beginning or jump to the one you need."
+    },
+    "breadcrumb": "Learn",
+    "minutes": "{count} min",
+    "nav": {
+      "label": "Course",
+      "browse": "Browse the course"
+    }
+  },
+  "Releases": {
+    "meta": {
+      "title": "Releases",
+      "description": "The latest updates and improvements to Incremental. See what we've been building to help you ship intelligent software.",
+      "ogDescription": "What we've been building"
+    },
+    "backLink": "← Go back",
+    "pageLabel": "Page",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "Authors": {
+    "others": "and +{count} others"
+  },
+  "Blog": {
+    "meta": {
+      "description": "Ideas, engineering notes, and product thinking from the Incremental team.",
+      "ogDescription": "Ideas and engineering notes",
+      "title": "Blog"
+    },
+    "pagination": {
+      "next": "Next",
+      "previous": "Previous"
+    },
+    "archive": {
+      "allCategories": "All",
+      "searchPosts": "Search posts",
+      "noMatches": "No posts match your search."
+    }
+  },
+  "News": {
+    "meta": {
+      "description": "Announcements, press releases, and coverage of Incremental.",
+      "ogDescription": "Announcements and press",
+      "title": "Newsroom"
+    },
+    "pagination": {
+      "next": "Next",
+      "previous": "Previous"
+    }
+  },
+  "PostActions": {
+    "label": "Post actions",
+    "askAI": "Ask AI",
+    "askIncremental": "Ask Incremental AI",
+    "askPrompt": "Read this article and answer my questions about \"{title}\".",
+    "listen": "Listen",
+    "preparing": "Preparing audio…",
+    "listenFailed": "Could not prepare the audio",
+    "copy": "Copy",
+    "copyLink": "Copy link",
+    "copyMarkdown": "Copy markdown",
+    "linkCopied": "Link copied",
+    "markdownCopied": "Markdown copied",
+    "copyFailed": "Copy failed"
+  },
+  "Download": {
+    "hero": {
+      "title": "Use Incremental at every level of your work."
+    },
+    "desktop": {
+      "title": "Desktop",
+      "description": "An agent-first experience with the tools you need for focused work.",
+      "cta": "Download for macOS"
+    },
+    "terminal": {
+      "title": "Terminal",
+      "description": "Run agents in any terminal or script, alongside your preferred tools.",
+      "copyLabel": "Copy install command"
+    },
+    "web": {
+      "title": "Web",
+      "description": "Kick off agents from your browser, phone, or the tools your team already uses.",
+      "cta": "Open Incremental on web"
+    }
+  },
+  "Site": {
+    "title": "Intelligence Layer for Enterprise AI | Incremental",
+    "description": "Incremental is the intelligence layer for intelligent systems — connect data, deploy AI agents, automate workflows and run operations at scale.",
+    "chatSuggestions": {
+      "enterpriseDataSecurity": "How does Incremental handle enterprise data, security, and AI?",
+      "howDoesItWork": "How does Incremental work?",
+      "howWouldItWork": "How would Incremental work in my company?",
+      "showMe": "Show me what Incremental could do for my company.",
+      "whatCanIBuild": "What can I build with Incremental?",
+      "whatIsIncremental": "What is Incremental?",
+      "whatMakesDifferent": "What makes Incremental different?"
+    }
+  },
+  "Error": {
+    "notFound": {
+      "action": "Go to home",
+      "description": "The page you are looking for does not exist.",
+      "title": "Not found"
+    },
+    "unexpected": {
+      "action": "Try again",
+      "description": "We're sorry, but something went wrong.",
+      "title": "Something went wrong"
+    }
+  },
+  "LocaleSelector": {
+    "documentLanguage": "Document language",
+    "english": "English"
+  },
+  "Chat": {
+    "clearChat": "Clear chat",
+    "clearFailed": "Failed to clear chat history",
+    "closeChat": "Close chat",
+    "console": {
+      "clearFailed": "Failed to clear messages:",
+      "saveFailed": "Failed to save messages:"
+    },
+    "drawerTrigger": "Ask AI",
+    "historyCleared": "Chat history cleared",
+    "keyboardTip": "Tip: You can open and close chat with",
+    "sendMessage": "Send message",
+    "stopGenerating": "Stop generating",
+    "title": "Ask AI",
+    "unknownError": "Unknown error",
+    "copyChat": "Copy chat",
+    "chatCopied": "Chat copied to clipboard",
+    "copyFailed": "Failed to copy chat",
+    "roleYou": "You",
+    "roleAssistant": "AI"
+  },
+  "Navigation": {
+    "ai": {
+      "benchmark": "Benchmark",
+      "evaluation": "Evaluation",
+      "gateway": "AI Gateway",
+      "research": "Research",
+      "safety": "Safety"
+    },
+    "company": {
+      "brand": "Brand",
+      "careers": {
+        "description": "Build what comes next",
+        "label": "Careers"
+      },
+      "contactSales": "Contact Sales",
+      "customers": "Customers",
+      "enterprise": "Enterprise",
+      "mission": {
+        "description": "Build the intelligence layer of the world",
+        "label": "Mission"
+      },
+      "news": "News",
+      "newsroom": {
+        "description": "Announcements, press, and company news.",
+        "label": "Newsroom"
+      },
+      "openSource": "Open Source",
+      "partnerNetwork": "Partner Network",
+      "pricing": "Pricing",
+      "pressKit": "Press Kit",
+      "research": {
+        "description": "Advancing the science of computational intelligence",
+        "label": "Research"
+      },
+      "startups": "Startups"
+    },
+    "developers": {
+      "apiReference": "API Reference",
+      "documentation": "Documentation",
+      "examples": "Examples",
+      "sdks": "SDKs",
+      "status": "Status",
+      "templates": "Templates"
+    },
+    "features": {
+      "agents": {
+        "description": "Autonomous work for your business",
+        "label": "Agents"
+      },
+      "data": {
+        "description": "Ground every decision in context",
+        "label": "Data"
+      },
+      "observability": {
+        "description": "See every run and outcome",
+        "label": "Observability"
+      },
+      "ontology": {
+        "description": "A shared language for your systems",
+        "label": "Ontology"
+      },
+      "runtime": {
+        "description": "Run intelligent software reliably",
+        "label": "Runtime"
+      },
+      "security": {
+        "description": "Control, privacy, and governance",
+        "label": "Security"
+      },
+      "storage": {
+        "description": "Store everything your AI needs",
+        "label": "Storage"
+      },
+      "workflows": {
+        "description": "Connect the work from start to finish",
+        "label": "Workflows"
+      }
+    },
+    "footer": {
+      "ai": "AI",
+      "brand": "Brand",
+      "company": "Company",
+      "developers": "Developers",
+      "explore": "Explore",
+      "features": "Features",
+      "legal": "Legal & Trust",
+      "products": "Products",
+      "resources": "Resources",
+      "solutions": "Solutions",
+      "social": "Social",
+      "tools": "Tools"
+    },
+    "footerLabel": "Footer navigation",
+    "groups": {
+      "features": {
+        "build": "Build",
+        "context": "Context",
+        "operate": "Operate"
+      },
+      "resources": {
+        "develop": "Develop",
+        "tools": "Tools",
+        "stayCurrent": "Stay current"
+      }
+    },
+    "legal": {
+      "acceptableUsePolicy": "Acceptable Use Policy",
+      "allDocuments": "All Documents",
+      "cookiePolicy": "Cookie Policy",
+      "dataProcessingAgreement": "Data Processing Agreement",
+      "dataProtectionPolicy": "Data Protection Policy",
+      "privacyPolicy": "Privacy Policy",
+      "securityOverview": "Security overview",
+      "subprocessors": "Subprocessors",
+      "termsOfService": "Terms of Service"
+    },
+    "mobile": {
+      "ask": "Ask",
+      "contactSales": {
+        "description": "Talk with our team about your needs.",
+        "label": "Contact Sales"
+      }
+    },
+    "products": {
+      "ask": "Ask",
+      "cloud": "Cloud",
+      "cli": "CLI",
+      "dashboard": "Dashboard",
+      "download": "Download",
+      "studio": "Studio"
+    },
+    "resources": {
+      "blog": {
+        "description": "Ideas, engineering notes, and product thinking.",
+        "label": "Blog"
+      },
+      "cli": {
+        "description": "Agent-native workflows from your terminal.",
+        "label": "CLI"
+      },
+      "community": {
+        "description": "Connect with the Incremental community.",
+        "label": "Community"
+      },
+      "computer": {
+        "description": "Automate work across your company.",
+        "label": "Computer"
+      },
+      "documentation": {
+        "description": "Learn how to build with Incremental.",
+        "label": "Documentation"
+      },
+      "helpCenter": {
+        "description": "Find answers and guidance for using Incremental.",
+        "label": "Help Center"
+      },
+      "learn": "Learn",
+      "pricing": "Pricing",
+      "releases": {
+        "description": "See what is new in Incremental.",
+        "label": "Releases"
+      },
+      "sdks": {
+        "description": "Typed SDKs to build faster.",
+        "label": "SDKs"
+      },
+      "support": "Support"
+    },
+    "search": {
+      "documentation": "Documentation",
+      "pricing": "Pricing",
+      "releases": "Releases"
+    },
+    "solutions": {
+      "customerService": "Customer Service",
+      "dataAnalysis": "Data Analysis",
+      "engineering": "Engineering",
+      "finance": "Finance",
+      "marketing": "Marketing",
+      "operations": "Operations",
+      "sales": "Sales"
+    },
+    "social": {
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "x": "X",
+      "youtube": "YouTube"
+    },
+    "tools": {
+      "agent": "Incremental Agent",
+      "frameworks": "Frameworks",
+      "plugins": "Incremental Plugins"
+    }
+  },
+  "Pricing": {
+    "actions": {
+      "contactSales": "Contact sales",
+      "startTrial": "Start your trial"
+    },
+    "copy": "Platform is separate from PAYG. Team fits a use case; Business scales; Enterprise adds infra, security, and governance.",
+    "cta": {
+      "description": "Talk to our team about your workflows, infrastructure, and how Incremental can fit into your stack.",
+      "primary": "Get started",
+      "secondary": "Talk to Sales",
+      "title": "Start building with Incremental."
+    },
+    "customerStories": "Customer stories",
+    "faq": {
+      "annual": {
+        "answer": "Yes. Team can be billed monthly or annually. Business is billed annually, and Enterprise contracts are annual or tailored to your procurement requirements.",
+        "question": "Can I pay annually?"
+      },
+      "billing": {
+        "answer": "Compute, model inference, storage, and applicable data-transfer usage are metered separately from platform access. Usage is reported by model, project, workflow, environment, and resource type, with spend controls to help teams forecast and manage consumption.",
+        "question": "Which resources are billed separately?"
+      },
+      "platform": {
+        "answer": "Platform access covers the Incremental capabilities available to your tier, including workspaces, projects, environments, agents, orchestration, models, connectors, and organizational controls.",
+        "question": "What does platform access include?"
+      },
+      "plan": {
+        "answer": "Team is for serious teams building and shipping together. Business is for companies making Incremental part of their operational infrastructure. Enterprise is for organizations that need tailored deployment, governance, security, and support.",
+        "question": "Which Incremental plan is right for my organization?"
+      },
+      "private": {
+        "answer": "Yes. Incremental Cloud is the default, fastest-onboarding option and Incremental operates the infrastructure. Enterprise customers can choose dedicated / isolated cloud for stronger data-isolation or compliance requirements, or customer VPC / self-hosted when compute and data must remain entirely inside their environment. Scope the architecture and operating responsibilities with Enterprise.",
+        "question": "Can Incremental support dedicated cloud or customer-hosted deployments?"
+      },
+      "regional": {
+        "answer": "Yes. Pricing automatically aligns with the selected locale and region. You can update the currency selector when a different regional price applies to your organization.",
+        "question": "Do you support regional pricing and currencies?"
+      },
+      "title": "Frequently asked questions"
+    },
+    "hero": {
+      "description": "Production intelligence with platform access priced separately from PAYG infrastructure.",
+      "title": "Built to scale with you."
+    },
+    "section": {
+      "subtitle": "Start simple, upgrade when your workflow gets more complex.",
+      "title": "Pricing that matches how you build"
+    },
+    "comparison": {
+      "title": "Price the platform. Meter the work.",
+      "description": "Your plan covers access to the Incremental platform. Compute, inference, storage, and workflow consumption are metered separately where appropriate, with spend visibility and controls for production use.",
+      "usageTitle": "Usage rates",
+      "usageDescription": "Incremental will publish usage units and rates only after validating the customer value metric, underlying infrastructure cost, gross-margin target, and reporting model. We will not use a generic per-run price where workloads have materially different model, tool, or compute consumption.",
+      "recommended": "Recommended",
+      "searchFeatures": "Search features",
+      "searchLabel": "Search plan features",
+      "moreInformation": "More information about {feature}",
+      "noMatches": "No matching features.",
+      "sections": {
+        "network": {
+          "description": "Connect systems and route intelligence through the Incremental platform.",
+          "rows": {
+            "serviceConnections": {
+              "label": "Service connections",
+              "tooltip": "Connect your agents and workflows to the systems, tools, and data sources they need to do useful work."
+            },
+            "deploymentRegions": {
+              "label": "Deployment regions"
+            },
+            "trafficControls": {
+              "label": "Traffic controls"
+            },
+            "privateNetworking": {
+              "label": "Private networking",
+              "tooltip": "Private network connectivity is an infrastructure engagement, not a default platform checkbox."
+            }
+          },
+          "title": "Network"
+        },
+        "intelligence": {
+          "description": "Build, orchestrate, evaluate, and operate intelligent software.",
+          "rows": {
+            "agents": {
+              "label": "Agents"
+            },
+            "agentOrchestration": {
+              "label": "Agent orchestration",
+              "tooltip": "Coordinate agents, tools, memory, approvals, and workflow steps into a single operating system for intelligent work."
+            },
+            "supportedModels": {
+              "label": "Supported models"
+            },
+            "modelRouting": {
+              "label": "Model routing"
+            },
+            "agentMemory": {
+              "label": "Agent memory"
+            },
+            "toolCalling": {
+              "label": "Tool calling"
+            },
+            "agentPermissions": {
+              "label": "Agent permissions"
+            },
+            "guardrailsAndPolicies": {
+              "label": "Guardrails and policies"
+            },
+            "workflows": {
+              "label": "Workflows"
+            },
+            "workflowComplexity": {
+              "label": "Workflow complexity"
+            },
+            "workflowExecution": {
+              "label": "Workflow execution",
+              "tooltip": "Execution consumption is metered separately from platform access. Incremental does not publish a generic per-run rate until the customer value metric and unit economics are validated."
+            },
+            "humanInTheLoop": {
+              "label": "Human-in-the-loop"
+            },
+            "evaluation": {
+              "label": "Evaluation"
+            },
+            "continuousEvaluation": {
+              "label": "Continuous evaluation",
+              "tooltip": "Evaluate production behavior over time against accuracy, reliability, tool-use, latency, and cost requirements."
+            },
+            "benchmarks": {
+              "label": "Benchmarks"
+            },
+            "scheduledIntelligence": {
+              "label": "Scheduled intelligence"
+            }
+          },
+          "title": "Intelligence"
+        },
+        "data": {
+          "description": "Connect, organize, and reason over the data your intelligence depends on.",
+          "rows": {
+            "dataConnectors": {
+              "label": "Data connectors"
+            },
+            "dataIngestion": {
+              "label": "Data ingestion"
+            },
+            "dataSynchronization": {
+              "label": "Data synchronization"
+            },
+            "artifactsAndDocuments": {
+              "label": "Artifacts and documents"
+            },
+            "graphsAndOntology": {
+              "label": "Graphs and ontology",
+              "tooltip": "Represent the entities, relationships, and business meaning that agents and applications use to understand your domain."
+            },
+            "semanticDataLayer": {
+              "label": "Semantic data layer"
+            },
+            "dataAccessPolicies": {
+              "label": "Data access policies"
+            },
+            "dataRetention": {
+              "label": "Data retention"
+            },
+            "dataResidency": {
+              "label": "Data residency"
+            },
+            "customDataIntegrations": {
+              "label": "Custom data integrations"
+            }
+          },
+          "title": "Data"
+        },
+        "compute": {
+          "description": "Run agents, applications, and workflows on metered infrastructure.",
+          "rows": {
+            "runtimeCompute": {
+              "label": "Runtime compute"
+            },
+            "aiInference": {
+              "label": "AI inference"
+            },
+            "storage": {
+              "label": "Storage"
+            },
+            "executionEnvironments": {
+              "label": "Execution environments"
+            },
+            "jobsAndWorkloads": {
+              "label": "Jobs and workloads"
+            },
+            "autoscaling": {
+              "label": "Autoscaling"
+            },
+            "dedicatedCapacity": {
+              "label": "Dedicated capacity",
+              "tooltip": "Reserved capacity and performance commitments are scoped around the workload and contracted separately from platform access."
+            },
+            "privateIsolatedDeployment": {
+              "label": "Dedicated / isolated cloud"
+            },
+            "vpcDedicatedInfrastructure": {
+              "label": "Customer VPC / self-hosted"
+            }
+          },
+          "title": "Compute"
+        },
+        "accessSecurity": {
+          "description": "Give people and systems controlled access to intelligent work.",
+          "rows": {
+            "teams": {
+              "label": "Teams",
+              "tooltip": "Teams are organizational groups for collaboration, ownership, permissions, and resource access."
+            },
+            "rbac": {
+              "label": "RBAC"
+            },
+            "apiAccess": {
+              "label": "API access"
+            },
+            "sdksAndWebhooks": {
+              "label": "SDKs and webhooks"
+            },
+            "serviceAccounts": {
+              "label": "Service accounts"
+            },
+            "apiKeysAndSecrets": {
+              "label": "API keys and secrets"
+            },
+            "accessPolicies": {
+              "label": "Access policies"
+            },
+            "ssoSaml": {
+              "label": "SSO / SAML"
+            },
+            "scim": {
+              "label": "SCIM"
+            },
+            "ipAllowlisting": {
+              "label": "IP allowlisting"
+            }
+          },
+          "title": "Access & Security"
+        },
+        "compliance": {
+          "description": "Make governance, procurement, privacy, and reliability requirements explicit.",
+          "rows": {
+            "auditLogs": {
+              "label": "Audit logs"
+            },
+            "governanceControls": {
+              "label": "Governance controls"
+            },
+            "securityReviews": {
+              "label": "Security reviews"
+            },
+            "complianceSupport": {
+              "label": "Compliance support"
+            },
+            "dpaPrivacyAgreements": {
+              "label": "DPA / privacy agreements"
+            },
+            "procurementSupport": {
+              "label": "Procurement support"
+            },
+            "securityDocumentation": {
+              "label": "Security documentation"
+            },
+            "dataProcessingControls": {
+              "label": "Data processing controls"
+            },
+            "contractTerms": {
+              "label": "Contract terms"
+            },
+            "sla": {
+              "label": "SLA"
+            },
+            "customLegalRequirements": {
+              "label": "Custom legal requirements"
+            }
+          },
+          "title": "Compliance"
+        },
+        "buildDeploy": {
+          "description": "Organize work, manage environments, and ship intelligent applications.",
+          "rows": {
+            "workspaces": {
+              "label": "Workspaces"
+            },
+            "projects": {
+              "label": "Projects"
+            },
+            "environments": {
+              "label": "Environments"
+            },
+            "applications": {
+              "label": "Applications"
+            },
+            "apis": {
+              "label": "APIs"
+            },
+            "deployments": {
+              "label": "Deployments"
+            },
+            "deploymentControls": {
+              "label": "Deployment controls"
+            },
+            "deploymentApprovals": {
+              "label": "Deployment approvals"
+            },
+            "rollbacks": {
+              "label": "Rollbacks"
+            },
+            "versioning": {
+              "label": "Versioning"
+            },
+            "secretsAndConfiguration": {
+              "label": "Secrets and configuration"
+            },
+            "customDeployment": {
+              "label": "Custom deployment"
+            },
+            "customIntegrations": {
+              "label": "Custom integrations"
+            },
+            "infrastructureConfiguration": {
+              "label": "Infrastructure configuration"
+            }
+          },
+          "title": "Build & Deploy"
+        },
+        "observability": {
+          "description": "See platform health, intelligence quality, and operational performance together.",
+          "rows": {
+            "platformObservability": {
+              "label": "Platform observability"
+            },
+            "intelligenceObservability": {
+              "label": "Intelligence observability",
+              "tooltip": "Understand agent, model, data, and workflow behavior together, not just infrastructure uptime."
+            },
+            "agentTraces": {
+              "label": "Agent traces"
+            },
+            "workflowTraces": {
+              "label": "Workflow traces"
+            },
+            "modelObservability": {
+              "label": "Model observability"
+            },
+            "evaluationAnalytics": {
+              "label": "Evaluation analytics"
+            },
+            "usageAnalytics": {
+              "label": "Usage analytics"
+            },
+            "costAnalytics": {
+              "label": "Cost analytics"
+            },
+            "performanceAnalytics": {
+              "label": "Performance analytics"
+            },
+            "alerts": {
+              "label": "Alerts"
+            },
+            "dashboards": {
+              "label": "Dashboards"
+            },
+            "logRetention": {
+              "label": "Log retention"
+            },
+            "support": {
+              "label": "Support"
+            },
+            "supportResponse": {
+              "label": "Support response"
+            },
+            "solutionsEngineering": {
+              "label": "Solutions engineering"
+            },
+            "customerSuccessAndOnboarding": {
+              "label": "Customer success and onboarding"
+            },
+            "technicalAccountManager": {
+              "label": "Technical account manager",
+              "tooltip": "A dedicated technical partner for architecture, adoption, and operational success."
+            }
+          },
+          "title": "Observability"
+        }
+      },
+      "values": {
+        "included": "Included",
+        "standard": "Standard",
+        "regional": "Regional",
+        "custom": "Custom",
+        "advanced": "Advanced",
+        "multiStep": "Multi-step",
+        "multiSystem": "Multi-system",
+        "payg": "PAYG",
+        "coreConnectors": "Core connectors",
+        "advancedConnectors": "Advanced connectors",
+        "extended": "Extended",
+        "30Days": "30 days",
+        "1Year": "1 year",
+        "dedicated": "Dedicated",
+        "monthlyAnnual": "Monthly / annual",
+        "annual": "Annual",
+        "annualCustom": "Annual / custom",
+        "unlimitedCustom": "Unlimited / Custom",
+        "developmentProduction": "Development + Production",
+        "developmentStagingProduction": "Development + Staging + Production",
+        "businessHours": "Business hours",
+        "priority": "Priority",
+        "1BusinessDay": "1 business day",
+        "4Hours": "4 hours",
+        "selfServeGuided": "Self-serve + guided",
+        "guided": "Guided",
+        "dedicatedWhiteGlove": "Dedicated / white-glove"
+      }
+    },
+    "summaries": {
+      "team": {
+        "name": "Team",
+        "description": "For teams building and operating production intelligence.",
+        "price": "$5,000 / mo"
+      },
+      "business": {
+        "name": "Business",
+        "description": "For organizations scaling intelligence across teams, systems, products, or deployments.",
+        "price": "$15,000 / mo"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "description": "For private infrastructure, custom security, governance, support, and large-scale commitments.",
+        "price": "Custom"
+      }
+    }
+  },
+  "Brand": {
+    "meta": {
+      "title": "Brand Guidelines",
+      "description": "Resources to represent Incremental consistently and accurately.",
+      "ogDescription": "Resources to represent Incremental consistently and accurately."
+    },
+    "hero": {
+      "title": "Brand Guidelines",
+      "description": "Resources to represent Incremental consistently and accurately",
+      "download": "Download brand assets"
+    },
+    "assets": {
+      "title": "Brand Assets",
+      "description": "The archive includes the Incremental wordmark and symbol in SVG and PNG, light and dark variants, our core colour palette and type scale, and usage notes covering clear space, minimum sizes, and the modifications we ask you to avoid.",
+      "videoLabel": "Incremental brand overview"
+    }
+  },
+  "Solutions": {
+    "imageAlt": "Inbox interface",
+    "teams": {
+      "customerService": {
+        "description": "Connect to your data sources and let AI agents handle customer requests and provide insights.",
+        "eyebrow": "Customer Service",
+        "metaDescription": "Build and operate intelligent customer service workflows with Incremental.",
+        "metaTitle": "AI Customer Service Workflows",
+        "title": "Handle customer requests.",
+        "sections": {
+          "stats": {
+            "title": "What support teams measure after a quarter"
+          },
+          "work": {
+            "title": "What agents close on their own",
+            "description": "The cases that make up most of the queue."
+          },
+          "depth": {
+            "title": "How it stays inside the lines",
+            "description": "The controls that keep an automated reply defensible."
+          },
+          "faq": {
+            "title": "Questions from support leaders",
+            "description": "What teams ask before an agent answers a customer."
+          },
+          "cta": {
+            "title": "Clear the queue you keep rebuilding",
+            "description": "Connect your helpdesk and resolve the first case."
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "47%",
+            "label": "Of tickets closed without a person"
+          },
+          "b": {
+            "value": "2m",
+            "label": "Median time to first response"
+          },
+          "c": {
+            "value": "18%",
+            "label": "Higher satisfaction on resolved cases"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "Refunds and billing",
+            "description": "Resolved end to end, inside your policy.",
+            "detail": "The agent reads the order, the payment record, and the refund policy, issues what qualifies, and escalates what does not."
+          },
+          "b": {
+            "title": "Account and access",
+            "description": "Answered from the systems that hold the truth.",
+            "detail": "Password, seat, and permission questions resolve against your identity provider rather than a stale help article."
+          },
+          "c": {
+            "title": "Escalations",
+            "description": "Handed over with the work already done.",
+            "detail": "When a case needs a person, it arrives with the history read, the policy checked, and a recommended next step."
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "Policy grounding",
+            "content": "Refund, warranty, and eligibility rules load as a source. An agent applies the current version and cites it in the reply."
+          },
+          "b": {
+            "label": "Helpdesk systems",
+            "content": "Your ticketing and service platforms stay the records of truth. Incremental writes back through the same permissions your agents hold."
+          },
+          "c": {
+            "label": "Escalation rules",
+            "content": "Set the conditions that must reach a person. Anything ambiguous, high value, or outside policy routes with its full context."
+          },
+          "d": {
+            "label": "Tone and language",
+            "content": "Replies follow your voice guide and answer in the customer's language, with the same review step you use today."
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "Will customers know they are talking to an agent?",
+            "answer": "That is your call. Disclosure is a setting, and the reply carries whatever your policy requires."
+          },
+          "b": {
+            "question": "What happens to cases it cannot resolve?",
+            "answer": "They escalate with the history already read and the policy already checked, so the person picks up mid problem rather than at the start."
+          },
+          "c": {
+            "question": "How does it learn our policies?",
+            "answer": "You connect them once as a source. Updates reach every future run without retraining anything."
+          },
+          "d": {
+            "question": "Can we start on one queue?",
+            "answer": "Yes. Most teams start with a single high volume queue and expand once the resolution rate holds."
+          }
+        }
+      },
+      "dataAnalysis": {
+        "description": "Connect to your data sources and let AI agents analyze them to answer questions and provide insights.",
+        "eyebrow": "Data Analysis",
+        "metaDescription": "Build and operate intelligent data analysis workflows with Incremental.",
+        "metaTitle": "AI Data Analysis Workflows",
+        "title": "Answer questions from your data.",
+        "sections": {
+          "stats": {
+            "title": "The cost of the question queue",
+            "lead": "Most analytics teams spend more time answering repeat questions than doing the analysis only they can do.",
+            "description": "Incremental answers the repeat questions from your governed models, and leaves the hard ones to your analysts with the context already assembled."
+          },
+          "work": {
+            "title": "How an answer gets made",
+            "description": "Three steps, each one open to inspection."
+          },
+          "depth": {
+            "title": "What keeps an answer trustworthy"
+          },
+          "faq": {
+            "title": "Questions from analytics teams",
+            "description": "What analysts ask before a warehouse is connected."
+          },
+          "cta": {
+            "title": "Put your data within reach",
+            "description": "Connect a warehouse and ask your first question."
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "80%",
+            "label": "Of ad hoc questions answered without an analyst"
+          },
+          "b": {
+            "value": "9x",
+            "label": "Faster turnaround on routine requests"
+          },
+          "c": {
+            "value": "1d",
+            "label": "From question to reviewed answer"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "Ask in plain language",
+            "description": "Questions arrive where people already work and resolve against the same definitions your dashboards use."
+          },
+          "b": {
+            "title": "See the query",
+            "description": "Every answer shows the query it ran, so an analyst can verify it, correct it, or promote it."
+          },
+          "c": {
+            "title": "Promote what works",
+            "description": "A good one off answer becomes a governed metric, so the next person asking gets the reviewed version."
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "Governed models",
+            "content": "Answers read from your semantic layer rather than from raw tables, so a metric means the same thing everywhere it appears."
+          },
+          "b": {
+            "label": "Row level security",
+            "content": "Access follows the policies already defined in your warehouse. An agent can never return data its requester cannot see."
+          },
+          "c": {
+            "label": "Query cost",
+            "content": "Set limits per workspace. Expensive queries are estimated before they run and stopped when they exceed the budget."
+          },
+          "d": {
+            "label": "Provenance",
+            "content": "Every answer cites the model, the query, and the run that produced it, so a number can always be checked."
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "Does this replace our reporting tool?",
+            "answer": "No. It reads the same semantic layer and hands people back to your dashboards for anything visual."
+          },
+          "b": {
+            "question": "How do we stop wrong answers?",
+            "answer": "Answers are grounded in your governed models and always show their query, so an analyst can catch an error before it spreads."
+          },
+          "c": {
+            "question": "Which warehouses are supported?",
+            "answer": "Snowflake, BigQuery, Databricks, and Postgres, through read only connections you control."
+          },
+          "d": {
+            "question": "Who is allowed to ask?",
+            "answer": "Anyone you grant access to. What they can see is decided by the warehouse policies you already maintain."
+          }
+        }
+      },
+      "engineering": {
+        "description": "Give technical teams the tools to build, deploy, observe, and operate AI-native systems across organizations.",
+        "eyebrow": "Engineering",
+        "metaDescription": "Build and operate intelligent engineering workflows with Incremental.",
+        "metaTitle": "AI Engineering Workflows",
+        "title": "Build intelligent infrastructure.",
+        "sections": {
+          "stats": {
+            "title": "What the platform removes",
+            "description": "The parts of an AI system that are infrastructure rather than product."
+          },
+          "work": {
+            "title": "What you build with",
+            "description": "The surfaces your team works in every day."
+          },
+          "depth": {
+            "title": "How it runs",
+            "description": "The guarantees underneath every workflow you deploy."
+          },
+          "related": {
+            "title": "Engineering teams usually read these next"
+          },
+          "faq": {
+            "title": "Questions from engineering teams",
+            "description": "What developers ask before the first deploy."
+          },
+          "cta": {
+            "title": "Deploy your first workflow",
+            "description": "Read the documentation, or start building in the dashboard."
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "0",
+            "label": "Servers for your team to operate"
+          },
+          "b": {
+            "value": "90%",
+            "label": "Less glue code per integration"
+          },
+          "c": {
+            "value": "12x",
+            "label": "Faster path from prototype to production"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "CLI and SDKs",
+            "description": "Build locally, run the same code in production, and script anything the dashboard can do."
+          },
+          "b": {
+            "title": "Workflow primitives",
+            "description": "Durable steps, retries, and human checkpoints as ordinary code rather than a diagramming exercise."
+          },
+          "c": {
+            "title": "Connectors",
+            "description": "Typed clients for the systems you already run, with auth, pagination, and rate limits handled."
+          },
+          "d": {
+            "title": "Policy as code",
+            "description": "Permissions and limits live beside the workflow they govern and ship through the same review."
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "Runtime isolation",
+            "content": "Every run gets a fresh sandbox with pinned dependencies and the limits you set. Nothing carries over between runs."
+          },
+          "b": {
+            "label": "Deployment",
+            "content": "Ship from the pipeline you already have. Versions are immutable, rollbacks are a pointer change, and previews get their own environment."
+          },
+          "c": {
+            "label": "State and durability",
+            "content": "Long running work survives restarts. A workflow resumes from its last committed step rather than from the beginning."
+          },
+          "d": {
+            "label": "Secrets and access",
+            "content": "Credentials resolve at run time from your secret store and never land in code, logs, or traces."
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "Which languages are supported?",
+            "answer": "TypeScript and Python today, with the same runtime semantics in both."
+          },
+          "b": {
+            "question": "Can we run this in our own cloud?",
+            "answer": "Yes. Enterprise deployments run in your account, with the control plane managed for you."
+          },
+          "c": {
+            "question": "How does local development work?",
+            "answer": "The command line tool runs the same runtime on your machine, so a workflow behaves the same before you deploy it."
+          },
+          "d": {
+            "question": "Is there an escape hatch?",
+            "answer": "Every abstraction has one. Drop to plain code at any step, and call your own services directly."
+          }
+        }
+      },
+      "finance": {
+        "description": "Connect to your data sources and let AI agents handle financial tasks and provide insights.",
+        "eyebrow": "Finance",
+        "metaDescription": "Build and operate intelligent finance workflows with Incremental.",
+        "metaTitle": "AI Finance Workflows",
+        "title": "Automate your accounting.",
+        "sections": {
+          "stats": {
+            "title": "What finance teams see in the first quarter"
+          },
+          "work": {
+            "title": "How the work changes",
+            "description": "Four habits that replace the month end scramble."
+          },
+          "depth": {
+            "title": "What Incremental enforces"
+          },
+          "faq": {
+            "title": "Questions from controllers",
+            "description": "What finance teams ask before an agent touches the ledger."
+          },
+          "cta": {
+            "title": "Close the month on evidence",
+            "description": "Connect your ledger and put the first control in place."
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "6d",
+            "label": "Shorter monthly close"
+          },
+          "b": {
+            "value": "94%",
+            "label": "Reconciliations matched without a person"
+          },
+          "c": {
+            "value": "40%",
+            "label": "Less time spent in spreadsheets"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "Reconcile continuously",
+            "description": "Match transactions against bank and ledger records as they arrive, instead of in a scramble at month end."
+          },
+          "b": {
+            "title": "Explain every variance",
+            "description": "When a figure moves, the agent reports what drove it and links the records behind the change."
+          },
+          "c": {
+            "title": "Chase with evidence",
+            "description": "Collections outreach reads the actual invoice, payment history, and terms before it writes a word."
+          },
+          "d": {
+            "title": "Keep the trail complete",
+            "description": "Every automated entry carries its inputs, its rule, and its approver, so audit becomes a query rather than a project."
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "Segregation of duties",
+            "content": "An agent that prepares an entry cannot approve it. Approval routes to a person with the right role in your identity provider."
+          },
+          "b": {
+            "label": "Materiality thresholds",
+            "content": "Set the amount above which a run stops for review. Anything under it posts automatically and still keeps its evidence."
+          },
+          "c": {
+            "label": "Source documents",
+            "content": "Invoices, statements, and contracts stay linked to the entries they support, so a reviewer never hunts for the backup."
+          },
+          "d": {
+            "label": "Period controls",
+            "content": "Closed periods reject writes. An agent that tries to post to a locked month fails loudly rather than adjusting quietly."
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "Can an agent post to our general ledger?",
+            "answer": "Yes, within the limits you set. Above your threshold it prepares the entry and waits for approval."
+          },
+          "b": {
+            "question": "How do we prove this to an auditor?",
+            "answer": "Every run keeps its inputs, the rule it applied, and who approved it, exported as a record your auditor can read."
+          },
+          "c": {
+            "question": "Which systems does it read?",
+            "answer": "Your ERP, banking feeds, billing platform, and document store connect as sources and stay the records of truth."
+          },
+          "d": {
+            "question": "What if a rule changes mid period?",
+            "answer": "Rules are versioned. A run always reports which version it applied, so history stays interpretable."
+          }
+        }
+      },
+      "marketing": {
+        "description": "Connect to your data sources and let AI agents handle marketing tasks and provide insights.",
+        "eyebrow": "Marketing",
+        "metaDescription": "Build and operate intelligent marketing workflows with Incremental.",
+        "metaTitle": "AI Marketing Workflows",
+        "title": "Automate your marketing.",
+        "sections": {
+          "stats": {
+            "title": "Where the time goes back",
+            "lead": "Marketing teams lose most of a week to assembling context that already exists somewhere in the business.",
+            "description": "Incremental removes that step. Briefs, drafts, and reports start from connected sources, so the work begins at judgement rather than at collection."
+          },
+          "work": {
+            "title": "What marketing teams ship faster",
+            "description": "The three places a campaign usually stalls."
+          },
+          "depth": {
+            "title": "What keeps it on brand",
+            "description": "The sources and checkpoints every draft passes through."
+          },
+          "faq": {
+            "title": "Questions from marketing leads",
+            "description": "What teams ask before an agent drafts anything."
+          },
+          "cta": {
+            "title": "Start campaigns with context",
+            "description": "Connect your sources and brief your first agent."
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "4d",
+            "label": "Saved on every campaign brief"
+          },
+          "b": {
+            "value": "2x",
+            "label": "More experiments run per quarter"
+          },
+          "c": {
+            "value": "71%",
+            "label": "Of reporting assembled automatically"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "Briefs that start from data",
+            "description": "Campaign briefs open with real audience, product, and performance context instead of a blank page."
+          },
+          "b": {
+            "title": "Content that stays on message",
+            "description": "Agents draft against your positioning and tone, and flag anything that drifts from approved claims."
+          },
+          "c": {
+            "title": "Reporting without the pull",
+            "description": "Performance summaries assemble themselves from the same sources your dashboards read."
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "Brand and claims",
+            "content": "Approved positioning, tone, and legal claims load as a source. Drafts that contradict them are flagged before review."
+          },
+          "b": {
+            "label": "Analytics and attribution",
+            "content": "Warehouse tables, product analytics, and ad platforms connect read only, so reporting reconciles with what your team already trusts."
+          },
+          "c": {
+            "label": "Content systems",
+            "content": "Your content platform, asset library, and localisation tools accept writes through the same permissions your marketers hold."
+          },
+          "d": {
+            "label": "Review and publication",
+            "content": "Nothing publishes without the approval step you define. Drafts sit in the review queue your team already uses."
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "Does this publish content unsupervised?",
+            "answer": "No. Drafts route to whoever approves them today. Incremental shortens the path to a good draft rather than removing the reviewer."
+          },
+          "b": {
+            "question": "How does it know our positioning?",
+            "answer": "You load it once as a source. Every run reads the current version, so an update reaches every draft at once."
+          },
+          "c": {
+            "question": "Can we keep our existing stack?",
+            "answer": "Yes. Incremental connects to your content platform, analytics, and ad tools rather than replacing them."
+          },
+          "d": {
+            "question": "What about other languages?",
+            "answer": "Agents work in the locales you configure and route to the localisation review you already run."
+          }
+        }
+      },
+      "operations": {
+        "description": "Connect to your data sources and let AI agents handle operational tasks and provide insights.",
+        "eyebrow": "Operations",
+        "metaDescription": "Build and operate intelligent operations workflows with Incremental.",
+        "metaTitle": "AI Operations Workflows",
+        "title": "Automate your operations.",
+        "sections": {
+          "stats": {
+            "title": "What operations teams recover"
+          },
+          "work": {
+            "title": "Where the work actually goes",
+            "description": "The two gaps that swallow an operations week."
+          },
+          "depth": {
+            "title": "What every workflow declares"
+          },
+          "faq": {
+            "title": "Questions from operations leads",
+            "description": "What teams ask before the first process moves."
+          },
+          "cta": {
+            "title": "Automate the middle of the process",
+            "description": "Pick one workflow and put it into production."
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "58%",
+            "label": "Of requests resolved without a handoff"
+          },
+          "b": {
+            "value": "5d",
+            "label": "Saved per person each month"
+          },
+          "c": {
+            "value": "3x",
+            "label": "Faster turnaround on exceptions"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "The handoffs between systems",
+            "description": "A request that crosses purchasing, ticketing, and approval stops being a person copying fields between three tabs."
+          },
+          "b": {
+            "title": "The exceptions nobody owns",
+            "description": "Cases outside the happy path get picked up, researched, and routed with their context already attached."
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "Process boundaries",
+            "content": "Each workflow declares the systems it may touch and the actions it may take. Anything outside the declaration fails rather than improvises."
+          },
+          "b": {
+            "label": "Human checkpoints",
+            "content": "Insert an approval anywhere in a run. The agent pauses, hands over the full context, and resumes from the decision."
+          },
+          "c": {
+            "label": "Retry and recovery",
+            "content": "A step that fails retries under your policy and reports where it stopped, so a stalled run is visible rather than silent."
+          },
+          "d": {
+            "label": "Ownership",
+            "content": "Every workflow has an owner and an escalation path, so an exception reaches a person rather than a queue."
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "Which processes should we start with?",
+            "answer": "The ones that cross two or three systems and run often. They are the easiest to describe and the fastest to prove."
+          },
+          "b": {
+            "question": "Do we have to model everything first?",
+            "answer": "No. Start with one workflow. The context layer grows as you connect the systems that workflow needs."
+          },
+          "c": {
+            "question": "What happens to our existing automations?",
+            "answer": "They keep running. Incremental calls them where useful rather than asking you to rebuild them."
+          },
+          "d": {
+            "question": "How do we know a run did the right thing?",
+            "answer": "Every run keeps its inputs, decisions, and writes, so you can replay what happened step by step."
+          }
+        }
+      },
+      "sales": {
+        "description": "Connect to your data sources and let AI agents handle sales tasks and provide insights.",
+        "eyebrow": "Sales",
+        "metaDescription": "Build and operate intelligent sales workflows with Incremental.",
+        "metaTitle": "AI Sales Workflows",
+        "title": "Automate your sales.",
+        "sections": {
+          "stats": {
+            "title": "Pipeline you can actually see",
+            "description": "The numbers reps report and the records they update stop being two different things."
+          },
+          "work": {
+            "title": "What sales runs on Incremental",
+            "description": "Three jobs that eat a rep's week, handled against your own records."
+          },
+          "depth": {
+            "title": "How it fits your stack",
+            "description": "What Incremental connects to, and what it is allowed to do there."
+          },
+          "faq": {
+            "title": "Questions from sales leaders",
+            "description": "What teams ask before they connect a CRM."
+          },
+          "cta": {
+            "title": "Give your reps their week back",
+            "description": "Connect your CRM and ship your first sales agent."
+          }
+        },
+        "stats": {
+          "a": {
+            "value": "62%",
+            "label": "Less time spent updating the CRM by hand"
+          },
+          "b": {
+            "value": "3x",
+            "label": "More accounts covered per rep"
+          },
+          "c": {
+            "value": "24h",
+            "label": "From new lead to qualified handoff"
+          }
+        },
+        "work": {
+          "a": {
+            "title": "Research that stays current",
+            "description": "Agents pull account history, product usage, and open tickets into one brief before every call."
+          },
+          "b": {
+            "title": "Follow up that never drops",
+            "description": "Every commitment made on a call becomes a tracked task with an owner and a date."
+          },
+          "c": {
+            "title": "Forecasts built on evidence",
+            "description": "Pipeline reviews read the same records your reps update, so the numbers reconcile."
+          }
+        },
+        "depth": {
+          "a": {
+            "label": "CRM systems",
+            "content": "Salesforce, HubSpot, and Dynamics connect as records of truth. Incremental reads and writes through the same permissions your reps already hold."
+          },
+          "b": {
+            "label": "Territory and access",
+            "content": "Reps see only the accounts they own. Role assignments come from your identity provider and apply to every agent run."
+          },
+          "c": {
+            "label": "Call and email data",
+            "content": "Conversation platforms, shared inboxes, and calendars feed the context layer, so an agent knows what was already said."
+          },
+          "d": {
+            "label": "Audit and attribution",
+            "content": "Every field an agent writes keeps the run that produced it, so a changed number is always traceable to its source."
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "Will agents write to our CRM without review?",
+            "answer": "Only where you allow it. Each action is scoped by policy, and anything above your threshold waits for a person to approve."
+          },
+          "b": {
+            "question": "How long does a first workflow take?",
+            "answer": "Most teams connect a CRM and ship a working research agent within a week."
+          },
+          "c": {
+            "question": "Does this replace our sales engagement tools?",
+            "answer": "No. Incremental connects to them and acts on the same records, so your reps keep the tools they use."
+          },
+          "d": {
+            "question": "What happens when an agent gets it wrong?",
+            "answer": "Every run keeps its inputs and decisions, so you can inspect what it read, correct the source, and run it again."
+          }
+        }
+      }
+    }
+  },
+  "Features": {
+    "data": {
+      "description": "Ingest and organize data from across your enterprise into a structured, governed foundation for intelligent systems.",
+      "eyebrow": "Data",
+      "metaDescription": "Ingest and organize data from across your enterprise into a structured, governed foundation for AI agents, applications, and intelligent workflows.",
+      "metaTitle": "Unified Enterprise Data for AI",
+      "title": "Your enterprise data, unified.",
+      "ogTitle": "Enterprise Data",
+      "ogDescription": "Your enterprise data, unified",
+      "capabilities": {
+        "connectors": {
+          "title": "Managed connectors",
+          "description": "Sync records from the systems you already run, continuously and incrementally."
+        },
+        "warehouse": {
+          "title": "Warehouse-native",
+          "description": "Read from your warehouse in place, without copying data you have already modelled."
+        },
+        "lineage": {
+          "title": "Schema and lineage",
+          "description": "Every field's type, source, and last sync are tracked and queryable."
+        },
+        "resolution": {
+          "title": "Entity resolution",
+          "description": "Records describing the same thing are matched and merged against your ontology."
+        },
+        "quality": {
+          "title": "Quality checks",
+          "description": "Validation runs on every sync, so bad records surface before an agent ever reads them."
+        },
+        "governed": {
+          "title": "Governed at the source",
+          "description": "Each source inherits the permissions of the entities it feeds, rather than a second copy of the rules."
+        }
+      },
+      "specs": {
+        "sources": {
+          "label": "Sources",
+          "content": "Managed connectors, your warehouse, object storage, and the API."
+        },
+        "sync": {
+          "label": "Sync modes",
+          "content": "Full refresh, incremental, and change-data-capture where the source supports it."
+        },
+        "freshness": {
+          "label": "Freshness",
+          "content": "Per-source schedules down to minutes, with backfill on demand."
+        },
+        "formats": {
+          "label": "Formats",
+          "content": "Structured records, JSON, CSV, Parquet, and unstructured documents."
+        },
+        "lineage": {
+          "label": "Lineage",
+          "content": "Field-level source, transform, and last-sync timestamp."
+        },
+        "volume": {
+          "label": "Volume",
+          "content": "Millions of records per source, with per-source rate limits you control."
+        }
+      },
+      "faq": {
+        "move": {
+          "question": "Does our data have to move?",
+          "answer": "No. You can read from your warehouse in place, or sync into Incremental. The choice is per source."
+        },
+        "duplicates": {
+          "question": "How are duplicate records handled?",
+          "answer": "Records resolve against your ontology, so the same customer from three systems becomes one entity with every source still traceable."
+        },
+        "backfill": {
+          "question": "Can we backfill history?",
+          "answer": "Yes, on demand, per source and per time range."
+        },
+        "first": {
+          "question": "Which source should we connect first?",
+          "answer": "The one that already answers a question people ask often. It gives you something to check the results against on day one."
+        },
+        "quality": {
+          "question": "How do we catch bad data before it spreads?",
+          "answer": "Validation runs on every sync and flags failing records before they resolve into entities."
+        },
+        "cost": {
+          "question": "What does keeping a source in sync cost?",
+          "answer": "Only changed records move after the first load, so steady-state syncs stay small even on large sources."
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "From source system to resolved record",
+          "description": "Records arrive from connectors or are read in place from your warehouse, then resolve against your ontology into entities you can act on."
+        },
+        "capabilities": {
+          "title": "What unified data makes possible",
+          "description": "What changes when every system agrees on what a customer is."
+        },
+        "specs": {
+          "title": "What the data layer supports"
+        },
+        "faq": {
+          "title": "Before you connect a system",
+          "description": "What data teams ask before pointing a source at Incremental."
+        },
+        "cta": {
+          "title": "Connect your first source",
+          "description": "Start with one system. Add the rest once you can see it resolving.",
+          "primary": "Connect a source",
+          "secondary": "Data docs"
+        }
+      },
+      "how": {
+        "connect": {
+          "title": "Connect the source",
+          "description": "Sync continuously, or read from your warehouse in place without copying anything.",
+          "media": "Connector setup"
+        },
+        "resolve": {
+          "title": "Resolve to entities",
+          "description": "Records describing the same thing are matched and merged, with each source still traceable.",
+          "media": "Entity resolution"
+        },
+        "serve": {
+          "title": "Put it to work",
+          "description": "Agents and workflows read resolved entities, never raw tables, so answers stay consistent.",
+          "media": "Entity in use"
+        }
+      }
+    },
+    "observability": {
+      "description": "Understand your business performance with real-time insights, powerful analytics, and complete visibility.",
+      "eyebrow": "Observability",
+      "metaDescription": "Monitor business performance, agent activity, and workflow outcomes in real time with powerful analytics and complete operational visibility.",
+      "metaTitle": "AI Observability & Real-Time Insights",
+      "title": "Know what's happening, in real time.",
+      "ogTitle": "Observability",
+      "ogDescription": "Know what's happening, in real time",
+      "capabilities": {
+        "traces": {
+          "title": "Run traces",
+          "description": "Every step, input, output, and decision is recorded for each run."
+        },
+        "metrics": {
+          "title": "Live metrics",
+          "description": "Throughput, latency, error rate, and cost, tracked per workflow, agent, and version."
+        },
+        "alerting": {
+          "title": "Alerting",
+          "description": "Threshold and anomaly alerts routed into the on-call channels you already use."
+        },
+        "evidence": {
+          "title": "Evidence trails",
+          "description": "Follow any output back to the records and prompts that produced it."
+        },
+        "compare": {
+          "title": "Compare versions",
+          "description": "Put two versions of an agent or workflow side by side and see which one actually performs better."
+        },
+        "cost": {
+          "title": "Cost attribution",
+          "description": "Spend is recorded per run and rolls up by version and by team, so the bill maps to the work that caused it."
+        }
+      },
+      "specs": {
+        "traces": {
+          "label": "Traces",
+          "content": "Per-run step timeline with inputs, outputs, and token usage."
+        },
+        "metrics": {
+          "label": "Metrics",
+          "content": "Throughput, latency percentiles, error rate, and cost per version."
+        },
+        "retention": {
+          "label": "Retention",
+          "content": "Configurable per workspace, with export for longer-term storage."
+        },
+        "alerting": {
+          "label": "Alerting",
+          "content": "Thresholds and anomalies, delivered to Slack, email, or webhook."
+        },
+        "export": {
+          "label": "Export",
+          "content": "Stream runs and metrics to your warehouse or an OTLP endpoint."
+        },
+        "sampling": {
+          "label": "Sampling",
+          "content": "Full capture by default, with per-workflow sampling for high-volume runs."
+        }
+      },
+      "faq": {
+        "why": {
+          "question": "Can I see why an agent answered the way it did?",
+          "answer": "Yes. Each run keeps the prompts, retrieved context, tool calls, and outputs behind the result."
+        },
+        "existing": {
+          "question": "Does this work with our existing monitoring?",
+          "answer": "Yes, through OTLP export and webhooks into your on-call tooling."
+        },
+        "retention": {
+          "question": "How long is run data kept?",
+          "answer": "Retention is configurable per workspace, and runs can be exported for longer-term storage."
+        },
+        "overhead": {
+          "question": "Does tracing slow runs down?",
+          "answer": "Traces are written alongside execution, and high-volume workflows can be sampled per workflow."
+        },
+        "sensitive": {
+          "question": "Can we keep sensitive values out of traces?",
+          "answer": "Yes. Fields can be redacted at capture, so they never reach the stored trace."
+        },
+        "cost": {
+          "question": "Can we see what a run cost?",
+          "answer": "Yes. Token usage and spend are recorded per run and roll up by version and by team."
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "Every run, recorded and explainable",
+          "description": "Each run writes a full trace as it executes. Metrics roll up from those traces, so what you measure and what you debug are the same record."
+        },
+        "capabilities": {
+          "title": "What visibility actually buys you",
+          "description": "The difference between knowing something broke and knowing why."
+        },
+        "specs": {
+          "title": "What gets recorded"
+        },
+        "faq": {
+          "title": "Before you rely on it",
+          "description": "What teams ask before making this their source of truth for production."
+        },
+        "cta": {
+          "title": "See your first run end to end",
+          "description": "Run something, then follow it step by step from trigger to output.",
+          "primary": "Start tracing",
+          "secondary": "Observability docs"
+        }
+      },
+      "how": {
+        "trace": {
+          "title": "Trace every step",
+          "description": "Inputs, outputs, tool calls, and token usage, captured as the run executes.",
+          "media": "Run trace"
+        },
+        "alert": {
+          "title": "Catch it early",
+          "description": "Thresholds and anomalies routed to the on-call channels you already watch.",
+          "media": "Alert configuration"
+        }
+      }
+    },
+    "ontology": {
+      "description": "Unify your data, systems, people, and processes into a living model that AI can understand, reason over, and act on.",
+      "eyebrow": "Ontology",
+      "metaDescription": "Unify your data, systems, people, and processes in a living business model that AI agents and applications can understand, reason over, and act on.",
+      "metaTitle": "Enterprise Ontology for AI",
+      "title": "A living model of your business",
+      "ogTitle": "Ontology",
+      "ogDescription": "A living model of your business",
+      "capabilities": {
+        "vocabulary": {
+          "title": "A shared vocabulary",
+          "description": "Define the entities, attributes, and relationships your teams and your agents both use."
+        },
+        "mapping": {
+          "title": "Mapped to source systems",
+          "description": "Each entity points back at the records and fields it was built from."
+        },
+        "evolution": {
+          "title": "Evolves safely",
+          "description": "Schema changes are versioned and validated against the data you already hold."
+        },
+        "agents": {
+          "title": "Queryable by agents",
+          "description": "Agents resolve references through the ontology instead of guessing at table names."
+        },
+        "permissions": {
+          "title": "Permissions travel with it",
+          "description": "Access rules live on the entity, so every tool that reads it enforces the same boundary."
+        },
+        "reuse": {
+          "title": "Defined once, used everywhere",
+          "description": "The same definitions serve the interface, the API, your workflows, and your agents."
+        }
+      },
+      "specs": {
+        "entities": {
+          "label": "Entities",
+          "content": "Typed objects with attributes, relationships, and identifiers."
+        },
+        "mapping": {
+          "label": "Mapping",
+          "content": "Field-level mapping from every connected source."
+        },
+        "resolution": {
+          "label": "Resolution",
+          "content": "Deterministic and probabilistic matching rules, per entity."
+        },
+        "versioning": {
+          "label": "Versioning",
+          "content": "Schema versions, validated against existing records before they take effect."
+        },
+        "access": {
+          "label": "Access",
+          "content": "Read through the API, the SDKs, and agent tool calls."
+        },
+        "relationships": {
+          "label": "Relationships",
+          "content": "Typed links between entities, traversable from queries and tool calls."
+        }
+      },
+      "faq": {
+        "upfront": {
+          "question": "Do we have to model everything up front?",
+          "answer": "No. Start with the entities you act on most often and extend the model as you go."
+        },
+        "warehouse": {
+          "question": "How is this different from our warehouse data model?",
+          "answer": "The ontology adds resolution and permissions, and it is what agents query, so answers stay consistent across tools."
+        },
+        "changes": {
+          "question": "What happens when a source system changes?",
+          "answer": "Mappings are validated on every sync, so breaking changes surface before they reach production."
+        },
+        "owner": {
+          "question": "Who owns the model?",
+          "answer": "Usually a small group who understand the business definitions, with changes reviewed the way code is reviewed."
+        },
+        "disagree": {
+          "question": "What if two teams disagree on a definition?",
+          "answer": "The model brings the disagreement into the open and records which definition won, instead of leaving both alive in separate tools."
+        },
+        "size": {
+          "question": "How large does the model need to get?",
+          "answer": "It grows with your business. Entities are added when you need them rather than modelled up front."
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "One model your teams and agents share",
+          "description": "You define entities once. People query them in the interface, agents resolve them through tool calls, and both get the same answer."
+        },
+        "capabilities": {
+          "title": "What a shared model prevents",
+          "description": "The failures that disappear once everything agrees on the same definitions."
+        },
+        "specs": {
+          "title": "What the model supports"
+        },
+        "faq": {
+          "title": "Before you model",
+          "description": "What teams ask before committing to a shared definition layer."
+        },
+        "cta": {
+          "title": "Model your first entity",
+          "description": "Start with the one you act on most. Extend it as you learn.",
+          "primary": "Start modelling",
+          "secondary": "Ontology docs"
+        }
+      },
+      "how": {
+        "define": {
+          "title": "Define the entity",
+          "description": "Attributes, relationships, and identifiers, versioned and validated before they take effect.",
+          "media": "Entity schema"
+        },
+        "query": {
+          "title": "Query it from anywhere",
+          "description": "The same model answers the interface, the API, and an agent's tool call.",
+          "media": "Agent tool call"
+        }
+      }
+    },
+    "runtime": {
+      "description": "A secure execution layer for deploying agents, applications, and automated workflows with reliability, isolation, and scale that enterprises demand.",
+      "eyebrow": "Runtime",
+      "metaDescription": "Deploy agents, applications, and automated workflows on a secure execution layer built for enterprise reliability, isolation, and scale.",
+      "metaTitle": "Enterprise AI Runtime",
+      "title": "Run intelligence at scale.",
+      "ogTitle": "Runtime",
+      "ogDescription": "Run intelligence at scale",
+      "capabilities": {
+        "isolation": {
+          "title": "Isolated execution",
+          "description": "Every run executes in its own sandbox, with no shared filesystem or network state between workspaces."
+        },
+        "scale": {
+          "title": "Elastic scale",
+          "description": "Capacity follows demand. Concurrent runs scale up and back down without pre-provisioning."
+        },
+        "dependencies": {
+          "title": "Managed dependencies",
+          "description": "Pin runtime and package versions per project so builds stay reproducible."
+        },
+        "deploys": {
+          "title": "Zero-downtime deploys",
+          "description": "New versions roll out behind the scenes. In-flight runs finish on the version they started."
+        },
+        "traced": {
+          "title": "Traced without extra work",
+          "description": "Every run emits a full trace with no instrumentation added to your code."
+        },
+        "secrets": {
+          "title": "Managed secrets",
+          "description": "Credentials are injected at run time and never stored in your project files."
+        }
+      },
+      "specs": {
+        "languages": {
+          "label": "Languages",
+          "content": "TypeScript and Python, with pinned runtime versions."
+        },
+        "isolation": {
+          "label": "Isolation",
+          "content": "Per-run sandbox with no shared state between workspaces."
+        },
+        "limits": {
+          "label": "Limits",
+          "content": "Configurable timeout, memory, and concurrency per project."
+        },
+        "networking": {
+          "label": "Networking",
+          "content": "Outbound allowlists, plus private connectivity into your own network."
+        },
+        "regions": {
+          "label": "Regions",
+          "content": "Choose the region a project runs in for data residency."
+        },
+        "secrets": {
+          "label": "Secrets",
+          "content": "Encrypted at rest, injected per run, and scoped to a single project."
+        }
+      },
+      "faq": {
+        "servers": {
+          "question": "Do I have to manage servers?",
+          "answer": "No. You deploy code and set limits. Capacity, patching, and scaling are handled for you."
+        },
+        "private": {
+          "question": "Can runs reach systems inside our network?",
+          "answer": "Yes, over private connectivity, with an outbound allowlist you control."
+        },
+        "deploy": {
+          "question": "What happens to running work during a deploy?",
+          "answer": "In-flight runs finish on the version they started. New runs pick up the new version."
+        },
+        "cold": {
+          "question": "Do runs have a cold start?",
+          "answer": "Capacity is kept warm for active projects, so most runs begin immediately."
+        },
+        "local": {
+          "question": "Can we run the same code locally?",
+          "answer": "Yes. The SDK runs a project on your machine against a development workspace."
+        },
+        "image": {
+          "question": "Can we bring our own container image?",
+          "answer": "Projects pin their own runtime and package versions. Talk to us if you need a fully custom image."
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "Where your code actually runs",
+          "description": "Each run gets a fresh sandbox, its pinned dependencies, and the limits you set. Nothing carries over between runs."
+        },
+        "capabilities": {
+          "title": "What the runtime handles for you",
+          "description": "The operational work you no longer have to staff."
+        },
+        "specs": {
+          "title": "What the runtime provides"
+        },
+        "faq": {
+          "title": "Before you deploy",
+          "description": "What platform teams check before running production work here."
+        },
+        "cta": {
+          "title": "Deploy your first project",
+          "description": "Push code, set your limits, and let capacity follow demand.",
+          "primary": "Start deploying",
+          "secondary": "Runtime docs"
+        }
+      },
+      "how": {
+        "deploy": {
+          "title": "Deploy your code",
+          "description": "Pin the runtime and packages per project so every build is reproducible.",
+          "media": "Project settings"
+        },
+        "execute": {
+          "title": "Run it isolated",
+          "description": "Each run gets its own sandbox, scaled to demand and bounded by your limits.",
+          "media": "Execution sandbox"
+        }
+      }
+    },
+    "security": {
+      "description": "Protect your data, applications, agents, and infrastructure with enterprise-grade security, granular access controls, and governance.",
+      "eyebrow": "Security",
+      "metaDescription": "Protect your data, applications, agents, and infrastructure with enterprise-grade security, granular access controls, and governance.",
+      "metaTitle": "Enterprise AI Security & Governance",
+      "title": "Security built into every layer.",
+      "ogTitle": "Security",
+      "ogDescription": "Security built into every layer",
+      "capabilities": {
+        "access": {
+          "title": "Granular access control",
+          "description": "Role and attribute-based permissions, enforced down to the entity and field."
+        },
+        "audit": {
+          "title": "Full audit trail",
+          "description": "Every read, write, and run is attributed to an identity and recorded immutably."
+        },
+        "residency": {
+          "title": "Data residency",
+          "description": "Choose the region where your data is stored and processed."
+        },
+        "private": {
+          "title": "Private connectivity",
+          "description": "Reach your systems over private networking, without exposing them publicly."
+        },
+        "isolation": {
+          "title": "Tenant isolation",
+          "description": "Workspaces share no data, no filesystem, and no execution state."
+        },
+        "assurance": {
+          "title": "Independent assurance",
+          "description": "Third-party testing and reporting your reviewers can request as part of an evaluation."
+        }
+      },
+      "specs": {
+        "authn": {
+          "label": "Authentication",
+          "content": "SSO via SAML and OIDC, with SCIM provisioning."
+        },
+        "authz": {
+          "label": "Authorization",
+          "content": "Role and attribute-based, enforced at the entity and field level."
+        },
+        "audit": {
+          "label": "Audit",
+          "content": "Immutable, exportable log of reads, writes, and runs."
+        },
+        "encryption": {
+          "label": "Encryption",
+          "content": "In transit and at rest, with customer-managed keys available."
+        },
+        "residency": {
+          "label": "Residency",
+          "content": "Storage and processing region, selected per workspace."
+        },
+        "compliance": {
+          "label": "Compliance",
+          "content": "Reports and completed questionnaires available under NDA during evaluation."
+        }
+      },
+      "faq": {
+        "training": {
+          "question": "Is our data used to train models?",
+          "answer": "No. Your data is not used to train foundation models."
+        },
+        "sso": {
+          "question": "Do you support SSO and SCIM?",
+          "answer": "Yes. SAML and OIDC for sign-in, SCIM for provisioning and de-provisioning."
+        },
+        "regions": {
+          "question": "Can we restrict which regions process our data?",
+          "answer": "Yes. Storage and processing regions are selected per workspace."
+        },
+        "incident": {
+          "question": "How are security incidents handled?",
+          "answer": "You are notified under the terms of your agreement, with a written account of scope and remediation."
+        },
+        "exit": {
+          "question": "What happens to our data if we leave?",
+          "answer": "It is exported on request and deleted on the schedule set in your agreement."
+        },
+        "subprocessors": {
+          "question": "Who else can touch our data?",
+          "answer": "A current subprocessor list is published, and you are notified before it changes."
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "Enforced at the layer that reads the data",
+          "description": "Permissions are evaluated where records are resolved, not bolted onto the interface, so an agent and a person hit exactly the same boundary."
+        },
+        "capabilities": {
+          "title": "What your security team gets",
+          "description": "The controls reviewers ask about, available on day one."
+        },
+        "specs": {
+          "title": "Controls and standards"
+        },
+        "faq": {
+          "title": "Before your review",
+          "description": "The questions that come up in every security and procurement review."
+        },
+        "cta": {
+          "title": "Talk to us about your requirements",
+          "description": "Bring your review checklist. We will work through it with you.",
+          "primary": "Contact sales",
+          "secondary": "Security docs"
+        }
+      },
+      "how": {
+        "control": {
+          "title": "Set the boundary",
+          "description": "Role and attribute rules, defined once and enforced down to the field.",
+          "media": "Permission rules"
+        },
+        "prove": {
+          "title": "Prove it afterwards",
+          "description": "An immutable, exportable record of every read, write, and run.",
+          "media": "Audit log"
+        }
+      }
+    },
+    "storage": {
+      "description": "Securely store and manage the data, artifacts, and knowledge powering your intelligent systems.",
+      "eyebrow": "Storage",
+      "metaDescription": "Securely store and manage the data, artifacts, and knowledge that power your intelligent systems, agents, and applications.",
+      "metaTitle": "Storage for AI Data & Knowledge",
+      "title": "Store everything your AI needs.",
+      "ogTitle": "Storage",
+      "ogDescription": "Store everything your AI needs",
+      "capabilities": {
+        "artifacts": {
+          "title": "Documents and artifacts",
+          "description": "Keep contracts, reports, and run outputs beside the entities they belong to."
+        },
+        "versions": {
+          "title": "Versioned by default",
+          "description": "Every write creates a version. Nothing is overwritten in place."
+        },
+        "search": {
+          "title": "Search across content",
+          "description": "Full-text and semantic search over everything you have stored."
+        },
+        "permissions": {
+          "title": "Access follows the entity",
+          "description": "Permissions are inherited from the record a file is attached to, not set file by file."
+        },
+        "retention": {
+          "title": "Retention rules",
+          "description": "Set how long objects live per workspace and let old versions expire on schedule."
+        },
+        "extraction": {
+          "title": "Content extraction",
+          "description": "Text and structure are pulled from documents on upload, so search and agents can use them straight away."
+        }
+      },
+      "specs": {
+        "objects": {
+          "label": "Object types",
+          "content": "Documents, artifacts, run outputs, and embeddings."
+        },
+        "versioning": {
+          "label": "Versioning",
+          "content": "Immutable versions with point-in-time restore."
+        },
+        "search": {
+          "label": "Search",
+          "content": "Full-text and vector search across stored content."
+        },
+        "encryption": {
+          "label": "Encryption",
+          "content": "In transit and at rest, with customer-managed keys available."
+        },
+        "residency": {
+          "label": "Residency",
+          "content": "Choose the region objects are stored in."
+        },
+        "size": {
+          "label": "Object size",
+          "content": "Large files supported, with multipart upload and resumable transfer."
+        }
+      },
+      "faq": {
+        "types": {
+          "question": "Which file types are supported?",
+          "answer": "Common document, image, and data formats, plus any artifact a run produces."
+        },
+        "access": {
+          "question": "Who can see a stored file?",
+          "answer": "Anyone who can see the entity it is attached to. Permissions are inherited rather than set per file."
+        },
+        "keys": {
+          "question": "Can we bring our own encryption keys?",
+          "answer": "Yes. Customer-managed keys are supported."
+        },
+        "size": {
+          "question": "Is there a file size limit?",
+          "answer": "Large files are supported through multipart upload. Talk to us if your requirements are unusual."
+        },
+        "expire": {
+          "question": "Can old files expire automatically?",
+          "answer": "Yes. Retention rules run per workspace and apply to old versions as well as current ones."
+        },
+        "agents": {
+          "question": "Can agents read stored documents?",
+          "answer": "Yes. Text is extracted on upload, and access still follows the permissions of the entity the file is attached to."
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "Files that stay attached to their context",
+          "description": "A document is stored against the entity it belongs to, so its permissions, history, and search results follow that record rather than a folder path."
+        },
+        "capabilities": {
+          "title": "What context-aware storage changes",
+          "description": "Why this is not a bucket with a nicer interface."
+        },
+        "specs": {
+          "title": "What storage supports"
+        },
+        "faq": {
+          "title": "Before you upload",
+          "description": "What teams ask before putting sensitive documents here."
+        },
+        "cta": {
+          "title": "Store your first document",
+          "description": "Attach a file to an entity and watch permissions and search follow it.",
+          "primary": "Start storing",
+          "secondary": "Storage docs"
+        }
+      },
+      "how": {
+        "attach": {
+          "title": "Attach to the record",
+          "description": "Files live beside the entity they describe, inheriting its permissions.",
+          "media": "Document attached to an entity"
+        },
+        "find": {
+          "title": "Find it later",
+          "description": "Full-text and semantic search across everything you have stored.",
+          "media": "Search results"
+        }
+      }
+    },
+    "workflows": {
+      "description": "Build, automate, and orchestrate workflows that connect your data, systems, and agents to execute work across your organization.",
+      "eyebrow": "Workflows",
+      "metaDescription": "Build, automate, and orchestrate workflows that connect your data, systems, and agents to execute work across your organization.",
+      "metaTitle": "Enterprise AI Workflows & Automation",
+      "title": "Turn intelligence into action.",
+      "ogTitle": "Workflows",
+      "ogDescription": "Turn intelligence into action",
+      "capabilities": {
+        "authoring": {
+          "title": "Visual and code-first authoring",
+          "description": "Compose steps in the builder or define them in TypeScript. Both produce the same versioned workflow."
+        },
+        "control": {
+          "title": "Deterministic control flow",
+          "description": "Branch, loop, fan out, and join with explicit conditions, so a run's path is always reproducible."
+        },
+        "durable": {
+          "title": "Durable execution",
+          "description": "Long-running steps survive restarts and retries. State is checkpointed between every step."
+        },
+        "approvals": {
+          "title": "Human approval gates",
+          "description": "Pause a run for review and resume it with full context once someone signs off."
+        },
+        "drafts": {
+          "title": "Test before you publish",
+          "description": "Run a draft against real inputs without touching the live version or the systems behind it."
+        },
+        "explained": {
+          "title": "Every run explained",
+          "description": "The path a run took, the data at each step, and where it waited are all recorded."
+        }
+      },
+      "specs": {
+        "triggers": {
+          "label": "Triggers",
+          "content": "Schedule, webhook, event, API call, or manual start."
+        },
+        "steps": {
+          "label": "Step types",
+          "content": "Agent, function, HTTP request, transform, branch, wait, and approval."
+        },
+        "concurrency": {
+          "label": "Concurrency",
+          "content": "Per-workflow and per-workspace limits, with queueing and backpressure."
+        },
+        "retries": {
+          "label": "Retries",
+          "content": "Per-step retry policy with exponential backoff and dead-letter capture."
+        },
+        "versioning": {
+          "label": "Versioning",
+          "content": "Every publish is immutable; in-flight runs finish on the version they started."
+        },
+        "duration": {
+          "label": "Duration",
+          "content": "Runs measured in hours or days, checkpointed between every step."
+        }
+      },
+      "faq": {
+        "agents": {
+          "question": "Can a workflow call an agent?",
+          "answer": "Yes. An agent is a step type. It receives the run's context and returns structured output the next step can use."
+        },
+        "failure": {
+          "question": "What happens when a step fails?",
+          "answer": "The step retries under its policy. If it still fails, the run halts and is captured with its full input, output, and stack so you can replay it."
+        },
+        "schedule": {
+          "question": "Can workflows run on a schedule?",
+          "answer": "Yes, on a cron schedule, an event, an incoming webhook, or a direct API call."
+        },
+        "gradual": {
+          "question": "Can we move an existing process over gradually?",
+          "answer": "Yes. Start with one branch of the process and widen it once that part runs cleanly."
+        },
+        "test": {
+          "question": "How do we test a change safely?",
+          "answer": "Publish it as a draft and run it against real inputs before it becomes the live version."
+        },
+        "long": {
+          "question": "How long can a single run last?",
+          "answer": "Hours or days. State is checkpointed between steps, so a long run survives restarts."
+        }
+      },
+      "sections": {
+        "how": {
+          "title": "From trigger to finished work",
+          "description": "A workflow is a sequence of steps with explicit conditions between them. You author it once; every run follows the same path."
+        },
+        "capabilities": {
+          "title": "What orchestration gives you",
+          "description": "What you get the moment work stops living in scripts and cron jobs."
+        },
+        "specs": {
+          "title": "What a workflow can do"
+        },
+        "faq": {
+          "title": "Before you automate",
+          "description": "What teams ask before moving a process into a workflow."
+        },
+        "cta": {
+          "title": "Automate your first process",
+          "description": "Build a workflow in the editor or define one in TypeScript. Both take minutes.",
+          "primary": "Start building",
+          "secondary": "Workflow docs"
+        }
+      },
+      "how": {
+        "author": {
+          "title": "Author it once",
+          "description": "Compose steps in the builder or define them in TypeScript. Both produce the same versioned workflow.",
+          "media": "Workflow editor"
+        },
+        "run": {
+          "title": "Watch every run",
+          "description": "Each execution records its path, its inputs, and where it paused for approval.",
+          "media": "Run timeline"
+        },
+        "recover": {
+          "title": "Recover from failure",
+          "description": "A halted run keeps its inputs and its stack, so you can fix the cause and replay it.",
+          "media": "Failed run replay"
+        }
+      }
+    },
+    "agents": {
+      "title": "Agents that understand, decide, and act.",
+      "eyebrow": "Agents",
+      "description": "Create agents, connect them with your data, and deploy them in minutes.",
+      "metaTitle": "Enterprise AI Agents",
+      "metaDescription": "Create agents that understand your business, connect to your data, make decisions, and take action across your organisation in minutes.",
+      "ogTitle": "AI Agents",
+      "ogDescription": "Build agents that understand, decide, and act",
+      "sections": {
+        "how": {
+          "title": "How an agent gets work done",
+          "description": "You set the goal, the tools, and the limits. The agent chooses its path within them."
+        },
+        "capabilities": {
+          "title": "What makes an agent safe to deploy",
+          "description": "The controls that separate a demo from something you can put in production."
+        },
+        "specs": {
+          "title": "What an agent supports"
+        },
+        "faq": {
+          "title": "Before you deploy an agent",
+          "description": "What teams ask before letting one act on real systems."
+        },
+        "cta": {
+          "title": "Build your first agent",
+          "description": "Give it a goal, grant it tools, and see every decision it makes.",
+          "primary": "Start building",
+          "secondary": "Agent docs"
+        }
+      },
+      "how": {
+        "define": {
+          "title": "Give it a job",
+          "description": "Describe the goal, the tools it may use, and the limits it has to respect.",
+          "media": "Agent configuration"
+        },
+        "run": {
+          "title": "Watch it work",
+          "description": "Every decision, tool call, and hand-off is recorded as the agent runs.",
+          "media": "Agent run"
+        }
+      },
+      "capabilities": {
+        "tools": {
+          "title": "Typed access to your systems",
+          "description": "Agents call the same governed tools your workflows use, never raw database access."
+        },
+        "context": {
+          "title": "Grounded in your ontology",
+          "description": "An agent resolves entities through the shared model instead of guessing at your schema."
+        },
+        "handoff": {
+          "title": "Hands off to people",
+          "description": "Route work to a person when judgement is required, then pick it back up with full context."
+        },
+        "bounds": {
+          "title": "Bounded by policy",
+          "description": "Permissions, spend, and tool access are set per agent and enforced at run time."
+        },
+        "memory": {
+          "title": "Remembers across runs",
+          "description": "Durable state scoped to the agent and the entities it works on, not to a single conversation."
+        },
+        "evaluation": {
+          "title": "Measured before rollout",
+          "description": "Test an agent against recorded cases and compare versions before you widen access."
+        }
+      },
+      "specs": {
+        "models": {
+          "label": "Models",
+          "content": "Configured per workspace, with per-agent overrides."
+        },
+        "tools": {
+          "label": "Tools",
+          "content": "Typed function, HTTP, and workflow calls, scoped per agent."
+        },
+        "memory": {
+          "label": "Memory",
+          "content": "Durable state across runs, scoped to the agent and its entities."
+        },
+        "limits": {
+          "label": "Limits",
+          "content": "Per-run ceilings on tokens, spend, and wall-clock time."
+        },
+        "observability": {
+          "label": "Observability",
+          "content": "Every prompt, tool call, and output retained on the run."
+        },
+        "concurrency": {
+          "label": "Concurrency",
+          "content": "Per-agent ceiling on simultaneous runs, with queueing once it is reached."
+        }
+      },
+      "faq": {
+        "differ": {
+          "question": "How is an agent different from a workflow?",
+          "answer": "A workflow follows a path you defined. An agent chooses its path within the tools and limits you set. Agents can also be steps inside workflows."
+        },
+        "wrong": {
+          "question": "What stops an agent doing the wrong thing?",
+          "answer": "It can only call the tools you grant, under the same permissions as a person, and within per-run spend and time ceilings."
+        },
+        "review": {
+          "question": "Can someone review before it acts?",
+          "answer": "Yes. Route any action through an approval step and the agent resumes once it is signed off."
+        },
+        "many": {
+          "question": "How many agents should we run?",
+          "answer": "Most teams start with one narrow agent. Several focused agents are easier to reason about than a single one that does everything."
+        },
+        "spend": {
+          "question": "How do we keep spend predictable?",
+          "answer": "Every agent has per-run ceilings on tokens, spend, and time, and actual usage is recorded on each run."
+        },
+        "improve": {
+          "question": "How does an agent get better over time?",
+          "answer": "Compare versions against recorded cases, then promote the one that performs better."
+        }
+      }
+    }
+  },
+  "Products": {
+    "cta": {
+      "primary": "Get started",
+      "secondary": "Read the docs"
+    },
+    "pages": {
+      "agent": {
+        "title": "The intelligence layer for building on Incremental.",
+        "description": "AI that answers questions, investigates issues, takes approved actions, and reasons over data. Built into our products.",
+        "metaTitle": "AI Agents for Intelligent Software",
+        "metaDescription": "Build, deploy, and operate AI agents on a shared intelligence layer connected to your business data, systems, and workflows.",
+        "ogTitle": "Incremental Agent",
+        "ogDescription": "The intelligence layer for building AI agents on Incremental."
+      },
+      "aiGateway": {
+        "title": "One gateway for everything.",
+        "description": "Connect, route, and govern access to AI models through a unified gateway built for enterprise workloads.",
+        "metaTitle": "Enterprise AI Gateway and Model Routing",
+        "metaDescription": "Connect, route, and govern access to AI models through a unified gateway built for enterprise workloads.",
+        "ogTitle": "Enterprise AI Gateway",
+        "ogDescription": "One gateway for everything",
+        "eyebrow": "AI Gateway",
+        "sections": {
+          "how": {
+            "title": "One address for every model",
+            "description": "Your code calls the gateway. The gateway decides which provider serves the request, and records what happened."
+          },
+          "capabilities": {
+            "title": "What the gateway takes off your plate",
+            "description": "The work that appears the moment a second model, a second provider, or a second team arrives."
+          },
+          "specs": {
+            "title": "What the gateway supports"
+          },
+          "faq": {
+            "title": "Before you route production through it",
+            "description": "What platform teams ask when a single component sits in front of every model call."
+          },
+          "cta": {
+            "title": "Point one call at it",
+            "description": "Change a base URL, send a request, and read the routing decision it made.",
+            "primary": "Get started",
+            "secondary": "Read the docs"
+          }
+        },
+        "how": {
+          "route": {
+            "title": "Send it to one endpoint",
+            "description": "One API, one key, one request shape. Swapping a provider stops being a code change.",
+            "media": "Gateway request"
+          },
+          "govern": {
+            "title": "Let policy pick the model",
+            "description": "Route by cost, latency, region, or capability, and fail over when a provider degrades.",
+            "media": "Routing policy"
+          },
+          "account": {
+            "title": "Get the receipt",
+            "description": "Every call records the model it reached, what it cost, how long it took, and who asked.",
+            "media": "Usage record"
+          }
+        },
+        "capabilities": {
+          "routing": {
+            "title": "Failover that is not your problem",
+            "description": "When a provider slows or errors, the next one in the policy takes the request without a deploy."
+          },
+          "budgets": {
+            "title": "Spend caps that bite",
+            "description": "Per-team and per-key ceilings enforced at the gateway, not discovered on the invoice."
+          },
+          "keys": {
+            "title": "Provider keys stay in one place",
+            "description": "Applications hold a gateway key. The provider credentials never leave the gateway."
+          },
+          "caching": {
+            "title": "Repeat work costs nothing",
+            "description": "Identical requests are served from cache, with the hit rate reported alongside the spend."
+          }
+        },
+        "specs": {
+          "providers": {
+            "label": "Providers",
+            "content": "Anthropic, OpenAI, Google, Mistral, and any OpenAI-compatible endpoint you host."
+          },
+          "routing": {
+            "label": "Routing",
+            "content": "Weighted, cost-aware, latency-aware, and region-pinned policies, with ordered failover."
+          },
+          "limits": {
+            "label": "Limits",
+            "content": "Rate and spend ceilings per key, per team, and per model."
+          },
+          "caching": {
+            "label": "Caching",
+            "content": "Exact-match and prompt-prefix caching, configurable per route."
+          },
+          "records": {
+            "label": "Records",
+            "content": "Every request retained with model, tokens, cost, latency, and caller."
+          }
+        },
+        "faq": {
+          "latency": {
+            "question": "What does it add to each call?",
+            "answer": "A few milliseconds of routing, against which the cache usually wins back far more than it costs."
+          },
+          "lockin": {
+            "question": "Does this lock us into Incremental?",
+            "answer": "No. The gateway speaks the providers' own request shape, so pointing your client back at a provider is a URL change."
+          },
+          "outage": {
+            "question": "What happens if the gateway is down?",
+            "answer": "Clients can be configured to fall back to a provider directly, and the gateway itself runs multi-zone."
+          },
+          "keys": {
+            "question": "Can teams still use their own provider keys?",
+            "answer": "Yes. A team can bring its own key and still get the routing, the limits, and the records."
+          }
+        }
+      },
+      "ask": {
+        "title": "Ask Incremental.",
+        "description": "Turn questions into answers with AI that understands your data, systems, and business context.",
+        "metaTitle": "AI Assistant for Small Business",
+        "metaDescription": "Query your systems, start workflows, and inspect runs from a single conversation. An AI assistant that knows your business and gets things done.",
+        "ogTitle": "AI Assistant",
+        "ogDescription": "One conversation to run your entire business",
+        "eyebrow": "Ask",
+        "sections": {
+          "how": {
+            "title": "From a question to a finished job",
+            "description": "You ask in your own words. Ask works out what you meant, does the work, and shows you what it did."
+          },
+          "capabilities": {
+            "title": "What makes an answer worth trusting",
+            "description": "An assistant is only useful if you can check it. These are the parts that let you."
+          },
+          "specs": {
+            "title": "What Ask supports"
+          },
+          "faq": {
+            "title": "Before you point it at real systems",
+            "description": "What teams ask before letting an assistant read and write on their behalf."
+          },
+          "cta": {
+            "title": "Ask your first question",
+            "description": "Connect one source, ask something you already know the answer to, and read the working.",
+            "primary": "Start asking",
+            "secondary": "Read the docs"
+          }
+        },
+        "how": {
+          "ask": {
+            "title": "Ask in your own words",
+            "description": "No query language and no menus. Ask resolves the entities, systems, and permissions sitting behind the question.",
+            "media": "Conversation"
+          },
+          "act": {
+            "title": "Watch the work happen",
+            "description": "Every lookup, tool call, and change appears as it runs, and the whole run is kept afterwards.",
+            "media": "Run detail"
+          },
+          "verify": {
+            "title": "Check the answer",
+            "description": "Open the run and walk the sources it read and the calls it made, one at a time.",
+            "media": "Sources"
+          }
+        },
+        "capabilities": {
+          "context": {
+            "title": "Grounded in your ontology",
+            "description": "Customers, invoices, and runs resolve through the shared model instead of a guess at your table names."
+          },
+          "actions": {
+            "title": "Acts through governed tools",
+            "description": "It starts workflows and updates records using the same typed tools your team already uses."
+          },
+          "permissions": {
+            "title": "Answers within your permissions",
+            "description": "Ask sees exactly what the person asking can see, and nothing beyond it."
+          },
+          "evidence": {
+            "title": "Shows its working",
+            "description": "Every answer carries the sources it read and the calls it made, so you can check it rather than trust it."
+          }
+        },
+        "specs": {
+          "sources": {
+            "label": "Sources",
+            "content": "Your ontology, connected systems, uploaded files, and the web when you allow it."
+          },
+          "surfaces": {
+            "label": "Surfaces",
+            "content": "The dashboard, the CLI, the API, and the plugins your team already has open."
+          },
+          "actions": {
+            "label": "Actions",
+            "content": "Reads anywhere it has permission, and writes only through tools you have granted."
+          },
+          "history": {
+            "label": "History",
+            "content": "Conversations and runs retained per workspace, searchable and exportable."
+          },
+          "languages": {
+            "label": "Languages",
+            "content": "Ask and answer in any language your team writes in."
+          }
+        },
+        "faq": {
+          "accuracy": {
+            "question": "How do we know an answer is right?",
+            "answer": "Every answer lists what it read and what it called. Open the run and you can walk the same path yourself."
+          },
+          "access": {
+            "question": "Can it see things people should not?",
+            "answer": "No. Ask inherits the permissions of the person asking, and a question it has no access to comes back unanswered rather than guessed."
+          },
+          "act": {
+            "question": "Will it change things on its own?",
+            "answer": "Only through tools you grant it, and you can require an approval step before any write."
+          },
+          "start": {
+            "question": "Where should we start?",
+            "answer": "Connect one system and ask questions you already know the answers to. It is the quickest way to find where your model of the business is thin."
+          }
+        }
+      },
+      "cloud": {
+        "title": "The cloud built for AI.",
+        "description": "Infrastructure built from the ground up to power, deploy, and scale the next-generation of intelligent software.",
+        "metaTitle": "Cloud infrastructure for AI",
+        "metaDescription": "Infrastructure built from the ground up to power, deploy, and scale the next generation of intelligent software.",
+        "ogTitle": "Cloud",
+        "ogDescription": "The cloud built for AI.",
+        "eyebrow": "Cloud",
+        "sections": {
+          "how": {
+            "title": "What the platform runs on",
+            "description": "Isolation, scheduling, and storage designed around runs rather than around long-lived servers."
+          },
+          "capabilities": {
+            "title": "What you no longer have to operate",
+            "description": "The infrastructure work that comes with running agents in production, done underneath you."
+          },
+          "specs": {
+            "title": "What Cloud provides"
+          },
+          "faq": {
+            "title": "Before you move a workload",
+            "description": "What platform teams ask when they are sizing this against what they already run."
+          },
+          "cta": {
+            "title": "Run something on it",
+            "description": "Deploy one workload, watch how it scales, and compare the bill with what you run today.",
+            "primary": "Get started",
+            "secondary": "Read the docs"
+          }
+        },
+        "how": {
+          "isolate": {
+            "title": "Every run in its own sandbox",
+            "description": "A run gets a fresh, isolated machine with only the network and the credentials it was granted.",
+            "media": "Runtime architecture"
+          },
+          "scale": {
+            "title": "Capacity that follows the work",
+            "description": "Scheduling happens per run, so idle costs nothing and a spike does not need a capacity plan.",
+            "media": "Scheduling"
+          }
+        },
+        "capabilities": {
+          "isolation": {
+            "title": "Isolation by default",
+            "description": "Workloads never share a kernel, a filesystem, or a set of credentials with anyone else."
+          },
+          "scaling": {
+            "title": "Scales to zero and back",
+            "description": "You pay for the seconds a run is executing, not for the machines that might have been needed."
+          },
+          "regions": {
+            "title": "Runs where your data lives",
+            "description": "Pin the region per workspace and keep processing inside the boundary your policy requires."
+          },
+          "operations": {
+            "title": "Nothing to patch",
+            "description": "The runtime, the schedulers, and the storage layer are operated and updated underneath you."
+          }
+        },
+        "specs": {
+          "compute": {
+            "label": "Compute",
+            "content": "Per-run sandboxes with configurable CPU, memory, and wall-clock ceilings."
+          },
+          "regions": {
+            "label": "Regions",
+            "content": "Workspace-level region pinning, with processing and storage kept inside the chosen boundary."
+          },
+          "networking": {
+            "label": "Networking",
+            "content": "Egress allow-lists per workload, plus private connectivity back to your own network."
+          },
+          "storage": {
+            "label": "Storage",
+            "content": "Object, vector, and relational storage attached to the run and retained per workspace policy."
+          },
+          "availability": {
+            "label": "Availability",
+            "content": "Multi-zone scheduling with automatic retry and an execution record for every run."
+          }
+        },
+        "faq": {
+          "own": {
+            "question": "Can we run this in our own cloud?",
+            "answer": "Yes. The runtime can be deployed into your account when policy requires it. In this customer-hosted model, your team operates the infrastructure. Review the deployment scope and responsibility split with Enterprise."
+          },
+          "cost": {
+            "question": "How does the pricing compare?",
+            "answer": "You are billed for run time rather than reserved capacity, which usually favours workloads that are bursty rather than constant."
+          },
+          "data": {
+            "question": "Where does our data go?",
+            "answer": "Processing and storage stay in the region pinned to the workspace, and nothing is used to train shared models."
+          },
+          "migrate": {
+            "question": "How hard is it to move a workload?",
+            "answer": "A workload is a container plus a manifest. Most teams move one, compare the run records, then move the rest."
+          }
+        }
+      },
+      "evaluation": {
+        "title": "Build AI you can trust.",
+        "description": "Evaluate agents, workflows, and AI apps across accuracy, reliability, tool use, latency, cost, and more.",
+        "metaTitle": "AI Evaluation for Enterprise Systems",
+        "metaDescription": "Evaluate AI agents, workflows, and applications with repeatable tests, production signals, and clear evidence for every decision.",
+        "ogTitle": "AI Evaluation for Enterprise Systems",
+        "ogDescription": "Evaluate and improve AI agents, workflows, and applications with confidence.",
+        "eyebrow": "Evaluation",
+        "sections": {
+          "how": {
+            "title": "How a change gets proven",
+            "description": "Record what happened, replay it against the new version, and compare the two before anyone else sees it."
+          },
+          "capabilities": {
+            "title": "What makes a result worth acting on",
+            "description": "The difference between a number that moved and evidence that something improved."
+          },
+          "specs": {
+            "title": "What evaluation covers"
+          },
+          "faq": {
+            "title": "Before you gate a release on it",
+            "description": "What teams ask when a score starts deciding what ships."
+          },
+          "cta": {
+            "title": "Score your first version",
+            "description": "Turn a week of production runs into a suite, then run the next version against it.",
+            "primary": "Start evaluating",
+            "secondary": "Read the docs"
+          }
+        },
+        "chart": {
+          "title": "What improvement looks like",
+          "description": "Every version is scored against the same recorded cases, so the line is a comparison rather than a claim.",
+          "caption": "Pass rate across six versions of one agent, measured on 1,200 recorded cases.",
+          "ariaLabel": "Line chart of pass rate across six versions. Accuracy rises from 58% to 94%, tool use from 44% to 89%, and reliability from 61% to 91%.",
+          "series": {
+            "accuracy": "Accuracy",
+            "tools": "Tool use",
+            "reliability": "Reliability"
+          }
+        },
+        "how": {
+          "capture": {
+            "title": "Capture what really happened",
+            "description": "Production runs become cases, with the inputs, the tool calls, and the outcome kept together.",
+            "media": "Recorded cases"
+          },
+          "replay": {
+            "title": "Replay against a new version",
+            "description": "The whole suite runs against the candidate, scored the same way every time.",
+            "media": "Suite run"
+          },
+          "compare": {
+            "title": "Compare, then decide",
+            "description": "See what improved, what regressed, and which cases changed answer before you promote.",
+            "media": "Version diff"
+          }
+        },
+        "capabilities": {
+          "grounded": {
+            "title": "Scored on your work, not a leaderboard",
+            "description": "Cases come from your own runs, so a result means something about your business rather than a public set."
+          },
+          "dimensions": {
+            "title": "More than one number",
+            "description": "Accuracy, tool use, latency, and cost move independently, and a release is judged on all four."
+          },
+          "regressions": {
+            "title": "Regressions named, not averaged away",
+            "description": "The cases that changed answer are listed individually, so a rise in the mean cannot hide them."
+          },
+          "continuous": {
+            "title": "Runs in production, not only before it",
+            "description": "Live traffic is sampled and scored against the same suite, so drift shows up as it happens."
+          }
+        },
+        "specs": {
+          "suites": {
+            "label": "Suites",
+            "content": "Cases grouped per agent or workflow, versioned alongside what they test."
+          },
+          "scoring": {
+            "label": "Scoring",
+            "content": "Exact match, rubric, model-graded, and custom scorers you write yourself."
+          },
+          "dimensions": {
+            "label": "Dimensions",
+            "content": "Accuracy, tool use, reliability, latency, and cost, reported per case and in aggregate."
+          },
+          "sampling": {
+            "label": "Sampling",
+            "content": "A configurable share of live runs scored continuously against the same suite."
+          },
+          "gating": {
+            "label": "Gating",
+            "content": "Promotion blocked automatically when a suite falls below the threshold you set."
+          }
+        },
+        "faq": {
+          "cases": {
+            "question": "How many cases do we need?",
+            "answer": "Enough to cover the ways the job actually varies. Most teams start near fifty and grow the suite from the failures they find."
+          },
+          "grading": {
+            "question": "Can a model grade a model?",
+            "answer": "For open-ended work, yes, with the rubric recorded on the run. Anything you can check exactly should be checked exactly."
+          },
+          "flaky": {
+            "question": "What about runs that are not repeatable?",
+            "answer": "Scores are reported with their spread across repeats, so a difference inside the noise does not read as an improvement."
+          },
+          "gate": {
+            "question": "Should a score block a release?",
+            "answer": "Set a threshold once you trust the suite. Until then run it alongside and watch whether it agrees with your own judgement."
+          }
+        }
+      },
+      "plugins": {
+        "title": "Connect Incremental to everything you use.",
+        "description": "Extend Incremental through plugins that bring enterprise intelligence, context, data, and actions directly into the tools your teams already use.",
+        "metaTitle": "Plugins for Enterprise AI Workflows",
+        "metaDescription": "Extend Incremental with plugins that connect the tools your team already uses to secure, role-based AI workflows and business context.",
+        "ogTitle": "Incremental Plugins",
+        "ogDescription": "Connect Incremental to the tools your team already uses."
+      },
+      "studio": {
+        "title": "Build without limits.",
+        "description": "The platform for extending Incremental, composing intelligent systems, and turning your ideas into production-ready software.",
+        "metaTitle": "Studio for intelligent software",
+        "metaDescription": "Build, test, and ship intelligent software in one collaborative development environment.",
+        "ogTitle": "Studio",
+        "ogDescription": "Build without limits.",
+        "eyebrow": "Studio",
+        "sections": {
+          "how": {
+            "title": "How a build reaches production",
+            "description": "Compose the pieces, test them against real cases, then ship behind a version you can roll back."
+          },
+          "capabilities": {
+            "title": "What you get before you write product code",
+            "description": "The parts that would otherwise take a quarter to build and a team to keep running."
+          },
+          "specs": {
+            "title": "What Studio supports"
+          },
+          "faq": {
+            "title": "Before you build on it",
+            "description": "What engineering teams ask when they are deciding whether to commit."
+          },
+          "cta": {
+            "title": "Open Studio",
+            "description": "Compose an agent, replay a recorded case against it, and ship it behind a version.",
+            "primary": "Start building",
+            "secondary": "Read the docs"
+          }
+        },
+        "how": {
+          "compose": {
+            "title": "Compose the pieces",
+            "description": "Agents, workflows, tools, and data sources are assembled in one place rather than wired together across four.",
+            "media": "Composition"
+          },
+          "ship": {
+            "title": "Ship a version",
+            "description": "Every change is a version you can test, promote, and roll back without redeploying anything around it.",
+            "media": "Version history"
+          }
+        },
+        "capabilities": {
+          "environment": {
+            "title": "One place to build",
+            "description": "Editor, runtime, data, and logs in the same session, so debugging stops being a tab-switching exercise."
+          },
+          "collaboration": {
+            "title": "Built for more than one person",
+            "description": "Shared workspaces, review before promotion, and a history that records who changed what."
+          },
+          "testing": {
+            "title": "Test against real cases",
+            "description": "Replay recorded runs against a new version and see what changed before anyone outside the team does."
+          },
+          "deployment": {
+            "title": "Ship without a release train",
+            "description": "Promote a version to production in place, and roll it back the same way when it misbehaves."
+          }
+        },
+        "specs": {
+          "languages": {
+            "label": "Languages",
+            "content": "TypeScript and Python SDKs, with the same API surface behind both."
+          },
+          "environments": {
+            "label": "Environments",
+            "content": "Separate development, staging, and production workspaces, each with their own credentials."
+          },
+          "versioning": {
+            "label": "Versioning",
+            "content": "Every agent, workflow, and tool is versioned, with promotion and rollback per environment."
+          },
+          "testing": {
+            "label": "Testing",
+            "content": "Recorded runs replayed as fixtures, with side-by-side comparison between versions."
+          },
+          "access": {
+            "label": "Access",
+            "content": "Role-based permissions per workspace, and an audit record for every promotion."
+          }
+        },
+        "faq": {
+          "local": {
+            "question": "Can we work locally?",
+            "answer": "Yes. The SDKs run anywhere; Studio is where the shared state, the versions, and the history live."
+          },
+          "existing": {
+            "question": "Does it replace our stack?",
+            "answer": "No. Studio is where the AI parts are composed and versioned. Everything else stays where it is and is reached through tools."
+          },
+          "review": {
+            "question": "How does a change get reviewed?",
+            "answer": "A version is proposed, compared against recorded runs, and promoted by someone with permission to promote it."
+          },
+          "rollback": {
+            "question": "What happens when a version is wrong?",
+            "answer": "Roll back to the previous one. Runs already in flight finish on the version they started on."
+          }
+        }
+      },
+      "benchmark": {
+        "title": "Incremental Benchmark.",
+        "description": "Measure enterprise AI performance with our benchmark.",
+        "mobileDescription": "Measure enterprise AI performance with our benchmark.",
+        "metaTitle": "Enterprise AI Performance Benchmarks",
+        "metaDescription": "Measure enterprise AI performance with public, reproducible benchmarks built around real business work.",
+        "ogTitle": "Incremental Benchmark",
+        "ogDescription": "Compare AI systems with public evidence.",
+        "eyebrow": "Benchmark",
+        "sections": {
+          "how": {
+            "title": "How a benchmark run works",
+            "description": "Public tasks, a fixed harness, and a transcript for every attempt, so a result can be checked rather than believed."
+          },
+          "capabilities": {
+            "title": "What makes a number trustworthy",
+            "description": "Most published results cannot be reproduced. These are the parts that make ours worth comparing."
+          },
+          "specs": {
+            "title": "What the benchmark measures"
+          },
+          "faq": {
+            "title": "Before you cite a result",
+            "description": "What people ask when a number is used to justify a decision."
+          },
+          "cta": {
+            "title": "Read the results",
+            "description": "Every task, every transcript, and every score, published in full.",
+            "primary": "View the benchmark",
+            "secondary": "Read the docs"
+          }
+        },
+        "how": {
+          "tasks": {
+            "title": "Real work, not puzzles",
+            "description": "Tasks are drawn from business processes teams actually run, with the success criteria written first.",
+            "media": "Task set"
+          },
+          "run": {
+            "title": "The same harness for everyone",
+            "description": "Every system gets identical tools, identical limits, and the same number of attempts.",
+            "media": "Harness"
+          },
+          "publish": {
+            "title": "Published with the transcripts",
+            "description": "Scores ship with the full run record, so anyone can see how a result was reached.",
+            "media": "Transcripts"
+          }
+        },
+        "capabilities": {
+          "reproducible": {
+            "title": "Reproducible by anyone",
+            "description": "The harness, the tasks, and the scoring code are public, and a run can be repeated end to end."
+          },
+          "contaminated": {
+            "title": "Held-out tasks rotate",
+            "description": "A portion of the set is withheld and replaced each cycle, so a score cannot be trained into."
+          },
+          "transcripts": {
+            "title": "Every attempt is on the record",
+            "description": "Failures are published beside successes. A result you cannot inspect is not evidence."
+          },
+          "cost": {
+            "title": "Scored on cost and time too",
+            "description": "A system that wins by spending fifty times more has not won the thing most teams are buying."
+          }
+        },
+        "specs": {
+          "tasks": {
+            "label": "Tasks",
+            "content": "Multi-step business processes with written success criteria and a fixed tool set."
+          },
+          "attempts": {
+            "label": "Attempts",
+            "content": "A fixed number per task per system, with every attempt scored and published."
+          },
+          "scoring": {
+            "label": "Scoring",
+            "content": "Automatic checks where the outcome is objective, blind human review where it is not."
+          },
+          "reporting": {
+            "label": "Reporting",
+            "content": "Pass rate, cost per task, and wall-clock time, reported per task and in aggregate."
+          },
+          "cadence": {
+            "label": "Cadence",
+            "content": "Re-run each quarter, with a rotating held-out set and a versioned harness."
+          }
+        },
+        "faq": {
+          "why": {
+            "question": "Why another benchmark?",
+            "answer": "Existing sets measure reasoning on puzzles. Almost none measure whether a system can finish a piece of ordinary business work."
+          },
+          "gaming": {
+            "question": "What stops a system training on it?",
+            "answer": "Part of the set is held out and rotated each cycle, and results are reported separately for the public and held-out halves."
+          },
+          "submit": {
+            "question": "Can we submit our own system?",
+            "answer": "Yes. The harness is public, and a submission is scored under the same conditions as everything else."
+          },
+          "compare": {
+            "question": "How should we read the numbers?",
+            "answer": "As a ranking on this task set, not a general claim. Read a few transcripts before you trust a gap."
+          }
+        }
+      }
+    },
+    "images": {
+      "benchmark": "Benchmark results interface",
+      "dashboard": "The Incremental dashboard"
+    }
+  },
+  "Chunk": {
+    "staleVersion": {
+      "action": "Reload",
+      "description": "Refresh to load the latest updates.",
+      "title": "New version is available"
+    }
+  },
+  "Validation": {
+    "accuracyConfirmed": {
+      "required": "Please confirm your information is accurate."
+    },
+    "basedInCountry": {
+      "required": "Select where you are based."
+    },
+    "company": {
+      "required": "Company name is required.",
+      "tooLong": "Company name is too long."
+    },
+    "country": {
+      "required": "Select your country."
+    },
+    "email": {
+      "invalid": "Enter a valid email address.",
+      "invalidWork": "Enter a valid work email."
+    },
+    "firstName": {
+      "required": "First name is required."
+    },
+    "fullName": {
+      "required": "Full name is required.",
+      "tooLong": "Name is too long."
+    },
+    "lastName": {
+      "required": "Last name is required."
+    },
+    "message": {
+      "tooLong": "Please keep your message under 5,000 characters.",
+      "tooShort": "Tell us a little more about your needs."
+    },
+    "option": {
+      "required": "Select an option."
+    },
+    "phone": {
+      "required": "Phone number is required."
+    },
+    "privacyAcknowledged": {
+      "required": "Please acknowledge the applicant privacy notice."
+    },
+    "privacyPolicy": {
+      "required": "Please accept the privacy policy."
+    },
+    "referralSource": {
+      "required": "Tell us how you heard about us."
+    },
+    "teamSize": {
+      "required": "Select your team size."
+    },
+    "url": {
+      "invalid": "Enter a valid http(s) URL."
+    },
+    "useCase": {
+      "required": "Select a primary use case."
+    },
+    "workAuthorization": {
+      "required": "Select your work authorization."
+    }
+  },
+  "CLI": {
+    "badge": "Private Beta",
+    "title": "Everything you need from your terminal.",
+    "description": "A powerful CLI for building, deploying, and operating agents, workflows, data, and deployments.",
+    "getStarted": "Get started",
+    "viewDocumentation": "View documentation",
+    "copied": "Copied",
+    "whatYouGet": "What you get",
+    "terminal": {
+      "tabs": {
+        "createAgent": "Create agent",
+        "weeklyBriefing": "Weekly briefing",
+        "chaseApprovals": "Chase approvals",
+        "anomalyAlert": "Anomaly alert"
+      }
+    },
+    "features": {
+      "describe": {
+        "title": "You describe, it builds",
+        "description": "Tell Incremental what you need in plain English. It builds the agent, shows you the plan, and deploys when you're ready."
+      },
+      "readyMade": {
+        "title": "Ready-made agents",
+        "description": "Cycle Close, Approval Chaser, Weekly Briefing, Anomaly Detector. Enable in one click. Already tuned for real workflows."
+      },
+      "schedule": {
+        "title": "Runs on your schedule",
+        "description": "Every Tuesday at 9 AM. Last day of the month. Daily at 10. Set it once and your agents handle the rest."
+      },
+      "learns": {
+        "title": "Learns over time",
+        "description": "Agents remember across runs. Trends compound weekly. Baselines sharpen. The longer they run, the more useful they get."
+      },
+      "control": {
+        "title": "You stay in control",
+        "description": "Agents propose actions, you review and approve. Nothing happens without your say. Built for trust."
+      },
+      "data": {
+        "title": "Access to all your data",
+        "description": "Entities, runs, workflows, reports, connected systems, and more. Agents work with everything Incremental knows about your business."
+      },
+      "thinks": {
+        "title": "Thinks, not just executes",
+        "description": "Agents analyze your data, spot anomalies, compare trends, and make recommendations. Not just automation."
+      },
+      "secure": {
+        "title": "Secure and isolated",
+        "description": "Every agent runs in its own sandbox with no access to your filesystem or network. Hard limits on what it can do."
+      },
+      "transparency": {
+        "title": "See everything it does",
+        "description": "Full trace of every step. What data it read, what it decided, what actions it took. Nothing is a black box."
+      },
+      "connected": {
+        "title": "Connected to your tools",
+        "description": "Post results to Slack, send emails via Gmail, update Google Sheets. Agents deliver wherever your team works."
+      },
+      "anywhere": {
+        "title": "Works wherever you are",
+        "description": "Dashboard, iMessage, chat, or CLI. Create agents, approve proposals, and check results from any surface."
+      },
+      "quickstart": {
+        "title": "Up and running in seconds",
+        "description": "One command. Sign in with your browser. No API keys, no config files. Your first agent is live in under a minute."
+      }
+    },
+    "catalog": {
+      "title": "Pre-built agents",
+      "subtitle": "Enable in one click. Already tuned for real business workflows.",
+      "agents": {
+        "cycleClose": {
+          "name": "Cycle Close",
+          "schedule": "Last days of month, 8 AM",
+          "description": "Runs through the cycle so you don't have to. Flags what needs attention before you close it out.",
+          "details": {
+            "first": "Reviews every run for the current cycle",
+            "second": "Flags unclassified records and pending review items",
+            "third": "Compares this month to last and gives you a health check"
+          }
+        },
+        "approvalChaser": {
+          "name": "Approval Chaser",
+          "schedule": "Tuesdays 9 AM",
+          "description": "Finds blocked approvals and proposes sending reminders. You approve before anything goes out.",
+          "details": {
+            "first": "Prioritizes by impact and how long a run has been blocked",
+            "second": "Tracks escalation history so repeat late payers get flagged",
+            "third": "Proposes reminders for you to review. You decide what gets sent"
+          }
+        },
+        "weeklyBriefing": {
+          "name": "Weekly Briefing",
+          "schedule": "Mondays 8 AM",
+          "description": "Delivers a clear picture of production every Monday. Throughput, reliability, cost, and what needs your attention.",
+          "details": {
+            "first": "Summarizes throughput across all workflows",
+            "second": "Tracks reliability and cost trends week over week",
+            "third": "Lists action items like blocked approvals and cost spikes"
+          }
+        },
+        "anomalyDetector": {
+          "name": "Anomaly Detector",
+          "schedule": "Daily 10 AM",
+          "description": "Watches production in the background. Learns what's normal and only alerts you when something looks off.",
+          "details": {
+            "first": "Builds behaviour baselines per workflow over 90 days",
+            "second": "Catches duplicate runs, cost spikes, and unreviewed tools",
+            "third": "Stays completely silent on normal days"
+          }
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "steps": {
+        "describe": {
+          "title": "Describe",
+          "description": "Tell Incremental what you need in plain English, or pick a ready-made agent from the catalog."
+        },
+        "review": {
+          "title": "Review",
+          "description": "Incremental builds the agent and shows you the plan. You confirm when it looks right."
+        },
+        "automate": {
+          "title": "Automate",
+          "description": "It runs on your schedule, learns from every run, and gets more useful over time."
+        },
+        "control": {
+          "title": "Control",
+          "description": "See everything it does. Approve actions before they happen. You're always in the loop."
+        }
+      }
+    },
+    "surfaces": {
+      "dashboard": {
+        "title": "Dashboard",
+        "items": {
+          "first": "“Enable the approval chaser”",
+          "second": "“Create an agent that monitors cost”",
+          "third": "Manage agents from chat",
+          "fourth": "View run history and results"
+        }
+      },
+      "chat": {
+        "title": "Chat",
+        "items": {
+          "first": "iMessage, WhatsApp, Slack, Telegram",
+          "second": "Get notified and approve on the go",
+          "third": "Check agent results from any chat",
+          "fourth": "No app to install"
+        }
+      },
+      "cli": {
+        "title": "CLI",
+        "items": {
+          "first": "Create, run, and manage agents",
+          "second": "Approve proposals from terminal",
+          "third": "Inspect memory and run history",
+          "fourth": "Sign in with your browser"
+        }
+      },
+      "api": {
+        "title": "API",
+        "items": {
+          "first": "Build your own integrations",
+          "second": "Trigger runs programmatically",
+          "third": "Manage proposals and approvals",
+          "fourth": "Full step trace access"
+        }
+      }
+    },
+    "infrastructure": {
+      "title": "Where it runs"
+    },
+    "cta": {
+      "title": "Get started",
+      "description": "Incremental Computer puts your business on autopilot. Describe what you need and it takes care of the rest."
+    },
+    "metaTitle": "Computer: Autonomous AI agents for your business",
+    "metaDescription": "Describe what you need, and Incremental deploys an autonomous agent that runs on your schedule, learns over time, and delivers results while you sleep.",
+    "ogTitle": "Incremental Computer",
+    "ogDescription": "Your business runs even when you don't"
+  },
+  "SDKs": {
+    "title": "Build directly on Incremental.",
+    "description": "Use Incremental's SDKs to integrate its capabilities, and build intelligent software with just a few lines of code.",
+    "getStarted": "Get started",
+    "apiDocumentation": "API documentation",
+    "copyCode": "Copy code",
+    "keyFeatures": "Key features:",
+    "install": "Install:",
+    "example": "Example:",
+    "viewDocs": "View {language} docs",
+    "seeExamples": "See examples",
+    "sdks": {
+      "typescript": {
+        "title": "TypeScript SDK",
+        "description": "A fully typed SDK for interacting with Incremental's APIs, designed for modern web and backend applications.",
+        "features": {
+          "typed": "Fully typed with first-class TypeScript support",
+          "runtimes": "Works in Node, Bun, and modern runtimes",
+          "setup": "Simple setup and predictable responses"
+        }
+      },
+      "go": {
+        "title": "Go SDK",
+        "description": "A lightweight Go SDK for building server-side applications with Incremental's APIs."
+      },
+      "php": {
+        "title": "PHP SDK",
+        "description": "A PHP SDK for integrating Incremental's APIs into your PHP applications."
+      }
+    },
+    "build": {
+      "title": "Build real financial workflows",
+      "description": "Use Incremental SDKs to integrate financial data, insights, and workflows into your product.",
+      "items": {
+        "analyseRuns": {
+          "short": "Sync and analyze runs",
+          "long": "Sync and analyze runs programmatically and build custom analysis tools"
+        },
+        "dashboards": {
+          "short": "Build dashboards and reports",
+          "long": "Build dashboards and reports tailored to your needs"
+        },
+        "internalTools": "Power internal tools with financial data and integrate into existing workflows",
+        "exports": {
+          "short": "Automate accounting-ready exports",
+          "long": "Automate accounting-ready exports for your accounting software"
+        }
+      }
+    },
+    "security": {
+      "title": "Secure by default",
+      "description": "All SDKs use secure API keys and scoped access to ensure your data stays protected."
+    },
+    "resources": {
+      "title": "Get up and running",
+      "quickstart": {
+        "title": "Quickstart",
+        "description": "Get started with Incremental SDKs in minutes."
+      },
+      "examples": {
+        "title": "Examples",
+        "description": "See example apps and code snippets."
+      },
+      "apiReference": {
+        "title": "API reference",
+        "description": "Complete API documentation and endpoints."
+      },
+      "changelog": {
+        "title": "Changelog",
+        "description": "Stay updated with latest changes."
+      }
+    },
+    "metaTitle": "SDKs",
+    "metaDescription": "Typed SDKs to build faster with Incremental. Integrate Incremental into your applications with our official client libraries.",
+    "ogTitle": "SDKs",
+    "ogDescription": "Typed client libraries for the Incremental API"
+  },
+  "Segments": {
+    "images": {
+      "product": "Incremental product interface"
+    },
+    "pages": {
+      "enterprise": {
+        "eyebrow": "Enterprise",
+        "title": "Enterprise intelligence, built to scale.",
+        "description": "Connect your data, systems, and operations with secure, intelligent infrastructure designed for the demands of modern enterprises.",
+        "metaTitle": "Enterprise",
+        "metaDescription": "Build secure, scalable, and enterprise-ready intelligent systems with Incremental.",
+        "ogTitle": "Enterprise",
+        "ogDescription": "Build secure, scalable, and enterprise-ready intelligent systems with Incremental.",
+        "deploymentOptions": {
+          "title": "Deployment options",
+          "description": "Incremental Cloud is the default and fastest way to get started. Incremental operates the infrastructure. For stronger isolation or compliance requirements, choose dedicated / isolated cloud. For requirements that keep compute and data inside your environment, choose customer VPC / self-hosted.",
+          "cloud": {
+            "title": "Incremental Cloud (recommended)",
+            "description": "The fastest way to get started. Incremental operates the infrastructure while your team connects its systems and builds workflows."
+          },
+          "dedicated": {
+            "title": "Dedicated / isolated cloud",
+            "description": "For stronger data-isolation or compliance requirements. Incremental operates the dedicated or isolated cloud infrastructure."
+          },
+          "customer": {
+            "title": "Customer VPC / self-hosted",
+            "description": "For enterprises that require compute and data to remain entirely inside their environment. The customer operates the infrastructure."
+          },
+          "question": "Which deployment model should we choose?",
+          "recommendation": "Start with Incremental Cloud for the fastest onboarding; Incremental operates the infrastructure. Choose dedicated / isolated cloud when you need stronger data isolation or compliance controls. Choose customer VPC / self-hosted when compute and data must remain entirely inside your environment.",
+          "learnMore": "Read the deployment guide"
+        }
+      },
+      "startups": {
+        "eyebrow": "Startups",
+        "title": "Build the future of software.",
+        "description": "Get the infrastructure, intelligence, and support your startup needs to build, launch, and scale faster than ever before.",
+        "metaTitle": "Startups",
+        "metaDescription": "Create agents that understand your business, connect to your data, make decisions, and take action across your organization in minutes.",
+        "ogTitle": "Startups",
+        "ogDescription": "Startups"
+      }
+    }
+  },
+  "Legal": {
+    "title": "Terms & Policies",
+    "description": "The terms, policies, and agreements that govern how Incremental operates. Every document is versioned and shows its effective date.",
+    "lastUpdated": "Last updated {date}",
+    "metaTitle": "Terms & Policies",
+    "metaDescription": "Legal documents for Incremental.",
+    "ogTitle": "Terms & Policies",
+    "ogDescription": "Legal documents for Incremental."
+  },
+  "Careers": {
+    "title": "Build what comes after software.",
+    "mission": "We are building a team of exceptional builders to create a new generation of intelligent systems that understand, decide, and act across the enterprise.",
+    "hiring": "We hire carefully, value curiosity over credentials, and look for people who can take important work from idea to shipped product.",
+    "openRoles": "Open roles",
+    "apply": "Apply",
+    "filters": {
+      "allTeams": "All teams",
+      "allLocations": "All locations",
+      "teamLabel": "Filter roles by team",
+      "locationLabel": "Filter roles by location"
+    },
+    "metaTitle": "Careers",
+    "metaDescription": "Join the team building Incremental: a high-standard, high-agency group of builders creating intelligent enterprise systems.",
+    "ogTitle": "Careers",
+    "ogDescription": "Join the team building Incremental: a high-standard, high-agency group of builders creating intelligent enterprise systems."
+  },
+  "Research": {
+    "title": "Advancing the science of computational intelligence",
+    "mission": "We're building a computational theory of the world, creating new foundations for representing reality and reasoning over knowledge to advance the science of computational intelligence.",
+    "filters": {
+      "all": "All",
+      "search": "Search research"
+    },
+    "read": "Read",
+    "noMatches": "No research entries match your search.",
+    "noEntries": "No research entries published yet.",
+    "metaTitle": "Research",
+    "metaDescription": "Advancing the science of computational intelligence",
+    "ogTitle": "Research",
+    "ogDescription": "Advancing the science of computational intelligence"
+  },
+  "Partners": {
+    "pages": {
+      "index": {
+        "title": "Partner with Incremental.",
+        "becomePartner": "Become a partner",
+        "findPartner": "Find a partner",
+        "alreadyPartner": "Already a partner?",
+        "signIn": "Sign in",
+        "metaTitle": "Partners",
+        "metaDescription": "Partner with Incremental to build and deliver intelligent systems for your customers. Become a partner, or find one already building on the platform.",
+        "ogTitle": "Partners",
+        "ogDescription": "Build and deliver intelligent systems on Incremental",
+        "about": {
+          "title": "What partnering actually means",
+          "lead": "Incremental is the layer enterprises build their intelligent systems on. Partners are the firms who design, deliver, and operate those systems alongside them.",
+          "body": {
+            "a": "The work is not reselling licences. It is scoping the first workflow, connecting the systems that already hold the customer's data, and staying with the deployment once it carries real volume.",
+            "b": "That means the platform has to be something you can learn once and apply everywhere. Same runtime, same permissions model, same audit trail on every engagement you take."
+          }
+        },
+        "sections": {
+          "tracks": {
+            "title": "Three ways to partner",
+            "description": "Pick the track that matches how your firm already makes money."
+          },
+          "solutionPartners": {
+            "title": "Solution partners",
+            "description": "Firms that scope the work, build it, and stay with the deployment."
+          },
+          "technologyPartners": {
+            "title": "Technology partners",
+            "description": "Products that build on the runtime, or connect it to the systems you already run."
+          },
+          "proof": {
+            "title": "What the program is worth",
+            "description": "Figures from partners in their first year on the platform."
+          },
+          "terms": {
+            "title": "What the program provides",
+            "description": "The commitments on our side, and what we ask in return."
+          },
+          "faq": {
+            "title": "Questions from prospective partners",
+            "description": "What firms ask before they apply."
+          },
+          "cta": {
+            "title": "Build a practice on Incremental",
+            "description": "Apply to the program, or browse the partners already delivering on it."
+          }
+        },
+        "tracks": {
+          "a": {
+            "eyebrow": "Delivery",
+            "title": "Consultancies and systems integrators",
+            "detail": "You scope and ship the customer's first workflows, then stay on to expand them. Certification, joint delivery on early engagements, and referral flow from our sales team."
+          },
+          "b": {
+            "eyebrow": "Technology",
+            "title": "Software vendors and platform builders",
+            "detail": "You embed Incremental inside your own product, or publish connectors your customers install. Shared engineering support, early access to runtime changes, and co-marketing at launch."
+          },
+          "c": {
+            "eyebrow": "Advisory",
+            "title": "Strategy and transformation firms",
+            "detail": "You advise on where intelligent systems belong before anyone writes code. Architecture review, access to reference deployments, and a delivery partner to hand the build to."
+          }
+        },
+        "technologyPartners": {
+          "a": {
+            "title": "Embedded platform",
+            "description": "Vendors who run Incremental inside their own product, so their customers never leave it."
+          },
+          "b": {
+            "title": "Connectors",
+            "description": "Teams who publish integrations into the systems that already hold your data."
+          },
+          "c": {
+            "title": "Infrastructure",
+            "description": "Cloud, storage, and deployment providers the runtime is certified against."
+          },
+          "d": {
+            "title": "Models and tooling",
+            "description": "Providers whose models, evaluation, and observability tools plug into the runtime."
+          }
+        },
+        "proof": {
+          "a": {
+            "value": "9wk",
+            "label": "Median time from certification to first production deployment"
+          },
+          "b": {
+            "value": "3x",
+            "label": "Larger average engagement than the same firms report on adjacent platforms"
+          },
+          "c": {
+            "value": "74%",
+            "label": "Of partner engagements expand within two quarters"
+          }
+        },
+        "terms": {
+          "a": {
+            "label": "Certification and enablement",
+            "content": "Your engineers train on the same material our own solutions team uses. Certification is per person and free, and it is what unlocks joint delivery and the partner directory listing."
+          },
+          "b": {
+            "label": "Commercial terms",
+            "content": "Margin on resold consumption, referral fees on sourced deals, and no minimum commitment in the first year. Terms are the same for every partner at a given tier and published, not negotiated case by case."
+          },
+          "c": {
+            "label": "Support during delivery",
+            "content": "A named contact for every active engagement, escalation into the engineering team for platform issues, and shared architecture review before anything goes to production."
+          },
+          "d": {
+            "label": "What we ask",
+            "content": "Two certified engineers to reach the first tier, a reference deployment within six months, and a named partner lead we can reach when a customer escalates."
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "How long does the application take?",
+            "answer": "Most firms hear back within a week and complete certification inside a month. The gate is your engineers finishing the training, not our review."
+          },
+          "b": {
+            "question": "Do we need existing AI expertise?",
+            "answer": "No. The firms that do best already know how to deliver enterprise software into a regulated environment. The platform specifics are what the certification covers."
+          },
+          "c": {
+            "question": "Can we partner on more than one track?",
+            "answer": "Yes, and many firms do. Delivery and advisory in particular tend to sit in the same practice, and the certification counts once."
+          },
+          "d": {
+            "question": "Who owns the customer relationship?",
+            "answer": "You do, on engagements you source. On deals we refer, the contract structure is agreed before the introduction rather than after."
+          }
+        }
+      },
+      "solutions": {
+        "title": "Find a Partner",
+        "description": "Find the right solution partner to help you ship your next project.",
+        "primaryAction": "Find a Partner",
+        "secondaryAction": "Become a Partner",
+        "metaTitle": "Solution Partners",
+        "metaDescription": "Find a solution partner to help you design, build, and ship your next project on Incremental, from first prototype to production.",
+        "ogTitle": "Solution Partners",
+        "ogDescription": "Find the right solution partner for your next project",
+        "sections": {
+          "specialisms": {
+            "title": "What partners do for you",
+            "description": "Four kinds of work, usually delivered by different firms."
+          },
+          "directory": {
+            "title": "Partner directory",
+            "description": "Filter by the work you need, then reach out to the firms that match."
+          },
+          "engagement": {
+            "title": "How an engagement runs"
+          },
+          "choosing": {
+            "title": "What to check before you sign"
+          },
+          "faq": {
+            "title": "Questions from customers",
+            "description": "What teams ask before bringing in a partner."
+          },
+          "cta": {
+            "title": "Not finding the right partner?",
+            "description": "Tell us what you are building and we will introduce you to firms who have done it before.",
+            "action": "Talk to us"
+          }
+        },
+        "specialisms": {
+          "a": {
+            "title": "Architecture and scoping",
+            "description": "Deciding which processes are worth automating, and what the first workflow should be."
+          },
+          "b": {
+            "title": "Build and integration",
+            "description": "Connecting your existing systems and shipping the workflows that run against them."
+          },
+          "c": {
+            "title": "Governance and compliance",
+            "description": "Mapping your policies onto the permissions, thresholds, and audit trail before anything reaches production."
+          },
+          "d": {
+            "title": "Managed operation",
+            "description": "Running the deployment after launch, including monitoring, tuning, and the on call rotation."
+          }
+        },
+        "engagement": {
+          "a": {
+            "title": "Scope one workflow",
+            "description": "A short engagement that picks a single process, agrees what success looks like, and proves it against your own data."
+          },
+          "b": {
+            "title": "Build and harden",
+            "description": "The workflow moves into production behind your policies, with the checkpoints and limits your reviewers require."
+          },
+          "c": {
+            "title": "Expand or hand over",
+            "description": "Either the partner takes the next processes, or your team takes the deployment. Both are planned from the start rather than discovered later."
+          }
+        },
+        "choosing": {
+          "a": {
+            "label": "Certified engineers on your account",
+            "content": "Ask how many people assigned to your engagement hold current certification, not how many the firm employs in total."
+          },
+          "b": {
+            "label": "Reference deployments in your sector",
+            "content": "A partner who has already worked inside your regulatory constraints will spend the first month building rather than learning them."
+          },
+          "c": {
+            "label": "A named handover plan",
+            "content": "Agree upfront who operates the deployment after launch. A partner who cannot describe the handover is planning to stay indefinitely."
+          },
+          "d": {
+            "label": "Ownership of what gets built",
+            "content": "Workflows, connectors, and policies built during the engagement should be yours. Confirm it in the statement of work rather than assuming it."
+          }
+        },
+        "faq": {
+          "a": {
+            "question": "Do we need a partner at all?",
+            "answer": "Not always. Teams with in house engineers often ship the first workflow themselves. Partners earn their place on scope, regulated environments, and speed."
+          },
+          "b": {
+            "question": "How are partners vetted?",
+            "answer": "Every listed firm holds current certification, has shipped a reference deployment, and carries a named lead we can reach when something escalates."
+          },
+          "c": {
+            "question": "What does an engagement typically cost?",
+            "answer": "Partners set their own rates. A scoping engagement is usually a few weeks; ask for a fixed price on that stage before committing to the build."
+          },
+          "d": {
+            "question": "Can we switch partners later?",
+            "answer": "Yes. What gets built belongs to you and runs on your own deployment, so moving to another firm or in house does not mean rebuilding."
+          }
+        }
+      }
+    }
+  },
+  "PartnersContact": {
+    "consent": {
+      "marketing": "Yes, I agree to receive marketing communications from Incremental as described in your <link>Privacy Policy</link>.",
+      "withdraw": "You can withdraw your consent at any time by clicking the unsubscribe link in the emails."
+    },
+    "description": "Tell us about your firm and the work you deliver today. Most applications get an answer within a week.",
+    "fields": {
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Steve Jobs",
+      "workEmail": "Work email",
+      "workEmailPlaceholder": "steve@apple.com",
+      "company": "Company",
+      "companyPlaceholder": "Company name",
+      "country": "Country",
+      "countryPlaceholder": "Select country",
+      "companySize": "Company size",
+      "companySizePlaceholder": "Select size",
+      "primaryInterest": "Primary interest",
+      "primaryInterestPlaceholder": "Select an area",
+      "message": "Message",
+      "messagePlaceholder": "Tell us about your firm, the customers you serve, and the work you would deliver on Incremental",
+      "partnerTrack": "Partner track",
+      "partnerTrackPlaceholder": "Select a track"
+    },
+    "genericError": "Something went wrong. Please try again.",
+    "highlights": {
+      "review": {
+        "title": "Reviewed within a week",
+        "description": "Most firms hear back in a few days, and certification starts straight after."
+      },
+      "certification": {
+        "title": "Certification is free",
+        "description": "Your engineers train on the same material our own solutions team uses."
+      }
+    },
+    "interests": {
+      "agents": "Agents and workflows",
+      "evaluation": "Evaluation",
+      "safety": "Safety and governance",
+      "data": "Data and integrations",
+      "enterprise": "Enterprise deployment"
+    },
+    "submit": "Submit application",
+    "success": "Thanks. We will review your application and be in touch.",
+    "title": "Apply to the partner program.",
+    "tracks": {
+      "delivery": "Delivery and integration",
+      "technology": "Technology and product",
+      "advisory": "Strategy and advisory"
+    }
+  },
+  "Consent": {
+    "bannerMessage": "We use cookie-free analytics by default. Accept cookies to help us track your visits across sessions for more accurate data.",
+    "deny": "Deny",
+    "acceptAll": "Accept all",
+    "settings": "Customize",
+    "save": "Save",
+    "dialogTitle": "Your Privacy",
+    "dialogDescription": "Essential storage is always on. Everything else is your choice, and you can change it here at any time.",
+    "privacyNote": "Read how we handle your data in our <link>Privacy Policy</link>.",
+    "options": {
+      "essential": {
+        "label": "Essential",
+        "description": "Your consent choice, language preference, and security."
+      },
+      "analytics": {
+        "label": "Analytics",
+        "description": "Remembers your visit across sessions so traffic and conversion reporting is accurate. Without it we still count visits, anonymously and without storing anything on your device."
+      },
+      "functional": {
+        "label": "Functional",
+        "description": "Keeps your Ask AI conversation history on this device between visits."
+      }
+    }
+  },
+  "ContactSales": {
+    "title": "Build the right AI infrastructure for your organization.",
+    "description": "Tell us what you are building. We will help you map Incremental to your systems, security requirements, and deployment goals.",
+    "highlights": {
+      "conversation": {
+        "title": "A conversation built around your needs",
+        "description": "Discuss architecture, integrations, pricing, and rollout with our team."
+      },
+      "procurement": {
+        "title": "Security and procurement ready",
+        "description": "We can work through governance, compliance, and deployment requirements together."
+      }
+    },
+    "fields": {
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Steve Jobs",
+      "workEmail": "Work email",
+      "workEmailPlaceholder": "steve@apple.com",
+      "company": "Company",
+      "companyPlaceholder": "Company name",
+      "country": "Country",
+      "countryPlaceholder": "Select country",
+      "companySize": "Company size",
+      "companySizePlaceholder": "Select size",
+      "primaryInterest": "Primary interest",
+      "primaryInterestPlaceholder": "Select an area",
+      "message": "Message",
+      "messagePlaceholder": "Tell us about your current stack, use case, and how you'd like to use our products"
+    },
+    "interests": {
+      "agents": "Agents and workflows",
+      "evaluation": "Evaluation",
+      "safety": "Safety and governance",
+      "data": "Data and integrations",
+      "enterprise": "Enterprise deployment"
+    },
+    "consent": {
+      "marketing": "Yes, I agree to receive marketing communications from Incremental as described in your <link>Privacy Policy</link>.",
+      "withdraw": "You can withdraw your consent at any time by clicking the unsubscribe link in the emails."
+    },
+    "submit": "Contact sales",
+    "success": "Thanks. Our sales team will be in touch.",
+    "genericError": "Something went wrong. Please try again."
+  },
+  "StartupsContact": {
+    "consent": {
+      "marketing": "Yes, I agree to receive marketing communications from Incremental as described in your <link>Privacy Policy</link>.",
+      "withdraw": "You can withdraw your consent at any time by clicking the unsubscribe link in the emails."
+    },
+    "description": "Tell us what you are building and where you are. We will help you get to production quickly, and set you up with the right plan and support.",
+    "fields": {
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Steve Jobs",
+      "workEmail": "Work email",
+      "workEmailPlaceholder": "steve@apple.com",
+      "company": "Company",
+      "companyPlaceholder": "Company name",
+      "country": "Country",
+      "countryPlaceholder": "Select country",
+      "companySize": "Company size",
+      "companySizePlaceholder": "Select size",
+      "primaryInterest": "Primary interest",
+      "primaryInterestPlaceholder": "Select an area",
+      "message": "Message",
+      "messagePlaceholder": "Tell us about your current stack, use case, and how you'd like to use our products",
+      "fundingStage": "Funding stage",
+      "fundingStagePlaceholder": "Select stage"
+    },
+    "genericError": "Something went wrong. Please try again.",
+    "highlights": {
+      "velocity": {
+        "title": "From prototype to production",
+        "description": "We help you choose the models, evaluations, and deployment path that fit your stage."
+      },
+      "pricing": {
+        "title": "Startup pricing and credits",
+        "description": "Qualifying teams get discounted usage and a plan that grows with them."
+      },
+      "support": {
+        "title": "Direct line to our team",
+        "description": "A shared channel with the engineers building Incremental, not a ticket queue."
+      },
+      "security": {
+        "title": "Ready for your first enterprise deal",
+        "description": "SSO, audit logs, and the security answers your first large customer will ask for."
+      }
+    },
+    "interests": {
+      "agents": "Agents and workflows",
+      "evaluation": "Evaluation",
+      "safety": "Safety and governance",
+      "data": "Data and integrations",
+      "enterprise": "Enterprise deployment"
+    },
+    "stages": {
+      "idea": "Idea or pre-product",
+      "pre-seed": "Pre-seed",
+      "seed": "Seed",
+      "series-a": "Series A",
+      "series-b-plus": "Series B or later"
+    },
+    "submit": "Apply for Incremental for Startups",
+    "success": "Thanks. We will review your application and be in touch.",
+    "title": "Build your startup on Incremental."
+  },
+  "EnterpriseContact": {
+    "consent": {
+      "marketing": "Yes, I agree to receive marketing communications from Incremental as described in your <link>Privacy Policy</link>.",
+      "withdraw": "You can withdraw your consent at any time by clicking the unsubscribe link in the emails."
+    },
+    "deployments": {
+      "cloud": "Incremental Cloud (recommended)",
+      "dedicated-cloud": "Dedicated / isolated cloud",
+      "self-hosted": "Customer VPC / self-hosted"
+    },
+    "description": "Tell us about your systems, security requirements, and rollout plans. We will map Incremental to your environment and bring the right people to the conversation.",
+    "fields": {
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Steve Jobs",
+      "workEmail": "Work email",
+      "workEmailPlaceholder": "steve@apple.com",
+      "company": "Company",
+      "companyPlaceholder": "Company name",
+      "country": "Country",
+      "countryPlaceholder": "Select country",
+      "companySize": "Company size",
+      "companySizePlaceholder": "Select size",
+      "primaryInterest": "Primary interest",
+      "primaryInterestPlaceholder": "Select an area",
+      "message": "Message",
+      "messagePlaceholder": "Tell us about your current stack, use case, and how you'd like to use our products",
+      "deployment": "Deployment model",
+      "deploymentPlaceholder": "Select a model",
+      "timeline": "Timeline",
+      "timelinePlaceholder": "Select a timeline"
+    },
+    "genericError": "Something went wrong. Please try again.",
+    "highlights": {
+      "deployment": {
+        "title": "Deployment options",
+        "description": "Incremental Cloud is the fastest way to get started, with Incremental operating the infrastructure. Dedicated / isolated cloud adds separation for stronger data-isolation or compliance requirements. Customer VPC / self-hosted is for enterprises that require compute and data to remain entirely inside their environment."
+      },
+      "governance": {
+        "title": "Security and procurement ready",
+        "description": "We work through governance, compliance, and data residency requirements with your teams."
+      },
+      "integration": {
+        "title": "Fits the stack you already run",
+        "description": "Connect identity, data warehouses, and internal services without rebuilding them."
+      },
+      "support": {
+        "title": "Named support and onboarding",
+        "description": "A dedicated team for rollout, enablement, and ongoing architecture reviews."
+      }
+    },
+    "interests": {
+      "agents": "Agents and workflows",
+      "evaluation": "Evaluation",
+      "safety": "Safety and governance",
+      "data": "Data and integrations",
+      "enterprise": "Enterprise deployment"
+    },
+    "submit": "Talk to enterprise sales",
+    "success": "Thanks. Our enterprise team will be in touch.",
+    "timelines": {
+      "evaluating": "Evaluating options",
+      "immediate": "Immediate",
+      "this-half": "Next six months",
+      "this-quarter": "This quarter"
+    },
+    "title": "Deploy Incremental across your enterprise."
+  },
+  "Application": {
+    "selectPlaceholder": "Select an option",
+    "selectItems": "Select items",
+    "selectItemsPlaceholder": "Select items…",
+    "sections": {
+      "personal": "Personal Information",
+      "eligibility": "Location & Work Eligibility",
+      "referral": "How Did You Hear About Us?",
+      "links": "Social & Professional Links",
+      "optional": "(Optional)",
+      "confirmations": "Confirmations"
+    },
+    "fields": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "country": "Country",
+      "source": "Source",
+      "linkedin": "LinkedIn",
+      "twitter": "X (Twitter)",
+      "github": "GitHub",
+      "portfolio": "Portfolio",
+      "workAuthorization": "Work authorization",
+      "basedInCountry": "Where are you currently based?"
+    },
+    "questions": {
+      "londonHybrid": "Are you able to work from our London office on a hybrid schedule, 3 days a week?",
+      "visaSponsorship": "Will you require visa sponsorship now or in the future?",
+      "listedState": "Do you live in Alabama, Alaska, Delaware, Kansas, Maine, Mississippi, Montana, Nebraska, New Mexico, North Dakota, South Dakota, West Virginia, or Wyoming?"
+    },
+    "confirmations": {
+      "privacyLabel": "Job Applicant Privacy Notice:",
+      "privacyText": "I acknowledge and confirm that I have read the notice.",
+      "accuracyLabel": "Application Accuracy:",
+      "accuracyText": "I confirm that all information provided is accurate and complete."
+    },
+    "submit": "Submit application",
+    "submitting": "Submitting…",
+    "success": "Application received. Thank you. We will be in touch.",
+    "genericError": "We could not submit your application. Please try again.",
+    "options": {
+      "referralSource": {
+        "LinkedIn": "LinkedIn",
+        "Referral": "Referral",
+        "Twitter/X": "X (Twitter)",
+        "Indeed": "Indeed",
+        "GitHub": "GitHub",
+        "Job board": "Job board",
+        "Conference": "Conference",
+        "Other": "Other"
+      },
+      "workAuthorization": {
+        "Citizen or permanent resident": "Citizen or permanent resident",
+        "Visa sponsorship required": "Visa sponsorship required",
+        "Visa sponsorship not required": "Visa sponsorship not required"
+      },
+      "yesNo": {
+        "Yes": "Yes",
+        "No": "No"
+      }
+    }
+  },
+  "Capabilities": {
+    "runtime": {
+      "title": "Execution Runtime",
+      "description": "Design and ship intelligent software using a unified execution environment for orchestration, state, and reliability."
+    },
+    "context": {
+      "title": "State & Context",
+      "description": "Manage deterministic and probabilistic system boundaries with observability, governance, and control flow for agents."
+    },
+    "reliability": {
+      "title": "Reliability Primitives",
+      "description": "From early prototypes to mission-critical systems, Incremental provides the infrastructure for AI in production."
+    }
+  },
+  "Shortcuts": {
+    "dialogTitle": "Keyboard shortcuts",
+    "dialogDescription": "Move around Incremental without reaching for the mouse.",
+    "openSearch": "Open search",
+    "showHelp": "Show keyboard shortcuts",
+    "toggleChat": "Toggle Ask AI",
+    "toggleTheme": "Toggle dark mode",
+    "groups": {
+      "general": "General",
+      "appearance": "Appearance"
+    }
+  },
+  "Customers": {
+    "meta": {
+      "title": "Customer Stories",
+      "description": "How teams use Incremental to turn their data, systems, and operations into intelligent software.",
+      "ogTitle": "Customer Stories",
+      "ogDescription": "See how teams turn their data, systems, and operations into intelligent software."
+    },
+    "hero": {
+      "title": "Customer Stories",
+      "description": "How teams put their own data, systems, and operations behind software that acts on them."
+    },
+    "sections": {
+      "quotes": {
+        "title": "In their words",
+        "description": "What changed, described by the teams who run it."
+      },
+      "logos": {
+        "title": "Teams building on Incremental"
+      },
+      "stories": {
+        "title": "All stories"
+      },
+      "customers": {
+        "title": "Every customer",
+        "description": "The teams whose work we have published."
+      },
+      "cta": {
+        "title": "Start your own story",
+        "description": "Create a workspace in minutes, or talk to us about your use case.",
+        "primary": "Start building",
+        "secondary": "Talk to sales"
+      }
+    },
+    "story": {
+      "back": "Customers",
+      "employees": "{size} employees",
+      "facts": {
+        "title": "At a glance",
+        "industry": "Industry",
+        "size": "Company size",
+        "useCase": "Use case",
+        "published": "Published"
+      },
+      "outcomes": {
+        "title": "Outcomes"
+      },
+      "more": {
+        "title": "More customer stories"
+      }
+    },
+    "empty": "The first customer stories are being written. Check back shortly."
+  }
+}

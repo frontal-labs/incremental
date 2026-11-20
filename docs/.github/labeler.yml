@@ -1,0 +1,12 @@
+# Labeler configuration
+labels:
+  - name: documentation
+    pattern: ['*.md', 'docs/**']
+  - name: dependencies
+    pattern: ['package.json', 'package-lock.json']
+  - name: ci/cd
+    pattern: ['.github/**']
+  - name: frontend
+    pattern: ['src/**', 'app/**', 'components/**']
+
+only: PRs

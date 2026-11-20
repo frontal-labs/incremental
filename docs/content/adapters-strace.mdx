@@ -1,0 +1,60 @@
+---
+title: Strace Oracle
+description: Strace oracle adapter — syscall-level observation for ground-truth file access.
+icon: Search
+stage: Experimental
+updatedAt: 2026-11-20
+keywords: [strace, oracle, syscall, observation, file access, linux]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+The **strace oracle** (`adapters/strace/`) observes a task's file accesses at the syscall level using `strace`, producing a ground-truth input list. It is Linux-only and skipped on macOS.
+
+## Purpose
+
+Adapters record inputs by observing language-level reads (e.g. Vitest's file reads). The strace oracle validates those observations against actual kernel syscalls (`open`, `openat`, `read`, `stat`), catching inputs the language-level observer missed — and confirming silent-skip safety.
+
+## How it works
+
+```text
+Task run (under strace)
+    ↓
+strace captures syscalls (open/openat/read/stat)
+    ↓
+Oracle extracts file paths
+    ↓
+Compare against adapter-recorded inputs
+    ↓
+Report: missing inputs, extra inputs, match
+```
+
+## Status
+
+- **Linux-only.** The target `make test-oracle` is skipped on macOS.
+- **Experimental.** Used for validation and audits, not the warm path.
+
+## Run
+
+```sh
+make test-oracle
+```
+
+## What it catches
+
+| Finding | Meaning |
+|---------|---------|
+| Missing input | Task read a file the adapter did not record → potential silent skip risk |
+| Extra input | Adapter recorded a file the task never actually read |
+| Match | Adapter observation matches kernel-level file access |
+
+## Limits
+
+- Only observes file syscalls; network/time/randomness are not captured
+- Adds overhead to each observed run (strace slows execution)
+- Linux only
+
+## Next steps
+
+See the [**Tutorial**](/tutorial) for the standard observe → affected cycle, and [**Policy Rules**](/policy) for how inputs drive invalidation.

@@ -1,0 +1,140 @@
+---
+title: Data Model
+description: Core concepts, input kinds, observation and ChangeSet schemas, reason grammar.
+icon: Layout
+stage: Stable
+updatedAt: 2026-11-20
+keywords: [data model, task, input, observation, baseline, context, changeset, plan]
+published: true
+publishRegions: [global]
+locale: en
+---
+
+This is the canonical definition of the entities Incremental tracks. It is language-neutral and shared by the engine, bindings, and adapters.
+
+## Core concepts
+
+| Term | Definition |
+|------|------------|
+| **Task** | Named unit of work tracked by the engine (adapter-defined ID). The Vitest adapter uses test file paths. |
+| **Input** | Something a task depends on: `file`, `dir`, `probe`, `env`, `env_all`, or `declared`. |
+| **Output** | File produced by a task (recorded for explanation; not used for invalidation in v1). |
+| **Observation** | A recorded run of a task: inputs, outputs, outcome, baseline, dirty state, context. |
+| **Baseline** | Opaque string naming the state the graph is valid for (usually a git commit SHA). |
+| **Context** | Environment of observation: tool versions, lockfile hash, env snapshot. |
+| **ChangeSet** | Changes between baseline and current state (path + status). |
+| **Plan** | Engine answer: which tasks are invalid and why, unknowns, confidence. |
+| **Certificate** | Evidence that makes a skip safe: an observation at the baseline whose inputs are all unchanged. |
+
+## Input kinds
+
+| Kind | Fields | Meaning |
+|------|--------|---------|
+| `file` | `path`, `hash` | Task read this file |
+| `dir` | `path` | Task listed this directory (any entry change matters) |
+| `probe` | `path` | Task looked for a path that did not exist (creation matters) |
+| `env` | `name`, `value_hash` or `"unset"` | Task read this environment variable |
+| `env_all` | `snapshot` | Task enumerated the whole environment (any change matters) |
+| `declared` | `path` | Adapter-declared input without an observed read |
+
+## Observation schema
+
+```json
+{
+  "task": "packages/core/src/math.test.ts",
+  "baseline": "b1",
+  "dirty": false,
+  "context": {
+    "lockfile": "sha256:...",
+    "tsconfig": "sha256:...",
+    "pkgjson": "sha256:...",
+    "runner": "vitest@4.1.12",
+    "node": "22.11.0",
+    "fmt": 1,
+    "caps": { "probes": true, "dirs": true, "env": true }
+  },
+  "inputs": [
+    { "kind": "file", "path": "packages/core/src/math.ts", "hash": "sha256:..." },
+    { "kind": "dir", "path": "packages/core/src/plugins" },
+    { "kind": "probe", "path": "packages/core/src/helpers.ts" },
+    { "kind": "env", "name": "TG_FIXTURE_MODE", "value_hash": "sha256:..." },
+    { "kind": "env_all", "snapshot": { "TG_FIXTURE_MODE": "sha256:..." } }
+  ],
+  "outputs": [],
+  "outcome": "pass|fail|error|none",
+  "duration_ms": 412
+}
+```
+
+`task`, `baseline`, and `context` (with reserved keys) are required. Inputs need not be sorted by the client — the engine sorts them.
+
+### Context reserved keys
+
+`lockfile`, `tsconfig`, `pkgjson`, `runner`, `node`, `fmt`, `caps`. `caps` = `{probes, dirs, env}` (booleans).
+
+## ChangeSet schema
+
+```json
+{
+  "baseline": "abc123",
+  "head": "def456",
+  "changes": [
+    { "path": "src/math.ts", "status": "modified" },
+    { "path": "src/new.ts", "status": "added" },
+    { "path": "src/old.ts", "status": "deleted" },
+    { "path": "src/a.ts", "status": "renamed", "old_path": "src/b.ts" }
+  ]
+}
+```
+
+Statuses: `added`, `modified`, `deleted`, `renamed` (with `old_path`).
+
+## Plan schema
+
+```json
+{
+  "protocol": 1,
+  "baseline": "b1",
+  "graph_version": "g_8f3a21c9",
+  "verify": false,
+  "tasks": [
+    { "id": "src/math.test.ts", "reasons": ["reads:src/math.ts"] },
+    { "id": "src/new.test.ts", "reasons": ["no_observation"] }
+  ],
+  "unobserved": [],
+  "ignored": [],
+  "deleted_tasks": [],
+  "total_tasks": 5,
+  "skipped": 3,
+  "fallback": null,
+  "confidence": "medium"
+}
+```
+
+## Reason grammar
+
+A reason is `<code>` or `<code>:<arg>`. Codes:
+
+| Code | Meaning |
+|------|---------|
+| `reads:<path>` | A file input changed |
+| `declared:<path>` | A declared input changed |
+| `self_changed` | The task's own definition changed |
+| `removed_read:<old>` | A deleted file the task read |
+| `removed_listed:<dir>` | A deleted directory the task listed |
+| `probe:<path>` | A newly created probed path |
+| `dir:<parent>` | A newly created entry in a listed directory |
+| `no_observation` | Task has no observation |
+| `dirty_observation` | Latest observation is dirty |
+| `failed_outcome` | Latest outcome was fail/error |
+| `stale:<path>` | Verify mode: recorded hash mismatched |
+| `env_changed:<NAME>` | Environment variable changed |
+| `env_all_changed` | `env_all` snapshot changed |
+| `volatile:<name>` | Volatile input not attested stable |
+| `fallback` | Full fallback fired (listed in `fallback.reason`) |
+
+All reason lists are sorted lexicographically.
+
+## Soundness rule
+
+A task may be skipped **only if** it has a certificate. If no certificate exists, the task is invalid. Never skip silently — unknown or unverifiable input → task invalid, or full fallback.

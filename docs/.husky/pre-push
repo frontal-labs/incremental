@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+bun run secrets:scan && bun run verify:production
