@@ -26,10 +26,10 @@ npm install @incremental/engine
 
 ## Supported platforms
 
-| Platform | Arch  | Status                         |
-| -------- | ----- | ------------------------------ |
-| darwin   | arm64 | ✅ Prebuilt binary included (macOS ≥ 11.0) |
-| darwin   | x64   | ✅ Prebuilt binary included (macOS ≥ 11.0) |
+| Platform | Arch  | Status                                           |
+| -------- | ----- | ------------------------------------------------ |
+| darwin   | arm64 | ✅ Prebuilt binary included (macOS ≥ 11.0)       |
+| darwin   | x64   | ✅ Prebuilt binary included (macOS ≥ 11.0)       |
 | linux    | x64   | ✅ Prebuilt binary included (needs glibc ≥ 2.34) |
 | linux    | arm64 | ✅ Prebuilt binary included (needs glibc ≥ 2.34) |
 
