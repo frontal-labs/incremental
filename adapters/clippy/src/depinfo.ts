@@ -43,12 +43,24 @@ export function depInfoFor(filename: string, kinds: string[]): string | null {
   let stem = path.basename(filename, ext);
   if (LIB_EXTENSIONS.has(ext) && stem.startsWith("lib")) stem = stem.slice(3);
   if (kinds.includes("custom-build")) {
+    // Cargo 1.100+ writes build_script_build.d next to the unit's output file.
+    const direct = path.join(dir, `${stem}.d`);
+    if (existsSync(direct)) return direct;
+    // Older cargo named it build_script_build-<hash>.d in the hash directory.
     const hash = path.basename(dir).slice(path.basename(dir).lastIndexOf("-") + 1);
     const found = readdirSync(dir).find((f) => f === `build_script_build-${hash}.d`);
     return found === undefined ? null : path.join(dir, found);
   }
   const candidate = path.join(dir, `${stem}.d`);
   return existsSync(candidate) ? candidate : null;
+}
+
+// The file holding a build script's "cargo:" lines, given its OUT_DIR. Older cargo
+// wrote <hash>/output; cargo 1.100+ writes <hash>/run/stdout.
+export function scriptOutputFile(outDir: string): string | null {
+  const hashDir = path.dirname(outDir);
+  const candidates = [path.join(hashDir, "output"), path.join(hashDir, "run", "stdout")];
+  return candidates.find((f) => existsSync(f)) ?? null;
 }
 
 // The lines of a build script's output that name files it watches, and the env
