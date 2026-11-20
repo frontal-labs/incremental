@@ -13,7 +13,7 @@ Per §12.4 M8 and §1180, the `examples/` directory is owned by the Adapters rol
 | [vitest_adapter/](vitest_adapter/) | Vitest adapter integration: record → plan → skip unchanged tests.                                                                    |
 | [mcp_client/](mcp_client/)         | MCP client driving `incremental-mcp` from an AI agent (Python + TypeScript).                                                         |
 | [python_client/](python_client/)   | Python client (`incremental` package) speaking Protocol v1 over stdio.                                                               |
-| [rust_client/](rust_client/)       | Rust client (`incremental-client` crate) speaking Protocol v1 over stdio.                                                              |
+| [rust_client/](rust_client/)       | Rust client (`incremental-client` crate) speaking Protocol v1 over stdio.                                                            |
 | [ci_recipe/](ci_recipe/)           | CI recipes: GitHub Actions workflow, local CI script, Dockerfile for Linux gate.                                                     |
 
 ## Running Examples
