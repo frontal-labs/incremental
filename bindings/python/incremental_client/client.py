@@ -179,7 +179,8 @@ def connect(
 
     store: store directory. Default: $INCREMENTAL_STORE, else <repo>/.incremental.
     engine: engine binary, or a command prefix. Default: $INCREMENTAL_ENGINE,
-            else <repo>/core/dist/incremental.
+            else the bundled prebuild for this platform, else
+            <repo>/core/dist/incremental.
     root: worktree root for verify. Default: <repo>.
     timeout: seconds per request. Default 10.
     restart: restart the engine when it dies. Default True.

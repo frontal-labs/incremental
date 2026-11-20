@@ -2,7 +2,7 @@
 //! bindings/python/tests/_support.py and _conformance.py.
 #![allow(dead_code)]
 
-use incremental::{Affected, Incremental, Config, Result};
+use incremental::{default_engine, Affected, Config, Incremental, Result};
 use serde_json::{json, Value};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -16,8 +16,7 @@ pub fn repo() -> PathBuf {
 }
 
 pub fn engine() -> String {
-    let path = std::env::var("INCREMENTAL_ENGINE")
-        .unwrap_or_else(|_| repo().join("core/dist/incremental").display().to_string());
+    let path = default_engine(&repo()).display().to_string();
     assert!(Path::new(&path).exists(), "engine missing at {path}: run make build");
     path
 }

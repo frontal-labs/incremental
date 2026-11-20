@@ -20,7 +20,9 @@
   "engines": {
     "node": ">=22.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@incremental/engine": "^0.1.3"
+  },
   "devDependencies": {
     "@types/node": "22.20.5",
     "tsc-rs": "0.8.0"

@@ -3,6 +3,7 @@
 import contextlib
 import json
 import os
+import platform
 import queue
 import subprocess
 import threading
@@ -234,10 +235,25 @@ class Engine:
         return b"".join(self._stderr_tail).decode("utf-8", "replace").strip()
 
 
+_PREBUILDS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prebuilds")
+
+
+def host_triple() -> str:
+    """The platform-arch name used by packages/engine/prebuilds (e.g. darwin-arm64)."""
+    system = {"windows": "win32"}.get(platform.system().lower(), platform.system().lower())
+    machine = platform.machine().lower()
+    arch = {"x86_64": "x64", "amd64": "x64", "aarch64": "arm64"}.get(machine, machine)
+    return f"{system}-{arch}"
+
+
 def default_engine() -> str:
+    # Same order as @incremental/client: env override, bundled prebuild, dev build.
     env = os.environ.get("INCREMENTAL_ENGINE")
     if env:
         return env
+    bundled = os.path.join(_PREBUILDS, host_triple(), "incremental")
+    if os.path.exists(bundled):
+        return bundled
     return os.path.join(find_repo_root(), "core", "dist", "incremental")
 
 
