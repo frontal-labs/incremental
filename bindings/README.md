@@ -1,47 +1,49 @@
 # Incremental Bindings
 
-Client bindings for incremental Protocol v1. Bindings are thin clients over the protocol — all engine logic lives in `core/`. Every binding speaks JSON Lines on stdio to a `incremental serve` instance.
+Client bindings for incremental Protocol v1. A binding is a thin client over the protocol: it starts `incremental serve` and exchanges JSON Lines over stdio. All engine logic lives in `core/`.
 
 ## Bindings
 
-| Binding | Package               | Language   | Entry point          |
-| ------- | --------------------- | ---------- | -------------------- |
-| Node    | `@incremental/client` | TypeScript | `bindings/node/src/` |
-| Python  | `incremental-client`  | Python     | `bindings/python/`   |
-| Rust    | `incremental`         | Rust       | `bindings/rust/src/` |
+| Binding | Package               | Language   | Source               | Install                                |
+| ------- | --------------------- | ---------- | -------------------- | -------------------------------------- |
+| Node    | `@incremental/client` | TypeScript | `bindings/node/src/` | `npm install @incremental/client`      |
+| Python  | `incremental-client`  | Python     | `bindings/python/`   | from a platform wheel (see its README) |
+| Rust    | `incremental-client`  | Rust       | `bindings/rust/src/` | `cargo add incremental-client`         |
+
+Each binding finds the engine the same way: `INCREMENTAL_ENGINE`, then the prebuilt engine for the platform, then `core/dist/incremental`. See each binding's README for the details.
 
 ## Running the tests
 
-From the repo root (requires `make build` for the engine):
+From the repo root, after `make build` (the engine is needed):
 
 ```sh
-make test-bindings  # TypeScript client: 84 pass, 2 intentional skips; 34/34 expressible plans byte-identical to the CLI
-make test-python    # Python client: 55 tests pass, 36/36 query cases byte-equal to serve
-make test-rust      # Rust client: cargo test
+make test-bindings  # TypeScript client
+make test-python    # Python client
+make test-rust      # Rust client
 ```
 
 Or run each binding directly:
 
 ```sh
-cd bindings/node  && npm test          # tsc -b && node --test dist/tests/*.test.js
+cd bindings/node   && npm test
 cd bindings/python && python3 -m unittest discover -s tests -t .
-cd bindings/rust && cargo test
+cd bindings/rust   && cargo test
 ```
 
 ## Binding notes
 
-- **Node client (`@incremental/client`)**: typed Protocol v1 client with process supervision (`hello`, `observe`, `observe_many`, `affected`, `explain`, `stats`, `ping`, `shutdown`). Build with `npm run build` (tsc). Used by `mcp/` and the adapters.
-- **Python client**: `pyproject.toml`-based package under `bindings/python`, tests under `bindings/python/tests`. Requires Python 3.10+.
-- **Rust client** (crate `incremental-client`): spawns the `incremental` binary and speaks Protocol v1 over stdio. Uses `serde_json` with `preserve_order`. Edition 2021. See `bindings/rust/Cargo.toml`.
+- **Node client (`@incremental/client`)**: typed Protocol v1 client with process supervision. Methods: `hello`, `observe`, `observeMany`, `baseline`, `advance`, `affected`, `explain`, `forget`, `stats`, `compact`, `close`. Used by `mcp/` and the adapters.
+- **Python client (`incremental_client`)**: standard library only, Python 3.10+. Methods: `hello`, `observe`, `observe_many`, `baseline`, `advance`, `affected`, `explain`, `forget`, `stats`, `compact`, `ping`, `close`.
+- **Rust client (`incremental-client`)**: depends only on `serde_json`. The public API is re-exported from `lib.rs`; the code lives in modules under `src/`.
 
-Python binding details are also in `spec/bindings-python.md`.
+The Python protocol details are also in `spec/bindings-python.md`.
 
 ## Status
 
-Binding verification status is tracked in `status/BINDINGS.json` (E3 verify for TypeScript, E9 verify for Python).
+Binding verification status is tracked in `status/BINDINGS.json`.
 
 ## Related
 
-- `docs/spec/PROTOCOL.md` — Protocol v1 transport, methods, errors
-- `docs/spec/POLICY.md` — plan semantics bindings rely on
-- `mcp/` — MCP server built on `@incremental/client`
+- `docs/spec/PROTOCOL.md`: Protocol v1 transport, methods, errors
+- `docs/spec/POLICY.md`: plan semantics the bindings rely on
+- `mcp/`: MCP server built on `@incremental/client`
