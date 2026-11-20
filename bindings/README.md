@@ -7,7 +7,7 @@ Client bindings for incremental Protocol v1. Bindings are thin clients over the 
 | Binding | Package               | Language   | Entry point          |
 | ------- | --------------------- | ---------- | -------------------- |
 | Node    | `@incremental/client` | TypeScript | `bindings/node/src/` |
-| Python  | `incremental`         | Python     | `bindings/python/`   |
+| Python  | `incremental-client`  | Python     | `bindings/python/`   |
 | Rust    | `incremental`         | Rust       | `bindings/rust/src/` |
 
 ## Running the tests

@@ -1,4 +1,4 @@
-"""Python client for the incremental incremental dependency engine (protocol v1).
+"""Python client for the Incremental dependency engine (protocol v1).
 
 Spec: spec/bindings-python.md. Standard library only.
 """

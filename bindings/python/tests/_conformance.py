@@ -8,8 +8,8 @@ Expectations come from the case files only; nothing here computes them.
 import os
 import threading
 
-from incremental import IncrementalError
-from incremental._transport import Engine
+from incremental_client import IncrementalError
+from incremental_client._transport import Engine
 
 from . import _support as S
 

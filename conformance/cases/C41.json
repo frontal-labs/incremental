@@ -1,0 +1,79 @@
+{
+  "id": "C41",
+  "desc": "Volatile input: default is changed (rerun), attested stable is skipped",
+  "mode": "balanced",
+  "store": {
+    "from": "conformance/stores/base.jsonl",
+    "append": [
+      {
+        "method": "observe",
+        "params": {
+          "observation": {
+            "task": "packages/core/src/vol.test.ts",
+            "baseline": "b1",
+            "dirty": false,
+            "context": {
+              "lockfile": "sha256:l1",
+              "tsconfig": "sha256:t1",
+              "pkgjson": "sha256:p1",
+              "runner": "vitest@4.1.12",
+              "node": "22.11.0",
+              "fmt": 1,
+              "caps": {
+                "probes": true,
+                "dirs": true,
+                "env": true
+              }
+            },
+            "inputs": [
+              { "kind": "file", "path": "packages/core/src/vol.test.ts", "hash": "sha256:v1" },
+              { "kind": "volatile", "name": "time" }
+            ],
+            "outputs": [],
+            "outcome": "pass"
+          }
+        }
+      }
+    ],
+    "baseline": "b1"
+  },
+  "query": {
+    "baseline": "b1",
+    "context": {
+      "lockfile": "sha256:l1",
+      "tsconfig": "sha256:t1",
+      "pkgjson": "sha256:p1",
+      "runner": "vitest@4.1.12",
+      "node": "22.11.0",
+      "fmt": 1,
+      "caps": {
+        "probes": true,
+        "dirs": true,
+        "env": true
+      }
+    },
+    "env": {
+      "TG_FIXTURE_MODE": "sha256:env1"
+    },
+    "changes": []
+  },
+  "expect": {
+    "tasks": [
+      {
+        "id": "packages/core/src/vol.test.ts",
+        "reasons": ["volatile:time"]
+      }
+    ]
+  },
+  "expect2": {
+    "query": {
+      "volatile": { "time": "stable" }
+    },
+    "tasks": [],
+    "unobserved": [],
+    "ignored": [],
+    "deleted_tasks": [],
+    "fallback": null,
+    "confidence": "medium"
+  }
+}

@@ -38,6 +38,7 @@ export interface QueryFile {
   baseline: string;
   context?: Context;
   env?: Record<string, string>;
+  volatile?: Record<string, "stable" | "changed">;
   changes: Change[];
   verify?: boolean;
   declared_tasks?: string[];
@@ -52,6 +53,9 @@ export interface CaseFile {
   worktree?: string;
   query?: QueryFile;
   expect: Record<string, unknown>;
+  // A second query with the store left as-is: the merged query is sent and
+  // compared against these expectations (conformance/run.mjs).
+  expect2?: { query?: Record<string, unknown> } & Record<string, unknown>;
   determinism?: "repeat" | "shuffle" | "cache" | "index";
   action?: SeedMsg & { id?: number };
   raw_lines?: string[];

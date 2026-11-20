@@ -46,6 +46,7 @@ const InputSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("declared"), path: z.string(), hash: z.string() }),
   z.object({ kind: z.literal("env"), name: z.string(), value_hash: z.string() }),
   z.object({ kind: z.literal("env_all"), snapshot: z.record(z.string(), z.string()).optional() }),
+  z.object({ kind: z.literal("volatile"), name: z.string() }),
 ]);
 
 // The Observation of the client (bindings/node/src/types.ts), as tool input.

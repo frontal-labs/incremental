@@ -49,6 +49,7 @@ function optionsOf(c: CaseFile): AffectedOptions {
     context: q.context,
   };
   if (q.env !== undefined) o.env = q.env;
+  if (q.volatile !== undefined) o.volatile = q.volatile;
   if (q.declared_tasks !== undefined) o.declared_tasks = q.declared_tasks;
   if (c.config !== undefined) o.config = c.config;
   return o as unknown as AffectedOptions;
@@ -248,6 +249,13 @@ async function runQueryCase(c: CaseFile): Promise<string[]> {
   const diffs = comparePlan(plan, c.expect);
   const cached = fs.existsSync(path.join(store, "stat.cache")); // written by verify
 
+  if (c.expect2) {
+    // A second query over the same store, with options merged in.
+    const opts2 = { ...opts, ...c.expect2.query } as unknown as AffectedOptions;
+    const plan2 = await once(store, wt, (k) => k.affected(cs, opts2));
+    diffs.push(...comparePlan(plan2, c.expect2));
+  }
+
   if (c.determinism === "repeat") {
     const [x, y] = await once(store, wt, async (k) => [
       await k.affected(cs, opts),
@@ -294,8 +302,8 @@ for (const c of cases) {
 test("coverage: every case runs, and only C34 and C35 bypass the client", () => {
   const raw = cases.filter((c) => RAW_CASES.has(c.id)).map((c) => c.id);
   assert.deepEqual(raw, ["C34", "C35"]);
-  assert.equal(cases.length, 40);
-  assert.equal(cases.length - raw.length, 38);
+  assert.equal(cases.length, 41);
+  assert.equal(cases.length - raw.length, 39);
   // The runner skips nothing; a case with `requires` would be a skip.
   assert.equal(cases.filter((c) => c.requires !== undefined).length, 0);
 });

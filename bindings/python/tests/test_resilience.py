@@ -8,8 +8,8 @@ import threading
 import time
 import unittest
 
-from incremental import IncrementalError, connect
-from incremental._transport import _FifoLock
+from incremental_client import IncrementalError, connect
+from incremental_client._transport import _FifoLock
 
 from . import _support as S
 

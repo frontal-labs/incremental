@@ -109,6 +109,7 @@ export function plan(state, q, root = ".") {
     ...(config.fallbackContextKeys ?? []).filter((k) => !RESERVED.includes(k)),
   ];
   const env = q.env || {};
+  const volatile = q.volatile || {};
   const policy = q.policy || "balanced";
   const verify = !!q.verify;
 
@@ -258,6 +259,10 @@ export function plan(state, q, root = ".") {
           const cur = Object.hasOwn(env, i.name) ? env[i.name] : "unset";
           if (cur !== i.value_hash) addR(id, "env_changed:" + i.name);
         }
+        if (i.kind === "volatile") {
+          const attestation = Object.hasOwn(volatile, i.name) ? volatile[i.name] : "changed";
+          if (attestation !== "stable") addR(id, "volatile:" + i.name);
+        }
         if (i.kind === "env_all") {
           if (!i.snapshot) addR(id, "env_all_changed");
           else {
@@ -267,6 +272,10 @@ export function plan(state, q, root = ".") {
               snapKeys.some((k) => env[k] !== i.snapshot[k]);
             if (differs) addR(id, "env_all_changed");
           }
+        }
+        if (i.kind === "volatile") {
+          const attestation = Object.hasOwn(volatile, i.name) ? volatile[i.name] : "changed";
+          if (attestation !== "stable") addR(id, "volatile:" + i.name);
         }
         if (verify && (i.kind === "file" || i.kind === "declared")) {
           if (!fileMatches(root, i.path, i.hash)) addR(id, "stale:" + i.path);

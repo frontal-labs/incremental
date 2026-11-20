@@ -1,6 +1,6 @@
 # incremental Python binding (spec, E9)
 
-Status: v1, written before the implementation . Package `incremental`, located in `bindings/python/incremental/`. It implements protocol v1 (`spec/PROTOCOL.md`) and nothing else.
+Status: v1, written before the implementation . Package `incremental-client` (importable as `incremental_client`), located in `bindings/python/incremental_client/`. It implements protocol v1 (`spec/PROTOCOL.md`) and nothing else.
 
 ## 1. Scope and runtime rules
 
@@ -24,7 +24,7 @@ The store must exist. The client does not create it. The engine's `init` command
 
 ## 3. Public API
 
-Module `incremental` exports:
+Module `incremental_client` exports:
 
 ```python
 def connect(store=None, *, engine=None, root=None, timeout=10.0, restart=True) -> Incremental
@@ -100,7 +100,7 @@ Run modes:
 - `raw_lines` and `post_raw_log`: writes to the store directory are done by the test, and the client then reads the store.
 - `kind: concurrency`: two client processes write to one store at once.
 
-A case where the public client cannot send the request is run through the client's transport layer (`incremental._transport`). The case states this in the test output.
+A case where the public client cannot send the request is run through the client's transport layer (`incremental_client._transport`). The case states this in the test output.
 
 ## 8. Byte parity (G6)
 

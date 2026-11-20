@@ -36,6 +36,10 @@
 - **fallbackContextKeys**: Context keys that trigger fallback if changed (plus reserved keys always checked)
 - **adapters**: Adapter-specific configuration
 
+## Non-file inputs (volatile)
+
+Tasks that read time, network, randomness, or an unlisted environment variable are not protected by the strace oracle. Declare a `volatile` input on the observation (`{ "kind": "volatile", "name": "time" | "network" | "random" | "env:<NAME>" }`). The policy rule (P12) treats the input as changed unless the caller attests `stable` via the `volatile` query field (`{ "time": "stable" }`). The conservative default (`"changed"`) means the task is always rerun unless explicitly attested.
+
 Glob support: `*`, `**`, `?`. `policy` affects behavior of unobserved adds/modifies (P6/P7).
 
 ## Environment Variables

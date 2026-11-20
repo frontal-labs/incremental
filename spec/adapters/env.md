@@ -21,6 +21,8 @@ None. It is not a task runner. Each task that lists variables gets an `env` inpu
 - Variables read by a child process started by the task.
 - `envAll` is noisy: volatile variables (for example `PWD`, `OLDPWD`, `SHLVL`, `_`) change between runs and cause re-runs. `caps.env` says whether `envAll` is in use; it is not a claim about individual reads.
 
+For unlisted environment variables that matter to a task, declare a `volatile` input with `name: "env:<NAME>"` instead of adding the name to the allowlist. The policy rule (P12) treats a `volatile` input as changed unless the caller attests `stable` via the `volatile` query field.
+
 ## Declared inputs
 
 - Per task, in the `recordTasks` input: a list of variable names (`names`), or `envAll`. Unlisted names are not hashed.

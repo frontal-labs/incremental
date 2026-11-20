@@ -14,8 +14,8 @@ struct Span { off: i64, len: i64 }
 struct Kv { k: Span, v: Span }
 
 // One input of an observation. kind: 0 file, 1 dir, 2 probe, 3 env,
-// 4 env_all, 5 declared. Env entries of an env_all snapshot live in g_kvs
-// at [env_from, env_from + env_n).
+// 4 env_all, 5 declared, 6 volatile. Env entries of an env_all snapshot
+// live in g_kvs at [env_from, env_from + env_n).
 struct Inp {
     kind: i64,
     path: Span,
@@ -354,6 +354,7 @@ fn add_obs(st: Store&, o: json::Node?, line: Span) -> bool {
                 else if kstr == "env" { kind = 3; }
                 else if kstr == "env_all" { kind = 4; }
                 else if kstr == "declared" { kind = 5; }
+                else if kstr == "volatile" { kind = 6; }
             }
             let p, pok = json::as_string(json::member(inp, "path"));
             let h, hok = json::as_string(json::member(inp, "hash"));
@@ -370,7 +371,7 @@ fn add_obs(st: Store&, o: json::Node?, line: Span) -> bool {
             let hs = if hok { intern(st, h) } else { Span { off: 0, len: 0 } };
             let ns = if nok { intern(st, nm) } else { Span { off: 0, len: 0 } };
             let vs = if vok { intern(st, vh) } else { Span { off: 0, len: 0 } };
-            if kind == 3 || kind == 4 { env_any = true; }
+            if kind == 3 || kind == 4 || kind == 6 { env_any = true; }
             g_inps.push(Inp { kind: kind, path: ps, hash: hs, name: ns, vh: vs,
                 env_from: efrom, env_n: en, has_snap: snap });
         };
@@ -434,6 +435,8 @@ fn index_input(st: Store&, oi: i64, ii: i64) {
         g_post.push(Post { obs: oi, inp: ii, next: g_paths[pi].pr });
         g_paths[pi].pr = g_post.len - 1;
     }
+    // kind 3 (env), 4 (env_all), 6 (volatile): no path index; handled by
+    // standing_reasons in policy.goose.
 }
 
 // True when observation oi is the latest of a task that is not forgotten.

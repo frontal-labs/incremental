@@ -9,6 +9,7 @@ This file defines `plan(state, query)`. The reference implementation (`spec/refe
 - **Query**: `baseline`, `context` (may be absent), `changes` (ChangeSet entries), `verify` (bool, default false), `policy` (`balanced` or `conservative`, default `balanced`), and the optional fields below.
 - **Optional query fields** (additive to PROTOCOL.md 9.3, see DECISIONS.md D-E1-01):
   - `env`: object `{NAME: value_hash}`. The client's full environment hash map. Missing names mean `"unset"`.
+  - `volatile`: object `{name: "stable" | "changed"}`. Caller attestation for `volatile` inputs (time, network, randomness, or unlisted env). Missing names default to `"changed"` (conservative — the task is rerun).
   - `config`: `{ignore: [globs], globalInputs: [globs], fallbackContextKeys: [names]}`. Missing fields take the defaults in 6.7.
   - `declared_tasks`: task ids known to the adapter. A declared task with no observation is a known task for this query only (P8 `no_observation`).
 
@@ -52,6 +53,7 @@ plan(changes, options):
     if obs.outcome in (fail, error):                       invalid[t] += failed_outcome                        P9
     for each env input (name, vh) in obs:                  if (query.env[name] ?? "unset") != vh: invalid[t] += env_changed:<name>   P2b
     if obs has env_all:                                    if env_all differs from snapshot: invalid[t] += env_all_changed           P2b
+    for each volatile input (name) in obs:                 if (query.volatile[name] ?? "changed") != "stable": invalid[t] += volatile:<name>  P12
   if verify:
     for each task t with an observation, each file or declared input (path, hash):
        h = hash of worktree file at path (stat cache, section 6); missing or differs: invalid[t] += stale:<path>   P10
@@ -66,6 +68,7 @@ Notes:
 - The `fallbacks` set is collected over P1, P2, and the unobserved fallbacks, and the highest by 8.5 wins. Nothing returns early inside the change loop. (This is a stated choice; the older pseudocode returned early. See DECISIONS.md D-E1-03.)
 - A task with a modified file that it reads and that is also its own definition gets both `reads:` and `self_changed` (P3 and P4).
 - `env_all` without a snapshot in its observation is treated as changed (`env_all_changed`). Conservative, and it never produces a false skip.
+- `volatile` inputs represent non-file dependencies the strace oracle cannot observe (time, network, randomness, or an unlisted env var). The caller must attest stability via `query.volatile[name] = "stable"`; otherwise the task is rerun. The conservative default (`"changed"`) means it never produces a false skip.
 
 ## 3. Fallback
 
@@ -92,7 +95,7 @@ Reason priority (8.5): `baseline_mismatch` > `context_missing` > `global_input` 
 
 ## 7. Reason grammar (8.3)
 
-`<code>` or `<code>:<arg>`. Codes: `reads`, `declared`, `self_changed`, `removed_read`, `removed_listed`, `probe`, `dir`, `no_observation`, `dirty_observation`, `failed_outcome`, `stale`, `env_changed`, `env_all_changed`, `fallback`. Fallback reasons (`baseline_mismatch`, `context_missing`, `global_input`, `context_changed`, `unobserved_input`) appear only in `fallback.reason`.
+`<code>` or `<code>:<arg>`. Codes: `reads`, `declared`, `self_changed`, `removed_read`, `removed_listed`, `probe`, `dir`, `no_observation`, `dirty_observation`, `failed_outcome`, `stale`, `env_changed`, `env_all_changed`, `volatile`, `fallback`. Fallback reasons (`baseline_mismatch`, `context_missing`, `global_input`, `context_changed`, `unobserved_input`) appear only in `fallback.reason`.
 
 ## 8. Reserved context keys (8.4)
 

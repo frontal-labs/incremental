@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Validates the spec and the conformance suite (PLAN.md E1). It checks:
-//  1. the 40 case files are present and well formed;
+//  1. the 41 case files are present and well formed;
 //  2. the coverage matrix: every rule of PLAN 8.2 is exercised by a case
 //     (rule-to-case map from PLAN 12.2);
 //  3. every query-based case, run through the reference policy
@@ -70,6 +70,7 @@ const RULES_OF_CASE = {
   C38: [],
   C39: ["P3"],
   C40: [],
+  C41: ["P12"],
 };
 const RULES = [
   "P0",
@@ -86,6 +87,7 @@ const RULES = [
   "P9",
   "P10",
   "P11",
+  "P12",
 ];
 const covered = new Set(Object.values(RULES_OF_CASE).flat());
 for (const r of RULES) if (!covered.has(r)) fail(`coverage: rule ${r} has no case`);
@@ -108,28 +110,32 @@ for (const f of files) {
   if (!(protocolLevel(c) || !c.query)) {
     const messages = [...readMessages(c.store.from), ...(c.store.append ?? [])];
     const state = buildState(messages);
-    const q = { ...c.query, policy: c.mode, config: c.config, env: c.query.env };
     const wt = path.join(root, "conformance/worktrees", c.worktree ?? "base");
-    const got = plan(state, q, wt);
-    refRun++;
-    const diffs = [];
-    for (const key of [
-      "tasks",
-      "unobserved",
-      "ignored",
-      "deleted_tasks",
-      "fallback",
-      "confidence",
-    ]) {
-      if (key in c.expect) {
-        if (JSON.stringify(got[key]) !== JSON.stringify(c.expect[key])) {
-          diffs.push(
-            `${key}: want ${JSON.stringify(c.expect[key])} got ${JSON.stringify(got[key])}`,
-          );
+    const compare = (query, expect, label) => {
+      const q = { ...query, policy: c.mode, config: c.config, env: query.env };
+      const got = plan(state, q, wt);
+      const diffs = [];
+      for (const key of [
+        "tasks",
+        "unobserved",
+        "ignored",
+        "deleted_tasks",
+        "fallback",
+        "confidence",
+      ]) {
+        if (key in expect) {
+          if (JSON.stringify(got[key]) !== JSON.stringify(expect[key])) {
+            diffs.push(
+              `${key}: want ${JSON.stringify(expect[key])} got ${JSON.stringify(got[key])}`,
+            );
+          }
         }
       }
-    }
-    if (diffs.length) fail(`${c.id} (reference): ${diffs.join("; ")}`);
+      if (diffs.length) fail(`${c.id} (reference${label ? " " + label : ""}): ${diffs.join("; ")}`);
+    };
+    refRun++;
+    compare(c.query, c.expect, "");
+    if (c.expect2) compare({ ...c.query, ...c.expect2.query }, c.expect2, "expect2");
   }
 }
 console.log(

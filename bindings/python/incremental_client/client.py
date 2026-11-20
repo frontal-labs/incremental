@@ -134,6 +134,7 @@ class Incremental:
         verify: bool = False,
         policy: str = "balanced",
         env: dict | None = None,
+        volatile: dict | None = None,
         config: dict | None = None,
         declared_tasks: list | None = None,
     ) -> dict:
@@ -142,6 +143,8 @@ class Incremental:
             options["context"] = context
         if env is not None:
             options["env"] = env
+        if volatile is not None:
+            options["volatile"] = volatile
         if config is not None:
             options["config"] = config
         if declared_tasks is not None:

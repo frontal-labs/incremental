@@ -59,6 +59,7 @@ function affectedRequest(id, c) {
   const options = { baseline: q.baseline, verify: q.verify, policy: c.mode };
   if (q.context !== undefined) options.context = q.context;
   if (q.env !== undefined) options.env = q.env;
+  if (q.volatile !== undefined) options.volatile = q.volatile;
   if (q.declared_tasks !== undefined) options.declared_tasks = q.declared_tasks;
   if (c.config !== undefined) options.config = c.config;
   return {
@@ -172,6 +173,16 @@ function runCase(c) {
   if (!got?.result) return { status: "FAIL", detail: `no plan: ${run.lines.join(" | ")}` };
 
   const diffs = comparePlan(got.result, c.expect);
+
+  // expect2: a second query with different options (e.g. volatile attestation).
+  if (c.expect2) {
+    const c2 = { ...c, query: { ...c.query, ...c.expect2.query } };
+    const q2 = affectedRequest(base + 1, c2);
+    const run2 = serve(store, wt, [q2]);
+    const got2 = run2.responses.find((r) => r.id === base + 1);
+    if (!got2?.result) diffs.push(`expect2: no plan`);
+    else diffs.push(...comparePlan(got2.result, c.expect2));
+  }
 
   if (c.determinism === "repeat") {
     const again = serve(store, wt, [q1, q1]);
