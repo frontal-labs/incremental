@@ -37,7 +37,9 @@ const GOOSE_VERSION = "v2026.3";
 const SUPPORTED_TARGETS = ["darwin-arm64", "darwin-x64", "linux-x64", "linux-arm64"];
 // Goose ships no linux-arm64 toolchain. linux-arm64 is built by the x86_64 Linux
 // Goose with an aarch64 cross C compiler (--cc), so it needs gcc-aarch64-linux-gnu.
-const CROSS_TARGETS = { "linux-arm64": { host: "linux-x64", cc: "/usr/bin/aarch64-linux-gnu-gcc" } };
+const CROSS_TARGETS = {
+  "linux-arm64": { host: "linux-x64", cc: "/usr/bin/aarch64-linux-gnu-gcc" },
+};
 // Goose release assets are named with `macos` instead of npm's `darwin`.
 const GOOSE_ASSET_NAME = { "darwin-arm64": "macos-arm64", "darwin-x64": "macos-x64" };
 
