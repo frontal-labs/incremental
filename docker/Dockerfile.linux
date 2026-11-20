@@ -10,7 +10,8 @@ RUN apt-get update \
 
 # Rust toolchain (cargo) for adapters that need it.
 RUN curl -fsSL --retry 5 --retry-all-errors --retry-delay 10 https://sh.rustup.rs | sh -s -- -y --profile minimal \
- && /root/.cargo/bin/rustup default stable
+ && /root/.cargo/bin/rustup default stable \
+ && /root/.cargo/bin/rustup component add clippy
 
 # pnpm, buf and bazelisk come from npm (the same pins as release.yml). GitHub release downloads
 # returned 503 from the Actions network, so they are not used here.

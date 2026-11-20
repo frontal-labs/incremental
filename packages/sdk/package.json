@@ -1,6 +1,6 @@
 {
   "name": "@incremental/sdk",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "Incremental Compute Engine SDK - client, engine, and common adapters",
   "type": "module",
   "main": "index.js",

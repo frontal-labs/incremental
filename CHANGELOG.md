@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.1.5
+
+### Fixed
+
+- `@incremental/*` packages that depend on each other with `workspace:` now
+  publish real version ranges. The publish script rewrites `workspace:` as it
+  already did `file:`. Packages published as 0.1.3 declared `workspace:^` and
+  could not be installed.
+- Release workflow: installs the pnpm workspace like CI, so `tsc-rs` is present.
+  The linux gate image now includes clippy.
+
+### Changed
+
+- Engine binary resolution is the same in Node, Python and Rust:
+  `INCREMENTAL_ENGINE`, then the bundled prebuild, then `core/dist`.
+- `@incremental/client` depends on `@incremental/engine`.
+- Prebuilt engines for macOS (arm64, x64, targeting macOS 11.0) and Linux
+  (x64, arm64; glibc 2.34) are bundled in `@incremental/engine`.
+
 ## Unreleased
 
 ### Docs
