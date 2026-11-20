@@ -2,7 +2,7 @@
 //! bindings/python/tests/_support.py and _conformance.py.
 #![allow(dead_code)]
 
-use incremental::{default_engine, Affected, Config, Incremental, Result};
+use incremental_client::{default_engine, Affected, Config, Incremental, Result};
 use serde_json::{json, Value};
 use std::fs;
 use std::path::{Path, PathBuf};
