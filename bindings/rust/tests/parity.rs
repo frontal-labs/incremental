@@ -25,7 +25,7 @@ struct Counts {
 #[test]
 fn serve_and_cli_bytes_match_client() {
     let cases: Vec<Value> = load_cases().into_iter().filter(|case| case.get("query").is_some()).collect();
-    assert_eq!(cases.len(), 36, "expected the 36 query cases of conformance/cases");
+    assert_eq!(cases.len(), 37, "expected the 37 query cases of conformance/cases");
 
     let mut counts = Counts::default();
     let mut failures = Vec::new();
